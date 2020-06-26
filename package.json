@@ -14,7 +14,7 @@
   "scripts": {
     "start": "serve -s build",
     "local": "PORT=8080 react-scripts start",
-    "build": "react-scripts build",
+    "build": "parcel build edith-step/public/index.html -d src/main/webapp",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -35,5 +35,8 @@
   },
   "engines": {
     "node": "10.x.x"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
   }
 }

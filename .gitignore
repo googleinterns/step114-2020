@@ -1,1 +1,10 @@
 target/
+
+/node_modules
+/src/main/webapp/*.*
+/.settings
+.cache/
+/target
+/.classpath
+/.factorypath
+/.project
