@@ -7,3 +7,4 @@ dispatch:
 # Route all other urls to the React.js frontend
  - url: "*/*"
    service: default
+   
