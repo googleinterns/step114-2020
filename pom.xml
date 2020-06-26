@@ -51,7 +51,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- TODO: set project ID. -->
-          <deploy.projectId>project-edith</deploy.projectId>
+          <deploy.projectId>edith-step</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>
