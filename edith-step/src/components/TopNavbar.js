@@ -7,12 +7,12 @@ class TopNavbar extends React.Component {
 
   render() {
     return (
-      <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="/">Edith</Navbar.Brand>
-        <Nav className="ml-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="/">Log In</Nav.Link>
+      <Navbar bg='dark' variant='dark' fixed='top'>
+        <Navbar.Brand href='/'>Edith</Navbar.Brand>
+        <Nav className='ml-auto'>
+          <Nav.Link href='#home'>Home</Nav.Link>
+          <Nav.Link href='#features'>Features</Nav.Link>
+          <Nav.Link href='/'>Log In</Nav.Link>
         </Nav>
       </Navbar>
     );
