@@ -14,8 +14,11 @@ class App extends Component {
           <TopNavbar />
         </div>
         <div className='background-image-0'>
+          <div class="scroll-down border">
+            Scroll Down
+          </div>
           <div className='app-describe'>
-            <span className='describe-text'>Welcome To The Best Expenditure Analyzer</span>
+            <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
       </div>
