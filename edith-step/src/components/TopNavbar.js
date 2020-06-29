@@ -19,4 +19,4 @@ class TopNavbar extends React.Component {
   }
 }
 
-export default TopNavbar; 
+export default TopNavbar;
