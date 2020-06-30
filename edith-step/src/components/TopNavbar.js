@@ -1,5 +1,8 @@
 import React from 'react';
 
+import FileUploadModalBox from './FileUploadModalBox';
+
+import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -10,9 +13,15 @@ class TopNavbar extends React.Component {
     super(props);
     this.state = {
       user: null,
+      modalShow: false,
     };
+    this.handleModalClose = this.handleModalClose.bind(this);
   }
   
+  handleModalClose() {
+    this.setState({modalShow: false });
+  }
+
   componentDidMount() {
     this.login();
   }
@@ -27,6 +36,17 @@ class TopNavbar extends React.Component {
       .catch(() => {
         sessionStorage.setItem('logged-in', '');
         this.setState({user: null});
+    });
+  }
+
+  getFileUploadUrl() {
+    fetch('/blobstore-upload-url')
+      .then(response => response.text())
+      .then(userInfo => {
+        this.setState({user: userInfo});
+      })
+      .catch((error) => {
+        console.error(error);
     });
   }
 
@@ -48,7 +68,11 @@ class TopNavbar extends React.Component {
                     {this.state.user.email}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item>Upload Receipt</Dropdown.Item>
+                    <Dropdown.Item onClick={() => this.setState({modalShow: true})}>Upload Receipt</Dropdown.Item>
+                    <FileUploadModalBox
+                      show={this.state.modalShow}
+                      handleModalClose={this.handleModalClose}
+                    />
                     <Dropdown.Item>Set Nickname</Dropdown.Item>
                     <Dropdown.Item>Invite Friends</Dropdown.Item>
                     <Dropdown.Item href={this.state.user.logOutUrl}>Log Out</Dropdown.Item>
