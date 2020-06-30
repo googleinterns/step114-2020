@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class ReceiptInput extends Component {
+export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {items: [], text: '', price: 0.0};
@@ -8,14 +8,16 @@ export default class ReceiptInput extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
+    e.preventDefault();
+    
     if (this.state.text.length === 0) {
       return;
     }
     const newItem = {
-      id: Date.now(),
       text: this.state.text,
-      price: this.state.price
+      price: this.state.price,
+      id: Date.now()
     };
     this.setState(state => ({
       items: state.items.concat(newItem),
@@ -74,19 +76,19 @@ export default class ReceiptInput extends Component {
   }
 }
 
-class GroceryList extends Component {
+class GroceryList extends React.Component {
   render() {
     return (
-    <table>
-    <tbody>
-      {this.props.items.map(item => (
-        <tr key={item.id}>
-          <td>{item.text}</td>
-          <td>{item.price}</td>
-        </tr>
-      ))}
-    </tbody>
-    </table>
+      <table>
+      <tbody>
+        {this.props.items.map(item => (
+          <tr key={item.id}>
+            <td>{item.text}</td>
+            <td>{item.price}</td>
+          </tr>
+        ))}
+      </tbody>
+      </table>
     );
   }
 }
