@@ -1,5 +1,5 @@
 
-package com.google.sps.servlets;
+package com.google.edith.servlets;
 
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
 * Servlet that returns some example content.
 */
-@WebServlet("/api/v1/test-servlet")
 public class DataServlet extends HttpServlet {
 
  @Override

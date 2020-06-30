@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import TopNavbar from './components/TopNavbar';
 
-import landingImage from './receipt.jpg';
 import './App.css';
 
 
