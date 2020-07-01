@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DealsServlet extends HttpServlet {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private static Map<String, Double> receiptMap = new HashMap<String, Double>();
+  private static List<GroceryItem> groceryList = new ArrayList<GroceryItem>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -27,8 +27,10 @@ public class DealsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String itemName = String.parseString(request.getParameter("itemName"));
     Double itemPrice = Double.parseDouble(request.getParameter("itemPrice"));
-    receiptMap.put(itemName, itemPrice);
+    GroceryItem item = new GroceryItem(itemName, itemPrice);
+    groceryList.add(item);
   }
+
   // Store a receipt in Datastore.
   private void storeReceipt() {
     Double total = sumReceipt();
@@ -36,28 +38,27 @@ public class DealsServlet extends HttpServlet {
     Key receiptKey = receiptEntity.getKey();
     receiptEntity.setProperty("totalPrice", total);
     receiptEntity.setProperty("date", new Date());
-    for (String item: receiptMap.keySet()) {
-      //also pass receipt key when we figure out how to generate
+    for (GroceryItem item: groceryList) {
       storeItem(item, receiptKey);
     }
     datastore.put(receiptEntity);
   }
 
   // Store a grocery item in Datastore.
-  private void storeItem(String item, Key receiptKey) {
+  private void storeItem(GroceryItem item, Key receiptKey) {
     Entity itemEntity = new Entity("Item");
-    itemEntity.setProperty("name", item);
-    itemEntity.setProperty("price", receiptMap.get(item));
-    itemEntity.setProperty("date", new Date());
+    itemEntity.setProperty("name", item.getName());
+    itemEntity.setProperty("price", item.getPrice());
+    itemEntity.setProperty("date", item.getDate());
     itemEntity.setProperty("receiptId", receiptKey);
     datastore.put(itemEntity);
   }
 
   // Calculate total spending on shopping trip.
   private Double sumReceipt() {
-    Double total = 0;
-    for (String item: receiptMap) {
-      total = Double.sum(total, receiptMap.get(item));
+    double total = 0;
+    for (GroceryItem item: groceryList) {
+      total += item.getPrice();
     }
     return total;
   }
