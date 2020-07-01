@@ -27,7 +27,8 @@ public class DealsServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String itemName = String.parseString(request.getParameter("itemName"));
     Double itemPrice = Double.parseDouble(request.getParameter("itemPrice"));
-    GroceryItem item = new GroceryItem(itemName, itemPrice);
+    Integer itemQuantity = Integer.parseInt(request.getParameter("itemQuantity"));
+    GroceryItem item = new GroceryItem(itemName, itemPrice, itemQuantity);
     groceryList.add(item);
   }
 

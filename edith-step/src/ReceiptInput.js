@@ -3,7 +3,7 @@ import React from 'react';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0};
+    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -17,12 +17,14 @@ export default class ReceiptInput extends React.Component {
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
+      itemQuantity: this.state.itemQuantity,
       id: Date.now()
     };
 
     const params = new URLSearchParams();
     params.append('itemName', this.state.itemName);
     params.append('itemPrice', this.state.itemPrice);
+    params.append('itemQuantity', this.state.itemQuantity);
 
     const request = {
       method: 'post',
@@ -35,6 +37,7 @@ export default class ReceiptInput extends React.Component {
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
+      itemQuantity: 1
     }));
   }
 
@@ -77,6 +80,14 @@ export default class ReceiptInput extends React.Component {
                 value={this.state.itemPrice} 
                 onChange={this.handleChange} />
             </td>
+            <td>
+              <input
+                type="number"
+                name="quantity"
+                id="quantity"
+                value={this.state.itemQuantity}
+                onChange={this.handleChange} />
+            </td>
           </tr>
           <tr>
             <td>
@@ -106,6 +117,7 @@ var GroceryList = (props) => {
           <tr className="item" key={item.id}>
             <td className="item-name">{item.itemName}</td>
             <td className="item-price">{item.itemPrice}</td>
+            <td className="item-quantity">{item.itemQuantity}</td>
           </tr>
         ))}
       </tbody>
