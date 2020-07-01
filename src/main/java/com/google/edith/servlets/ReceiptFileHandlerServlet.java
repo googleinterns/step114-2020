@@ -14,23 +14,18 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobInfo;
-import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -44,26 +39,29 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
+  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("From ReceiptFileHandlerServlet");
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
-        List<BlobKey> blobKeys = blobs.get("myFile");
+    List<FileInfo> fileKeys = getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
-        if (blobKeys == null || blobKeys.isEmpty()) {
-            response.sendRedirect("/");
-        } else {
-            response.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
+    if (fileKeys.isEmpty()) {
+      System.out.println("it is null");
+    } else {
+      BlobKey fileBlobKey = getBlobKey(fileKeys);
+      blobstoreService.serve(fileBlobKey, response);
     }
   }
   
-  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
-//   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
-//     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-//     BlobKey blobKey = blobstoreService.createGsBlobKey(
-//         "/gs/" + fileName.getBucketName() + "/" + fileName.getObjectName());
-//     blobstoreService.serve(blobKey, resp);
-//   }
+  /** Returns a List BlobKey that points to the uploaded file, or null if the user didn't upload a file. */
+  private Optional<List<FileInfo>> getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+    Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
+    return Optional.ofNullable(fileInfos.get(formInputElementName));
+  }
+
+  private BlobKey getBlobKey(List<FileInfo> fileKeys) {
+    FileInfo fileInfo = fileKeys.get(0);
+    return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
+  }
 
 }
