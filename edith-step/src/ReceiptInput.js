@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], text: '', price: 0.0};
+    this.state = {items: [], itemName: '', itemPrice: 0.0};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -11,18 +11,30 @@ export default class ReceiptInput extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     
-    if (this.state.text.length === 0) {
+    if (this.state.itemName.length === 0) {
       return;
     }
     const newItem = {
-      text: this.state.text,
-      price: this.state.price,
+      itemName: this.state.itemName,
+      itemPrice: this.state.itemPrice,
       id: Date.now()
     };
+
+    const params = new URLSearchParams();
+    params.append('itemName', this.state.itemName);
+    params.append('itemPrice', this.state.itemPrice);
+
+    const request = {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: params
+    }
+    fetch('/deals', request);
+
     this.setState(state => ({
       items: state.items.concat(newItem),
-      text: '',
-      price: 0.0,
+      itemName: '',
+      itemPrice: 0.0,
     }));
   }
 
@@ -31,6 +43,12 @@ export default class ReceiptInput extends React.Component {
     this.setState({
       [e.target.name]: value
     });
+  }
+
+  finishReceipt(e) {
+    //send get request to indicate receipt is finished
+    e.preventDefault();
+    fetch('/deals');
   }
 
   render() {
@@ -46,8 +64,8 @@ export default class ReceiptInput extends React.Component {
               <input 
                 type="text" 
                 name="text"
-                id="text"
-                value={this.state.text} 
+                id="name"
+                value={this.state.itemName} 
                 onChange={this.handleChange} />
             </td>
             <td>
@@ -56,7 +74,7 @@ export default class ReceiptInput extends React.Component {
                 name="price"
                 id="price"
                 step="0.01"
-                value={this.state.price} 
+                value={this.state.itemPrice} 
                 onChange={this.handleChange} />
             </td>
           </tr>
@@ -71,24 +89,26 @@ export default class ReceiptInput extends React.Component {
         </tbody>
         </table>
       </form>
+      <button
+        type="button" 
+        onClick={this.finishReceipt}>
+        Finished</button>
       </div>
     );
   }
 }
 
-class GroceryList extends React.Component {
-  render() {
-    return (
-      <table>
+var GroceryList = (props) => {
+  return (
+    <table id="grocery-list">
       <tbody>
-        {this.props.items.map(item => (
-          <tr key={item.id}>
-            <td>{item.text}</td>
-            <td>{item.price}</td>
+        {props.items.map(item => (
+          <tr className="item" key={item.id}>
+            <td className="item-name">{item.itemName}</td>
+            <td className="item-price">{item.itemPrice}</td>
           </tr>
         ))}
       </tbody>
-      </table>
-    );
-  }
+    </table>
+  );
 }
