@@ -45,22 +45,18 @@ public class LoginServlet extends HttpServlet {
       User user = userService.getCurrentUser();
       String logoutUrl = userService.createLogoutURL("/");
 
-      String firstName;
-      String lastName;
-      String userName;
-      String favoriteStore;
-
-      try {
-        Entity userInfoEntity = getUserInfoEntity(user.getUserId()).get();
+      String firstName = "";
+      String lastName = "";
+      String userName = "";
+      String favoriteStore = "";
+      
+      Optional<Entity> optEntity = getUserInfoEntity(user.getUserId());
+      if (optEntity.isPresent()) {
+        Entity userInfoEntity = optEntity.get();
         firstName = (String) userInfoEntity.getProperty("firstName");
         lastName = (String) userInfoEntity.getProperty("lastName");
         userName = (String) userInfoEntity.getProperty("userName");
         favoriteStore = (String) userInfoEntity.getProperty("favoriteStore");
-      } catch (Exception NoSuchElementException) {
-        firstName = "";
-        lastName = "";
-        userName = "";
-        favoriteStore = "";
       }
 
       UserInfo userInfo = UserInfo.builder()
@@ -95,14 +91,12 @@ public class LoginServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Entity userInfoEntity;
     // Do not create another entity to set nickname if it already exists.
-    try {
-      userInfoEntity = getUserInfoEntity(id).get();
-    } catch (Exception NoSuchElementException) {
-      userInfoEntity = new Entity("UserInfo");
-      userInfoEntity.setProperty("id", id);
-    }
+    Entity userInfoEntity = getUserInfoEntity(id).orElseGet(() -> {
+      Entity info = new Entity("UserInfo");
+      info.setProperty("id", id);
+      return info;
+    });
 
     userInfoEntity.setProperty("firstName", firstName);
     userInfoEntity.setProperty("lastName", lastName);

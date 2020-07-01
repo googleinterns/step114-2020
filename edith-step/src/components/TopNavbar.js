@@ -31,6 +31,16 @@ class TopNavbar extends React.Component {
     this.login();
   }
   
+  displayName() {
+    const fullName = this.state.user.lastName + this.state.user.firstName
+    if ((this.state.user.lastName + this.state.user.firstName).length > 0) {
+      return fullName;
+    } else {
+      return this.state.user.email;
+    }
+    
+  }
+
   login() {
     fetch('/login')
       .then(response => response.json())
@@ -70,7 +80,7 @@ class TopNavbar extends React.Component {
                 <Nav.Link href='#dashboard'>DASHBOARD</Nav.Link>
                 <Dropdown>
                   <Dropdown.Toggle variant="dark" id="dropdown-basic">
-                    {this.state.user.email}
+                    {this.displayName()}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={() => this.setState({uploadModalBoxShow: true})}>Upload Receipt</Dropdown.Item>
@@ -78,7 +88,7 @@ class TopNavbar extends React.Component {
                       show={this.state.uploadModalBoxShow}
                       handleUploadModalClose={this.handleUploadModalClose}
                     />
-                    <Dropdown.Item onClick={() => this.setState({userInfoModalBoxShow: true})}>Set Nickname</Dropdown.Item>
+                    <Dropdown.Item onClick={() => this.setState({userInfoModalBoxShow: true})}>Update Information</Dropdown.Item>
                     <UserInfoModalBox
                       show={this.state.userInfoModalBoxShow}
                       handleUserInfoModalBoxClose={this.handleUserInfoModalBoxClose}

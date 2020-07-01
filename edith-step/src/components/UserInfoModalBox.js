@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-
+import Row from 'react-bootstrap/Row';
 class UserInfoModalBox extends React.Component {
   
   constructor(props) {
@@ -15,7 +15,7 @@ class UserInfoModalBox extends React.Component {
     return (
       <Modal
         show={this.props.show}
-        onHide={this.props.handleModalClose}
+        onHide={this.props.handleUserInfoModalBoxClose}
         centered
       >
         <Modal.Header closeButton>
@@ -25,22 +25,26 @@ class UserInfoModalBox extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Form method="POST" action="/login">
-            <Form.Row>
-              <Col>
+            <Row>
+              <Form.Group as={Col}>
+                <Form.Label>First Name</Form.Label>
                 <Form.Control placeholder="First Name" name="first-name" required />
-              </Col>
-              <Col>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Last Name</Form.Label>
                 <Form.Control placeholder="Last Name" name="last-name" required />
-              </Col>
-            </Form.Row>
-            <Form.Row>
-              <Col>
+              </Form.Group>
+            </Row>
+            <Row>
+              <Form.Group as={Col}>
+                <Form.Label>Username</Form.Label>
                 <Form.Control placeholder="Username" name="username" required />
-              </Col>
-              <Col>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Favorite Store</Form.Label>
                 <Form.Control placeholder="Favorite Store" name="favorite-store" required />
-              </Col>
-            </Form.Row>
+              </Form.Group>
+            </Row>
             <Button variant="primary" type="submit" >
               Submit
             </Button>
