@@ -53,12 +53,16 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     }
   }
   
-  /** Returns a List BlobKey that points to the uploaded file, or null if the user didn't upload a file. */
+  /**
+   * Returns a List of BlobKey that points to the uploaded files
+   * in the HTML form or null if the user didn't upload a file.
+   */
   private Optional<List<FileInfo>> getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
     return Optional.ofNullable(fileInfos.get(formInputElementName));
   }
 
+  /** Returns a  BlobKey that points to the uploaded file. */
   private BlobKey getBlobKey(List<FileInfo> fileKeys) {
     FileInfo fileInfo = fileKeys.get(0);
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
