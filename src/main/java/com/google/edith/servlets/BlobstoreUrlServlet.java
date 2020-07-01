@@ -34,6 +34,8 @@ public class BlobstoreUrlServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("BlobstoreUrlServlet I am being called");
+
 		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 		UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName("edith-receipts");
 

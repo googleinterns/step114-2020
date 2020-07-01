@@ -20,6 +20,7 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
@@ -44,8 +45,25 @@ import javax.servlet.http.HttpServletResponse;
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println("From ReceiptFileHandlerServlet");
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+        List<BlobKey> blobKeys = blobs.get("myFile");
+
+        if (blobKeys == null || blobKeys.isEmpty()) {
+            response.sendRedirect("/");
+        } else {
+            response.sendRedirect("/serve?blob-key=" + blobKeys.get(0).getKeyString());
+    }
   }
   
+  /** Returns a URL that points to the uploaded file, or null if the user didn't upload a file. */
+//   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+//     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+//     BlobKey blobKey = blobstoreService.createGsBlobKey(
+//         "/gs/" + fileName.getBucketName() + "/" + fileName.getObjectName());
+//     blobstoreService.serve(blobKey, resp);
+//   }
+
 }

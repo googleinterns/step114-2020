@@ -21,6 +21,7 @@ class FileUploadModalBox extends React.Component {
     fetch('/blobstore-upload-url')
       .then(response => response.text())
       .then(uploadUrl => {
+        console.log(uploadUrl);
         this.setState({uploadUrl: uploadUrl});
       })
       .catch((error) => {
@@ -43,7 +44,7 @@ class FileUploadModalBox extends React.Component {
         <Modal.Body>
           <Form method="POST" action={this.state.uploadUrl} enctype="multipart/form-data">
             <Form.Group>
-              <Form.File id="receipt-file" label="Receipt file input" />
+              <Form.File id="receipt-file" label="Receipt file input" name="receipt-file" />
             </Form.Group>
             <Button variant="primary" type="submit" >
               Submit
