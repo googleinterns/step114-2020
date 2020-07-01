@@ -29,7 +29,7 @@ export default class ReceiptInput extends React.Component {
       headers: {'Content-Type': 'application/json'},
       body: params
     }
-    fetch('/deals', request);
+    fetch('/receipt', request);
 
     this.setState(state => ({
       items: state.items.concat(newItem),
