@@ -1,10 +1,14 @@
 package com.google.sps.servlets;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /** Represents a customer's receipt. */
 public final class Receipt {
   
   public static List<GroceryItem> groceryList = new ArrayList<GroceryItem>();
-  int total;
+  double total;
   Date date;
 
   public Receipt(List<GroceryItem> items) {
@@ -13,7 +17,7 @@ public final class Receipt {
     date = new Date();
   }
 
-  public int getTotal() {
+  public double getTotal() {
     return total;
   }
 

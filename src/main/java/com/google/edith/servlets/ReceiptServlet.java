@@ -1,8 +1,13 @@
 package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 * Servlet that returns some example content.
 */
 @WebServlet("/receipt")
-public class DealsServlet extends HttpServlet {
+public class ReceiptServlet extends HttpServlet {
 
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private static List<GroceryItem> groceryList = new ArrayList<GroceryItem>();
@@ -26,7 +31,7 @@ public class DealsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String itemName = String.parseString(request.getParameter("itemName"));
+    String itemName = request.getParameter("itemName");
     Double itemPrice = Double.parseDouble(request.getParameter("itemPrice"));
     Integer itemQuantity = Integer.parseInt(request.getParameter("itemQuantity"));
     GroceryItem item = new GroceryItem(itemName, itemPrice, itemQuantity);

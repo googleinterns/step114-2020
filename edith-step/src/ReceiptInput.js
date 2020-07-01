@@ -6,9 +6,11 @@ export default class ReceiptInput extends React.Component {
     this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.finishReceipt = this.finishReceipt.bind(this);
   }
 
   handleSubmit(e) {
+    const fetch = require("node-fetch");
     e.preventDefault();
     
     if (this.state.itemName.length === 0) {
@@ -20,7 +22,7 @@ export default class ReceiptInput extends React.Component {
       itemQuantity: this.state.itemQuantity,
       id: Date.now()
     };
-
+    
     const params = new URLSearchParams();
     params.append('itemName', this.state.itemName);
     params.append('itemPrice', this.state.itemPrice);
@@ -31,7 +33,7 @@ export default class ReceiptInput extends React.Component {
       headers: {'Content-Type': 'application/json'},
       body: params
     }
-    fetch('/receipt', request);
+    //fetch('/receipt', request);
 
     this.setState(state => ({
       items: state.items.concat(newItem),
@@ -66,7 +68,7 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input 
                 type="text" 
-                name="text"
+                name="itemName"
                 id="name"
                 value={this.state.itemName} 
                 onChange={this.handleChange} />
@@ -74,7 +76,7 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input
                 type="number" 
-                name="price"
+                name="itemPrice"
                 id="price"
                 step="0.01"
                 value={this.state.itemPrice} 
@@ -83,7 +85,7 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input
                 type="number"
-                name="quantity"
+                name="itemQuantity"
                 id="quantity"
                 value={this.state.itemQuantity}
                 onChange={this.handleChange} />

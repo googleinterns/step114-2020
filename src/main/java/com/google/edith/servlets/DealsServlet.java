@@ -24,6 +24,7 @@ public class DealsServlet extends HttpServlet {
   }
 
   // Fetch deals from Discount API.
+  /**
   private void getDeals() {
     String dealsApi = String.format(apiSite, apiKey);
     // sending get request
@@ -47,6 +48,6 @@ public class DealsServlet extends HttpServlet {
     }
     Gson gson = new Gson();
     String json = gson.toJson(content);
-  }
+  }*/
 
 }

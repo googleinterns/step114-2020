@@ -1,14 +1,16 @@
 package com.google.sps.servlets;
 
+import java.util.Date;
+
 /** Represents an item on a receipt */
 public final class GroceryItem {
   
   private final String itemName;
-  private final double itemPrice;
-  private final int itemQuantity;
+  private final Double itemPrice;
+  private final Integer itemQuantity;
   private final Date date;
 
-  public GroceryItem(String itemName, double itemPrice) {
+  public GroceryItem(String itemName, Double itemPrice, Integer itemQuantity) {
     this.itemName = itemName;
     this.itemPrice = itemPrice;
     this.itemQuantity = itemQuantity;
@@ -19,11 +21,11 @@ public final class GroceryItem {
     return itemName;
   }
 
-  public double getPrice() {
+  public Double getPrice() {
     return itemPrice;
   }
 
-  public double getQuantity() {
+  public Integer getQuantity() {
     return itemQuantity;
   }
 
