@@ -33,7 +33,7 @@ class FileUploadModalBox extends React.Component {
     return (
       <Modal
         show={this.props.show}
-        onHide={this.props.handleModalClose}
+        onHide={this.props.handleUploadModalClose}
         centered
       >
         <Modal.Header closeButton>

@@ -24,6 +24,8 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.NoSuchElementException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +59,49 @@ public class LoginServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.sendRedirect("/index.html");
+    String firstName = getParameter(request, "first-name").orElse("");
+    String lastName = getParameter(request, "last-name").orElse("");
+    String userName = getParameter(request, "username").orElse("");
+    String favoriteStore = getParameter(request, "favorite-store").orElse("");
+
+    UserService userService = UserServiceFactory.getUserService();
+    String id = userService.getCurrentUser().getUserId();
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Entity userInfoEntity;
+    // Do not create another entity to set nickname if it already exists.
+    try {
+      userInfoEntity = getUserInfoEntity(id).get();
+    } catch (Exception NoSuchElementException) {
+      userInfoEntity = new Entity("UserInfo");
+      userInfoEntity.setProperty("id", id);
+    }
+
+    userInfoEntity.setProperty("firstName", firstName);
+    userInfoEntity.setProperty("lastName", lastName);
+    userInfoEntity.setProperty("userName", userName);
+    userInfoEntity.setProperty("favoriteStore", favoriteStore);
+
+    datastore.put(userInfoEntity);
+
+    response.sendRedirect("/");
   }
 
+  private Optional<String> getParameter(HttpServletRequest request, String name) {
+    return Optional.ofNullable(request.getParameter(name));
+  }
+
+  /**
+   * Returns the UserInfo entity with user id.
+   * Given id is not of UserInfo kind but a field of that kind.
+   */
+  private Optional<Entity> getUserInfoEntity(String id) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query =
+        new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    return Optional.ofNullable(results.asSingleEntity());
+  }
 }

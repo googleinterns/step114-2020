@@ -1,25 +1,30 @@
 import React from 'react';
 
 import FileUploadModalBox from './FileUploadModalBox';
+import UserInfoModalBox from './UserInfoModalBox';
 
-import Button from 'react-bootstrap/Button'
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 
 class TopNavbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: null,
-      modalShow: false,
+      uploadModalBoxShow: false,
+      userInfoModalBoxShow: false
     };
-    this.handleModalClose = this.handleModalClose.bind(this);
+    this.handleUploadModalClose = this.handleUploadModalClose.bind(this);
+    this.handleUserInfoModalBoxClose = this.handleUserInfoModalBoxClose.bind(this);
   }
   
-  handleModalClose() {
-    this.setState({modalShow: false });
+  handleUploadModalClose() {
+    this.setState({uploadModalBoxShow: false });
+  }
+
+  handleUserInfoModalBoxClose() {
+    this.setState({userInfoModalBoxShow: false });
   }
 
   componentDidMount() {
@@ -68,12 +73,16 @@ class TopNavbar extends React.Component {
                     {this.state.user.email}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => this.setState({modalShow: true})}>Upload Receipt</Dropdown.Item>
+                    <Dropdown.Item onClick={() => this.setState({uploadModalBoxShow: true})}>Upload Receipt</Dropdown.Item>
                     <FileUploadModalBox
-                      show={this.state.modalShow}
-                      handleModalClose={this.handleModalClose}
+                      show={this.state.uploadModalBoxShow}
+                      handleUploadModalClose={this.handleUploadModalClose}
                     />
-                    <Dropdown.Item>Set Nickname</Dropdown.Item>
+                    <Dropdown.Item onClick={() => this.setState({userInfoModalBoxShow: true})}>Set Nickname</Dropdown.Item>
+                    <UserInfoModalBox
+                      show={this.state.userInfoModalBoxShow}
+                      handleUserInfoModalBoxClose={this.handleUserInfoModalBoxClose}
+                    />
                     <Dropdown.Item>Invite Friends</Dropdown.Item>
                     <Dropdown.Item href={this.state.user.logOutUrl}>Log Out</Dropdown.Item>
                   </Dropdown.Menu>
