@@ -20,7 +20,8 @@ public class DealsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     storeReceipt();
-    getDeals();
+    //query the deals servlet
+    groceryList = new ArrayList<GroceryItem>();
   }
 
   @Override
@@ -34,11 +35,12 @@ public class DealsServlet extends HttpServlet {
 
   // Store a receipt in Datastore.
   private void storeReceipt() {
-    Double total = sumReceipt();
+    Receipt receipt = new Receipt(groceryList);
     Entity receiptEntity = new Entity("Receipt");
     Key receiptKey = receiptEntity.getKey();
-    receiptEntity.setProperty("totalPrice", total);
-    receiptEntity.setProperty("date", new Date());
+    receiptEntity.setProperty("totalPrice", receipt.getTotal());
+    receiptEntity.setProperty("date", receipt.getDate());
+
     for (GroceryItem item: groceryList) {
       storeItem(item, receiptKey);
     }
@@ -53,14 +55,5 @@ public class DealsServlet extends HttpServlet {
     itemEntity.setProperty("date", item.getDate());
     itemEntity.setProperty("receiptId", receiptKey);
     datastore.put(itemEntity);
-  }
-
-  // Calculate total spending on shopping trip.
-  private Double sumReceipt() {
-    double total = 0;
-    for (GroceryItem item: groceryList) {
-      total += item.getPrice();
-    }
-    return total;
   }
 }

@@ -30,5 +30,4 @@ public final class GroceryItem {
   public Date getDate() {
     return date;
   }
-
 }
