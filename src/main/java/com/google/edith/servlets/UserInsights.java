@@ -27,7 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * This class provides the funttionality to parse specifc user data from 
+ * datastore and send an agreggate of that information in a JSON file.
+ */
 public final class UserInsights {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
@@ -35,6 +38,7 @@ public final class UserInsights {
   private static final Gson gson = new Gson();
   private static String userId;
 
+  /** Assumes dates are in the form yyyy-MM-dd */
   private static Comparator<Key> SORT_BY_DATE = (Key item1, Key item2) -> {
       try {
         return ((String) (datastore.get(item1).getProperty("date")))
@@ -44,17 +48,16 @@ public final class UserInsights {
       }
   };
   
-
+  
   public UserInsights(String userId) {
     this.userId = userId;
   }
 
+  /** This should only be called each time a new user makes an accout. */
   public void createUserStats() { 
     List<Key> items = new ArrayList<>();
 
     Entity newUserStats = new Entity("UserStats");
-
-    items.add(null);
 
     newUserStats.setProperty("userId", userId);
     newUserStats.setProperty("items", items);
@@ -62,9 +65,10 @@ public final class UserInsights {
     datastore.put(newUserStats);
   }
 
-  /** This method is called after a UserStats Entity has been 
-   * created for the current User and they are attempting to upload
-   * a new receipt.
+  /** 
+   * Updates the items list in the UserStats Entity in datastore
+   * corresponding to this user.
+   * @param items - The list of items to be added to the current item list.
    */
   public void updateUserStats(List<Key> newItems) {
     Filter idFilter = new FilterPredicate("userId", 
@@ -81,8 +85,14 @@ public final class UserInsights {
     datastore.put(userStats);
 
   }
-
-  public void aggregateUserData() { 
+ 
+   /** 
+    * Copmiles the spending using the Item list found in this user's
+    * UserStats Entity in datastore.
+    * TODO: Allow for various time periods (only calculates weekly total now).
+    * @return A map relating a time period to the spending in that time period.
+    */
+  public Map<String, Integer> aggregateUserData() { 
     Filter idFilter = new FilterPredicate("userId", 
                                 FilterOperator.EQUAL,
                                 userId);
@@ -94,11 +104,17 @@ public final class UserInsights {
 
     items.sort(SORT_BY_DATE);
 
-    calculateWeeklyTotal(items);
+    return calculateWeeklyTotal(items);
 
   }
 
-
+  /**
+   * Creates a String-Intger map relating weekly periods to spending.
+   * @param items - A list of {@code Key} objects that reference Item entities
+                  - in the datastore.
+   * @return Creates a map with keys for each ending day of a weekly period and  
+   *         values for the total spending during that period. 
+   */
   public Map<String, Integer> calculateWeeklyTotal(List<Key> items)  {
     
     Map<String, Integer> weeklyTotals = new HashMap<String, Integer>();
@@ -133,6 +149,14 @@ public final class UserInsights {
     return weeklyTotals;
   }
 
+  /**
+   * Finds the Date for the first day of the week that {@code itemDate} is in 
+   * (weeks start on Sunday and end on Saturday).
+   * @param itemDate - Uses the integer day value of the week from this 
+   *                   paramter to calculate the start of its week.
+   * @return the LocalDate representing the start of the week {@code itemDate}
+   *         is in.
+   */
   public LocalDate getStartOfWeek(LocalDate itemDate) {
     int currentDayOfWeek = itemDate.getDayOfWeek().getValue();
     return itemDate.minusDays(currentDayOfWeek);
