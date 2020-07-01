@@ -45,7 +45,33 @@ public class LoginServlet extends HttpServlet {
       User user = userService.getCurrentUser();
       String logoutUrl = userService.createLogoutURL("/");
 
-      UserInfo userInfo = new UserInfo(user, logoutUrl);
+      String firstName;
+      String lastName;
+      String userName;
+      String favoriteStore;
+
+      try {
+        Entity userInfoEntity = getUserInfoEntity(user.getUserId()).get();
+        firstName = (String) userInfoEntity.getProperty("firstName");
+        lastName = (String) userInfoEntity.getProperty("lastName");
+        userName = (String) userInfoEntity.getProperty("userName");
+        favoriteStore = (String) userInfoEntity.getProperty("favoriteStore");
+      } catch (Exception NoSuchElementException) {
+        firstName = "";
+        lastName = "";
+        userName = "";
+        favoriteStore = "";
+      }
+
+      UserInfo userInfo = UserInfo.builder()
+          .setFirstName(firstName)
+          .setLastName(lastName)
+          .setUserName(userName)
+          .setFavoriteStore(favoriteStore)
+          .setEmail(user.getEmail())
+          .setUserId(user.getUserId())
+          .setLogOutUrl(logoutUrl)
+          .build();
 
       String json = gson.toJson(userInfo);
       

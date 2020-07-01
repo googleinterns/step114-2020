@@ -27,18 +27,18 @@ class UserInfoModalBox extends React.Component {
           <Form method="POST" action="/login">
             <Form.Row>
               <Col>
-                <Form.Control placeholder="First Name" name="first-name" />
+                <Form.Control placeholder="First Name" name="first-name" required />
               </Col>
               <Col>
-                <Form.Control placeholder="Last Name" name="last-name" />
+                <Form.Control placeholder="Last Name" name="last-name" required />
               </Col>
             </Form.Row>
             <Form.Row>
               <Col>
-                <Form.Control placeholder="Username" name="username" />
+                <Form.Control placeholder="Username" name="username" required />
               </Col>
               <Col>
-                <Form.Control placeholder="Favorite Store" name="favorite-store" />
+                <Form.Control placeholder="Favorite Store" name="favorite-store" required />
               </Col>
             </Form.Row>
             <Button variant="primary" type="submit" >
