@@ -6,9 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
-* Servlet that returns some example content.
-*/
+/** Servlet that fetches deals from the Discount API */
 @WebServlet("/deals")
 public class DealsServlet extends HttpServlet {
 
