@@ -1,0 +1,441 @@
+{
+  "entities": [
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "10",
+            "endIndex": "28"
+          }
+        ]
+      },
+      "type": "supplier_name",
+      "mentionText": "AACME Plumbing LLC",
+      "mentionId": "0",
+      "confidence": 0.269711
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "29",
+            "endIndex": "93"
+          }
+        ]
+      },
+      "type": "supplier_address",
+      "mentionText": "145 Corporate In\nNorthbrook, IL 60062\n555-314-1888\nUnited States",
+      "mentionId": "1",
+      "confidence": 0.1274204
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "95",
+            "endIndex": "101"
+          }
+        ]
+      },
+      "type": "invoice_id",
+      "mentionText": "126935",
+      "mentionId": "2",
+      "confidence": 0.99454355
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "117",
+            "endIndex": "127"
+          }
+        ]
+      },
+      "type": "invoice_date",
+      "mentionText": "11/27/2019",
+      "mentionId": "3",
+      "confidence": 0.13664213
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "136",
+            "endIndex": "147"
+          }
+        ]
+      },
+      "type": "receiver_name",
+      "mentionText": "Carrie Webb",
+      "mentionId": "4",
+      "confidence": 0.5879643
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "148",
+            "endIndex": "209"
+          }
+        ]
+      },
+      "type": "receiver_address",
+      "mentionText": "909 Kuvalis Fort Apt. 525\nBannockburn, IL 60015\nUnited States",
+      "mentionId": "5",
+      "confidence": 0.10757585
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "316",
+            "endIndex": "326"
+          }
+        ]
+      },
+      "type": "due_date",
+      "mentionText": "12/13/2019",
+      "mentionId": "6",
+      "confidence": 0.37047535
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "327",
+            "endIndex": "333"
+          }
+        ]
+      },
+      "type": "payment_terms",
+      "mentionText": "Net 30",
+      "mentionId": "7",
+      "confidence": 0.5234585
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "420",
+            "endIndex": "427"
+          }
+        ]
+      },
+      "type": "purchase_order",
+      "mentionText": "CC-2342",
+      "mentionId": "8",
+      "confidence": 0.9564563
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "460",
+            "endIndex": "461"
+          }
+        ]
+      },
+      "type": "line_item/quantity",
+      "mentionText": "3",
+      "mentionId": "9",
+      "confidence": 0.9937765
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "460",
+            "endIndex": "494"
+          }
+        ]
+      },
+      "type": "line_item",
+      "mentionText": "3\nPlumbing chemical\n$45.00\n$135.00",
+      "mentionId": "10"
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "462",
+            "endIndex": "479"
+          }
+        ]
+      },
+      "type": "line_item/description",
+      "mentionText": "Plumbing chemical",
+      "mentionId": "11",
+      "confidence": 0.8595822
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "480",
+            "endIndex": "486"
+          }
+        ]
+      },
+      "type": "line_item/unit_price",
+      "mentionText": "$45.00",
+      "mentionId": "12",
+      "confidence": 0.32496488
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "487",
+            "endIndex": "494"
+          }
+        ]
+      },
+      "type": "line_item/amount",
+      "mentionText": "$135.00",
+      "mentionId": "13",
+      "confidence": 0.3447619
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "495",
+            "endIndex": "496"
+          }
+        ]
+      },
+      "type": "line_item/quantity",
+      "mentionText": "6",
+      "mentionId": "14",
+      "confidence": 0.98066497
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "495",
+            "endIndex": "532"
+          }
+        ]
+      },
+      "type": "line_item",
+      "mentionText": "6\nDrain Cleaner Solution\n$3.50\n$28.00",
+      "mentionId": "15"
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "497",
+            "endIndex": "519"
+          }
+        ]
+      },
+      "type": "line_item/description",
+      "mentionText": "Drain Cleaner Solution",
+      "mentionId": "16",
+      "confidence": 0.43066475
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "520",
+            "endIndex": "525"
+          }
+        ]
+      },
+      "type": "line_item/unit_price",
+      "mentionText": "$3.50",
+      "mentionId": "17",
+      "confidence": 0.26354024
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "526",
+            "endIndex": "532"
+          }
+        ]
+      },
+      "type": "line_item/amount",
+      "mentionText": "$28.00",
+      "mentionId": "18",
+      "confidence": 0.37486586
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "533",
+            "endIndex": "534"
+          }
+        ]
+      },
+      "type": "line_item/quantity",
+      "mentionText": "4",
+      "mentionId": "19",
+      "confidence": 0.9428535
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "533",
+            "endIndex": "555"
+          }
+        ]
+      },
+      "type": "line_item",
+      "mentionText": "4\nLabor\n$42.00\n$168.00",
+      "mentionId": "20"
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "535",
+            "endIndex": "540"
+          }
+        ]
+      },
+      "type": "line_item/description",
+      "mentionText": "Labor",
+      "mentionId": "21",
+      "confidence": 0.9992876
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "541",
+            "endIndex": "547"
+          }
+        ]
+      },
+      "type": "line_item/unit_price",
+      "mentionText": "$42.00",
+      "mentionId": "22",
+      "confidence": 0.26125193
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "548",
+            "endIndex": "555"
+          }
+        ]
+      },
+      "type": "line_item/amount",
+      "mentionText": "$168.00",
+      "mentionId": "23",
+      "confidence": 0.35755798
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "573",
+            "endIndex": "579"
+          }
+        ]
+      },
+      "type": "total_tax_amount",
+      "mentionText": "$29.79",
+      "mentionId": "24",
+      "confidence": 0.22347337
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "613",
+            "endIndex": "620"
+          }
+        ]
+      },
+      "type": "total_amount",
+      "mentionText": "$372.24",
+      "mentionId": "25",
+      "confidence": 0.26578954
+    },
+    {
+      "textAnchor": {
+        "textSegments": [
+          {
+            "startIndex": "650",
+            "endIndex": "657"
+          }
+        ]
+      },
+      "type": "amount_due",
+      "mentionText": "$372.24",
+      "mentionId": "26",
+      "confidence": 0.27709493
+    }
+  ],
+  "entityRelations": [
+    {
+      "subjectId": "10",
+      "objectId": "11",
+      "relation": "line_item/description"
+    },
+    {
+      "subjectId": "10",
+      "objectId": "12",
+      "relation": "line_item/unit_price"
+    },
+    {
+      "subjectId": "10",
+      "objectId": "13",
+      "relation": "line_item/amount"
+    },
+    {
+      "subjectId": "10",
+      "objectId": "9",
+      "relation": "line_item/quantity"
+    },
+    {
+      "subjectId": "15",
+      "objectId": "14",
+      "relation": "line_item/quantity"
+    },
+    {
+      "subjectId": "15",
+      "objectId": "16",
+      "relation": "line_item/description"
+    },
+    {
+      "subjectId": "15",
+      "objectId": "17",
+      "relation": "line_item/unit_price"
+    },
+    {
+      "subjectId": "15",
+      "objectId": "18",
+      "relation": "line_item/amount"
+    },
+    {
+      "subjectId": "20",
+      "objectId": "19",
+      "relation": "line_item/quantity"
+    },
+    {
+      "subjectId": "20",
+      "objectId": "21",
+      "relation": "line_item/description"
+    },
+    {
+      "subjectId": "20",
+      "objectId": "22",
+      "relation": "line_item/unit_price"
+    },
+    {
+      "subjectId": "20",
+      "objectId": "23",
+      "relation": "line_item/amount"
+    }
+  ]
+}
