@@ -31,34 +31,5 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println("Hello world from data servlet!");
 
    
-    updateUserStats();
-  }
-
-
-  public void updateUserStats(String userId) {
-    
-    Query query = new Query("UserStats");
-    PreparedQuery results = datastore.prepare(query);
-    Entity userStats = results.asList(FetchOptions.Builder.withLimit(10))
-                            .stream()
-                            .filter(entity -> ((String) entity.getProperty("userId")).equals(userId))
-                            .collect(Collectors.toList()).get(0);
-
-    List<String> reciepts = (List<String>) userStats.getProperty("Receipts");
-    recipts.add(addRecipt());
-    userStats.setProperty("Receipts", receipts);
-    datastore.put(userStats);
-
-  }
-  
-  public void getUserStats() {
-    Query query = new Query("UserStats");
-    PreparedQuery results = datastore.prepare(query);
-
-  }
-
-  public List<Key> addReceipt() {
-    throw new UnsupportedOperationException();
-  }
-
+    }
 }
