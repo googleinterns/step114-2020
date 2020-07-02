@@ -19,12 +19,18 @@ import com.google.appengine.api.users.User;
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;
-  private final String email;
-  private final String logOutUrl;
+  private final String storeName;
+  private final String date;
+  private final String name;
+  private final String fileUrl;
+  private final float totalPrice;
 
-  Receipt(User user, String logOutUrl) {
-    this.email = user.getEmail();
-    this.userId = user.getUserId();
-    this.logOutUrl = logOutUrl;
+  Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice) {
+    this.userId = userId;
+    this.storeName = storeName;
+    this.date = date;
+    this.name = name;
+    this.fileUrl = fileUrl;
+    this.totalPrice = totalPrice;
   }
 }
