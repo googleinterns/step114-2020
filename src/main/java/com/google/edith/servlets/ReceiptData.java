@@ -1,6 +1,7 @@
 package com.google.edith.servlets;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -21,16 +22,19 @@ public class ReceiptData {
     JsonElement jelement = new JsonParser().parse(br);
     JsonObject  jobject = jelement.getAsJsonObject();
     JsonArray jarray = jobject.getAsJsonArray("entities");
-    HashMap<String, String> extractedData= getImportantData(jarray);
-    for (Map.Entry<String, String> entry : extractedData.entrySet()) {
+    HashMap<String, ArrayList<String>> extractedData= getImportantData(jarray);
+    for (Map.Entry<String, ArrayList<String>> entry : extractedData.entrySet()) {
       String key = entry.getKey();
-      String value = entry.getValue();
-      System.out.println(key + " = " + value);
+      ArrayList<String> value = entry.getValue();
+      System.out.println("===============================");
+      System.out.println(key);
+      value.forEach((arrayValue) -> System.out.println(arrayValue));
+      System.out.println("===============================");
     }
   }
 
-  private HashMap<String, String> getImportantData(JsonArray jarray) {
-    HashMap<String, String> extractedData= new HashMap<>();
+  private HashMap<String, ArrayList<String>> getImportantData(JsonArray jarray) {
+    HashMap<String, ArrayList<String>> extractedData= new HashMap<>();
     List<String> neededFields = Arrays.asList("supplier_name", "invoice_date", "total_tax_amount",
         "total_amount", "line_item/description","line_item/amount", "line_item/quantity");
 
@@ -40,7 +44,13 @@ public class ReceiptData {
       jobject = jarray.get(i).getAsJsonObject();
       elementType = jobject.get("type").getAsString();
       if (neededFields.contains(elementType)) {
-        extractedData.put(elementType, jobject.get("mentionText").getAsString());
+        if (!extractedData.containsKey(elementType)) {
+          ArrayList<String> items = new ArrayList<String>();
+          items.add(jobject.get("mentionText").getAsString());
+          extractedData.put(elementType, items);
+        } else {
+          extractedData.get(elementType).add(jobject.get("mentionText").getAsString());
+        }
       }
     }
     return extractedData;

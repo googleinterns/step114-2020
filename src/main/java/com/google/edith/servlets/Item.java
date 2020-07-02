@@ -17,13 +17,13 @@ package com.google.edith.servlets;
 import com.google.appengine.api.users.User;
 
 /** Encapsulate User info and logout url. */
-public final class Receipt {
+public final class Item {
   private final String userId;
   private final String name;
   private final int quantity;
   private final String category;
 
-  Receipt(String userId, String name, int quantity, String category) {
+  Item(String userId, String name, int quantity, String category) {
     this.userId = userId;
     this.name = name;
     this.quantity = quantity;
