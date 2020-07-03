@@ -24,12 +24,12 @@ public final class Item {
   private final int quantity;
   private final String category;
 
-  Item(String userId, String name, String price, int quantity, String category) {
+  Item(String userId, String name, String price, int quantity) {
     this.userId = userId;
     this.name = name;
     this.price = price;
     this.quantity = quantity;
-    this.category = category;
+    this.category = "unknown";
   }
 
   public String toString() {

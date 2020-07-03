@@ -24,14 +24,16 @@ public final class Receipt {
   private final String name;
   private final String fileUrl;
   private final String totalPrice;
-
-  Receipt(String userId, String storeName, String date, String name, String fileUrl, String totalPrice) {
+  private final Item[] items;
+  
+  Receipt(String userId, String storeName, String date, String name, String fileUrl, String totalPrice, Item[] items) {
     this.userId = userId;
     this.storeName = storeName;
     this.date = date;
     this.name = name;
     this.fileUrl = fileUrl;
     this.totalPrice = totalPrice;
+    this.items = items;
   }
 
   public String toString() {
