@@ -20,13 +20,19 @@ import com.google.appengine.api.users.User;
 public final class Item {
   private final String userId;
   private final String name;
+  private final String price;
   private final int quantity;
   private final String category;
 
-  Item(String userId, String name, int quantity, String category) {
+  Item(String userId, String name, String price, int quantity, String category) {
     this.userId = userId;
     this.name = name;
+    this.price = price;
     this.quantity = quantity;
     this.category = category;
+  }
+
+  public String toString() {
+      return (this.userId + this.name + this.price + this.quantity + this.category);
   }
 }
