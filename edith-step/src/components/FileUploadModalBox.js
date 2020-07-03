@@ -38,12 +38,13 @@ class FileUploadModalBox extends React.Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Please Upload Your Receipt File
+            Please Upload Your Receipt File With An Expense Name
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form method="POST" action={this.state.uploadUrl} enctype="multipart/form-data">
             <Form.Group>
+              <Form.Control type="text" name="expense-name" placeholder="Expense Name" />
               <Form.File id="receipt-file" label="Receipt file input" name="receipt-file" />
             </Form.Group>
             <Button variant="primary" type="submit" >

@@ -46,7 +46,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    String expenditureName = request.getParameter("expense-name") == null ? "unknown" : request.getParameter("expense-name");
+    expenditureName = request.getParameter("expense-name") == null ? "unknown" : request.getParameter("expense-name");
 
     List<FileInfo> fileKeys = getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
