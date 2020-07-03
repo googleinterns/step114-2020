@@ -39,18 +39,27 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
-  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-  
+  private static final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  private static BlobKey fileBlobKey;
+  private static String expenditureName;
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    String expenditureName = request.getParameter("expense-name") == null ? "unknown" : request.getParameter("expense-name");
+
     List<FileInfo> fileKeys = getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
     if (fileKeys.isEmpty()) {
       System.out.println("it is null");
     } else {
-      BlobKey fileBlobKey = getBlobKey(fileKeys);
-      blobstoreService.serve(fileBlobKey, response);
+      fileBlobKey = getBlobKey(fileKeys);
     }
+    
+    ReceiptData myReceiptData = new ReceiptData();
+    myReceiptData.extractReceiptData();
+
+    response.sendRedirect("/");
   }
   
   /**
@@ -68,4 +77,11 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
   }
 
+  public static String getFileBlobKey() {
+    return fileBlobKey.getKeyString();
+  }
+
+  public static String getExpenditureName() {
+    return expenditureName;
+  }
 }

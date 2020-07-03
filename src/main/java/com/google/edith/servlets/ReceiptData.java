@@ -30,6 +30,11 @@ public class ReceiptData {
 
     Item[] items = createReceiptItems(extractedData);
     Receipt myReceipt = createReceipt(extractedData, items);
+
+    System.out.println(myReceipt);
+    for (Item myItem : items) {
+      System.out.println(myItem.toString());
+    }
   }
 
   private HashMap<String, ArrayList<String>> getImportantData(JsonArray jarray) {
@@ -43,7 +48,7 @@ public class ReceiptData {
       jobject = jarray.get(i).getAsJsonObject();
       elementType = jobject.get("type").getAsString();
       if (neededFields.contains(elementType)) {
-        if (!extractedData.containsKey(elementType)) {
+        if (extractedData.containsKey(elementType)) {
           extractedData.get(elementType).add(jobject.get("mentionText").getAsString());
         } else {
           ArrayList<String> items = new ArrayList<String>();
@@ -58,8 +63,11 @@ public class ReceiptData {
   private Receipt createReceipt(HashMap<String, ArrayList<String>> extractedData, Item[] items) {
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
-
-    Receipt userReceipt = new Receipt(user.getUserId(), extractedData.get("supplier_name").get(0), extractedData.get("invoice_date").get(0), "receipt name", "fileUrl", extractedData.get("total_tax_amount").get(0), items);
+    
+    String expenditureName = ReceiptFileHandlerServlet.getExpenditureName();
+    String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
+    
+    Receipt userReceipt = new Receipt(user.getUserId(), extractedData.get("supplier_name").get(0), extractedData.get("invoice_date").get(0), expenditureName, blobKey, extractedData.get("total_tax_amount").get(0), items);
     return userReceipt;
   }
 
@@ -70,7 +78,7 @@ public class ReceiptData {
       int totalItems = extractedData.get("line_item/description").size();
       Item[] items = new Item[totalItems];
       while (index < totalItems) {
-        Item receiptItem = new Item(user.getUserId(), extractedData.get("line_item/description").get(index), extractedData.get("line_item/amount").get(index), Integer.parseInt(extractedData.get("line_item/quantity").get(index)), "category");
+        Item receiptItem = new Item(user.getUserId(), extractedData.get("line_item/description").get(index), extractedData.get("line_item/amount").get(index), Integer.parseInt(extractedData.get("line_item/quantity").get(index)));
         items[index] = receiptItem;
         index++;
       }
