@@ -195,17 +195,4 @@ public final class UserInsights {
   }
 }
 
-class Item {
-  double price; 
-  long quantity;  
-//   String Name; 
-//   String userId;
-  String date; 
-//   String category; 
-  
-  public Item(double price, long quantity, String date) {
-    this.price = price;
-    this.quantity = quantity;
-    this.date = date;
-  }
-}
+
