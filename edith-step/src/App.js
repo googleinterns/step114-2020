@@ -6,7 +6,7 @@ import ReceiptInput from './ReceiptInput';
 class App extends Component {
   componentDidMount() {
     console.log("Inside componentDidMount!");
-    fetch("/api/v1/test-servlet")
+    fetch("/api/v1/data-servlet")
       .then((response) => response.text())
       .then((text) => {
         console.log("here is the text from servlet: ", text);
