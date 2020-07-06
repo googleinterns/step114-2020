@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -32,7 +33,12 @@ public class DealsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("running");
-    String itemName = request.getParameter("itemName");
+    InputStream params = request.getInputStream();
+    JsonParser jsonParser = new JsonParser();
+    JsonObject jsonObject = (JsonObject)jsonParser.parse(
+      new InputStreamReader(params, "utf-8"));
+    String itemName = jsonObject.get("itemName").getAsString();
+    System.out.println(itemName);
     String title = getDeals(itemName);
     response.getWriter().println(title);
     response.sendRedirect("/index.html");
@@ -47,19 +53,21 @@ public class DealsServlet extends HttpServlet {
     } catch(IOException e) {
       System.out.println(dealsApi);
     }
-    
+    System.out.println(url);
     HttpURLConnection connection = null;
     try {
       connection = (HttpURLConnection) url.openConnection();
     } catch(IOException e) {
-      System.out.println("not connected");
+      System.out.println("connection not opened");
+      System.out.println(e.getMessage());
     }
     
     try {
-      connection.setRequestMethod("get");
+      connection.setRequestMethod("GET");
       connection.setRequestProperty("Content-Type", "application/json");
     } catch(ProtocolException e) {
-      System.out.println("not connected");
+      System.out.println("can't set method of request");
+      System.out.println(e.getMessage());
     }
 
     StringBuilder content = null;
@@ -71,7 +79,8 @@ public class DealsServlet extends HttpServlet {
         content.append(System.lineSeparator());
       }
     } catch(IOException e) {
-      System.out.println("not working");
+      System.out.println("can't read in info from connection");
+      System.out.println(e.getMessage());
     } finally {
       connection.disconnect();
     }
