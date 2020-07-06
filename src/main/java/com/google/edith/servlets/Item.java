@@ -17,26 +17,22 @@ package com.google.edith.servlets;
 import com.google.appengine.api.users.User;
 
 /** Encapsulate User info and logout url. */
-public final class Receipt {
+public final class Item {
   private final String userId;
-  private final String storeName;
-  private final String date;
   private final String name;
-  private final String fileUrl;
-  private final String totalPrice;
-  private final Item[] items;
+  private final String price;
+  private final int quantity;
+  private final String category;
 
-  Receipt(String userId, String storeName, String date, String name, String fileUrl, String totalPrice, Item[] items) {
+  Item(String userId, String name, String price, int quantity) {
     this.userId = userId;
-    this.storeName = storeName;
-    this.date = date;
     this.name = name;
-    this.fileUrl = fileUrl;
-    this.totalPrice = totalPrice;
-    this.items = items;
+    this.price = price;
+    this.quantity = quantity;
+    this.category = "unknown";
   }
 
   public String toString() {
-    return(this.userId + this.storeName + this.date + this.name + this.fileUrl + this.totalPrice);
+      return (this.userId + this.name + this.price + this.quantity + this.category);
   }
 }

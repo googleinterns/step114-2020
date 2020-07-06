@@ -6,13 +6,11 @@ export default class ReceiptInput extends React.Component {
     this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.finishReceipt = this.finishReceipt.bind(this);
   }
 
   handleSubmit(e) {
-    const fetch = require("node-fetch");
     e.preventDefault();
-    
+
     if (this.state.itemName.length === 0) {
       return;
     }
@@ -23,17 +21,18 @@ export default class ReceiptInput extends React.Component {
       id: Date.now()
     };
     
-    const params = new URLSearchParams();
-    params.append('itemName', this.state.itemName);
-    params.append('itemPrice', this.state.itemPrice);
-    params.append('itemQuantity', this.state.itemQuantity);
-
-    const request = {
+    const axios = require('axios')
+    axios({
       method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: params
-    }
-    //fetch('/receipt', request);
+      url: '/deals',
+      data: {
+        itemName: this.state.itemName,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity
+      }
+    }).then((response) => {
+      console.log(response);
+    });
 
     this.setState(state => ({
       items: state.items.concat(newItem),
@@ -48,12 +47,6 @@ export default class ReceiptInput extends React.Component {
     this.setState({
       [e.target.name]: value
     });
-  }
-
-  finishReceipt(e) {
-    //send get request to indicate receipt is finished
-    e.preventDefault();
-    fetch('/deals');
   }
 
   render() {
@@ -102,10 +95,6 @@ export default class ReceiptInput extends React.Component {
         </tbody>
         </table>
       </form>
-      <button
-        type="button" 
-        onClick={this.finishReceipt}>
-        Finished</button>
       </div>
     );
   }
