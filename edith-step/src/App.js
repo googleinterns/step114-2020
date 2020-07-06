@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import landingImage from './receipt.jpg';
 import ReceiptInput from './ReceiptInput';
 import TopNavbar from './components/TopNavbar';
 
