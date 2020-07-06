@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import TopNavbar from './components/TopNavbar';
 
 import landingImage from './receipt.jpg';
-import './App.css';
+import ReceiptInput from './ReceiptInput';
+import TopNavbar from './components/TopNavbar';
 
+import './App.css';
 
 class App extends Component {
 
@@ -21,6 +22,7 @@ class App extends Component {
             <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
+        <ReceiptInput />
       </div>
     );
   }
