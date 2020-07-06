@@ -1,9 +1,5 @@
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,14 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt")
 public class ReceiptServlet extends HttpServlet {
 
-  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final ReceiptDataService dataservice = new ReceiptDataService();
   private static List<GroceryItem> groceryList = new ArrayList<GroceryItem>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    storeReceipt();
+    dataservice.storeReceipt(groceryList);
     //query the deals servlet
-    groceryList = new ArrayList<GroceryItem>();
+    //groceryList = new ArrayList<GroceryItem>();
   }
 
   @Override
@@ -36,29 +32,5 @@ public class ReceiptServlet extends HttpServlet {
     Integer itemQuantity = Integer.parseInt(request.getParameter("itemQuantity"));
     GroceryItem item = new GroceryItem(itemName, itemPrice, itemQuantity);
     groceryList.add(item);
-  }
-
-  // Store a receipt in Datastore.
-  private void storeReceipt() {
-    Receipt receipt = new Receipt(groceryList);
-    Entity receiptEntity = new Entity("Receipt");
-    Key receiptKey = receiptEntity.getKey();
-    receiptEntity.setProperty("totalPrice", receipt.getTotal());
-    receiptEntity.setProperty("date", receipt.getDate());
-
-    for (GroceryItem item: groceryList) {
-      storeItem(item, receiptKey);
-    }
-    datastore.put(receiptEntity);
-  }
-
-  // Store a grocery item in Datastore.
-  private void storeItem(GroceryItem item, Key receiptKey) {
-    Entity itemEntity = new Entity("Item");
-    itemEntity.setProperty("name", item.getName());
-    itemEntity.setProperty("price", item.getPrice());
-    itemEntity.setProperty("date", item.getDate());
-    itemEntity.setProperty("receiptId", receiptKey);
-    datastore.put(itemEntity);
   }
 }
