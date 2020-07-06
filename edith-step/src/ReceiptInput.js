@@ -45,7 +45,7 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input 
                 type="text" 
-                name="text"
+                name="itemName"
                 id="name"
                 value={this.state.itemName} 
                 onChange={this.handleChange} />
@@ -53,7 +53,7 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input
                 type="number" 
-                name="price"
+                name="itemPrice"
                 id="price"
                 step="0.01"
                 value={this.state.itemPrice} 
