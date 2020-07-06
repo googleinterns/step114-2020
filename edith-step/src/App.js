@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import ReceiptInput from './ReceiptInput';
+import ReceiptInput from './components/ReceiptInput';
 import TopNavbar from './components/TopNavbar';
 
 import './App.css';
