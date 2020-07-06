@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class provides the funttionality to parse specifc user data from 
@@ -160,4 +162,50 @@ public final class UserInsights {
     int currentDayOfWeek = itemDate.getDayOfWeek().getValue();
     return itemDate.plusDays(7 - currentDayOfWeek);
   }  
+  
+  /**
+   * Creates a Json string that contains the weekly aggregate for this user
+   * and the items this user purchased.
+   * @return a Json formatted String of items and an aggregate.
+   */
+  public String createJson() {
+    Map<String, String> aggregateValues = aggregateUserData().entrySet().stream()
+    .collect(Collectors.toMap(Map.Entry::getKey, entry -> Double.toString(entry.getValue())));
+    String aggregateJson =  gson.toJson(aggregateValues);
+    List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
+    List<Item> items = itemKeys.stream()
+                         .map(key ->{
+                            try {
+                              Entity item = datastore.get(key);
+                              return new Item(
+                                (Double) item.getProperty("price"),
+                                (long) item.getProperty("quantity"),
+                                (String) item.getProperty("date")
+                              );
+                            } catch (EntityNotFoundException e) {
+                              return null;
+                            }
+                            })
+                            .collect(Collectors.toList());
+    String itemsJson = gson.toJson(items);
+    JsonObject userJson = new JsonObject();
+    userJson.addProperty("weeklyAggregate", aggregateJson);
+    userJson.addProperty("items", itemsJson);
+    return gson.toJson(userJson);
+  }
+}
+
+class Item {
+  double price; 
+  long quantity;  
+//   String Name; 
+//   String userId;
+  String date; 
+//   String category; 
+  
+  public Item(double price, long quantity, String date) {
+    this.price = price;
+    this.quantity = quantity;
+    this.date = date;
+  }
 }
