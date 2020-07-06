@@ -25,11 +25,15 @@ public final class Receipt {
     return date;
   }
 
+  public List<GroceryItem> getItems() {
+    return groceryList;
+  }
+
   // Calculate total spending on shopping trip.
   private Double sumReceipt() {
     double total = 0;
     for (GroceryItem item: groceryList) {
-      total += item.getPrice();
+      total += item.getPrice()*item.getQuantity();
     }
     return total;
   }
