@@ -23,7 +23,7 @@ it('should call handleSumbit when Submit button is clicked', () => {
   expect(handleSubmit).toBeCalled();
 });
 
-// handleSubmit resets state.
+// HandleSubmit resets state.
 it('should update form submitted state with button click', () => {
   component.setState({ itemName: "bread", itemPrice: 5.6 });
   component.find('form').simulate('submit');
@@ -32,7 +32,7 @@ it('should update form submitted state with button click', () => {
   expect(component.state('itemPrice')).toBe(0.0);
 });
 
-// handleChange is called on change.
+// HandleChange is called on change.
 it('should call handleChange on form change', () => {
   component.find('#name').simulate('change');
   expect(handleChange).toBeCalled();
@@ -40,7 +40,7 @@ it('should call handleChange on form change', () => {
   expect(handleChange).toBeCalled();;
 });
 
-// handleChange updates state.
+// HandleChange updates state.
 it('should change state when handleChange is called', () => {
   component.setState({ itemName: "", itemPrice: 0 });
   expect(component.state('itemName')).toBe('');
