@@ -1,16 +1,38 @@
 import React from 'react';
-import Enzyme, {shallow, mount} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
+import { mount } from 'enzyme';
 import TopNavbar from './TopNavbar';
 
-Enzyme.configure({ adapter: new Adapter() });
+import '../setupTests.js'
 
-describe('TopNavbar component', () => {
-    // Checks if the Navigation Bar is rendered correctly.
-  test('renders', () => {
-    const wrapper = shallow(<TopNavbar />);
+let component;
+let navLinks
 
-    expect(wrapper.exists()).toBe(true);
-  });
+beforeEach(() => {
+  component = mount(<TopNavbar />);
+})
+
+afterEach(() => {
+  component.unmount();
+});
+
+// Checks if the Navigation Bar is rendered correctly.
+test('renders', () => {
+  expect(component.exists()).toBe(true);
+});
+
+test('has three options', () => {
+  expect(component.find('.links').length).toBe(3);
+});
+
+
+test('has Home option', () => {
+  expect(component.find('.home').exists()).toBe(true);
+});
+
+test('has Features option', () => {
+  expect(component.find('.features').exists()).toBe(true);
+});
+
+test('has Login option', () => {
+  expect(component.find('.login-button').exists()).toBe(true);
 });
