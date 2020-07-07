@@ -4,7 +4,6 @@ import { mount } from 'enzyme';
 import '../setupTests.js'
 
 let component;
-let navLinks
 
 beforeEach(() => {
   component = mount(<TopNavbar />);
