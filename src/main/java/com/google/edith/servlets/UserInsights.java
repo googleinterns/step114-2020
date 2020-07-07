@@ -98,7 +98,7 @@ public final class UserInsights {
     * TODO: Allow for various time periods (only calculates weekly aggregate now).
     * @return A map relating a time period to the spending in that time period.
     */
-  public Map<String, Double> aggregateUserData() { 
+  public Map<String, String> aggregateUserData() { 
     Entity userStats = retreiveUserStats();
     List<Key> items = (List<Key>) userStats.getProperty("Items");
 
@@ -114,8 +114,8 @@ public final class UserInsights {
    * @return Creates a map with keys for each ending day of a weekly period and  
    *         values for the total spending during that period. 
    */
-  public Map<String, Double> calculateWeeklyTotal(List<Key> items)  {
-    Map<String, Double> weeklyTotals = new HashMap<String, Double>();
+  public Map<String, String> calculateWeeklyTotal(List<Key> items)  {
+    Map<String, String> weeklyTotals = new HashMap<String, String>();
     LocalDate currentEndOfWeek;
     try {
       currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(items.get(0))
@@ -132,7 +132,7 @@ public final class UserInsights {
         LocalDate itemDate = LocalDate.parse((String) datastore.get(item).getProperty("date"),
                                              dateFormatter);
         if(ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
-          weeklyTotals.put(currentEndOfWeek.toString(), weeklyTotal);
+          weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
         }
@@ -145,7 +145,7 @@ public final class UserInsights {
       } 
     }
     
-    weeklyTotals.put(currentEndOfWeek.toString(), weeklyTotal);
+    weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
 
     return weeklyTotals;
   }
@@ -169,8 +169,7 @@ public final class UserInsights {
    * @return a Json formatted String of items and an aggregate.
    */
   public String createJson() {
-    Map<String, String> aggregateValues = aggregateUserData().entrySet().stream()
-    .collect(Collectors.toMap(Map.Entry::getKey, entry -> Double.toString(entry.getValue())));
+    Map<String, String> aggregateValues = aggregateUserData();
     String aggregateJson =  gson.toJson(aggregateValues);
     List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
     List<Item> items = itemKeys.stream()
