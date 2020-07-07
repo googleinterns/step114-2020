@@ -1,6 +1,6 @@
 import React from 'react';
 
-class ReceiptInput extends React.Component {
+export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {items: [], itemName: '', itemPrice: 0.0};
@@ -90,5 +90,3 @@ var GroceryList = (props) => {
     </table>
   );
 }
-
-export default ReceiptInput;

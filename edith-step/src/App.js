@@ -8,7 +8,7 @@ import './App.css';
 class App extends Component {
 
   render() {
- return (
+    return (
       <div className='App'>
         <div className='App-header'>
           <TopNavbar />
