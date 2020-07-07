@@ -7,6 +7,15 @@ import '../setupTests.js'
 
 let component;
 let userObj = {'email': 'email'}
+
+describe('TopNavbar calls', () => {
+  test('login method when mounted', () => {
+    const login = jest.spyOn(TopNavbar.prototype, 'login');
+    component = mount(<TopNavbar />);
+    expect(login).toBeCalled();
+  });
+});
+
 describe('When not logged in, Top Navigation Bar', () => {
 
   beforeEach(() => {
