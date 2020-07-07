@@ -34,8 +34,8 @@
   animation-iteration-count: infinite;
   animation-name: scroll-down;
   animation-timing-function: ease-in-out;
-  position: absolute;
   left: 0;
+  position: absolute;
   text-align: center;
   top: 10%;
   width: 100%;

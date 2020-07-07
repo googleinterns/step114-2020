@@ -34,11 +34,11 @@ class TopNavbar extends React.Component {
     return (
       <Navbar bg='dark' variant='dark' fixed='top' expand="lg">
         <Navbar.Brand href='/'>EDITH</Navbar.Brand>
-          <Nav className='ml-auto'>
-            <Nav.Link href='#home'>HOME</Nav.Link>
-            <Nav.Link href='#features'>FEATURES</Nav.Link>
+          <Nav className='ml-auto links'>
+            <Nav.Link href='#home' className="home">HOME</Nav.Link>
+            <Nav.Link href='#features' className="features">FEATURES</Nav.Link>
             {this.state.user === null &&
-              <Nav.Link href='/login'>LOG IN</Nav.Link>
+              <Nav.Link href='/login' className="login-button">LOG IN</Nav.Link>
             }
             {this.state.user &&
               <>
