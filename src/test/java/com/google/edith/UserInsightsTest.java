@@ -1,4 +1,4 @@
-package com.google.sps;
+package com.google.edith;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -11,8 +11,8 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.sps.servlets.UserInsights;
-import com.google.sps.servlets.Item;
+import com.google.edith.servlets.UserInsights;
+import com.google.edith.servlets.Item;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.LocalDate;
@@ -51,7 +51,9 @@ public final class UserInsightsTest {
     // A new UserStats Entity should be added to the datastore
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     userInsights.createUserStats();
-    Assert.assertEquals(1, datastore.prepare(new Query("UserStats")).countEntities());
+    Assert.assertEquals(1, datastore.prepare(new Query("UserStats"))
+                                    .countEntities(FetchOptions.Builder
+                                                            .withLimit(10)));
   }
 
   @Test

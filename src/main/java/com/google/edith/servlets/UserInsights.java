@@ -1,4 +1,4 @@
-package com.google.sps.servlets;
+package com.google.edith.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public final class UserInsights {
 
-  private static String userId;
+  private String userId;
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
   private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -89,15 +89,14 @@ public final class UserInsights {
     }
     userStats.setProperty("Items", items);
     datastore.put(userStats);
-
   }
  
-   /** 
-    * Copmiles the spending using the Item list found in this user's
-    * UserStats Entity in datastore.
-    * TODO: Allow for various time periods (only calculates weekly aggregate now).
-    * @return A map relating a time period to the spending in that time period.
-    */
+  /** 
+   * Copmiles the spending using the Item list found in this user's
+   * UserStats Entity in datastore.
+   * TODO: Allow for various time periods (only calculates weekly aggregate now).
+   * @return A map relating a time period to the spending in that time period.
+   */
   public Map<String, String> aggregateUserData() { 
     Entity userStats = retreiveUserStats();
     List<Key> items = (List<Key>) userStats.getProperty("Items");
@@ -193,5 +192,3 @@ public final class UserInsights {
     return gson.toJson(userJson);
   }
 }
-
-
