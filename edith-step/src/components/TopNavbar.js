@@ -10,9 +10,9 @@ class TopNavbar extends React.Component {
       <Navbar bg='dark' variant='dark' fixed='top'>
         <Navbar.Brand href='/'>Edith</Navbar.Brand>
         <Nav className='ml-auto links'>
-          <Nav.Link href='#home' className="home">Home</Nav.Link>
-          <Nav.Link href='#features' className="features">Features</Nav.Link>
-          <Nav.Link href='/' className="login-button">Log In</Nav.Link>
+          <Nav.Link href='#home' className='home'>Home</Nav.Link>
+          <Nav.Link href='#features' className='features'>Features</Nav.Link>
+          <Nav.Link href='/' className='login-button'>Log In</Nav.Link>
         </Nav>
       </Navbar>
     );

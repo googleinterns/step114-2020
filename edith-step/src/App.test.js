@@ -1,9 +1,9 @@
 import React from 'react';
-import Enzyme, { mount } from 'enzyme';
+import { mount } from 'enzyme';
 
 import App from './App';
 
-import '../setupTests.js'
+import './setupTests.js'
 
 let component;
 
@@ -18,7 +18,6 @@ afterEach(() => {
 describe('App component', () => {
   // Checks if the app is rendered.
   test('renders', () => {
-
     expect(component.exists()).toBe(true);
   });
 });
