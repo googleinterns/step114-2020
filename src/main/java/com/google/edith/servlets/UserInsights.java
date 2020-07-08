@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Collection;
 
 /**
  * This class provides the funttionality to parse specifc user data from 
@@ -37,16 +40,6 @@ public final class UserInsights {
   private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final Gson gson = new Gson();
 
-  /** Assumes dates are in the form yyyy-MM-dd */
-  private static final Comparator<Key> SORT_BY_DATE = (Key item1, Key item2) -> {
-      try {
-        return ((String) (datastore.get(item1).getProperty("date")))
-            .compareTo((String) (datastore.get(item2).getProperty("date")));
-      } catch(EntityNotFoundException | NullPointerException e )  {
-        return 0;
-      }
-  };
-  
   public UserInsights(String userId) {
     this.userId = userId;
   }
@@ -55,8 +48,18 @@ public final class UserInsights {
    * Finds the UserStats entity corresponding to {@code userId} in datastore.
    * @return UserStats entity for this user
    */
-  private Entity retreiveUserStats() {
-    Filter idFilter = new FilterPredicate("UserId", 
+  private List<Entity> retreiveUserItems() {
+    Filter idFilter = new FilterPredicate("userId", 
+                                FilterOperator.EQUAL,
+                                userId);
+    Query query = new Query("Item").setFilter(idFilter)
+                                    .addSort("date", SortDirection.ASCENDING);
+    PreparedQuery results = datastore.prepare(query);
+    return results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
+  }
+
+   private Entity retreiveUserStats() {
+    Filter idFilter = new FilterPredicate("userId", 
                                 FilterOperator.EQUAL,
                                 userId);
     Query query = new Query("UserStats").setFilter(idFilter);
@@ -64,32 +67,24 @@ public final class UserInsights {
     return results.asList(FetchOptions.Builder.withLimit(10)).get(0);
   }
 
-  /** This should only be called each time a new user makes an accout. */
-  public void createUserStats() { 
-     List<Key> items = new ArrayList<>();
 
+
+  /** 
+   * This should only be called each time a new user makes an accout
+   * and uploads a new receipt for the first time. 
+   * TODO: Store other information about the user here.
+   */
+  public void createUserStats() { 
      Entity userStats = new Entity("UserStats");
-     userStats.setProperty("UserId", userId);
-     userStats.setProperty("Items", items);
+     userStats.setProperty("userId", userId);
+     userStats.setProperty("weekEndDates", new HashSet<String>());
+     userStats.setProperty("weeklyTotals", new ArrayList<String>());
      datastore.put(userStats);
   }
 
-  /** 
-   * Updates the Items list in the UserStats Entity in datastore
-   * corresponding to this user.
-   * @param items - Non-null list of item Keys to be added to the current Item list.
-   */
-  public void updateUserStats(List<Key> newItems) {
-    Entity userStats = retreiveUserStats();    
-    List<Key> items = (List<Key>) userStats.getProperty("Items");
-    if (items == null) {
-      items = newItems;
-    } else {
-      items.addAll(newItems);
-    }
-    userStats.setProperty("Items", items);
-    datastore.put(userStats);
-  }
+   public void updateUserStats() {
+    aggregateUserData();
+   }
  
   /** 
    * Copmiles the spending using the Item list found in this user's
@@ -98,50 +93,43 @@ public final class UserInsights {
    * @return A map relating a time period to the spending in that time period.
    */
   public Map<String, String> aggregateUserData() { 
+    List<Entity> items = retreiveUserItems();
+    if (items == null || items.isEmpty()) {
+        return null;
+    }
+    Map<String, String> weeklyTotals = calculateWeeklyTotal(items);
     Entity userStats = retreiveUserStats();
-    List<Key> items = (List<Key>) userStats.getProperty("Items");
-
-    items.sort(SORT_BY_DATE);
-
-    return calculateWeeklyTotal(items);
+    userStats.setProperty("weekEndDates", weeklyTotals.keySet());
+    userStats.setProperty("weeklyTotals", weeklyTotals.values());
+    datastore.put(userStats);
+    return weeklyTotals;
   }
 
   /**
-   * Creates a String-Intger map relating weekly periods to spending.
+   * Creates a String-String map relating weekly periods to spending.
    * @param items - A list of {@code Key} objects that reference Item entities
                   - in the datastore.
    * @return Creates a map with keys for each ending day of a weekly period and  
    *         values for the total spending during that period. 
    */
-  public Map<String, String> calculateWeeklyTotal(List<Key> items)  {
+  public Map<String, String> calculateWeeklyTotal(List<Entity> items)  {
     Map<String, String> weeklyTotals = new HashMap<String, String>();
-    LocalDate currentEndOfWeek;
-    try {
-      currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(items.get(0))
-                                          .getProperty("date"), dateFormatter));
-    } catch(EntityNotFoundException e) {
-      System.err.println("Error: Entity could not be located");
-      return null;
-    }
+    LocalDate currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) items.get(0).getProperty("date"), dateFormatter));
     double weeklyTotal = 0;
     Entity itemEntity;
-    for(Key item : items) {
-      try {
-        itemEntity = datastore.get(item);
-        LocalDate itemDate = LocalDate.parse((String) datastore.get(item).getProperty("date"),
+    for(Entity item : items) {
+      LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"),
                                              dateFormatter);
-        if(ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
-          weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
-          currentEndOfWeek = getEndOfWeek(itemDate);
-          weeklyTotal = 0;
-        }
+      
+      if(ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
+        weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+        currentEndOfWeek = getEndOfWeek(itemDate);
+        weeklyTotal = 0;
+      }
 
-        weeklyTotal += ((double) itemEntity.getProperty("price")) * 
-                           ((long) itemEntity.getProperty("quantity"));
+      weeklyTotal += ((double) item.getProperty("price")) * 
+                        ((long) item.getProperty("quantity"));
     
-      } catch (EntityNotFoundException e) {
-        System.err.println("Error: Entity could not be found");
-      } 
     }
     
     weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
@@ -170,19 +158,14 @@ public final class UserInsights {
   public String createJson() {
     Map<String, String> aggregateValues = aggregateUserData();
     String aggregateJson =  gson.toJson(aggregateValues);
-    List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
-    List<Item> items = itemKeys.stream()
-                         .map(key ->{
-                            try {
-                              Entity item = datastore.get(key);
-                              return new Item(
-                                (Double) item.getProperty("price"),
-                                (long) item.getProperty("quantity"),
-                                (String) item.getProperty("date")
-                              );
-                            } catch (EntityNotFoundException e) {
-                              return null;
-                            }
+    List<Entity> itemEntities = retreiveUserItems();
+    List<Item> items = itemEntities.stream()
+                         .map(item ->{
+                            return new Item(
+                              (Double) item.getProperty("price"),
+                              (long) item.getProperty("quantity"),
+                              (String) item.getProperty("date")
+                            );
                             })
                             .collect(Collectors.toList());
     String itemsJson = gson.toJson(items);
