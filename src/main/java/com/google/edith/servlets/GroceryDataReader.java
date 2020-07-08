@@ -5,23 +5,25 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Processes data file of product prices and sizes at different
+  * stores and returns the best value item. */
 public class GroceryDataReader {
-  private static final String CSV_FILE = "grocerydata.csv";
     
+  /** Finds the specified product in the file and puts the
+    * data into DealItem objects to be handled. */
   public DealItem readFile(String itemName) throws IOException {
+    URL csvresource = getClass().getClassLoader().getResource("grocerydata.csv");
+    File groceryDataFile = new File(csvresource.getFile());
 
-    File f = new File(CSV_FILE);
-    String path = f.getAbsolutePath();
-
-    CSVReader reader = new CSVReader(new FileReader(path), ',');
+    CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
     DealItem bestItem = new DealItem();
 
-	// read line by line
     String[] record = null;
     record = reader.readNext();
     record = reader.readNext();
@@ -73,15 +75,19 @@ public class GroceryDataReader {
     return bestItem;
   }
 
+  /** Gets the $/unit value of each item and
+    * returns the best deal */
   private DealItem getBestDeal(List<DealItem> dealItems) {
-    double min = dealItems.get(0).getValue();
+    double bestVal = dealItems.get(0).getValue();
     DealItem bestItem = dealItems.get(0);
+
     for (DealItem item: dealItems) {
-      if (item.getValue()<min) {
-        min = item.getValue();
+      if (item.getValue() < bestVal) {
+        bestVal = item.getValue();
         bestItem = item;
       }
     }
+
     return bestItem;
   }
 }

@@ -1,16 +1,13 @@
 package com.google.edith.servlets;
 
+/** Represents items of the same type from
+  * different stores in order to compare them. */
 public final class DealItem {
   private static String store;
   private static Double price;
-  private static Double weight;
+  private static Integer weight;
   private static String comment;
   private static double value;
-  private static String unit;
-
-  public DealItem() {
-    
-  }
 
   public void setStore(String store) {
     this.store = store;
@@ -30,20 +27,19 @@ public final class DealItem {
     for (int i=0; i<weight.length(); i++) {
       if (weight.charAt(i)==' ') {
         num = weight.substring(0, i);
-        measure = weight.substring(i+1, weight.length());
+        break;
       }
     }
-    this.weight = Double.parseDouble(num);
-    findValue(measure);
+    this.weight = Integer.parseInt(num);
+    findValue();
   }
 
   public void setComment(String comment) {
     this.comment = comment;
   }
 
-  private void findValue(String measure) {
+  private void findValue() {
     this.value = this.price/this.weight;
-    this.unit = "$/" + measure;
   }
 
   public String getStore() {
@@ -54,7 +50,7 @@ public final class DealItem {
     return price;
   }
 
-  public Double getWeight() {
+  public Integer getWeight() {
     return weight;
   }
 
@@ -64,9 +60,5 @@ public final class DealItem {
 
   public double getValue() {
     return value;
-  }
-
-  public String getValueStatement() {
-    return Double.toString(value) + " " + unit;
   }
 }
