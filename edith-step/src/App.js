@@ -1,29 +1,22 @@
 import React, { Component } from 'react';
 import ReceiptInput from './ReceiptInput';
-import TopNavbar from './components/TopNavbar';
-
-import './App.css';
+//import "./App.css";
 
 
 class App extends Component {
+  componentDidMount() {
+    console.log("Inside componentDidMount!");
+    fetch("/api/v1/test-servlet")
+      .then((response) => response.text())
+      .then((text) => {
+        console.log("here is the text from servlet: ", text);
+      });
+  }
 
   render() {
- return (
-      <div className='App'>
-        <div className='App-header'>
-          <TopNavbar />
-        </div>
-        <div className='background-image-0'>
-          <div class="scroll-down border">
-            Scroll Down
-          </div>
-          <div className='app-describe'>
-            <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
-          </div>
-        </div>
-        <div className='receipt-form'>
-          <ReceiptInput />
-        </div>
+   return (
+      <div className="App">
+        <ReceiptInput />
       </div>
     );
   }

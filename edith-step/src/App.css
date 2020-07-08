@@ -1,51 +1,38 @@
-.background-image-0 {
-  background-attachment: fixed;
-  background-image: url(./receipt.jpg);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 150vh;
-  position: relative;
-  width: 100vw;
-}
-
-.app-describe {
-  color: #000;
-  left: 0;
-  opacity: .8;
-  position: absolute;
+.App {
   text-align: center;
-  top: 50%;
-  width: 100%;
 }
 
-.border {
-  border: none !important;
-  color: #fff;
-  font-size: 30px;
-  letter-spacing: 10px;
-  padding: 15px;
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-.scroll-down {
-  animation-delay: 1s;
-  animation-direction: alternate;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-name: scroll-down;
-  animation-timing-function: ease-in-out;
-  position: absolute;
-  left: 0;
-  text-align: center;
-  top: 10%;
-  width: 100%;
-}
-
-@keyframes scroll-down {
-  0% {
-    margin-top:0px;
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
   }
-  100% {
-    margin-top:15px;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
