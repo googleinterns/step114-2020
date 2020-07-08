@@ -1,4 +1,4 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
 import com.opencsv.CSVReader;
 import java.io.File;
@@ -22,7 +22,7 @@ public class GroceryDataReader {
     File groceryDataFile = new File(csvresource.getFile());
 
     CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
-    DealItem bestItem = new DealItem();
+    DealItem bestItem = null;
 
     String[] record = null;
     record = reader.readNext();
@@ -30,38 +30,38 @@ public class GroceryDataReader {
 
 	while ((record = reader.readNext()) != null) {
       if (record[0].equals(itemName)) {
-        List<DealItem> dealItems = new ArrayList<>();
+        List<DealItem> dealItems = new ArrayList<DealItem>();
 
 	    DealItem item1 = new DealItem();
-	    item1.setStore("Aldi");
+        item1.setStore("Aldi");
 	    item1.setPrice(record[1]);
 	    item1.setWeight(record[2]);
 	    item1.setComment(record[3]);
         dealItems.add(item1);
 
         DealItem item2 = new DealItem();
-	    item2.setStore("Kroger");
+        item2.setStore("Kroger");
 	    item2.setPrice(record[4]);
 	    item2.setWeight(record[5]);
 	    item2.setComment(record[6]);
         dealItems.add(item2);
 
         DealItem item3 = new DealItem();
-	    item3.setStore("Trader Joes");
+        item3.setStore("Trader Joes");
 	    item3.setPrice(record[7]);
 	    item3.setWeight(record[8]);
 	    item3.setComment(record[9]);
         dealItems.add(item3);
 
         DealItem item4 = new DealItem();
-	    item4.setStore("Publix");
+        item4.setStore("Publix");
 	    item4.setPrice(record[10]);
 	    item4.setWeight(record[11]);
 	    item4.setComment(record[12]);
         dealItems.add(item4);
 
         DealItem item5 = new DealItem();
-	    item5.setStore("Walmart");
+        item5.setStore("Walmart");
 	    item5.setPrice(record[13]);
 	    item5.setWeight(record[14]);
 	    item5.setComment(record[15]);
@@ -76,13 +76,13 @@ public class GroceryDataReader {
   }
 
   /** Gets the $/unit value of each item and
-    * returns the best deal */
+    * returns the best deal. */
   private DealItem getBestDeal(List<DealItem> dealItems) {
     double bestVal = dealItems.get(0).getValue();
     DealItem bestItem = dealItems.get(0);
 
     for (DealItem item: dealItems) {
-      if (item.getValue() < bestVal) {
+      if (item.getValue() < bestVal && item.getValue() != 0) {
         bestVal = item.getValue();
         bestItem = item;
       }

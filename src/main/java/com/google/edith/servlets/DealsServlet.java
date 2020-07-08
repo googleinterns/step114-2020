@@ -1,5 +1,7 @@
 package com.google.edith.servlets;
 
+import com.google.edith.DealItem;
+import com.google.edith.GroceryDataReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -40,11 +42,16 @@ public class DealsServlet extends HttpServlet {
 
     GroceryDataReader reader = new GroceryDataReader();
     DealItem bestItem = reader.readFile(itemName);
-    System.out.println(bestItem.getStore());
-
     response.setContentType("text/plain");
-    response.getWriter().println(bestItem.getStore());
-    response.getWriter().println(bestItem.getPrice());
-    response.getWriter().println(bestItem.getComment());
+    if (bestItem == null) {
+      System.out.println("no deal found");
+      response.getWriter().println("no deal found");
+    }
+    else {
+      System.out.println(bestItem.getStore());
+      response.getWriter().println(bestItem.getStore());
+      response.getWriter().println(bestItem.getPrice());
+      response.getWriter().println(bestItem.getComment());
+    }
   }
 }

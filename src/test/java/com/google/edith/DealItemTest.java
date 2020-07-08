@@ -34,9 +34,15 @@ public class DealItemTest {
   }
 
   @Test
+  public void badPriceDataHandled() {
+    dealItem.setPrice("");
+    Assert.assertEquals(dealItem.getPrice(), new Double(0));
+  }
+
+  @Test
   public void weightParsedCorrectly() {
     dealItem.setWeight("15 fl oz");
-    Assert.assertEquals(dealItem.getWeight(), new Integer(15));
+    Assert.assertEquals(dealItem.getWeight(), new Double(15.0));
   }
 
   @Test
@@ -49,6 +55,6 @@ public class DealItemTest {
   public void canFindValue() {
     dealItem.setPrice("$15.0");
     dealItem.setWeight("3 oz");
-    Assert.assertEquals(dealItem.getValue(), 5.0);
+    Assert.assertEquals(dealItem.getValue(), 5.0, .01);
   }
 }
