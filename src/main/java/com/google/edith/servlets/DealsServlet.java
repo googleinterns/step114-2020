@@ -4,6 +4,7 @@ import com.google.edith.DealItem;
 import com.google.edith.GroceryDataReader;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -19,14 +20,24 @@ public class DealsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    InputStream params = request.getInputStream();
-    JsonParser jsonParser = new JsonParser();
-    JsonObject jsonObject = (JsonObject)jsonParser.parse(
-      new InputStreamReader(params, "utf-8"));
-    String itemName = jsonObject.get("itemName").getAsString();
+    StringBuilder sb = new StringBuilder();
+    BufferedReader reader = request.getReader();
+    try {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        sb.append(line).append('\n');
+      }
+    } finally {
+      reader.close();
+    }
 
-    GroceryDataReader reader = new GroceryDataReader();
-    DealItem bestItem = reader.readFile(itemName);
+    String receiptData = sb.toString();
+    JsonParser parser = new JsonParser();
+    JsonObject json = (JsonObject) parser.parse(receiptData);
+    String itemName = json.get("itemName").getAsString();
+
+    GroceryDataReader groceryReader = new GroceryDataReader();
+    DealItem bestItem = groceryReader.readFile(itemName);
     response.setContentType("text/plain");
     if (bestItem == null) {
       System.out.println("no deal found");
