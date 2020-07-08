@@ -24,37 +24,65 @@ public class DealItemTest {
   @Test
   public void canSetStore() {
     dealItem.setStore("Walmart");
-    Assert.assertEquals(dealItem.getStore(), "Walmart");
+    Assert.assertEquals("Walmart", dealItem.getStore());
   }
 
   @Test
   public void priceParsedCorrectly() {
     dealItem.setPrice("$25.5");
-    Assert.assertEquals(dealItem.getPrice(), new Double(25.5));
+    Assert.assertEquals(new Double(25.5), dealItem.getPrice());
   }
 
   @Test
   public void badPriceDataHandled() {
     dealItem.setPrice("");
-    Assert.assertEquals(dealItem.getPrice(), new Double(0));
+    Assert.assertEquals(new Double(0), dealItem.getPrice());
+  }
+
+  @Test
+  public void parseDoubleErrorHandledPrice() {
+    // Make sure unexpected data doesn't cause an error.
+    dealItem.setPrice("bad data");
+    Assert.assertEquals(new Double(0), dealItem.getPrice());
   }
 
   @Test
   public void weightParsedCorrectly() {
     dealItem.setWeight("15 fl oz");
-    Assert.assertEquals(dealItem.getWeight(), new Double(15.0));
+    Assert.assertEquals(new Double(15.0), dealItem.getWeight());
+  }
+
+  @Test
+  public void badWeightHandled() {
+    dealItem.setWeight("per fl oz");
+    Assert.assertEquals(new Double(1), dealItem.getWeight());
+  }
+
+  @Test
+  public void parseDoubleErrorHandledWeight() {
+    // Make sure unexpected data doesn't cause an error.
+    dealItem.setWeight("bad data");
+    Assert.assertEquals(new Double(0), dealItem.getWeight());
   }
 
   @Test
   public void canSetComment() {
     dealItem.setComment("good deal");
-    Assert.assertEquals(dealItem.getComment(), "good deal");
+    Assert.assertEquals("good deal", dealItem.getComment());
   }
 
   @Test
   public void canFindValue() {
     dealItem.setPrice("$15.0");
     dealItem.setWeight("3 oz");
-    Assert.assertEquals(dealItem.getValue(), 5.0, .01);
+    Assert.assertEquals(5.0, dealItem.getValue(), .01);
+  }
+
+  @Test
+  public void canFindValueWithZeroWeight() {
+    // Make sure there are no division by 0 errors.
+    dealItem.setPrice("$15.0");
+    dealItem.setWeight("bad data");
+    Assert.assertEquals(0, dealItem.getValue(), .01);
   }
 }
