@@ -22,7 +22,6 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -39,6 +38,7 @@ import java.util.Map;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,8 +52,9 @@ import static org.junit.Assert.assertTrue;
 public final class LoginServletTest {
   
   private Map<String, Object> myMap = new HashMap<String, Object>() {{
-        put("userId", "12345");
+        put("com.google.appengine.api.users.UserService.user_id_key", "12345");
     }};
+
   private final LocalServiceTestHelper loggedInTestHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig())
       .setEnvAttributes(myMap)
@@ -82,7 +83,7 @@ public final class LoginServletTest {
   }
 
   @Test
-  public void testWhenLoggenIn() throws IOException, ServletException {
+  public void testWhenLoggedIn() throws IOException, ServletException {
     loggedInTestHelper.setUp();
     assertTrue(userService.isUserLoggedIn());
     User currentLoggedInUser = userService.getCurrentUser();

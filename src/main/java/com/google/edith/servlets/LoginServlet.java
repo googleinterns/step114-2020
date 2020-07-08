@@ -56,7 +56,12 @@ public class LoginServlet extends HttpServlet {
   private UserInfo createUserInfo(UserService userService) {
     User user = userService.getCurrentUser();
     String logoutUrl = userService.createLogoutURL("/");
-    UserInfo userInfo = new UserInfo(user, logoutUrl);
+    UserInfo userInfo = UserInfo.builder()
+        .setEmail(user.getEmail())
+        .setUserId(user.getUserId())
+        .setLogOutUrl(logoutUrl)
+        .build();
+        
     return userInfo;
   }
 }
