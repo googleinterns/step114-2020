@@ -34,6 +34,8 @@ import static org.mockito.Mockito.atLeast;
 import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -48,8 +50,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public final class LoginServletTest {
+  
+  private Map<String, Object> myMap = new HashMap<String, Object>() {{
+        put("userId", "12345");
+    }};
   private final LocalServiceTestHelper loggedInTestHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+      .setEnvAttributes(myMap)
       .setEnvIsLoggedIn(true)
       .setEnvAuthDomain("gmail")
       .setEnvIsAdmin(true)
