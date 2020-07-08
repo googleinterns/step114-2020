@@ -19,14 +19,13 @@ import java.time.format.FormatStyle;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.HashSet;
-import java.util.Collection;
 
 /**
  * This class provides the funttionality to parse specifc user data from 
@@ -36,8 +35,10 @@ public final class UserInsights {
 
   private String userId;
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
-  private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private static final DatastoreService datastore = 
+      DatastoreServiceFactory.getDatastoreService();  
+  private static final DateTimeFormatter dateFormatter = 
+      DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final Gson gson = new Gson();
 
   public UserInsights(String userId) {
@@ -45,8 +46,8 @@ public final class UserInsights {
   }
 
   /**
-   * Finds the UserStats entity corresponding to {@code userId} in datastore.
-   * @return UserStats entity for this user
+   * Retrieves the Item entities corresponding to {@code userId} in datastore.
+   * @return List of Item entities for this user
    */
   private List<Entity> retreiveUserItems() {
     Filter idFilter = new FilterPredicate("userId", 
@@ -58,7 +59,11 @@ public final class UserInsights {
     return results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
   }
 
-   private Entity retreiveUserStats() {
+  /**
+   * Retrieves the UserStats entitie corresponding to {@code userId} in datastore.
+   * @return UserStats entity for this user
+   */ 
+  private Entity retreiveUserStats() {
     Filter idFilter = new FilterPredicate("userId", 
                                 FilterOperator.EQUAL,
                                 userId);
@@ -67,12 +72,9 @@ public final class UserInsights {
     return results.asList(FetchOptions.Builder.withLimit(10)).get(0);
   }
 
-
-
   /** 
    * This should only be called each time a new user makes an accout
    * and uploads a new receipt for the first time. 
-   * TODO: Store other information about the user here.
    */
   public void createUserStats() { 
      Entity userStats = new Entity("UserStats");
@@ -82,9 +84,17 @@ public final class UserInsights {
      datastore.put(userStats);
   }
 
-   public void updateUserStats() {
-    aggregateUserData();
-   }
+  /** 
+   * Updates the weekEndDates and weeklyTotals properties for this user
+   * each time a new receipt is added.
+   */
+  public void updateUserStats() {
+    Map<String, String> weeklyTotals = aggregateUserData();
+    Entity userStats = retreiveUserStats();
+    userStats.setProperty("weekEndDates", weeklyTotals.keySet());
+    userStats.setProperty("weeklyTotals", weeklyTotals.values());
+    datastore.put(userStats);
+  }
  
   /** 
    * Copmiles the spending using the Item list found in this user's
@@ -97,12 +107,7 @@ public final class UserInsights {
     if (items == null || items.isEmpty()) {
         return null;
     }
-    Map<String, String> weeklyTotals = calculateWeeklyTotal(items);
-    Entity userStats = retreiveUserStats();
-    userStats.setProperty("weekEndDates", weeklyTotals.keySet());
-    userStats.setProperty("weeklyTotals", weeklyTotals.values());
-    datastore.put(userStats);
-    return weeklyTotals;
+    return calculateWeeklyTotal(items);
   }
 
   /**
@@ -114,7 +119,8 @@ public final class UserInsights {
    */
   public Map<String, String> calculateWeeklyTotal(List<Entity> items)  {
     Map<String, String> weeklyTotals = new HashMap<String, String>();
-    LocalDate currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) items.get(0).getProperty("date"), dateFormatter));
+    LocalDate currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) 
+                            items.get(0).getProperty("date"), dateFormatter));
     double weeklyTotal = 0;
     Entity itemEntity;
     for(Entity item : items) {
@@ -133,7 +139,6 @@ public final class UserInsights {
     }
     
     weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
-
     return weeklyTotals;
   }
 
