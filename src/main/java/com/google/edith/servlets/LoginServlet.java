@@ -14,11 +14,6 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -29,25 +24,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that checks if user is logging in. */
+/** Servlet that checks if user is logged in.
+ * if logged in then provides with user information along with logout url.
+ * if not logged in then redirectes to a url to log in.
+ */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
   
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
     if (userService.isUserLoggedIn()) {
       Gson gson = new Gson();
-      User user = userService.getCurrentUser();
-      String logoutUrl = userService.createLogoutURL("/");
-
-      UserInfo userInfo = new UserInfo(user, logoutUrl);
-
-      String json = gson.toJson(userInfo);
-      
-      response.setContentType("application/json;");
+      String json = gson.toJson(createUserInfo(userService));
+      response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
       String loginUrl = userService.createLoginURL("/");
@@ -59,5 +50,21 @@ public class LoginServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.sendRedirect("/index.html");
   }
-
+  
+  /**
+   * Creates UserInfo object encapsulating user data.
+   * @param userService - provides information about ther logged in user.
+   * @return UserInfo - wrapper object for user information and logout url.
+   */
+  private UserInfo createUserInfo(UserService userService) {
+    User user = userService.getCurrentUser();
+    String logoutUrl = userService.createLogoutURL("/");
+    UserInfo userInfo = UserInfo.builder()
+        .setEmail(user.getEmail())
+        .setUserId(user.getUserId())
+        .setLogOutUrl(logoutUrl)
+        .build();
+        
+    return userInfo;
+  }
 }

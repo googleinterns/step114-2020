@@ -14,17 +14,24 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.users.User;
+import com.google.auto.value.AutoValue;
 
 /** Encapsulate User info and logout url. */
-public final class UserInfo {
-  private final String email;
-  private final String userId;
-  private final String logOutUrl;
+@AutoValue
+abstract class UserInfo {
+  abstract String email();
+  abstract String userId();
+  abstract String logOutUrl();
+  
+  static Builder builder() {
+    return new AutoValue_UserInfo.Builder();
+  }
 
-  UserInfo(User user, String logOutUrl) {
-    this.email = user.getEmail();
-    this.userId = user.getUserId();
-    this.logOutUrl = logOutUrl;
+  @AutoValue.Builder
+  abstract static class Builder {
+    abstract Builder setEmail(String value);
+    abstract Builder setUserId(String value);
+    abstract Builder setLogOutUrl(String value);
+    abstract UserInfo build();
   }
 }
