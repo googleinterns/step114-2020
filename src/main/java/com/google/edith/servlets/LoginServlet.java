@@ -33,21 +33,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
   
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
     if (userService.isUserLoggedIn()) {
       Gson gson = new Gson();
-      User user = userService.getCurrentUser();
-      String logoutUrl = userService.createLogoutURL("/");
-
-      UserInfo userInfo = new UserInfo(user, logoutUrl);
-
-      String json = gson.toJson(userInfo);
-      
-      response.setContentType("application/json;");
+      String json = gson.toJson(createUserInfo(userService));
+      response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
       String loginUrl = userService.createLoginURL("/");
@@ -60,4 +53,10 @@ public class LoginServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
+  private UserInfo createUserInfo(UserService userService) {
+    User user = userService.getCurrentUser();
+    String logoutUrl = userService.createLogoutURL("/");
+    UserInfo userInfo = new UserInfo(user, logoutUrl);
+    return userInfo;
+  }
 }

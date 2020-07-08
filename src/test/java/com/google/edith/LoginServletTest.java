@@ -28,7 +28,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.Test;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeast;
 import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
 
@@ -58,9 +60,7 @@ public final class LoginServletTest {
       .setEnvIsLoggedIn(false);
   
   private final UserService userService = UserServiceFactory.getUserService();
-
-  private final StringWriter stringWriter = new StringWriter();
-  private final PrintWriter writer = new PrintWriter(stringWriter);
+  private LoginServlet loginServlet;
 
   @Mock
   HttpServletRequest request;
@@ -71,6 +71,7 @@ public final class LoginServletTest {
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
+    loginServlet = new LoginServlet();
   }
 
   @Test
@@ -78,16 +79,22 @@ public final class LoginServletTest {
     loggedInTestHelper.setUp();
     assertTrue(userService.isUserLoggedIn());
     User currentLoggedInUser = userService.getCurrentUser();
-    //new LoginServlet().doGet(request, response);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+
+    loginServlet.doGet(request, response);
+    verify(response, atLeast(1)).getWriter();
     loggedInTestHelper.tearDown();
   }
 
   @Test
-  public void testWhenLoggedOut() throws Exception {
+  public void testWhenLoggedOut() throws IOException, ServletException {
     loggedOutTestHelper.setUp();
     assertFalse(userService.isUserLoggedIn());
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    new LoginServlet().doGet(request, response);
+    loginServlet.doGet(request, response);
     verify(response).sendRedirect(captor.capture());
     assertEquals(userService.createLoginURL("/"), captor.getValue());
     loggedOutTestHelper.tearDown();
