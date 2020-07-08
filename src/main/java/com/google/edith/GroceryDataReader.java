@@ -47,7 +47,7 @@ public class GroceryDataReader {
         dealItems.add(item2);
 
         DealItem item3 = new DealItem();
-        item3.setStore("Trader Joes");
+        item3.setStore("Trader Joe's");
 	    item3.setPrice(record[7]);
 	    item3.setWeight(record[8]);
 	    item3.setComment(record[9]);
@@ -78,7 +78,7 @@ public class GroceryDataReader {
   /** Gets the $/unit value of each item and
     * returns the best deal. */
   private DealItem getBestDeal(List<DealItem> dealItems) {
-    double bestVal = dealItems.get(0).getValue();
+    double bestVal = 10;
     DealItem bestItem = dealItems.get(0);
 
     for (DealItem item: dealItems) {

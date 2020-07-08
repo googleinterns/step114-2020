@@ -17,9 +17,13 @@ public final class DealItem {
     if (price.equals("N/A") || price.equals("") || price.equals("?")) {
       this.price = new Double(0);
     }
-    else if (price.charAt(0)=='$') {
+    else {
       String result = price.substring(1, price.length());
-      this.price = Double.parseDouble(result);
+      try {
+        this.price = Double.parseDouble(result);
+      } catch (NumberFormatException e) {
+        this.price = new Double(0);
+      }
     }
   }
 
@@ -27,15 +31,30 @@ public final class DealItem {
     if (weight.equals("")) {
       this.weight = new Double(0);
     }
-    String num = "";
-    String measure = "";
-    for (int i=0; i<weight.length(); i++) {
-      if (weight.charAt(i)==' ') {
-        num = weight.substring(0, i);
-        break;
+    else if (weight.equals("dozen")) {
+      this.weight = new Double(12);
+    }
+    else if (weight.substring(0, 3).equals("per")) {
+      this.weight = new Double(1);
+    }
+    else if (weight.equals("head")) {
+      this.weight = new Double(1);
+    }
+    else {
+      String num = "";
+      String measure = "";
+      for (int i=0; i<weight.length(); i++) {
+        if (weight.charAt(i)==' ') {
+          num = weight.substring(0, i);
+          break;
+        }
+      }
+      try {
+        this.weight = Double.parseDouble(num);
+      } catch (NumberFormatException e) {
+        this.weight = new Double(0);
       }
     }
-    this.weight = Double.parseDouble(num);
   }
 
   public void setComment(String comment) {

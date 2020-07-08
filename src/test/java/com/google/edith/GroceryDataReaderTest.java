@@ -11,10 +11,12 @@ import org.junit.runners.JUnit4;
 public class GroceryDataReaderTest {
 
   private GroceryDataReader groceryReader;
+  private DealItem bestItem;
 
   @Before
   public void setUp() {
     groceryReader = new GroceryDataReader();
+    bestItem = new DealItem();
   }
 
   @Test
@@ -24,23 +26,31 @@ public class GroceryDataReaderTest {
 
   @Test
   public void canGetDealIfExists() {
-    DealItem bestItem = new DealItem();
     try {
       bestItem = groceryReader.readFile("Apple Juice");
     } catch (IOException e) {
       System.err.println();
     }
-    Assert.assertEquals(bestItem.getStore(), "Kroger");
+    Assert.assertEquals("Kroger", bestItem.getStore());
   }
 
   @Test
   public void nullReturnedIfNoDeal() {
-    DealItem bestItem = new DealItem();
     try {
       bestItem = groceryReader.readFile("bread");
     } catch (IOException e) {
       System.err.println();
     }
-    Assert.assertEquals(bestItem, null);
+    Assert.assertEquals(null, bestItem);
+  }
+
+  @Test
+  public void getsDealDespiteQuestionableData() {
+    try {
+      bestItem = groceryReader.readFile("Coconut Milk");
+    } catch (IOException e) {
+      System.err.println();
+    }
+    Assert.assertEquals("Trader Joe's", bestItem.getStore());
   }
 }
