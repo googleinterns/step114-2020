@@ -23,8 +23,6 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.junit.Test;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
@@ -38,10 +36,8 @@ import java.util.Map;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -86,7 +82,6 @@ public final class LoginServletTest {
   public void testWhenLoggedIn() throws IOException, ServletException {
     loggedInTestHelper.setUp();
     assertTrue(userService.isUserLoggedIn());
-    User currentLoggedInUser = userService.getCurrentUser();
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
