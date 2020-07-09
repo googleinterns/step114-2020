@@ -51,49 +51,64 @@ export default class ReceiptInput extends React.Component {
 
   render() {
     return(
-      <div>
+      <div class="container-fluid">
       <h3>Grocery Items</h3>
-      <GroceryList items={this.state.items} />
+      {this.state.items.length > 0 &&
+        <GroceryList items={this.state.items} />
+      }
       <form onSubmit={this.handleSubmit}>
-        <table>
-        <tbody>
-          <tr>
-            <td>
+        <div class="form-row">
+          <div class="col-auto">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Item</div>
+              </div>
               <input 
                 type="text" 
+                class="form-control"
                 name="itemName"
                 id="name"
                 value={this.state.itemName} 
                 onChange={this.handleChange} />
-            </td>
-            <td>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Price</div>
+              </div>
               <input
                 type="number" 
+                class="form-control"
                 name="itemPrice"
                 id="price"
                 step="0.01"
                 value={this.state.itemPrice} 
                 onChange={this.handleChange} />
-            </td>
-            <td>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Quantity</div>
+              </div>
               <input
                 type="number"
+                class="form-control"
                 name="itemQuantity"
                 id="quantity"
+                step="1"
                 value={this.state.itemQuantity}
                 onChange={this.handleChange} />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input
+            </div>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary"
                 id="submit"
                 type="submit" 
-                value="Submit" />
-            </td>
-          </tr>
-        </tbody>
-        </table>
+                value="Submit">Add Item</button>
+          </div>
+        </div>
       </form>
       </div>
     );
@@ -102,16 +117,22 @@ export default class ReceiptInput extends React.Component {
 
 var GroceryList = (props) => {
   return (
-    <table id="grocery-list">
-      <tbody>
+    <div id="grocery-list">
+      <ul class="list-group col-sm-4">
+        <li class="h-50 list-group-item d-flex justify-content-between align-items-center">
+            <span class="col-sm-2">Item</span>
+            <span class="badge badge-primary badge-pill col-sm-2">Price</span>
+            <span class="badge badge-primary badge-pill col-sm-2">Quantity</span>
+          </li>
         {props.items.map(item => (
-          <tr className="item" key={item.id}>
-            <td className="item-name">{item.itemName}</td>
-            <td className="item-price">{item.itemPrice}</td>
-            <td className="item-quantity">{item.itemQuantity}</td>
-          </tr>
+          <li class="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
+            <span class="item-name col-sm-2">{item.itemName}</span>
+            <span class="item-price badge badge-primary badge-pill col-sm-2">{item.itemPrice}</span>
+            <span class="item-quantity badge badge-primary badge-pill col-sm-2">{item.itemQuantity}</span>
+          </li>
         ))}
-      </tbody>
-    </table>
+      </ul>
+      <hr />
+    </div>
   );
 }
