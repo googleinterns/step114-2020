@@ -48,7 +48,7 @@ public final class UserInsights {
      List<Key> items = new ArrayList<>();
 
      Entity userStats = new Entity("UserStats");
-     userStats.setProperty("UserId", userId);
+     userStats.setProperty("userId", userId);
      userStats.setProperty("Items", items);
      datastore.put(userStats);
   }
@@ -102,6 +102,50 @@ public final class UserInsights {
     items.sort(SORT_BY_DATE);
   
     return calculateWeeklyTotal(items);
+  }
+
+  /**
+   * Creates a Json string that contains the weekly aggregate for this user
+   * and the items this user purchased.
+   * @return a Json formatted String of items and an aggregate.
+   */
+  public String createJson() {
+    Map<String, String> aggregateValues = aggregateUserData();
+    String aggregateJson =  GSON.toJson(aggregateValues);
+    List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
+    List<Item> items = itemKeys.stream()
+                         .map(key ->{
+                            try {
+                              Entity item = datastore.get(key);
+                              return new Item(
+                                (Double) item.getProperty("price"),
+                                (long) item.getProperty("quantity"),
+                                (String) item.getProperty("date")
+                              );
+                            } catch (EntityNotFoundException e) {
+                              return null;
+                            }
+                            })
+                            .collect(Collectors.toList());
+    String itemsJson = GSON.toJson(items);
+    JsonObject userJson = new JsonObject();
+    userJson.addProperty("weeklyAggregate", aggregateJson);
+    userJson.addProperty("items", itemsJson);
+    return GSON.toJson(userJson);
+  }
+
+  /**
+   * Finds the UserStats entity corresponding to {@code userId} in datastore.
+   * @return UserStats entity for this user
+   */
+  private Entity retreiveUserStats() {
+    Filter idFilter = new FilterPredicate("userId", 
+                                FilterOperator.EQUAL,
+                                userId);
+    Query query = new Query("UserStats").setFilter(idFilter);
+    PreparedQuery results = datastore.prepare(query);
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
+    return entities.isEmpty() ? null : entities.get(0);
   }
 
   /**
@@ -166,48 +210,4 @@ public final class UserInsights {
     int currentDayOfWeek = itemDate.getDayOfWeek().getValue();
     return itemDate.plusDays(7 - currentDayOfWeek);
   }  
-  
-  /**
-   * Creates a Json string that contains the weekly aggregate for this user
-   * and the items this user purchased.
-   * @return a Json formatted String of items and an aggregate.
-   */
-  public String createJson() {
-    Map<String, String> aggregateValues = aggregateUserData();
-    String aggregateJson =  GSON.toJson(aggregateValues);
-    List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
-    List<Item> items = itemKeys.stream()
-                         .map(key ->{
-                            try {
-                              Entity item = datastore.get(key);
-                              return new Item(
-                                (Double) item.getProperty("price"),
-                                (long) item.getProperty("quantity"),
-                                (String) item.getProperty("date")
-                              );
-                            } catch (EntityNotFoundException e) {
-                              return null;
-                            }
-                            })
-                            .collect(Collectors.toList());
-    String itemsJson = GSON.toJson(items);
-    JsonObject userJson = new JsonObject();
-    userJson.addProperty("weeklyAggregate", aggregateJson);
-    userJson.addProperty("items", itemsJson);
-    return GSON.toJson(userJson);
-  }
-
-  /**
-   * Finds the UserStats entity corresponding to {@code userId} in datastore.
-   * @return UserStats entity for this user
-   */
-  private Entity retreiveUserStats() {
-    Filter idFilter = new FilterPredicate("UserId", 
-                                FilterOperator.EQUAL,
-                                userId);
-    Query query = new Query("UserStats").setFilter(idFilter);
-    PreparedQuery results = datastore.prepare(query);
-    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
-    return entities.isEmpty() ? null : entities.get(0);
-  }
 }
