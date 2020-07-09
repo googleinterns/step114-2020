@@ -2,6 +2,7 @@ package com.google.edith.servlets;
 
 import com.google.edith.DealItem;
 import com.google.edith.GroceryDataReader;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -45,9 +46,10 @@ public class DealsServlet extends HttpServlet {
     }
     else {
       System.out.println(bestItem.getStore());
-      response.getWriter().println(bestItem.getStore());
-      response.getWriter().println(bestItem.getPrice());
-      response.getWriter().println(bestItem.getComment());
+      Gson gson = new Gson();
+      String responseJson = gson.toJson(bestItem);
+      System.out.println(responseJson);
+      response.getWriter().println(responseJson);
     }
   }
 }

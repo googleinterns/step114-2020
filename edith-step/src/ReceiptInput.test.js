@@ -1,6 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { shallow, configure, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import ReceiptInput from './ReceiptInput';
 import './setupTests.js'
 
