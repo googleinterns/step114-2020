@@ -1,8 +1,11 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import FileUploadModalBox from './FileUploadModalBox';
 
 import { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks();
+
+import FileUploadModalBox from './FileUploadModalBox';
+
 import '../setupTests.js'
 
 let component
@@ -20,7 +23,6 @@ describe("FileUploadModalBox must", () => {
   
   beforeEach(() => {
     component = shallow(<FileUploadModalBox />);
-    enableFetchMocks();
   });
 
   afterEach(() => {

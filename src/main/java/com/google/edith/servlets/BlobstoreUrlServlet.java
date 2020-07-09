@@ -43,5 +43,4 @@ public class BlobstoreUrlServlet extends HttpServlet {
     response.getWriter().println(uploadUrl);
 
   }
-  
 }
