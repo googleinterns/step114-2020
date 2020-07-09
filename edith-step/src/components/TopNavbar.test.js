@@ -6,6 +6,7 @@ import { enableFetchMocks } from 'jest-fetch-mock'
 import '../setupTests.js'
 
 let component;
+let handleModalClose;
 let userObj = {'email': 'email'}
 
 describe('TopNavbar calls', () => {
@@ -69,6 +70,7 @@ describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
     component = mount(<TopNavbar />);
     enableFetchMocks();
+    handleModalClose = jest.spyOn(TopNavbar.prototype, 'handleModalClose');
     component.setState({user: userObj});
   });
 
@@ -94,5 +96,19 @@ describe('When logged in, Top Navigation Bar', () => {
   // Checks if there is Dropdown menu.
   test('has Dropdown menu', () => {
     expect(component.find('.dropdowns').exists()).toBe(true);
+  });
+
+  test('should open upload modal box when upload receipt button is clicked', () => {
+    expect(component.state('modalShow')).toBe(false);
+    component.find('.dropdown-toggle').at(0).simulate('click');
+    component.find('.upload-receipt').at(0).simulate('click');
+    expect(component.state('modalShow')).toBe(true);
+  });
+
+  test('should close upload modal box when close button is clicked', () => {
+    component.find('.dropdown-toggle').at(0).simulate('click');
+    component.find('.upload-receipt').at(0).simulate('click');
+    component.find('.close').at(0).simulate('click');
+    expect(handleModalClose).toBeCalled();
   });
 });
