@@ -42,8 +42,10 @@
     "node": "10.x.x"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.10.3",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
+    "@babel/runtime": "^7.10.4",
     "babel-jest": "^24.9.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",

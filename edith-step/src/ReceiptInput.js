@@ -3,12 +3,36 @@ import React from 'react';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1, deals: []};
+    this.state = {items: [], deals: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(e) {
+  getDeal(name, price, quantity) {
+    const axios = require('axios')
+    axios({
+      method: 'post',
+      url: '/receipt-deals',
+      data: {
+        itemName: name,
+        itemPrice: price,
+        itemQuantity: quantity
+      }
+    }).then(function (response) {
+        const dealItem = response.data;
+        console.log(dealItem.store);
+        const newDeal = {
+          storeName: dealItem.store,
+          storePrice: dealItem.price,
+          storeComment: dealItem.comment,
+          id: Date.now()
+        };
+        console.log(newDeal.storeName);
+        return newDeal;
+    });
+  }
+
+  async handleSubmit(e) {
     e.preventDefault();
 
     if (this.state.itemName.length === 0) {
@@ -20,33 +44,16 @@ export default class ReceiptInput extends React.Component {
       itemQuantity: this.state.itemQuantity,
       id: Date.now()
     };
-    
-    const axios = require('axios')
-    let newDeal;
-    axios({
-      method: 'post',
-      url: '/receipt-deals',
-      data: {
-        itemName: this.state.itemName,
-        itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity
-      }
-    }).then(function (response) {
-        const dealItem = response.data;
-        newDeal = {
-          storeName: dealItem.store,
-          storePrice: dealItem.price,
-          storeComment: dealItem.comment,
-          id: Date.now()
-        };
-    });
-    
+
+    const newDeal = await this.getDeal(this.state.itemName, this.state.itemPrice, this.state.itemQuantity);
+    console.log(newDeal.storeName);
+
     this.setState(state => ({
       items: state.items.concat(newItem),
+      deals: state.deals.concat(newDeal),
       itemName: '',
       itemPrice: 0.0,
-      itemQuantity: 1,
-      deals: state.deals.concat(newDeal)
+      itemQuantity: 1
     }));
   }
 
@@ -165,5 +172,5 @@ var DealsList = (props) => {
         ))}
       </ul>
     </div>
-  )
+  );
 }
