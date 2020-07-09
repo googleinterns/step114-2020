@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.time.format.DateTimeFormatter;
@@ -26,42 +27,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * This class provides the funttionality to parse specifc user data from 
+ * This class provides the functionality to parse specifc user data from 
  * datastore and send an agreggate of that information in a JSON file.
  */
 public final class UserInsights {
 
   private String userId;
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
-  private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private static final Gson gson = new Gson();
+  private final DatastoreService datastore;
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private static final Gson GSON = new Gson();
 
-  /** Assumes dates are in the form yyyy-MM-dd */
-  private static final Comparator<Key> SORT_BY_DATE = (Key item1, Key item2) -> {
-      try {
-        return ((String) (datastore.get(item1).getProperty("date")))
-            .compareTo((String) (datastore.get(item2).getProperty("date")));
-      } catch(EntityNotFoundException | NullPointerException e )  {
-        return 0;
-      }
-  };
-  
   public UserInsights(String userId) {
     this.userId = userId;
-  }
-
-  /**
-   * Finds the UserStats entity corresponding to {@code userId} in datastore.
-   * @return UserStats entity for this user
-   */
-  private Entity retreiveUserStats() {
-    Filter idFilter = new FilterPredicate("UserId", 
-                                FilterOperator.EQUAL,
-                                userId);
-    Query query = new Query("UserStats").setFilter(idFilter);
-    PreparedQuery results = datastore.prepare(query);
-    return results.asList(FetchOptions.Builder.withLimit(10)).get(0);
+    this.datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   /** This should only be called each time a new user makes an accout. */
@@ -81,6 +60,9 @@ public final class UserInsights {
    */
   public void updateUserStats(List<Key> newItems) {
     Entity userStats = retreiveUserStats();    
+    if (userStats == null) {
+        return;
+    }
     List<Key> items = (List<Key>) userStats.getProperty("Items");
     if (items == null) {
       items = newItems;
@@ -94,50 +76,73 @@ public final class UserInsights {
   /** 
    * Copmiles the spending using the Item list found in this user's
    * UserStats Entity in datastore.
-   * TODO: Allow for various time periods (only calculates weekly aggregate now).
+   * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
    * @return A map relating a time period to the spending in that time period.
    */
-  public Map<String, String> aggregateUserData() { 
+  public ImmutableMap<String, String> aggregateUserData() { 
     Entity userStats = retreiveUserStats();
+    if (userStats == null) {
+        Map<String, String> emptyMap = new HashMap<String, String>();
+        emptyMap.put("weeklyAggregate", "");
+        emptyMap.put("items", "");
+        return ImmutableMap.copyOf(emptyMap);
+    }
     List<Key> items = (List<Key>) userStats.getProperty("Items");
 
-    items.sort(SORT_BY_DATE);
+    /** Assumes dates are in the form yyyy-mm-dd */
+    Comparator<Key> SORT_BY_DATE = (Key item1, Key item2) -> {
+    try {
+      return ((String) (datastore.get(item1).getProperty("date")))
+        .compareTo((String) (datastore.get(item2).getProperty("date")));
+      } catch (EntityNotFoundException | NullPointerException e )  {
+        return 0;
+      }
+    };
 
+    items.sort(SORT_BY_DATE);
+  
     return calculateWeeklyTotal(items);
   }
 
   /**
-   * Creates a String-Intger map relating weekly periods to spending.
+   * Creates a map relating string weekly period keys to string spending values.
+   * This method calculates the trailing based on a date. 
+   * Example: {"06-20-2020" : "53.0"}
    * @param items - A list of {@code Key} objects that reference Item entities
                   - in the datastore.
    * @return Creates a map with keys for each ending day of a weekly period and  
    *         values for the total spending during that period. 
    */
-  public Map<String, String> calculateWeeklyTotal(List<Key> items)  {
+  private ImmutableMap<String, String> calculateWeeklyTotal(List<Key> itemKeys)  {
+    if (itemKeys == null || itemKeys.isEmpty()) {
+        return ImmutableMap.copyOf(new HashMap<String, String>());
+    }
     Map<String, String> weeklyTotals = new HashMap<String, String>();
     LocalDate currentEndOfWeek;
+
     try {
-      currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(items.get(0))
-                                          .getProperty("date"), dateFormatter));
+      currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(itemKeys.get(0))
+                                          .getProperty("date"), DATE_FORMATTER));
     } catch(EntityNotFoundException e) {
       System.err.println("Error: Entity could not be located");
-      return null;
+      return ImmutableMap.copyOf(new HashMap<String, String>());
     }
+
     double weeklyTotal = 0;
     Entity itemEntity;
-    for(Key item : items) {
+    for(Key itemKey : itemKeys) {
       try {
-        itemEntity = datastore.get(item);
-        LocalDate itemDate = LocalDate.parse((String) datastore.get(item).getProperty("date"),
-                                             dateFormatter);
-        if(ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
+        Entity item = datastore.get(itemKey);
+        LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"),
+                                             DATE_FORMATTER);
+        if (ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
           weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
         }
 
-        weeklyTotal += ((double) itemEntity.getProperty("price")) * 
-                           ((long) itemEntity.getProperty("quantity"));
+        weeklyTotal += ((double) item.getProperty("price")) * 
+                           ((long) item.getProperty("quantity"));
     
       } catch (EntityNotFoundException e) {
         System.err.println("Error: Entity could not be found");
@@ -146,7 +151,7 @@ public final class UserInsights {
     
     weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
 
-    return weeklyTotals;
+    return ImmutableMap.copyOf(weeklyTotals);
   }
 
   /**
@@ -157,7 +162,7 @@ public final class UserInsights {
    * @return the LocalDate representing the end of the week {@code itemDate}
    *         is in.
    */
-  public LocalDate getEndOfWeek(LocalDate itemDate) {
+  private LocalDate getEndOfWeek(LocalDate itemDate) {
     int currentDayOfWeek = itemDate.getDayOfWeek().getValue();
     return itemDate.plusDays(7 - currentDayOfWeek);
   }  
@@ -169,7 +174,7 @@ public final class UserInsights {
    */
   public String createJson() {
     Map<String, String> aggregateValues = aggregateUserData();
-    String aggregateJson =  gson.toJson(aggregateValues);
+    String aggregateJson =  GSON.toJson(aggregateValues);
     List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
     List<Item> items = itemKeys.stream()
                          .map(key ->{
@@ -185,10 +190,24 @@ public final class UserInsights {
                             }
                             })
                             .collect(Collectors.toList());
-    String itemsJson = gson.toJson(items);
+    String itemsJson = GSON.toJson(items);
     JsonObject userJson = new JsonObject();
     userJson.addProperty("weeklyAggregate", aggregateJson);
     userJson.addProperty("items", itemsJson);
-    return gson.toJson(userJson);
+    return GSON.toJson(userJson);
+  }
+
+  /**
+   * Finds the UserStats entity corresponding to {@code userId} in datastore.
+   * @return UserStats entity for this user
+   */
+  private Entity retreiveUserStats() {
+    Filter idFilter = new FilterPredicate("UserId", 
+                                FilterOperator.EQUAL,
+                                userId);
+    Query query = new Query("UserStats").setFilter(idFilter);
+    PreparedQuery results = datastore.prepare(query);
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
+    return entities.isEmpty() ? null : entities.get(0);
   }
 }
