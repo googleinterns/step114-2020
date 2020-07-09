@@ -53,9 +53,6 @@ export default class ReceiptInput extends React.Component {
     return(
       <div class="container-fluid">
       <h3>Grocery Items</h3>
-      {this.state.items.length > 0 &&
-        <GroceryList items={this.state.items} />
-      }
       <form onSubmit={this.handleSubmit}>
         <div class="form-row">
           <div class="col-auto">
@@ -110,6 +107,9 @@ export default class ReceiptInput extends React.Component {
           </div>
         </div>
       </form>
+      {this.state.items.length > 0 &&
+        <GroceryList items={this.state.items} />
+      }
       </div>
     );
   }
@@ -118,21 +118,20 @@ export default class ReceiptInput extends React.Component {
 var GroceryList = (props) => {
   return (
     <div id="grocery-list">
-      <ul class="list-group col-sm-4">
+      <ul class="list-group col-lg-3">
         <li class="h-50 list-group-item d-flex justify-content-between align-items-center">
-            <span class="col-sm-2">Item</span>
-            <span class="badge badge-primary badge-pill col-sm-2">Price</span>
-            <span class="badge badge-primary badge-pill col-sm-2">Quantity</span>
+            <span class="col-lg-1">Item</span>
+            <span class="badge badge-pill col-lg-1">Price</span>
+            <span class="badge badge-pill col-lg-1">#</span>
           </li>
         {props.items.map(item => (
           <li class="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
-            <span class="item-name col-sm-2">{item.itemName}</span>
-            <span class="item-price badge badge-primary badge-pill col-sm-2">{item.itemPrice}</span>
-            <span class="item-quantity badge badge-primary badge-pill col-sm-2">{item.itemQuantity}</span>
+            <span class="item-name col-lg-1">{item.itemName}</span>
+            <span class="item-price badge badge-pill col-lg-1">{item.itemPrice}</span>
+            <span class="item-quantity badge badge-pill col-lg-1">{item.itemQuantity}</span>
           </li>
         ))}
       </ul>
-      <hr />
     </div>
   );
 }
