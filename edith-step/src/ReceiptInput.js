@@ -51,32 +51,32 @@ export default class ReceiptInput extends React.Component {
 
   render() {
     return(
-      <div class="container-fluid">
+      <div className="container-fluid">
       <h3>Grocery Items</h3>
       <form onSubmit={this.handleSubmit}>
-        <div class="form-row">
-          <div class="col-auto">
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Item</div>
+        <div className="form-row">
+          <div className="col-auto">
+            <div className="input-group mb-2">
+              <div className="input-group-prepend">
+                <div className="input-group-text">Item</div>
               </div>
               <input 
                 type="text" 
-                class="form-control"
+                className="form-control"
                 name="itemName"
                 id="name"
                 value={this.state.itemName} 
                 onChange={this.handleChange} />
             </div>
           </div>
-          <div class="col-auto">
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Price</div>
+          <div className="col-auto">
+            <div className="input-group mb-2">
+              <div className="input-group-prepend">
+                <div className="input-group-text">Price</div>
               </div>
               <input
                 type="number" 
-                class="form-control"
+                className="form-control"
                 name="itemPrice"
                 id="price"
                 step="0.01"
@@ -84,14 +84,14 @@ export default class ReceiptInput extends React.Component {
                 onChange={this.handleChange} />
             </div>
           </div>
-          <div class="col-auto">
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Quantity</div>
+          <div className="col-auto">
+            <div className="input-group mb-2">
+              <div className="input-group-prepend">
+                <div className="input-group-text">Quantity</div>
               </div>
               <input
                 type="number"
-                class="form-control"
+                className="form-control"
                 name="itemQuantity"
                 id="quantity"
                 step="1"
@@ -99,8 +99,8 @@ export default class ReceiptInput extends React.Component {
                 onChange={this.handleChange} />
             </div>
           </div>
-          <div class="col-auto">
-            <button class="btn btn-primary"
+          <div className="col-auto">
+            <button className="btn btn-primary"
                 id="submit"
                 type="submit" 
                 value="Submit">Add Item</button>
@@ -118,17 +118,17 @@ export default class ReceiptInput extends React.Component {
 var GroceryList = (props) => {
   return (
     <div id="grocery-list">
-      <ul class="list-group col-lg-3">
-        <li class="h-50 list-group-item d-flex justify-content-between align-items-center">
-            <span class="col-lg-1">Item</span>
-            <span class="badge badge-pill col-lg-1">Price</span>
-            <span class="badge badge-pill col-lg-1">#</span>
+      <ul className="list-group col-lg-3">
+        <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
+            <span className="col-lg-1">Item</span>
+            <span className="badge badge-pill col-lg-1">Price</span>
+            <span className="badge badge-pill col-lg-1">#</span>
           </li>
         {props.items.map(item => (
-          <li class="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
-            <span class="item-name col-lg-1">{item.itemName}</span>
-            <span class="item-price badge badge-pill col-lg-1">{item.itemPrice}</span>
-            <span class="item-quantity badge badge-pill col-lg-1">{item.itemQuantity}</span>
+          <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
+            <span className="item-name col-lg-1">{item.itemName}</span>
+            <span className="item-price badge badge-pill col-lg-1">{item.itemPrice}</span>
+            <span className="item-quantity badge badge-pill col-lg-1">{item.itemQuantity}</span>
           </li>
         ))}
       </ul>
