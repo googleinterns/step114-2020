@@ -39,16 +39,16 @@ public class DealsServlet extends HttpServlet {
 
     GroceryDataReader groceryReader = new GroceryDataReader();
     DealItem bestItem = groceryReader.readFile(itemName);
-    response.setContentType("text/plain");
+    Gson gson = new Gson();
+
     if (bestItem == null) {
-      System.out.println("no deal found");
+      response.setContentType("text/plain");
       response.getWriter().println("no deal found");
     }
     else {
-      System.out.println(bestItem.getStore());
       Gson gson = new Gson();
       String responseJson = gson.toJson(bestItem);
-      System.out.println(responseJson);
+      response.setContentType("application/json");
       response.getWriter().println(responseJson);
     }
   }

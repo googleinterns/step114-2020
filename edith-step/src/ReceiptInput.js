@@ -20,11 +20,19 @@ export default class ReceiptInput extends React.Component {
       }
     });
     const dealItem = response.data;
-    console.log(dealItem.store);
-    let newDeal = {
-      storeName: dealItem.store,
-      storePrice: dealItem.price
-    };
+
+    let newDeal;
+    if (dealItem == "no deal found") {
+      newDeal = {
+        storeName: "no deal found",
+        storePrice: 0
+      }
+    } else {
+      newDeal = {
+        storeName: dealItem.store,
+        storePrice: dealItem.price
+      };
+    }
 
     return newDeal;
   }
@@ -37,7 +45,12 @@ export default class ReceiptInput extends React.Component {
     }
 
     const newDeal = await this.getDeal(this.state.itemName, this.state.itemPrice, this.state.itemQuantity);
-    const dealMessage = "Purchase at " + newDeal.storeName + " for $" + newDeal.storePrice + ".";
+    let dealMessage;
+    if (newDeal.storeName == "no deal found") {
+      dealMessage = "no deal found";
+    } else {
+      dealMessage = "Purchase at " + newDeal.storeName + " for $" + newDeal.storePrice + ".";
+    }
 
     const newItem = {
       itemName: this.state.itemName,
