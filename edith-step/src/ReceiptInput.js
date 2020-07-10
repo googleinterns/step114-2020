@@ -8,9 +8,9 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  getDeal(name, price, quantity) {
+  async getDeal(name, price, quantity) {
     const axios = require('axios')
-    axios({
+    const response = await axios({
       method: 'post',
       url: '/receipt-deals',
       data: {
@@ -18,18 +18,17 @@ export default class ReceiptInput extends React.Component {
         itemPrice: price,
         itemQuantity: quantity
       }
-    }).then(function (response) {
-        const dealItem = response.data;
-        console.log(dealItem.store);
-        const newDeal = {
-          storeName: dealItem.store,
-          storePrice: dealItem.price,
-          storeComment: dealItem.comment,
-          id: Date.now()
-        };
-        console.log(newDeal.storeName);
-        return newDeal;
     });
+    const dealItem = response.data;
+    console.log(dealItem.store);
+    let newDeal = {
+      storeName: dealItem.store,
+      storePrice: dealItem.price,
+      storeComment: dealItem.comment,
+      id: Date.now()
+    };
+    console.log(newDeal.storeName);
+    return newDeal;
   }
 
   async handleSubmit(e) {
@@ -122,12 +121,18 @@ export default class ReceiptInput extends React.Component {
           </div>
         </div>
       </form>
-      {this.state.items.length > 0 &&
-        <GroceryList items={this.state.items} />
-      }
-      {this.state.deals.length > 0 &&
-        <DealsList items={this.state.deals} />
-      }
+      <div className="row">
+        <div className = "col-lg-3">
+          {this.state.items.length > 0 &&
+            <GroceryList items={this.state.items} />
+          }
+        </div>
+        <div className = "col-lg-3">
+          {this.state.deals.length > 0 &&
+            <DealsList deals={this.state.deals} />
+          }
+        </div>
+      </div>
       </div>
     );
   }
@@ -136,7 +141,7 @@ export default class ReceiptInput extends React.Component {
 var GroceryList = (props) => {
   return (
     <div id="grocery-list">
-      <ul className="list-group col-lg-3">
+      <ul className="list-group">
         <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
             <span className="col-lg-1">Item</span>
             <span className="badge badge-pill col-lg-1">Price</span>
@@ -157,17 +162,17 @@ var GroceryList = (props) => {
 var DealsList = (props) => {
   return (
     <div id="deals-list">
-      <ul className="list-group col-lg-3">
+      <ul className="list-group">
           <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
-            <span className="col-lg-1">Item</span>
-            <span className="badge badge-pill col-lg-1">Price</span>
-            <span className="badge badge-pill col-lg-1">#</span>
+            <span className="col-lg-2">Store</span>
+            <span className="badge badge-pill col-lg-2">Price</span>
+            <span className="badge badge-pill col-lg-2">Comment</span>
           </li>
         {props.deals.map(deal => (
           <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={deal.id}>
-            <span className="item-name col-lg-1">{deal.storeName}</span>
-            <span className="item-price badge badge-pill col-lg-1">{deal.storePrice}</span>
-            <span className="item-quantity badge badge-pill col-lg-1">{deal.storeComment}</span>
+            <span className="item-name col-lg-2">{deal.storeName}</span>
+            <span className="item-price badge badge-pill col-lg-2">{deal.storePrice}</span>
+            <span className="item-quantity badge badge-pill col-lg-2">{deal.storeComment}</span>
           </li>
         ))}
       </ul>
