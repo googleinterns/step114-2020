@@ -14,7 +14,6 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -46,7 +45,8 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     List<FileInfo> fileKeys = getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
     if (fileKeys.isEmpty()) {
-      System.out.println("it is null");
+      // Should not ever happen, as the form will never be submitted withouth a file.
+      System.err.println("it is null");
     } else {
       BlobKey fileBlobKey = getBlobKey(fileKeys);
       blobstoreService.serve(fileBlobKey, response);
@@ -67,5 +67,4 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     FileInfo fileInfo = fileKeys.get(0);
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
   }
-
 }

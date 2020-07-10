@@ -42,5 +42,6 @@ abstract class UserInfo {
     abstract Builder setUserId(String value);
     abstract Builder setLogOutUrl(String value);
     abstract UserInfo build();
+
   }
 }

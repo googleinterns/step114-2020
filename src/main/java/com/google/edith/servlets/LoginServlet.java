@@ -31,47 +31,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that checks if user is logging in. */
+/** Servlet that checks if user is logged in.
+ * if logged in then provides with user information along with logout url.
+ * if not logged in then redirectes to a url to log in.
+ */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
   
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
     if (userService.isUserLoggedIn()) {
       Gson gson = new Gson();
-      User user = userService.getCurrentUser();
-      String logoutUrl = userService.createLogoutURL("/");
-
-      String firstName = "";
-      String lastName = "";
-      String userName = "";
-      String favoriteStore = "";
-      
-      Optional<Entity> optEntity = getUserInfoEntity(user.getUserId());
-      if (optEntity.isPresent()) {
-        Entity userInfoEntity = optEntity.get();
-        firstName = (String) userInfoEntity.getProperty("firstName");
-        lastName = (String) userInfoEntity.getProperty("lastName");
-        userName = (String) userInfoEntity.getProperty("userName");
-        favoriteStore = (String) userInfoEntity.getProperty("favoriteStore");
-      }
-
-      UserInfo userInfo = UserInfo.builder()
-          .setFirstName(firstName)
-          .setLastName(lastName)
-          .setUserName(userName)
-          .setFavoriteStore(favoriteStore)
-          .setEmail(user.getEmail())
-          .setUserId(user.getUserId())
-          .setLogOutUrl(logoutUrl)
-          .build();
-
-      String json = gson.toJson(userInfo);
-      
-      response.setContentType("application/json;");
+      String json = gson.toJson(createUserInfo(userService));
+      response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
       String loginUrl = userService.createLoginURL("/");
@@ -123,5 +97,41 @@ public class LoginServlet extends HttpServlet {
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     return Optional.ofNullable(results.asSingleEntity());
+  }
+  
+  /**
+   * Creates UserInfo object encapsulating user data.
+   * @param userService - provides information about ther logged in user.
+   * @return UserInfo - wrapper object for user information and logout url.
+   */
+  private UserInfo createUserInfo(UserService userService) {
+    User user = userService.getCurrentUser();
+    String logoutUrl = userService.createLogoutURL("/");
+    String firstName = "";
+    String lastName = "";
+    String userName = "";
+    String favoriteStore = "";
+    
+    Optional<Entity> optEntity = getUserInfoEntity(user.getUserId());
+    
+    if (optEntity.isPresent()) {
+      Entity userInfoEntity = optEntity.get();
+      firstName = (String) userInfoEntity.getProperty("firstName");
+      lastName = (String) userInfoEntity.getProperty("lastName");
+      userName = (String) userInfoEntity.getProperty("userName");
+      favoriteStore = (String) userInfoEntity.getProperty("favoriteStore");
+    }
+
+    UserInfo userInfo = UserInfo.builder()
+        .setFirstName(firstName)
+        .setLastName(lastName)
+        .setUserName(userName)
+        .setFavoriteStore(favoriteStore)
+        .setEmail(user.getEmail())
+        .setUserId(user.getUserId())
+        .setLogOutUrl(logoutUrl)
+        .build();
+
+    return userInfo;
   }
 }

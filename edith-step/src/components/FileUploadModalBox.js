@@ -16,12 +16,17 @@ class FileUploadModalBox extends React.Component {
   componentDidMount() {
     this.getFileUploadUrl();
   }
+  
+  componentWillUnmount() {
+    this.setState = () =>{
+      return;
+    };
+  }
 
   getFileUploadUrl() {
     fetch('/blobstore-upload-url')
       .then(response => response.text())
       .then(uploadUrl => {
-        console.log(uploadUrl);
         this.setState({uploadUrl: uploadUrl});
       })
       .catch((error) => {
@@ -36,15 +41,15 @@ class FileUploadModalBox extends React.Component {
         onHide={this.props.handleUploadModalClose}
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton className='modal-header'>
           <Modal.Title id="contained-modal-title-vcenter">
             Please Upload Your Receipt File
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form method="POST" action={this.state.uploadUrl} enctype="multipart/form-data">
+          <Form method="POST" action={this.state.uploadUrl} encType="multipart/form-data">
             <Form.Group>
-              <Form.File id="receipt-file" label="Receipt file input" name="receipt-file" />
+              <Form.File required className="receipt-file" label="Receipt file input" name="receipt-file" />
             </Form.Group>
             <Button variant="primary" type="submit" >
               Submit
