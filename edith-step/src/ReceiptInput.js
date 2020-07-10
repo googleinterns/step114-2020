@@ -170,9 +170,9 @@ var DealsList = (props) => {
           </li>
         {props.deals.map(deal => (
           <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={deal.id}>
-            <span className="item-name col-lg-2">{deal.storeName}</span>
-            <span className="item-price badge badge-pill col-lg-2">{deal.storePrice}</span>
-            <span className="item-quantity badge badge-pill col-lg-2">{deal.storeComment}</span>
+            <span className="deal-name col-lg-2">{deal.storeName}</span>
+            <span className="deal-price badge badge-pill col-lg-2">{deal.storePrice}</span>
+            <span className="deal-comment badge badge-pill col-lg-2">{deal.storeComment}</span>
           </li>
         ))}
       </ul>

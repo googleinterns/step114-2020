@@ -8,12 +8,14 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "core-js": "^3.6.5",
     "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
     "react-fetch": "0.0.9",
     "react-scripts": "3.4.1",
+    "regenerator-runtime": "^0.13.5",
     "serve": "^11.3.2"
   },
   "scripts": {

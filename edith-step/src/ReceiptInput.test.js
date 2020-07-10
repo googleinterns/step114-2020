@@ -1,6 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, flushPromises } from 'enzyme';
 import ReceiptInput from './ReceiptInput';
+import { screen, wait, getByText } from '@testing-library/react'
 import './setupTests.js'
 
 let component;
@@ -8,7 +9,7 @@ let handleChange;
 let handleSubmit;
 
 beforeEach(() => {
-  handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit');
+  handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit').mockResolvedValue();
   handleChange = jest.spyOn(ReceiptInput.prototype, 'handleChange');
   component = mount(<ReceiptInput onSubmit={ handleSubmit } onChange={ handleChange }/>);
 })
@@ -24,13 +25,15 @@ it('should call handleSumbit when Submit button is clicked', () => {
 });
 
 // handleSubmit resets state.
-it('should update form submitted state with button click', () => {
+it('should update form submitted state with button click', async () => {
   component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
-
-  expect(component.state('itemName')).toBe('');
-  expect(component.state('itemPrice')).toBe(0.0);
-  expect(component.state('itemQuantity')).toBe(1);
+  promise.then(() => {
+    expect(component.state('itemName')).toBe('');
+    expect(component.state('itemPrice')).toBe(0.0);
+    expect(component.state('itemQuantity')).toBe(1);
+  });
 });
 
 // handleChange is called on change.
@@ -63,14 +66,30 @@ it('should change state when handleChange is called', () => {
 });
 
 // GroceryList renders correct text on submit.
-it('should display item when form submitted', () => {
+it('should display item when form submitted', async () => {
+  const textFieldBefore = component.find('.item-name');
+  expect(textFieldBefore.exists()).toBe(false);
+  const priceFieldBefore = component.find('.item-price');
+  expect(priceFieldBefore.exists()).toBe(false);
+  const quantityFieldBefore = component.find('.item-quantity');
+  expect(quantityFieldBefore.exists()).toBe(false);
+
   component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
   component.find('form').simulate('submit');
 
-  const textField = component.find('.item-name').text();
-  expect(textField).toBe('bread');
-  const priceField = component.find('.item-price').text();
-  expect(priceField).toBe("5.6");
-  const quantityField = component.find('.item-quantity').text();
-  expect(quantityField).toBe('3');
+  const promise = new Promise(handleSubmit);
+  component.find('form').simulate('submit');
+  promise.then(() => {
+    const textFieldAfter = component.find('.item-name').text();
+    expect(textFieldAfter).toBe('bread');
+    const priceFieldAfter = component.find('.item-price').text();
+    expect(priceFieldAfter).toBe("5.6");
+    const quantityFieldAfter = component.find('.item-quantity').text();
+    expect(quantityFieldAfter).toBe('3');
+  });
+
+  // DealsList renders correct deal on submit.
+  it('displays best deal when form submitted', async() => {
+    
+  });
 });
