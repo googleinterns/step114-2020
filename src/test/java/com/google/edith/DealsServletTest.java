@@ -1,18 +1,12 @@
 package com.google.edith.servlets;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletInputStream;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -41,7 +35,7 @@ public class DealsServletTest  {
   }
 
   @Test
-  public void testServletadInput() throws Exception {
+  public void testServletBadInput() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
