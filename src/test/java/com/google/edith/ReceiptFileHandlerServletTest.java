@@ -34,6 +34,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Spy;
 
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
@@ -46,13 +47,13 @@ public class ReceiptFileHandlerServletTest {
         new LocalBlobstoreServiceTestConfig(),
         new LocalDatastoreServiceTestConfig());
 
-  private ReceiptFileHandlerServlet ReceiptFileHandlerServlet;
+  private ReceiptFileHandlerServlet receiptFileHandlerServlet;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    ReceiptFileHandlerServlet = new ReceiptFileHandlerServlet();
+    receiptFileHandlerServlet = new ReceiptFileHandlerServlet();
   }
 
   @After
@@ -68,5 +69,7 @@ public class ReceiptFileHandlerServletTest {
 
   @Test
   public void testRedirect() throws IOException {
+    receiptFileHandlerServlet.doPost(request, response);
+    System.out.println(response.getStatus());
   }
 }
