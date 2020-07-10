@@ -55,12 +55,23 @@ public class LoginServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    storeUserInfoEntityInDatastore(userService, request);
+    response.sendRedirect("/");
+  }
+
+  /**
+   * Stores the userInfo entity in the datastore.
+   * @param userService - provides information about ther logged in user.
+   * @param request - request from the UserInfoModalBox component.
+   */
+  private void storeUserInfoEntityInDatastore(UserService userService, HttpServletRequest request) {
     String firstName = getParameter(request, "first-name").orElse("");
     String lastName = getParameter(request, "last-name").orElse("");
     String userName = getParameter(request, "username").orElse("");
     String favoriteStore = getParameter(request, "favorite-store").orElse("");
 
-    UserService userService = UserServiceFactory.getUserService();
+    userService = UserServiceFactory.getUserService();
     String id = userService.getCurrentUser().getUserId();
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -78,8 +89,6 @@ public class LoginServlet extends HttpServlet {
     userInfoEntity.setProperty("favoriteStore", favoriteStore);
 
     datastore.put(userInfoEntity);
-
-    response.sendRedirect("/");
   }
 
   private Optional<String> getParameter(HttpServletRequest request, String name) {
@@ -89,6 +98,7 @@ public class LoginServlet extends HttpServlet {
   /**
    * Returns the UserInfo entity with user id.
    * Given id is not of UserInfo kind but a field of that kind.
+   * @param id - id of the user who is logged in.
    */
   private Optional<Entity> getUserInfoEntity(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
