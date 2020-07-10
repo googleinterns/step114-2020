@@ -3,7 +3,7 @@ import React from 'react';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], deals: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
+    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -23,11 +23,9 @@ export default class ReceiptInput extends React.Component {
     console.log(dealItem.store);
     let newDeal = {
       storeName: dealItem.store,
-      storePrice: dealItem.price,
-      storeComment: dealItem.comment,
-      id: Date.now()
+      storePrice: dealItem.price
     };
-    console.log(newDeal.storeName);
+
     return newDeal;
   }
 
@@ -37,19 +35,20 @@ export default class ReceiptInput extends React.Component {
     if (this.state.itemName.length === 0) {
       return;
     }
+
+    const newDeal = await this.getDeal(this.state.itemName, this.state.itemPrice, this.state.itemQuantity);
+    const dealMessage = "Purchase at " + newDeal.storeName + " for $" + newDeal.storePrice + ".";
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
+      itemDeal: dealMessage,
       id: Date.now()
     };
 
-    const newDeal = await this.getDeal(this.state.itemName, this.state.itemPrice, this.state.itemQuantity);
-    console.log(newDeal.storeName);
-
     this.setState(state => ({
       items: state.items.concat(newItem),
-      deals: state.deals.concat(newDeal),
       itemName: '',
       itemPrice: 0.0,
       itemQuantity: 1
@@ -122,14 +121,9 @@ export default class ReceiptInput extends React.Component {
         </div>
       </form>
       <div className="row">
-        <div className = "col-lg-3">
+        <div className="col-lg-5">
           {this.state.items.length > 0 &&
-            <GroceryList items={this.state.items} />
-          }
-        </div>
-        <div className = "col-lg-3">
-          {this.state.deals.length > 0 &&
-            <DealsList deals={this.state.deals} />
+            <GroceryList items={this.state.items}/>
           }
         </div>
       </div>
@@ -143,36 +137,17 @@ var GroceryList = (props) => {
     <div id="grocery-list">
       <ul className="list-group">
         <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
-            <span className="col-lg-1">Item</span>
-            <span className="badge badge-pill col-lg-1">Price</span>
-            <span className="badge badge-pill col-lg-1">#</span>
+            <span className="col-lg-2">Item</span>
+            <span className="badge badge-pill col-lg-2">Price</span>
+            <span className="badge badge-pill col-lg-2">#</span>
+            <span className="badge badge-pill col-lg-2">Deal</span>
           </li>
         {props.items.map(item => (
           <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
-            <span className="item-name col-lg-1">{item.itemName}</span>
-            <span className="item-price badge badge-pill col-lg-1">{item.itemPrice}</span>
-            <span className="item-quantity badge badge-pill col-lg-1">{item.itemQuantity}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-var DealsList = (props) => {
-  return (
-    <div id="deals-list">
-      <ul className="list-group">
-          <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
-            <span className="col-lg-2">Store</span>
-            <span className="badge badge-pill col-lg-2">Price</span>
-            <span className="badge badge-pill col-lg-2">Comment</span>
-          </li>
-        {props.deals.map(deal => (
-          <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={deal.id}>
-            <span className="deal-name col-lg-2">{deal.storeName}</span>
-            <span className="deal-price badge badge-pill col-lg-2">{deal.storePrice}</span>
-            <span className="deal-comment badge badge-pill col-lg-2">{deal.storeComment}</span>
+            <span className="item-name col-lg-2">{item.itemName}</span>
+            <span className="item-price badge badge-pill col-lg-2">{item.itemPrice}</span>
+            <span className="item-quantity badge badge-pill col-lg-2">{item.itemQuantity}</span>
+            <span className="item-deal badge badge-pill col-lg-2">{item.itemDeal}</span>
           </li>
         ))}
       </ul>

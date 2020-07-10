@@ -18,6 +18,11 @@ afterEach(() => {
   component.unmount();
 });
 
+// ReceiptInput component renders properly.
+it('renders properly', () => {
+  expect(component.exists()).toBe(true);
+});
+
 // Submit button calls handleSubmit when clicked.
 it('should call handleSumbit when Submit button is clicked', () => {
   component.find('form').simulate('submit');
@@ -75,7 +80,6 @@ it('should display item when form submitted', async () => {
   expect(quantityFieldBefore.exists()).toBe(false);
 
   component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
-  component.find('form').simulate('submit');
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
@@ -87,9 +91,18 @@ it('should display item when form submitted', async () => {
     const quantityFieldAfter = component.find('.item-quantity').text();
     expect(quantityFieldAfter).toBe('3');
   });
+});
 
-  // DealsList renders correct deal on submit.
-  it('displays best deal when form submitted', async() => {
-    
+it('should display item deal when form submitted', async () => {
+  const dealFieldBefore = component.find('.item-deal');
+  expect(dealFieldBefore.exists()).toBe(false);
+
+  component.setState({ itemName: "Apple Juice", itemPrice: 5.6, itemQuantity: 3 });
+
+  const promise = new Promise(handleSubmit);
+  component.find('form').simulate('submit');
+  promise.then(() => {
+    const dealFieldAfter = component.find('item-deal');
+    expect(dealFieldAfter).toBe("Purchase at Kroger for $1.5");
   });
 });
