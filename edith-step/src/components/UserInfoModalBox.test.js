@@ -23,7 +23,6 @@ describe("UserInfoModalBox must", () => {
   });
 
   it("render", () => {
-    console.log(form.debug());
     expect(component.exists()).toBe(true);
   });
 

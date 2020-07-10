@@ -77,8 +77,8 @@ class TopNavbar extends React.Component {
                       show={this.state.uploadModalBoxShow}
                       handleUploadModalClose={this.handleUploadModalClose}
                     />
-                    <Dropdown.Item onClick={() => this.setState({userInfoModalBoxShow: true})}>Update Information</Dropdown.Item>
-                    <UserInfoModalBox className='set-nickname'
+                    <Dropdown.Item onClick={() => this.setState({userInfoModalBoxShow: true})} className='update-info'>Update Information</Dropdown.Item>
+                    <UserInfoModalBox
                       show={this.state.userInfoModalBoxShow}
                       handleUserInfoModalBoxClose={this.handleUserInfoModalBoxClose}
                     />
