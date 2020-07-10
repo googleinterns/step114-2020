@@ -103,7 +103,7 @@ it('should display item deal when good form data submitted', async () => {
   component.find('form').simulate('submit');
   promise.then(() => {
     const dealFieldAfter = component.find('.item-deal');
-    expect(dealFieldAfter).toBe("Purchase at Kroger for $1.5");
+    expect(dealFieldAfter).toBe("Purchase at Kroger for $1.5.");
   });
 });
 
@@ -117,6 +117,20 @@ it('should display no deal found message when bad form data submitted', async ()
   component.find('form').simulate('submit');
   promise.then(() => {
     const dealFieldAfter = component.find('.item-deal');
-    expect(dealFieldAfter).toBe("no deal found");
+    expect(dealFieldAfter).toBe('no deal found');
   });
+});
+
+it('never gives a deal more expensive than the product itself', async () => {
+  const dealFieldBefore = component.find('.item-deal');
+  expect(dealFieldBefore.exists()).toBe(false);
+
+  component.setState({ itemName: "Apple Juice", itemPrice: 1.0, itemQuantity: 3});
+
+  const promise = new Promise(handleSubmit);
+  component.find('form').simulate('submit');
+  promise.then(() => {
+    const dealFieldAfter = component.find('item-deal');
+    expect(dealFieldAfter).toBe('no deal found')
+  })
 });
