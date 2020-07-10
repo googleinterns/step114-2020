@@ -31,37 +31,37 @@ public class GroceryDataReader {
 
 	    DealItem item1 = new DealItem();
         item1.setStore("Aldi");
-	    item1.setPrice(record[1]);
-	    item1.setWeight(record[2]);
-	    item1.setComment(record[3]);
+        item1.setPrice(record[1]);
+        item1.setWeight(record[2]);
+        item1.setComment(record[3]);
         dealItems.add(item1);
 
         DealItem item2 = new DealItem();
         item2.setStore("Kroger");
-	    item2.setPrice(record[4]);
-	    item2.setWeight(record[5]);
-	    item2.setComment(record[6]);
+        item2.setPrice(record[4]);
+        item2.setWeight(record[5]);
+        item2.setComment(record[6]);
         dealItems.add(item2);
 
         DealItem item3 = new DealItem();
         item3.setStore("Trader Joe's");
-	    item3.setPrice(record[7]);
-	    item3.setWeight(record[8]);
-	    item3.setComment(record[9]);
+        item3.setPrice(record[7]);
+        item3.setWeight(record[8]);
+        item3.setComment(record[9]);
         dealItems.add(item3);
 
         DealItem item4 = new DealItem();
         item4.setStore("Publix");
-	    item4.setPrice(record[10]);
-	    item4.setWeight(record[11]);
-	    item4.setComment(record[12]);
+        item4.setPrice(record[10]);
+        item4.setWeight(record[11]);
+        item4.setComment(record[12]);
         dealItems.add(item4);
 
         DealItem item5 = new DealItem();
         item5.setStore("Walmart");
-	    item5.setPrice(record[13]);
-	    item5.setWeight(record[14]);
-	    item5.setComment(record[15]);
+        item5.setPrice(record[13]);
+        item5.setWeight(record[14]);
+        item5.setComment(record[15]);
         dealItems.add(item5);
 
         bestItem = getBestDeal(dealItems);
