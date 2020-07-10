@@ -13,11 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.edith.servlets.UserInsights;
 import com.google.edith.servlets.Item;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +26,17 @@ import org.junit.Test;
 
 public final class UserInsightsTest {
   private static final String USER_ID = "userId";
+  private DatastoreService datastore;
   private static UserInsights userInsights;
-  private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  private static final LocalServiceTestHelper testHelper = 
+  private final LocalServiceTestHelper testHelper = 
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     
   @Before
   public void setUp() {
+    testHelper.setUp();
+    datastore = DatastoreServiceFactory.getDatastoreService();
     userInsights = new UserInsights(USER_ID);
-    testHelper.setUp();    
+    userInsights.createUserStats();
   }
 
   @After
@@ -47,45 +45,34 @@ public final class UserInsightsTest {
   }
 
   @Test
-  public void creatUserInisghts() {
+  public void creatUserStats_addsToDatstore() {
     // A new UserStats Entity should be added to the datastore
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
     Assert.assertEquals(1, datastore.prepare(new Query("UserStats"))
                                     .countEntities(FetchOptions.Builder
                                                             .withLimit(10)));
   }
 
   @Test
-  public void correctUserId() {
+  public void createUserStats_addsCorrectUserId() {
     // Checks to see if the right UserId was added to the datastore  
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
     Assert.assertEquals(USER_ID, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("userId"));
   }
 
   @Test 
-  public void correctDefaultItems() {
+  public void createUserStats_addsCorrectItems() {
     // Checks to see if the right UserId was added to the datastore  
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
     Assert.assertEquals(null, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("Items"));
   }
 
   @Test
-  public void updateUserStatsWhenDefault() {
+  public void updateUserStats_addsNewItems() {
     // The Items property in thie UserStats entity should be equal to 
     // {@code items}
-    List<Key> items = new ArrayList<>();
-    for(int i = 0; i < 5; i++) {
-      items.add(KeyFactory.createKey("Item", "Item" + i));
-    }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
+    List<Key> items = createTestKeyList(0, 5);
     userInsights.updateUserStats(items);
     Assert.assertEquals(items, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
@@ -94,19 +81,11 @@ public final class UserInsightsTest {
   }
 
   @Test
-  public void updateUserStatsWhenNonEmpty() {
+  public void updateUserStats_whenNonEmpty_addsNewItems() {
     // The Items property in thie UserStats entity should be equal to 
     // {@code items} + {@code items2}
-    List<Key> items = new ArrayList<Key>();
-    List<Key> items2 = new ArrayList<Key>();
-    for(int i = 0; i < 5; i++) {
-      items.add(KeyFactory.createKey("Item", "Item" + i));
-    }
-    for(int i = 5; i < 10; i++) {
-      items2.add(KeyFactory.createKey("Item", "Item" + i));
-    }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
+    List<Key> items = createTestKeyList(0, 5);
+    List<Key> items2 = createTestKeyList(5, 10);
     userInsights.updateUserStats(items);
     userInsights.updateUserStats(items2);
     items.addAll(items2);
@@ -117,97 +96,84 @@ public final class UserInsightsTest {
   }
 
   @Test
-  public void aggregateData() {    
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();   
+  public void aggregateUserData_withQuantityTwoOrLess_returnsCorrectJsonString() {    
+    List<Key> items = createTestKeyList(0, 2);
     
-    List<Key> items = new ArrayList<>();
-
-    items.add(KeyFactory.createKey("Item", "Item1"));
-    items.add(KeyFactory.createKey("Item", "Item2"));
-    items.add(KeyFactory.createKey("Item", "Item3"));
-    items.add(KeyFactory.createKey("Item", "Item4"));
-
-    // The week containing {@code Entity} and {@code Entity}
-    // concludes on 07-05-2020 and the total should be 17.00.
     Entity newEntity = new Entity(items.get(0));
-    newEntity.setProperty("price", 5.00);
-    newEntity.setProperty("quantity", 1);
-    newEntity.setProperty("date", "2020-06-29");
+    setEntityProperties(newEntity, 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    newEntity2.setProperty("price", 6.00);
-    newEntity2.setProperty("quantity", 2);
-    newEntity2.setProperty("date", "2020-06-30");
+    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
+    
+    Map<String, String> map = new HashMap<String, String>();
+    map.put("2020-07-05", "17.0");
+   
+    userInsights.updateUserStats(items);
 
-    // The week containing {@code Entity3} and {@code Entity4}
-    // concludes on 07-12-2020 and the total should be 53.00.
+    Assert.assertEquals(map, userInsights.aggregateUserData());
+  }
+
+  @Test
+  public void aggregateUserData_withQuantityMoreThanTwo_returnsCorrectJsonString() {    
+    List<Key> items = createTestKeyList(0, 4);
+    List<Item> itemProperties = new ArrayList<>();
+
+    Entity newEntity = new Entity(items.get(0));
+    setEntityProperties(newEntity, 5, 1, "2020-06-29");
+    datastore.put(newEntity); 
+
+    Entity newEntity2 = new Entity(items.get(1));
+    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
+    datastore.put(newEntity2); 
+    
     Entity newEntity3 = new Entity(items.get(2));
-    newEntity3.setProperty("price", 7.00);
-    newEntity3.setProperty("quantity", 3);
-    newEntity3.setProperty("date", "2020-07-11"); 
+    setEntityProperties(newEntity3, 7, 3, "2020-07-11");
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    newEntity4.setProperty("price", 8.00);
-    newEntity4.setProperty("quantity", 4);
-    newEntity4.setProperty("date", "2020-07-12");
+    setEntityProperties(newEntity4, 8, 4, "2020-07-12");
     datastore.put(newEntity4);  
 
     Map<String, String> map = new HashMap<String, String>();
     map.put("2020-07-05", "17.0");
     map.put("2020-07-12", "53.0");
-    userInsights.createUserStats();
+   
     userInsights.updateUserStats(items);
    
     Assert.assertEquals(map, userInsights.aggregateUserData());
   }
 
   @Test
-  public void createJson() {    
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();   
-    
-    List<Key> items = new ArrayList<>();
+  public void createJson_returnsCorrectJsonString() {        
+    List<Key> items = createTestKeyList(0, 4);
     List<Item> itemProperties = new ArrayList<>();
 
-    items.add(KeyFactory.createKey("Item", "Item1"));
-    items.add(KeyFactory.createKey("Item", "Item2"));
-    items.add(KeyFactory.createKey("Item", "Item3"));
-    items.add(KeyFactory.createKey("Item", "Item4"));
-
     Entity newEntity = new Entity(items.get(0));
-    newEntity.setProperty("price", 5.00);
-    newEntity.setProperty("quantity", 1);
-    newEntity.setProperty("date", "2020-06-29");
+    setEntityProperties(newEntity, 5, 1, "2020-06-29");
     itemProperties.add(new Item(5.00, 1L, "2020-06-29"));
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    newEntity2.setProperty("price", 6.00);
-    newEntity2.setProperty("quantity", 2);
-    newEntity2.setProperty("date", "2020-06-30");
+    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
     itemProperties.add(new Item(6.00, 2L, "2020-06-30"));
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    newEntity3.setProperty("price", 7.00);
-    newEntity3.setProperty("quantity", 3);
-    newEntity3.setProperty("date", "2020-07-11");
+    setEntityProperties(newEntity3, 7, 3, "2020-07-11");
     itemProperties.add(new Item(7.00, 3L, "2020-07-11"));
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    newEntity4.setProperty("price", 8.00);
-    newEntity4.setProperty("quantity", 4);
-    newEntity4.setProperty("date", "2020-07-12");
+    setEntityProperties(newEntity4, 8, 4, "2020-07-12");
     itemProperties.add(new Item(8.00, 4L, "2020-07-12"));
-    datastore.put(newEntity4);  
+    datastore.put(newEntity4);    
 
     Map<String, String> map = new HashMap<String, String>();
     map.put("2020-07-05", "17.0");
     map.put("2020-07-12", "53.0");
-    userInsights.createUserStats();
+   
     userInsights.updateUserStats(items);
 
     JsonObject testJson = new JsonObject();
@@ -218,4 +184,32 @@ public final class UserInsightsTest {
     Assert.assertEquals(expectedJson, userInsights.createJson());
   }
 
+  /**
+   * Creates a list of Item keys
+   * @param startIndex the number of the first element in the list
+   * @param endIndex the number of the last element in the list
+   * @return a list of keys with a number assigned to each of them 
+   *         "item0, item1... itemN"
+   */
+  private List<Key> createTestKeyList(int startIndex, int endIndex) {
+    List<Key> items = new ArrayList<>();
+    for(int i = startIndex; i < endIndex; i++) {
+      items.add(KeyFactory.createKey("Item", "Item" + i));
+    }
+    return items;
+  }
+
+  /**
+   * Assigns the parameters to the given entity.
+   * @param entity the entity to update
+   * @param price price
+   * @param quantity quantity 
+   * @param date date
+   */
+  private void setEntityProperties(Entity entity, double price, 
+                                   int quantity, String date) {
+    entity.setProperty("price", price);
+    entity.setProperty("quantity", quantity);
+    entity.setProperty("date", date);
+  }
 }

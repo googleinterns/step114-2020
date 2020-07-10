@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -31,10 +32,9 @@ import java.util.stream.Collectors;
  * datastore and send an agreggate of that information in a JSON file.
  */
 public final class UserInsights {
-
-  private String userId;
-
-  private final DatastoreService datastore;
+  
+  private String userId;  
+  private DatastoreService datastore;
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final Gson GSON = new Gson();
 
@@ -59,7 +59,7 @@ public final class UserInsights {
    * @param items - Non-null list of item Keys to be added to the current Item list.
    */
   public void updateUserStats(List<Key> newItems) {
-    Entity userStats = retreiveUserStats();    
+    Entity userStats = retreiveUserStats().get();    
     if (userStats == null) {
         return;
     }
@@ -80,7 +80,7 @@ public final class UserInsights {
    * @return A map relating a time period to the spending in that time period.
    */
   public ImmutableMap<String, String> aggregateUserData() { 
-    Entity userStats = retreiveUserStats();
+    Entity userStats = retreiveUserStats().get();
     if (userStats == null) {
         Map<String, String> emptyMap = new HashMap<String, String>();
         emptyMap.put("weeklyAggregate", "");
@@ -112,7 +112,8 @@ public final class UserInsights {
   public String createJson() {
     Map<String, String> aggregateValues = aggregateUserData();
     String aggregateJson =  GSON.toJson(aggregateValues);
-    List<Key> itemKeys = (List<Key>) retreiveUserStats().getProperty("Items");
+    List<Key> itemKeys = (List<Key>) retreiveUserStats().get()
+                                        .getProperty("Items");
     List<Item> items = itemKeys.stream()
                          .map(key ->{
                             try {
@@ -120,7 +121,7 @@ public final class UserInsights {
                               return new Item(
                                 (Double) item.getProperty("price"),
                                 (long) item.getProperty("quantity"),
-                                (String) item.getProperty("date")
+                                                               (String) item.getProperty("date")
                               );
                             } catch (EntityNotFoundException e) {
                               return null;
@@ -138,14 +139,15 @@ public final class UserInsights {
    * Finds the UserStats entity corresponding to {@code userId} in datastore.
    * @return UserStats entity for this user
    */
-  private Entity retreiveUserStats() {
+  private Optional<Entity> retreiveUserStats() {
     Filter idFilter = new FilterPredicate("userId", 
                                 FilterOperator.EQUAL,
                                 userId);
     Query query = new Query("UserStats").setFilter(idFilter);
     PreparedQuery results = datastore.prepare(query);
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
-    return entities.isEmpty() ? null : entities.get(0);
+    return entities.isEmpty() ? Optional.empty() 
+                              : Optional.of(entities.get(0));
   }
 
   /**
@@ -156,6 +158,8 @@ public final class UserInsights {
                   - in the datastore.
    * @return Creates a map with keys for each ending day of a weekly period and  
    *         values for the total spending during that period. 
+   * TODO (malachibre) : Modify this method by using an enum to calculate time
+   *                     period totals using an enum.
    */
   private ImmutableMap<String, String> calculateWeeklyTotal(List<Key> itemKeys)  {
     if (itemKeys == null || itemKeys.isEmpty()) {
