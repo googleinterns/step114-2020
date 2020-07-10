@@ -39,7 +39,6 @@ public class DealsServlet extends HttpServlet {
 
     GroceryDataReader groceryReader = new GroceryDataReader();
     DealItem bestItem = groceryReader.readFile(itemName);
-    Gson gson = new Gson();
 
     if (bestItem == null) {
       response.setContentType("text/plain");
