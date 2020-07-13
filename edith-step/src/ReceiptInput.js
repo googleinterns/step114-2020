@@ -3,27 +3,57 @@ import React from 'react';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0};
+    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1, 
+                  };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getDate = this.getDate.bind(this);
+  }
+
+  getDate() {
+      const date = new Date(Date.now());
+      let month = date.getMonth() + 1;
+      month < 10 ? month = "0" + month.toString() : month = month.toString();
+      let day = date.getDate();
+      day < 10 ? day = "0" + day.toString() : day = day.toString();
+      let year = date.getFullYear();
+      return [year, month, day].join("-");   
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    
+
     if (this.state.itemName.length === 0) {
       return;
     }
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
+      itemQuantity: this.state.itemQuantity,
       id: Date.now()
     };
+    
     this.setState(state => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
+      itemQuantity: 1
     }));
+
+    const axios = require('axios')
+    axios({
+      method: 'post',
+      url: '/data-servlet',
+      data: {
+        itemName: this.state.itemName,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity,
+        itemDate: this.getDate()
+      }
+    }).then((response) => {
+      console.log(response);
+    });
+
   }
 
   handleChange(e) {
@@ -45,7 +75,7 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input 
                 type="text" 
-                name="text"
+                name="itemName"
                 id="name"
                 value={this.state.itemName} 
                 onChange={this.handleChange} />
@@ -53,10 +83,18 @@ export default class ReceiptInput extends React.Component {
             <td>
               <input
                 type="number" 
-                name="price"
+                name="itemPrice"
                 id="price"
                 step="0.01"
                 value={this.state.itemPrice} 
+                onChange={this.handleChange} />
+            </td>
+            <td>
+              <input
+                type="number"
+                name="itemQuantity"
+                id="quantity"
+                value={this.state.itemQuantity}
                 onChange={this.handleChange} />
             </td>
           </tr>
@@ -84,6 +122,7 @@ var GroceryList = (props) => {
           <tr className="item" key={item.id}>
             <td className="item-name">{item.itemName}</td>
             <td className="item-price">{item.itemPrice}</td>
+            <td className="item-quantity">{item.itemQuantity}</td>
           </tr>
         ))}
       </tbody>
