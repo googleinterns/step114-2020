@@ -16,9 +16,19 @@ public class ShelfDataReaderTest {
   public void setUp() {
     reader = new ShelfDataReader();
   }
+
   @Test
-  public void doesParse() {
-    reader.readFile("Lamb");
-    Assert.assertEquals("", "");
+  public void instantiates() {
+    Assert.assertTrue(reader instanceof ShelfDataReader);
+  }
+
+  @Test
+  public void returnsShelfLifeGoodData() {
+    Assert.assertEquals("Expires in 1.0 2.0 Weeks", reader.readFile("Buttermilk"));
+  }
+
+  @Test
+  public void handlesBadData() {
+    Assert.assertEquals("no shelf life data found", reader.readFile(""));
   }
 }
