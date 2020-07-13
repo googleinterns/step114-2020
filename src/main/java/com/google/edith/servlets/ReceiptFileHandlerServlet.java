@@ -55,9 +55,10 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     } else {
       fileBlobKey = getBlobKey(fileKeys);
     }
-    
-    ReceiptData myReceiptData = new ReceiptData();
-    myReceiptData.extractReceiptData();
+
+
+    // ReceiptData myReceiptData = new ReceiptData();
+    // myReceiptData.extractReceiptData();
 
     response.sendRedirect("/");
   }
