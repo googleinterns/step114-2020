@@ -14,47 +14,48 @@
 
 package com.google.edith;
 
-import com.google.edith.servlets.ReceiptFileHandlerServlet;
-import com.google.edith.services.ReceiptFileHandlerService;
-import com.google.appengine.api.blobstore.BlobKey;
+import com.google.edith.servlets.BlobstoreUrlServlet;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.edith.services.ReceiptFileHandlerService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.mockito.MockitoAnnotations;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.assertTrue;
 
-public class ReceiptFileHandlerServletTest {
-    private final LocalServiceTestHelper testHelper = 
+public class ReceiptFileHandlerServiceTest {
+
+  private final LocalServiceTestHelper testHelper = 
       new LocalServiceTestHelper(
         new LocalBlobstoreServiceTestConfig(),
         new LocalDatastoreServiceTestConfig());
 
-//   private ReceiptFileHandlerServlet receiptFileHandlerServlet;
+  private ReceiptFileHandlerService receiptFileHandlerService;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    // receiptFileHandlerServlet = new ReceiptFileHandlerServlet(new ReceiptFileHandlerService());
+    receiptFileHandlerService = new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
   }
 
   @After
@@ -65,10 +66,24 @@ public class ReceiptFileHandlerServletTest {
   @Mock
   HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
+  @Test
+  public void getUploadedFileUrlWhenEmpty() throws IOException {
+    // Optional<List<FileInfo>> emptyList = Optional.empty();
+    
+    // when(receiptFileHandlerService.getUploadedFileUrl(request, "example")).thenReturn(emptyList);
+    // receiptFileHandlerService.getUploadedFileUrl(request, "example");
+    // verify(receiptFileHandlerService, atLeast(1)).getUploadedFileUrl(request, "example");
+  }
+  
+  @Test
+  public void getUploadedFileUrlWhenNotEmpty() throws IOException {
+  }
 
   @Test
-  public void testRedirect() throws IOException {
+  public void getBlobKeyWhenEmpty() throws IOException {
+  }
+
+  @Test
+  public void getBlobKeyWhenNotEmpty() throws IOException {
   }
 }

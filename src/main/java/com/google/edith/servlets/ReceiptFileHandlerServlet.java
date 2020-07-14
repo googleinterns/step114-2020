@@ -18,13 +18,12 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
-
+import com.google.edith.services.ReceiptFileHandlerService;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,34 +36,25 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
-  
-  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+  private ReceiptFileHandlerService receiptFileHandlerService;
+
+  public ReceiptFileHandlerServlet() {
+    this.receiptFileHandlerService = new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
+  }
+
+  public ReceiptFileHandlerServlet(ReceiptFileHandlerService receiptFileHandlerService) {
+    this.receiptFileHandlerService = receiptFileHandlerService;
+  }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<FileInfo> fileKeys = getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
+    List<FileInfo> fileKeys = receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
     if (fileKeys.isEmpty()) {
-      // Should not ever happen, as the form will never be submitted withouth a file.
-      System.err.println("it is null");
-    } else {
-      BlobKey fileBlobKey = getBlobKey(fileKeys);
-      blobstoreService.serve(fileBlobKey, response);
+      throw new AssertionError();
     }
-  }
-  
-  /**
-   * Returns a List of BlobKey that points to the uploaded files
-   * in the HTML form or null if the user didn't upload a file.
-   */
-  private Optional<List<FileInfo>> getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
-    Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
-    return Optional.ofNullable(fileInfos.get(formInputElementName));
-  }
 
-  /** Returns a  BlobKey that points to the uploaded file. */
-  private BlobKey getBlobKey(List<FileInfo> fileKeys) {
-    FileInfo fileInfo = fileKeys.get(0);
-    return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
+    receiptFileHandlerService.serveBlob(response, fileKeys);
   }
 }
