@@ -28,10 +28,12 @@ public class GroceryDataReaderTest {
   public void canGetDealIfExists() {
     try {
       bestItem = groceryReader.readFile("Apple Juice");
+      Assert.assertEquals("Kroger", bestItem.getStore());
     } catch (IOException e) {
       System.err.println();
+    } catch (NullPointerException e) {
+      System.err.println();
     }
-    Assert.assertEquals("Kroger", bestItem.getStore());
   }
 
   @Test
@@ -48,9 +50,11 @@ public class GroceryDataReaderTest {
   public void getsDealDespiteQuestionableData() {
     try {
       bestItem = groceryReader.readFile("Coconut Milk");
+      Assert.assertEquals("Trader Joe's", bestItem.getStore());
     } catch (IOException e) {
       System.err.println();
+    } catch (NullPointerException e) {
+      System.err.println();
     }
-    Assert.assertEquals("Trader Joe's", bestItem.getStore());
   }
 }

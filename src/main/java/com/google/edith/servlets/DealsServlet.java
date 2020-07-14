@@ -45,7 +45,6 @@ public class DealsServlet extends HttpServlet {
     } catch (Exception e) {
       itemName = item.toLowerCase();
     }
-    System.out.println(itemName);
 
     GroceryDataReader groceryReader = new GroceryDataReader();
     DealItem bestItem = groceryReader.readFile(itemName);
