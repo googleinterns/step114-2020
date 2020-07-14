@@ -43,7 +43,7 @@ public final class DealItem {
     else {
       String num = "";
       for (int i = 0; i < weight.length(); i++) {
-        if (weight.charAt(i)==' ') {
+        if (weight.charAt(i) == ' ') {
           num = weight.substring(0, i);
           break;
         }
