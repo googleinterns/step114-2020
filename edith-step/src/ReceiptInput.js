@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 export default class ReceiptInput extends React.Component {
   constructor(props) {
@@ -21,7 +22,6 @@ export default class ReceiptInput extends React.Component {
       id: Date.now()
     };
     
-    const axios = require('axios')
     axios({
       method: 'post',
       url: '/receipt-deals',
@@ -100,7 +100,7 @@ export default class ReceiptInput extends React.Component {
   }
 }
 
-var GroceryList = (props) => {
+const GroceryList = (props) => {
   return (
     <table id="grocery-list">
       <tbody>

@@ -30,39 +30,39 @@ public class DealItemTest {
   @Test
   public void priceParsedCorrectly() {
     dealItem.setPrice("$25.5");
-    Assert.assertEquals(new Double(25.5), dealItem.getPrice());
+    Assert.assertEquals(25.5, dealItem.getPrice(), .01);
   }
 
   @Test
   public void badPriceDataHandled() {
     dealItem.setPrice("");
-    Assert.assertEquals(new Double(0), dealItem.getPrice());
+    Assert.assertEquals(0.0, dealItem.getPrice(), .01);
   }
 
   @Test
   public void parseDoubleErrorHandledPrice() {
     // Make sure unexpected data doesn't cause an error.
     dealItem.setPrice("bad data");
-    Assert.assertEquals(new Double(0), dealItem.getPrice());
+    Assert.assertEquals(0.0, dealItem.getPrice(), .01);
   }
 
   @Test
   public void weightParsedCorrectly() {
     dealItem.setWeight("15 fl oz");
-    Assert.assertEquals(new Double(15.0), dealItem.getWeight());
+    Assert.assertEquals(15.0, dealItem.getWeight(), .01);
   }
 
   @Test
   public void badWeightHandled() {
     dealItem.setWeight("per fl oz");
-    Assert.assertEquals(new Double(1), dealItem.getWeight());
+    Assert.assertEquals(1.0, dealItem.getWeight(), .01);
   }
 
   @Test
   public void parseDoubleErrorHandledWeight() {
     // Make sure unexpected data doesn't cause an error.
     dealItem.setWeight("bad data");
-    Assert.assertEquals(new Double(0), dealItem.getWeight());
+    Assert.assertEquals(0.0, dealItem.getWeight(), .01);
   }
 
   @Test

@@ -4,8 +4,8 @@ package com.google.edith;
   * different stores in order to compare them. */
 public final class DealItem {
   private String store;
-  private Double price;
-  private Double weight;
+  private double price;
+  private double weight;
   private String comment;
   private double value;
 
@@ -20,39 +20,38 @@ public final class DealItem {
     else {
       String result = price.substring(1, price.length());
       try {
-        this.price = Double.parseDouble(result);
+        this.price = (double) Double.parseDouble(result) / 1.0;
       } catch (NumberFormatException e) {
-        this.price = new Double(0);
+        this.price = 0.0;
       }
     }
   }
 
   public void setWeight(String weight) {
     if (weight.equals("")) {
-      this.weight = new Double(0);
+      this.weight = 0.0;
     }
     else if (weight.equals("dozen")) {
-      this.weight = new Double(12);
+      this.weight = 12.0;
     }
     else if (weight.substring(0, 3).equals("per")) {
-      this.weight = new Double(1);
+      this.weight = 1.0;
     }
     else if (weight.equals("head")) {
-      this.weight = new Double(1);
+      this.weight = 1.0;
     }
     else {
       String num = "";
-      String measure = "";
-      for (int i=0; i<weight.length(); i++) {
+      for (int i = 0; i < weight.length(); i++) {
         if (weight.charAt(i)==' ') {
           num = weight.substring(0, i);
           break;
         }
       }
       try {
-        this.weight = Double.parseDouble(num);
+        this.weight = (double) Double.parseDouble(num) / 1.0;
       } catch (NumberFormatException e) {
-        this.weight = new Double(0);
+        this.weight = 0.0;
       }
     }
   }
