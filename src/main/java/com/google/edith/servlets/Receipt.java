@@ -26,17 +26,13 @@ public final class Receipt {
   private final float totalPrice;
   private final Item[] items;
 
-  Receipt(String userId, String name, String fileUrl, Item[] items) {
+  Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice, Item[] items) {
     this.userId = userId;
-    this.storeName = "unknown";
-    this.date = "unknown";
+    this.storeName = storeName;
+    this.date = date;
     this.name = name;
     this.fileUrl = fileUrl;
-    this.totalPrice = 0.0f;
+    this.totalPrice = totalPrice;
     this.items = items;
-  }
-
-  public String toString() {
-    return(this.userId + " " + this.storeName + " " + this.date + " " + this.name + " " + this.fileUrl + " " + this.totalPrice);
   }
 }

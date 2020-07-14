@@ -48,8 +48,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     Gson gson = new Gson();
     String json = gson.toJson(parsedReceipt);
     
-    System.out.println(json);
-    response.setContentType("application/json;");
+    response.setContentType("application/json");
     response.getWriter().println(json);
   }
 
