@@ -59,11 +59,11 @@ public final class UserInsights {
    * @param items - Non-null list of item Keys to be added to the current Item list.
    */
   public void updateUserStats(List<Key> newItems) {
-    Entity userStats = retreiveUserStats().get();    
-    if (userStats == null) {
+    Optional<Entity> userStats = retreiveUserStats();
+    if (userStats.isEmpty()) {
         return;
-    }
-    List<Key> items = (List<Key>) userStats.getProperty("Items");
+    }    
+    List<Key> items = (List<Key>) userStats.get().getProperty("Items");
     if (items == null) {
       items = newItems;
     } else {
@@ -171,19 +171,23 @@ public final class UserInsights {
     try {
       currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(itemKeys.get(0))
                                           .getProperty("date"), DATE_FORMATTER));
-    } catch(EntityNotFoundException e) {
+    } catch (EntityNotFoundException e) {
       System.err.println("Error: Entity could not be located");
       return ImmutableMap.copyOf(new HashMap<String, String>());
     }
 
     double weeklyTotal = 0;
     Entity itemEntity;
-    for(Key itemKey : itemKeys) {
+    for (Key itemKey : itemKeys) {
       try {
         Entity item = datastore.get(itemKey);
         LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"),
                                              DATE_FORMATTER);
-        if (ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
+        // If there is a positive amount of time between
+        // {@code currentEndOfWeek} and {@code itemDate}
+        // that means that itemDate is after currentEndOfWeek and 
+        // currentEndOfWeek needs to be updated.
+        if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
           weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
