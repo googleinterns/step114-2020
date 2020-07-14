@@ -87,6 +87,8 @@
       <artifactId>auto-value</artifactId>
       <version>1.7.3</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
       <version>4.0</version>
