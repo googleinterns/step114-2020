@@ -74,15 +74,16 @@ public class ShelfDataReader {
       }
     }
 
-    String result = "Expires in ";
+    String result="";
     for (String item: shelfLife.keySet()) {
       try {
         Double.parseDouble(shelfLife.get(item));
         result += shelfLife.get(item) + " ";
       } catch (NumberFormatException e) {
-        result += shelfLife.get(item).substring(1, shelfLife.get(item).length()-1);
+        result += shelfLife.get(item).substring(1, shelfLife.get(item).length()-1) + " ";
       }
     }
+    System.out.println(result);
     return result;
   }
 }

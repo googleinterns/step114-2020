@@ -25,12 +25,14 @@ export default class ReceiptInput extends React.Component {
     if (dealItem == "no deal found") {
       newDeal = {
         storeName: "no deal found",
-        storePrice: 0
+        storePrice: 0,
+        storeExpiration: "no expiration found"
       }
     } else {
       newDeal = {
         storeName: dealItem.store,
-        storePrice: dealItem.price
+        storePrice: dealItem.price,
+        storeExpiration: dealItem.expiration
       };
     }
 
@@ -52,11 +54,19 @@ export default class ReceiptInput extends React.Component {
       dealMessage = "Purchase at " + newDeal.storeName + " for $" + newDeal.storePrice + ".";
     }
 
+    let expirationMessage;
+    if (newDeal.storeExpiration == "no shelf life data found") {
+      expirationMessage = "data unavailable";
+    } else {
+      expirationMessage = newDeal.storeExpiration;
+    }
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
       itemDeal: dealMessage,
+      itemExpiration: expirationMessage,
       id: Date.now()
     };
 
@@ -154,6 +164,7 @@ var GroceryList = (props) => {
             <span className="badge badge-pill col-lg-2">Price</span>
             <span className="badge badge-pill col-lg-2">#</span>
             <span className="badge badge-pill col-lg-2">Deal</span>
+            <span className="badge badge-pill col-lg-2">Expiration</span>
           </li>
         {props.items.map(item => (
           <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
@@ -161,6 +172,7 @@ var GroceryList = (props) => {
             <span className="item-price badge badge-pill col-lg-2">{item.itemPrice}</span>
             <span className="item-quantity badge badge-pill col-lg-2">{item.itemQuantity}</span>
             <span className="item-deal badge badge-pill col-lg-2">{item.itemDeal}</span>
+            <span className="item-expiration badge badge-pill col-lg-2">{item.itemExpiration}</span>
           </li>
         ))}
       </ul>

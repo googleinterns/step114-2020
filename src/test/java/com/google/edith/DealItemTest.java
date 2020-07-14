@@ -85,4 +85,16 @@ public class DealItemTest {
     dealItem.setWeight("bad data");
     Assert.assertEquals(0, dealItem.getValue(), .01);
   }
+
+  @Test
+  public void setsExpirationCorrectly() {
+    dealItem.setExpiration("1.0 2.0 Weeks ");
+    Assert.assertEquals("1.0 Weeks", dealItem.getExpiration());
+  }
+
+  @Test
+  public void handlesBadExpirationData() {
+    dealItem.setExpiration("no shelf life data found");
+    Assert.assertEquals("no shelf life data found", dealItem.getExpiration());
+  }
 }

@@ -1,5 +1,8 @@
 package com.google.edith;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Represents items of the same type from
   * different stores in order to compare them. */
 public final class DealItem {
@@ -8,6 +11,7 @@ public final class DealItem {
   private Double weight;
   private String comment;
   private double value;
+  private String expiration;
 
   public void setStore(String store) {
     this.store = store;
@@ -42,7 +46,6 @@ public final class DealItem {
     }
     else {
       String num = "";
-      String measure = "";
       for (int i=0; i<weight.length(); i++) {
         if (weight.charAt(i)==' ') {
           num = weight.substring(0, i);
@@ -59,6 +62,36 @@ public final class DealItem {
 
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  public void setExpiration(String expiration) {
+    if (expiration.equals("no shelf life data found")) {
+      this.expiration = expiration;
+      return;
+    }
+
+    String[] expirationPieces = expiration.split(" ");
+    List<Double> range = new ArrayList<Double>();
+    String timeMeasurement = "";
+
+    for (String expirationPiece: expirationPieces) {
+      try {
+        range.add(Double.parseDouble(expirationPiece));
+      } catch (NumberFormatException e) {
+        timeMeasurement = expirationPiece;
+      }
+    }
+
+    Double min = new Double(0);
+    if (range.size() >= 1){
+      min = range.get(0);
+    }
+    for (Double time: range) {
+      if (time < min) {
+        min = time;
+      }
+    }
+    this.expiration = min + " " + timeMeasurement;
   }
 
   public double getValue() {
@@ -85,5 +118,9 @@ public final class DealItem {
 
   public String getComment() {
     return comment;
+  }
+
+  public String getExpiration() {
+    return expiration;
   }
 }

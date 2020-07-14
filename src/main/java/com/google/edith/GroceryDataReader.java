@@ -27,6 +27,9 @@ public class GroceryDataReader {
 
 	while ((record = reader.readNext()) != null) {
       if (record[0].equals(itemName)) {
+        ShelfDataReader shelfReader = new ShelfDataReader();
+        String expirationTime = shelfReader.readFile(itemName);
+
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
 	    DealItem item1 = new DealItem();
@@ -34,6 +37,7 @@ public class GroceryDataReader {
 	    item1.setPrice(record[1]);
 	    item1.setWeight(record[2]);
 	    item1.setComment(record[3]);
+        item1.setExpiration(expirationTime);
         dealItems.add(item1);
 
         DealItem item2 = new DealItem();
@@ -41,6 +45,7 @@ public class GroceryDataReader {
 	    item2.setPrice(record[4]);
 	    item2.setWeight(record[5]);
 	    item2.setComment(record[6]);
+        item2.setExpiration(expirationTime);
         dealItems.add(item2);
 
         DealItem item3 = new DealItem();
@@ -48,6 +53,7 @@ public class GroceryDataReader {
 	    item3.setPrice(record[7]);
 	    item3.setWeight(record[8]);
 	    item3.setComment(record[9]);
+        item3.setExpiration(expirationTime);
         dealItems.add(item3);
 
         DealItem item4 = new DealItem();
@@ -55,6 +61,7 @@ public class GroceryDataReader {
 	    item4.setPrice(record[10]);
 	    item4.setWeight(record[11]);
 	    item4.setComment(record[12]);
+        item4.setExpiration(expirationTime);
         dealItems.add(item4);
 
         DealItem item5 = new DealItem();
@@ -62,6 +69,7 @@ public class GroceryDataReader {
 	    item5.setPrice(record[13]);
 	    item5.setWeight(record[14]);
 	    item5.setComment(record[15]);
+        item5.setExpiration(expirationTime);
         dealItems.add(item5);
 
         bestItem = getBestDeal(dealItems);
