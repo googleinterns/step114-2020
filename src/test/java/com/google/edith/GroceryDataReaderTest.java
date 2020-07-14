@@ -39,7 +39,7 @@ public class GroceryDataReaderTest {
   @Test
   public void nullReturnedIfNoDeal() {
     try {
-      bestItem = groceryReader.readFile("bread");
+      bestItem = groceryReader.readFile("no deal");
     } catch (IOException e) {
       System.err.println();
     }

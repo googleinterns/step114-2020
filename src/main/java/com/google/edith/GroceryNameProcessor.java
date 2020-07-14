@@ -34,7 +34,6 @@ public class GroceryNameProcessor {
 
       AnalyzeEntitiesResponse response = language.analyzeEntities(request);
 
-      // Print the response
       /**
       for (Entity entity : response.getEntitiesList()) {
           System.out.printf("Entity: %s", entity.getName());
@@ -50,8 +49,7 @@ public class GroceryNameProcessor {
         }
       }*/
 
-      if (response.getEntitiesList().size() == 1) {
-        //System.out.println(response.getEntitiesList().get(0).getMentionsList().get(0).getText().getContent().toLowerCase());
+      if (response.getEntitiesList().size() >= 1) {
         return response.getEntitiesList().get(0).getMentionsList().get(0).getText().getContent().toLowerCase();
       }
       else {

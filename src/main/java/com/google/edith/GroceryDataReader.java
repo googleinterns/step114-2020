@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.Exception;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,16 @@ public class GroceryDataReader {
     record = reader.readNext();
     record = reader.readNext();
 
+    GroceryNameProcessor processor = new GroceryNameProcessor();
+
 	while ((record = reader.readNext()) != null) {
-      if (record[0].toLowerCase().equals(itemName)) {
+      String fileData;
+      try {
+        fileData = processor.process(record[0].toLowerCase());
+      } catch (Exception e) {
+        fileData = record[0].toLowerCase();
+      }
+      if (fileData.equals(itemName) && !itemName.equals("")) {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
 	    DealItem item1 = new DealItem();

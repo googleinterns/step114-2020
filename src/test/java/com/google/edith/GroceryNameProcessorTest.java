@@ -25,4 +25,14 @@ public class GroceryNameProcessorTest {
     }
     Assert.assertEquals("Kroger", "Kroger");
   }
+
+  @Test
+  public void canMatch() {
+    try {
+      processor.process("Kirkland Farms pasture-raised eggs");
+    } catch(Exception e) {
+      System.out.println(e);
+    }
+    Assert.assertEquals("Kroger", "Kroger");
+  }
 }
