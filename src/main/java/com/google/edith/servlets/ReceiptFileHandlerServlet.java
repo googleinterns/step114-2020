@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +42,16 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   private static final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
   private static BlobKey fileBlobKey;
   private static String expenditureName;
+  private Receipt parsedReceipt;
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Gson gson = new Gson();
+    String json = gson.toJson(parsedReceipt);
+    
+    response.setContentType("application/json");
+    response.getWriter().println(json);
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -56,9 +65,9 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     } else {
       fileBlobKey = getBlobKey(fileKeys);
     }
-    
+
     ReceiptData myReceiptData = new ReceiptData();
-    myReceiptData.extractReceiptData();
+    parsedReceipt = myReceiptData.extractReceiptData();
 
     response.sendRedirect("/");
   }

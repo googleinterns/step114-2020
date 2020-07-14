@@ -14,25 +14,30 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.users.User;
+import com.google.auto.value.AutoValue;
 
 /** Encapsulate User info and logout url. */
-public final class Item {
-  private final String userId;
-  private final String name;
-  private final String price;
-  private final int quantity;
-  private final String category;
-
-  Item(String userId, String name, String price, int quantity) {
-    this.userId = userId;
-    this.name = name;
-    this.price = price;
-    this.quantity = quantity;
-    this.category = "unknown";
+@AutoValue
+abstract class Item {
+  abstract String userId();
+  abstract String name();
+  abstract float price();
+  abstract int quantity();
+  abstract String category();
+  abstract String expireDate();
+  
+  static Builder builder() {
+    return new AutoValue_Item.Builder();
   }
 
-  public String toString() {
-      return (this.userId + this.name + this.price + this.quantity + this.category);
+  @AutoValue.Builder
+  abstract static class Builder {
+    abstract Builder setUserId(String value);
+    abstract Builder setName(String value);
+    abstract Builder setPrice(float value);
+    abstract Builder setQuantity(int value);
+    abstract Builder setCategory(String value);
+    abstract Builder setExpireDate(String value);
+    abstract Item build();
   }
 }
