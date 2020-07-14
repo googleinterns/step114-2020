@@ -24,7 +24,8 @@ abstract class Item {
   abstract float price();
   abstract int quantity();
   abstract String category();
-
+  abstract String expireDate();
+  
   static Builder builder() {
     return new AutoValue_Item.Builder();
   }
@@ -36,6 +37,7 @@ abstract class Item {
     abstract Builder setPrice(float value);
     abstract Builder setQuantity(int value);
     abstract Builder setCategory(String value);
+    abstract Builder setExpireDate(String value);
     abstract Item build();
   }
 }

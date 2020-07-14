@@ -50,6 +50,7 @@ public class ReceiptData {
             .setPrice(Float.parseFloat(itemFields.get("itemPrice")))
             .setQuantity(0)
             .setCategory("unknown category")
+            .setExpireDate("unknown date")
             .build();
 
       items[index++] = receiptItem;
