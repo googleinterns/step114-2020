@@ -14,6 +14,7 @@
 
 package com.google.edith.servlets;
 
+import com.google.gson.Gson;
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
@@ -48,6 +49,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     String json = gson.toJson(parsedReceipt);
+    System.out.println(json);
     
     response.setContentType("application/json");
     response.getWriter().println(json);
@@ -70,12 +72,6 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     parsedReceipt = myReceiptData.extractReceiptData();
 
     response.sendRedirect("/");
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Gson gson = new Gson();
-    String json = gson.toJson();
   }
   
   /**
