@@ -19,7 +19,7 @@ public class GroceryNameProcessorTest {
   @Test
   public void canGetDealIfExists() {
     try {
-      processor.process("Coleman Farms chicken breast");
+      System.out.println(processor.process("Coleman Farms chicken breast"));
     } catch(Exception e) {
       System.out.println(e);
     }
@@ -29,7 +29,7 @@ public class GroceryNameProcessorTest {
   @Test
   public void canMatch() {
     try {
-      processor.process("Kirkland Farms pasture-raised eggs");
+      System.out.println(processor.process("Kirkland Farms pasture-raised eggs"));
     } catch(Exception e) {
       System.out.println(e);
     }
