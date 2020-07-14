@@ -2,6 +2,7 @@ package com.google.edith.servlets;
 
 import com.google.edith.DealItem;
 import com.google.edith.GroceryDataReader;
+import com.google.edith.GroceryNameProcessor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.lang.Exception;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,15 @@ public class DealsServlet extends HttpServlet {
     String receiptData = sb.toString();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(receiptData);
-    String itemName = json.get("itemName").getAsString();
+    String item = json.get("itemName").getAsString();
+    String itemName;
+    try {
+      GroceryNameProcessor processor = new GroceryNameProcessor();
+      itemName = processor.process(item).toLowerCase();
+    } catch (Exception e) {
+      itemName = item.toLowerCase();
+    }
+    System.out.println(itemName);
 
     GroceryDataReader groceryReader = new GroceryDataReader();
     DealItem bestItem = groceryReader.readFile(itemName);

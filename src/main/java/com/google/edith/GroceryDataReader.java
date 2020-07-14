@@ -24,9 +24,11 @@ public class GroceryDataReader {
     String[] record = null;
     record = reader.readNext();
     record = reader.readNext();
+    System.out.println(itemName);
 
 	while ((record = reader.readNext()) != null) {
-      if (record[0].equals(itemName)) {
+      if (record[0].toLowerCase().equals(itemName)) {
+        System.out.println("here");
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
 	    DealItem item1 = new DealItem();
