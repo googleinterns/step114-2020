@@ -1,4 +1,4 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
 import com.google.edith.servlets.DealsServlet;
 import com.google.gson.JsonObject;
