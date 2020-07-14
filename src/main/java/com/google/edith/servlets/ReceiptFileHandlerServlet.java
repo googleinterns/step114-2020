@@ -19,6 +19,7 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -60,6 +61,12 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     myReceiptData.extractReceiptData();
 
     response.sendRedirect("/");
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Gson gson = new Gson();
+    String json = gson.toJson();
   }
   
   /**
