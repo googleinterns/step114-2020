@@ -38,9 +38,7 @@ public class BlobstoreUrlServlet extends HttpServlet {
 		UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName("edith-receipts");
 
 		String uploadUrl = blobstoreService.createUploadUrl("/receipt-file-handler", uploadOptions);
-    
-    ExtractReceipt ex = new ExtractReceipt();
-    ex.extractReceipt();
+   
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);
 
