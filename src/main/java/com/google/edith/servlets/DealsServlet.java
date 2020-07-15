@@ -43,12 +43,14 @@ public class DealsServlet extends HttpServlet {
     if (bestItem == null) {
       response.setContentType("text/plain");
       response.getWriter().println("no deal found");
+      System.out.println("no deal found");
     }
     else {
       Gson gson = new Gson();
       String responseJson = gson.toJson(bestItem);
       response.setContentType("application/json");
       response.getWriter().println(responseJson);
+      System.out.println(responseJson);
     }
   }
 }
