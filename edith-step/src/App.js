@@ -21,7 +21,9 @@ class App extends Component {
             <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
-        <ReceiptHandler />
+        <div className="receipt-info">
+          <ReceiptHandler />
+        </div>
       </div>
     );
   }
