@@ -68,19 +68,22 @@ export default class ReceiptHandler extends React.Component {
         {this.state.items.map((item, i) => (
         <div className="form-row" key={i}>
           <div className="col auto">
-            <input type="text" defaultValue={item.name} 
-                onChange={this.handleChange.bind(this, i, "name")
-                className="name"}/>
+            <input type="text" 
+                className="name"
+                defaultValue={item.name} 
+                onChange={this.handleChange.bind(this, i, "name")}/>
           </div>
           <div className="col auto">
-            <input type="number" defaultValue={item.price} 
-                onChange={this.handleChange.bind(this, i, "price")
-                className="price"}/>
+            <input type="number" 
+                className="price"
+                defaultValue={item.price} 
+                onChange={this.handleChange.bind(this, i, "price")}/>
           </div>
           <div className="col auto">
-            <input type="number" defaultValue={item.quantity} 
-                onChange={this.handleChange.bind(this, i, "quantity")
-                className="quantity"}/>
+            <input type="number" 
+                defaultValue={item.quantity} 
+                className="quantity"
+                onChange={this.handleChange.bind(this, i, "quantity")}/>
           </div>
         </div>
         ))}
@@ -93,5 +96,4 @@ export default class ReceiptHandler extends React.Component {
       </div>
     );
   }
-
 }

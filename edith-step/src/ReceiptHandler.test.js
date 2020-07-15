@@ -5,9 +5,11 @@ import './setupTests.js'
 
 let component;
 let handleChange;
+let getReceiptData;
 
 beforeEach(() => {
-  handleChange = jest.spyOn(ReceiptInput.prototype, 'handleChange');
+  handleChange = jest.spyOn(ReceiptHandler.prototype, 'handleChange');
+  getReceiptData = jest.spyOn(ReceiptHandler.prototype, 'getReceiptData');
   component = mount(<ReceiptHandler onChange={ handleChange }/>);
 })
 
@@ -15,39 +17,61 @@ afterEach(() => {
   component.unmount();
 });
 
-// ReceiptInput component renders properly.
+// ReceiptHandler component renders properly.
 it('renders properly', () => {
   expect(component.exists()).toBe(true);
 });
 
+// ReceiptHandler component renders properly.
+it('calls getReceiptData on mount', () => {
+  expect(getReceiptData).toBeCalled();
+});
+
 // handleChange is called on change.
 it('should call handleChange on form change', () => {
-  component.find('.name').simulate('change');
-  expect(handleChange).toBeCalled();
-  component.find('.price').simulate('change');
-  expect(handleChange).toBeCalled();
-  component.find('.quantity').simulate('change');
-  expect(handleChange).toBeCalled();
+  const newItem = {
+    name: '',
+    price: 0.0,
+    quantity: 1
+  }
+  component.setState({ items: newItem });
+  expect(component.state('items')).toBe(newItem);
+
+  const promise = new Promise(getReceiptData);
+  promise.then(() => {
+    component.find('.name').simulate('change');
+    expect(handleChange).toBeCalled();
+    component.find('.price').simulate('change');
+    expect(handleChange).toBeCalled();
+    component.find('.quantity').simulate('change');
+    expect(handleChange).toBeCalled();
+  });
 });
 
 // handleChange updates state.
 it('should change state when handleChange is called', () => {
   const newItem = {
-    name: 'bread',
-    price: 5.6,
-    quantity: 3
+    name: '',
+    price: 0.0,
+    quantity: 1
   }
   component.setState({ items: newItem });
   expect(component.state('items')).toBe(newItem);
 
-  const textEvent = {target: { name: "itemName", value: "bread" }};
-  const priceEvent = {target: { name: "itemPrice", value: 5.6 }};
-  const quantityEvent = {target: {name: "itemQuantity", value: 3}};
+  const textEvent = {target: { name: "items[0].name", value: 'bread' }};
+  const priceEvent = {target: { name: "items[0].price", value: 5.6 }};
+  const quantityEvent = {target: {name: "items[0].quantity", value: 3}};
 
-  component.find('.name').simulate('change', textEvent);
-  expect(component.state('itemName')).toBe('bread');
-  component.find('.price').simulate('change', priceEvent);
-  expect(component.state('itemPrice')).toBe(5.6);
-  component.find('.quantity').simulate('change', quantityEvent);
-  expect(component.state('itemQuantity')).toBe(3);
+  const targetItem = {
+    name: 'bread',
+    price: 5.6,
+    quantity: 3
+  }
+  const promise = new Promise(getReceiptData);
+  promise.then(() => {
+    component.find('.name').simulate('change', textEvent);
+    component.find('.price').simulate('change', priceEvent);
+    component.find('.quantity').simulate('change', quantityEvent);
+    expect(component.state('items')).toBe(targetItem);
+  });
 });
