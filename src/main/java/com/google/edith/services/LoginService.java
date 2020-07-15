@@ -52,9 +52,10 @@ public class LoginService {
   * Converts UserInfo object to JSON string.
   * @return String - JSON string.
   */
-  public String crateJsonOfUserInfo() {
+  public String createJsonOfUserInfo() {
     Gson gson = new Gson();
-    return gson.toJson(createUserInfo());
+    UserInfo loggedInUser = createUserInfo();
+    return gson.toJson(loggedInUser);
   }
 
   /**
@@ -101,7 +102,7 @@ public class LoginService {
     datastore.put(userInfoEntity);
   }
 
-  public Optional<String> getParameter(HttpServletRequest request, String name) {
+  private Optional<String> getParameter(HttpServletRequest request, String name) {
     return Optional.ofNullable(request.getParameter(name));
   }
 
@@ -110,7 +111,7 @@ public class LoginService {
    * Given id is not of UserInfo kind but a field of that kind.
    * @param id - id of the user who is logged in.
    */
-  public Optional<Entity> getUserInfoEntity(String id) {
+  private Optional<Entity> getUserInfoEntity(String id) {
     
     Query query =
         new Query("UserInfo")
@@ -123,7 +124,7 @@ public class LoginService {
    * Creates UserInfo object encapsulating user data.
    * @return UserInfo - wrapper object for user information and logout url.
    */
-  public UserInfo createUserInfo() {
+  private UserInfo createUserInfo() {
     User user = userService.getCurrentUser();
     String logoutUrl = userService.createLogoutURL("/");
     String firstName = "";
