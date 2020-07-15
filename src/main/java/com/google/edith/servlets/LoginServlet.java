@@ -14,6 +14,7 @@
 
 package com.google.edith.servlets;
 
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.services.LoginService;
 import java.io.IOException;
@@ -32,7 +33,9 @@ public class LoginServlet extends HttpServlet {
   private LoginService loginService;
 
   public LoginServlet() {
-    this.loginService = new LoginService(UserServiceFactory.getUserService());
+    this.loginService = new LoginService(
+          UserServiceFactory.getUserService(),
+          DatastoreServiceFactory.getDatastoreService());
   }
 
   public LoginServlet(LoginService loginService) {

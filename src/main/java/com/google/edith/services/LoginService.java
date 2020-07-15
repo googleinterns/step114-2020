@@ -41,9 +41,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginService {
   private final UserService userService;
+  private final DatastoreService datastore;
 
-  public LoginService(UserService userService) {
+  public LoginService(UserService userService, DatastoreService datastore) {
     this.userService = userService;
+    this.datastore = datastore;
   }
 
   /**
@@ -84,8 +86,6 @@ public class LoginService {
 
     String id = userService.getCurrentUser().getUserId();
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     // Do not create another entity to set nickname if it already exists.
     Entity userInfoEntity = getUserInfoEntity(id).orElseGet(() -> {
       Entity info = new Entity("UserInfo");
@@ -111,7 +111,7 @@ public class LoginService {
    * @param id - id of the user who is logged in.
    */
   public Optional<Entity> getUserInfoEntity(String id) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    
     Query query =
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));

@@ -32,13 +32,8 @@ class TopNavbar extends React.Component {
   }
   
   displayName() {
-    const fullName = this.state.user.lastName + this.state.user.firstName
-    if ((this.state.user.lastName + this.state.user.firstName).length > 0) {
-      return fullName;
-    } else {
-      return this.state.user.email;
-    }
-    
+    const displayName = this.state.user.userName || this.state.user.email;
+    return displayName;
   }
 
   login() {
