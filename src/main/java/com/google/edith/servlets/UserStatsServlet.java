@@ -23,17 +23,27 @@ import java.util.Collections;
 import java.util.List;
 
 /**
-* Servlet that returns some example content.
-*/
+ * Servlet that returns some example content.
+ */
 @WebServlet("/user-stats-servlet")
-public class DataServlet extends HttpServlet {
+public class UserStatsServlet extends HttpServlet {
 
-  private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
+  private final DatastoreService datastore;
+  private final UserInsightsInterface userInsights;
+
+  public UserStatsServlet() {
+    this.datastore = DatastoreServiceFactory.getDatastoreService();
+    this.userInsights = new UserInsights("userId");
+  }
+
+  public UserStatsServlet(DatastoreService datastore, UserInsightsInterface userInsights) {
+    this.datastore = datastore;
+    this.userInsights = userInsights;
+  } 
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/json");
-    UserInsights userInsights = new UserInsights("userId");    
+    response.setContentType("text/json");   
     response.getWriter().println(userInsights.createJson());
   }
 
@@ -59,7 +69,7 @@ public class DataServlet extends HttpServlet {
     itemEntity.setProperty("userId", "userId");
     itemEntity.setProperty("price", Double.parseDouble(json.get("itemPrice").getAsString()));
     itemEntity.setProperty("quantity", Long.parseLong(json.get("itemQuantity").getAsString()));
-    itemEntity.setProperty("date", json.get("itemQuantity").getAsString());
+    itemEntity.setProperty("date", json.get("itemDate").getAsString());
     
     datastore.put(itemEntity);
     Query itemQuery = new Query("Item");
@@ -69,10 +79,11 @@ public class DataServlet extends HttpServlet {
                             .stream()
                             .map(entity -> entity.getKey())
                             .collect(Collectors.toList());
-    UserInsights userInsights = new UserInsights("userId");
     if (!userInsights.retreiveUserStats().isPresent()) {
       userInsights.createUserStats();
     }
     userInsights.updateUserStats(itemKeys);
+    response.setContentType("text/html");
+    response.getWriter().println("Item posted");
   }
 }

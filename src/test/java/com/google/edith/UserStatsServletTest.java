@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.edith.servlets.UserInsights;
+import com.google.edith.servlets.UserInsightsInterface;
 import com.google.edith.servlets.UserStatsServlet;
 import com.google.edith.servlets.Item;
 import com.google.gson.Gson;
@@ -60,4 +61,45 @@ public final class UserStatsServletTest {
     testHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
   }  
+
+  @Test
+  public void testServletGoodInput() throws Exception {
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+
+    JsonObject testJson = new JsonObject();
+    testJson.addProperty("itemPrice", "5.00");
+    testJson.addProperty("itemQuantity", "4");
+    testJson.addProperty("itemDate", "2020-07-14");
+
+    String json = gson.toJson(testJson);
+    Mockito.when(request.getReader()).thenReturn(
+        new BufferedReader(new StringReader(json)));
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    Mockito.when(response.getWriter()).thenReturn(writer);
+
+    new UserStatsServlet().doPost(request, response);
+
+    Mockito.verify(request, Mockito.atLeast(1)).getReader();
+    writer.flush();
+    Assert.assertTrue(stringWriter.toString().contains("Item posted"));
+  }
+
+  @Test
+  public void testServlet() throws Exception {
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    UserInsightsInterface userInsights = Mockito.mock(UserInsightsInterface.class);
+
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    Mockito.when(response.getWriter()).thenReturn(writer);
+    Mockito.when(userInsights.createJson()).thenReturn("");
+
+    new UserStatsServlet(datastore, userInsights).doGet(request, response);
+    Mockito.verify(userInsights, Mockito.atLeast(1)).createJson();
+  }
+
 }
