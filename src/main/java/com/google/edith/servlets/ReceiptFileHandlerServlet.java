@@ -14,12 +14,12 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
 import com.google.gson.Gson;
+import com.google.edith.services.ReceiptFileHandlerService;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -38,11 +38,20 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
-  private static final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  private Receipt parsedReceipt;
+  private ReceiptFileHandlerService receiptFileHandlerService;
+  
   private static BlobKey fileBlobKey;
   private static String expenditureName;
-  private Receipt parsedReceipt;
+  
 
+  public ReceiptFileHandlerServlet() {
+    this.receiptFileHandlerService = new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
+  }
+
+  public ReceiptFileHandlerServlet(ReceiptFileHandlerService receiptFileHandlerService) {
+    this.receiptFileHandlerService = receiptFileHandlerService;
+  }
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
@@ -54,36 +63,17 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
     expenditureName = request.getParameter("expense-name") == null ? "unknown" : request.getParameter("expense-name");
-
-    List<FileInfo> fileKeys = getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
+    List<FileInfo> fileKeys = receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
     if (fileKeys.isEmpty()) {
-      System.out.println("it is null");
-    } else {
-      fileBlobKey = getBlobKey(fileKeys);
+      throw new IllegalStateException();
     }
 
-    ReceiptData myReceiptData = new ReceiptData();
-    parsedReceipt = myReceiptData.extractReceiptData();
-
+    fileBlobKey = receiptFileHandlerService.getBlobKey(fileKeys);
+    parsedReceipt = receiptFileHandlerService.createParsedReceipt();
+    
     response.sendRedirect("/");
-  }
-  
-  /**
-   * Returns a List of BlobKey that points to the uploaded files
-   * in the HTML form or null if the user didn't upload a file.
-   */
-  private Optional<List<FileInfo>> getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
-    Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
-    return Optional.ofNullable(fileInfos.get(formInputElementName));
-  }
-
-  /** Returns a  BlobKey that points to the uploaded file. */
-  private BlobKey getBlobKey(List<FileInfo> fileKeys) {
-    FileInfo fileInfo = fileKeys.get(0);
-    return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
   }
 
   public static String getFileBlobKey() {
