@@ -14,18 +14,9 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.gson.Gson;
+import com.google.edith.services.LoginService;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.NoSuchElementException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,110 +29,32 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
   
+  private LoginService loginService;
+
+  public LoginServlet() {
+    this.loginService = new LoginService(UserServiceFactory.getUserService());
+  }
+
+  public LoginServlet(LoginService loginService) {
+    this.loginService = loginService;
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
 
-    if (userService.isUserLoggedIn()) {
-      Gson gson = new Gson();
-      String json = gson.toJson(createUserInfo(userService));
+    if (loginService.checkUserLoggedIn()) {
+      String json = loginService.crateJsonOfUserInfo();
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
-      String loginUrl = userService.createLoginURL("/");
+      String loginUrl = loginService.createLoginUrl("/");
       response.sendRedirect(loginUrl);
     }
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    storeUserInfoEntityInDatastore(userService, request);
+    loginService.storeUserInfoEntityInDatastore(request);
     response.sendRedirect("/");
-  }
-
-  /**
-   * Stores the userInfo entity in the datastore.
-   * @param userService - provides information about ther logged in user.
-   * @param request - request from the UserInfoModalBox component.
-   */
-  private void storeUserInfoEntityInDatastore(UserService userService, HttpServletRequest request) {
-    String firstName = getParameter(request, "first-name").orElse("");
-    String lastName = getParameter(request, "last-name").orElse("");
-    String userName = getParameter(request, "username").orElse("");
-    String favoriteStore = getParameter(request, "favorite-store").orElse("");
-
-    userService = UserServiceFactory.getUserService();
-    String id = userService.getCurrentUser().getUserId();
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    // Do not create another entity to set nickname if it already exists.
-    Entity userInfoEntity = getUserInfoEntity(id).orElseGet(() -> {
-      Entity info = new Entity("UserInfo");
-      info.setProperty("id", id);
-      return info;
-    });
-
-    userInfoEntity.setProperty("firstName", firstName);
-    userInfoEntity.setProperty("lastName", lastName);
-    userInfoEntity.setProperty("userName", userName);
-    userInfoEntity.setProperty("favoriteStore", favoriteStore);
-
-    datastore.put(userInfoEntity);
-  }
-
-  private Optional<String> getParameter(HttpServletRequest request, String name) {
-    return Optional.ofNullable(request.getParameter(name));
-  }
-
-  /**
-   * Returns the UserInfo entity with user id.
-   * Given id is not of UserInfo kind but a field of that kind.
-   * @param id - id of the user who is logged in.
-   */
-  private Optional<Entity> getUserInfoEntity(String id) {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query =
-        new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
-    PreparedQuery results = datastore.prepare(query);
-    return Optional.ofNullable(results.asSingleEntity());
-  }
-  
-  /**
-   * Creates UserInfo object encapsulating user data.
-   * @param userService - provides information about ther logged in user.
-   * @return UserInfo - wrapper object for user information and logout url.
-   */
-  private UserInfo createUserInfo(UserService userService) {
-    User user = userService.getCurrentUser();
-    String logoutUrl = userService.createLogoutURL("/");
-    String firstName = "";
-    String lastName = "";
-    String userName = "";
-    String favoriteStore = "";
-    
-    Optional<Entity> optEntity = getUserInfoEntity(user.getUserId());
-    
-    if (optEntity.isPresent()) {
-      Entity userInfoEntity = optEntity.get();
-      firstName = (String) userInfoEntity.getProperty("firstName");
-      lastName = (String) userInfoEntity.getProperty("lastName");
-      userName = (String) userInfoEntity.getProperty("userName");
-      favoriteStore = (String) userInfoEntity.getProperty("favoriteStore");
-    }
-
-    UserInfo userInfo = UserInfo.builder()
-        .setFirstName(firstName)
-        .setLastName(lastName)
-        .setUserName(userName)
-        .setFavoriteStore(favoriteStore)
-        .setEmail(user.getEmail())
-        .setUserId(user.getUserId())
-        .setLogOutUrl(logoutUrl)
-        .build();
-
-    return userInfo;
   }
 }
