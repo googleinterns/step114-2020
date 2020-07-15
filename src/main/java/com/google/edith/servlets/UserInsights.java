@@ -21,7 +21,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public final class UserInsights {
   public ImmutableMap<String, String> aggregateUserData() { 
     Entity userStats = retreiveUserStats().get();
     if (userStats == null) {
-        Map<String, String> emptyMap = new HashMap<String, String>();
+        Map<String, String> emptyMap = new LinkedHashMap<String, String>();
         emptyMap.put("weeklyAggregate", "");
         emptyMap.put("items", "");
         return ImmutableMap.copyOf(emptyMap);
@@ -139,7 +140,7 @@ public final class UserInsights {
    * Finds the UserStats entity corresponding to {@code userId} in datastore.
    * @return UserStats entity for this user
    */
-  private Optional<Entity> retreiveUserStats() {
+  public Optional<Entity> retreiveUserStats() {
     Filter idFilter = new FilterPredicate("userId", 
                                 FilterOperator.EQUAL,
                                 userId);
@@ -163,9 +164,9 @@ public final class UserInsights {
    */
   private ImmutableMap<String, String> calculateWeeklyTotal(List<Key> itemKeys)  {
     if (itemKeys == null || itemKeys.isEmpty()) {
-        return ImmutableMap.copyOf(new HashMap<String, String>());
+        return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
     }
-    Map<String, String> weeklyTotals = new HashMap<String, String>();
+    Map<String, String> weeklyTotals = new LinkedHashMap<String, String>();
     LocalDate currentEndOfWeek;
 
     try {
@@ -173,7 +174,7 @@ public final class UserInsights {
                                           .getProperty("date"), DATE_FORMATTER));
     } catch(EntityNotFoundException e) {
       System.err.println("Error: Entity could not be located");
-      return ImmutableMap.copyOf(new HashMap<String, String>());
+      return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
     }
 
     double weeklyTotal = 0;
@@ -183,7 +184,7 @@ public final class UserInsights {
         Entity item = datastore.get(itemKey);
         LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"),
                                              DATE_FORMATTER);
-        if (ChronoUnit.DAYS.between(itemDate, currentEndOfWeek) < 0) {
+        if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
           weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
