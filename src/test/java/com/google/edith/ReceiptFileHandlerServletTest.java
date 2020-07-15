@@ -26,8 +26,12 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.mockito.MockitoAnnotations;
@@ -37,10 +41,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.assertTrue;
 
 public class ReceiptFileHandlerServletTest {
     private final LocalServiceTestHelper testHelper = 
@@ -48,27 +54,44 @@ public class ReceiptFileHandlerServletTest {
         new LocalBlobstoreServiceTestConfig(),
         new LocalDatastoreServiceTestConfig());
 
-//   private ReceiptFileHandlerServlet receiptFileHandlerServlet;
+  private ReceiptFileHandlerServlet receiptFileHandlerServlet;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    // receiptFileHandlerServlet = new ReceiptFileHandlerServlet(new ReceiptFileHandlerService());
+    receiptFileHandlerServlet = new ReceiptFileHandlerServlet(receiptFileHandlerService);
   }
 
   @After
   public void tearDown() {
     testHelper.tearDown();
   }
-
+  
   @Mock
   HttpServletRequest request;
 
   @Mock
   HttpServletResponse response;
+  
+  @Mock
+  ReceiptFileHandlerService receiptFileHandlerService;
+
+  @Test(expected = IllegalStateException.class)
+  public void throwIllegalStateException() throws IOException {
+    List<FileInfo> files = Collections.emptyList();
+    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file")).thenReturn(Optional.of(files));
+    receiptFileHandlerServlet.doPost(request, response);
+  }
 
   @Test
   public void testRedirect() throws IOException {
+    Date creationDate = new Date();
+    FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
+    List<FileInfo> files = new ArrayList<FileInfo>();
+    files.add(uploadFile);
+    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file")).thenReturn(Optional.of(files));
+    receiptFileHandlerServlet.doPost(request, response);
+    verify(receiptFileHandlerService, times(1)).serveBlob(response, files);
   }
 }

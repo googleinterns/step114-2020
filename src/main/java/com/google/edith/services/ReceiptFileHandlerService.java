@@ -53,6 +53,8 @@ public class ReceiptFileHandlerService {
 
   /** Returns a  BlobKey that points to the uploaded file. */
   public BlobKey getBlobKey(List<FileInfo> fileKeys) {
+    if (fileKeys.isEmpty()) throw new IllegalStateException();
+
     FileInfo fileInfo = fileKeys.get(0);
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
   }

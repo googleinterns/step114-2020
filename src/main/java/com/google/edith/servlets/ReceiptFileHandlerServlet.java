@@ -52,7 +52,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     List<FileInfo> fileKeys = receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
     if (fileKeys.isEmpty()) {
-      throw new AssertionError();
+      throw new IllegalStateException();
     }
 
     receiptFileHandlerService.serveBlob(response, fileKeys);
