@@ -6,10 +6,12 @@ import './setupTests.js'
 let component;
 let handleItemChange;
 let getReceiptData;
+let addItem;
 
 beforeEach(() => {
   handleItemChange = jest.spyOn(ReceiptHandler.prototype, 'handleItemChange');
   getReceiptData = jest.spyOn(ReceiptHandler.prototype, 'getReceiptData');
+  addItem = jest.spyOn(ReceiptHandler.prototype, 'addItem');
   component = mount(<ReceiptHandler onChange={ handleItemChange }/>);
 })
 
@@ -73,5 +75,19 @@ it('should change state when handleItemChange is called', () => {
     component.find('.price').simulate('change', priceEvent);
     component.find('.quantity').simulate('change', quantityEvent);
     expect(component.state('items')).toBe(targetItem);
+  });
+});
+
+it('should create a new form field when addItem is called', () => {
+  expect(component.find('.name').exists()).toBe(false);
+  expect(component.find('.price').exists()).toBe(false);
+  expect(component.find('.quantity').exists()).toBe(false);
+
+  const promise = new Promise(getReceiptData);
+  promise.then(() => {
+    component.find('#add').simulate('click');
+    expect(component.find('.name').exists()).toBe(true);
+    expect(component.find('.price').exists()).toBe(true);
+    expect(component.find('.quantity').exists()).toBe(true);
   });
 });
