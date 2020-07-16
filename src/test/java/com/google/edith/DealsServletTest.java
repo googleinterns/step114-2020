@@ -2,8 +2,6 @@ package com.google.edith;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
