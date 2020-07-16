@@ -1,8 +1,5 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
-import com.google.edith.GroceryNameProcessor;
-import com.google.edith.DealItem;
-import com.google.edith.GroceryDataReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

@@ -57,13 +57,7 @@ export default class ReceiptHandler extends React.Component {
       method: 'post',
       url: '/receipt-deals',
       data: {
-        userId: this.state.userId,
-        storeName: this.state.storeName,
-        date: this.state.date,
-        name: this.state.name,
-        fileUrl: this.state.fileUrl,
-        totalPrice: this.state.price,
-        items: receiptData
+        data: receiptData
       }
     });
   }
@@ -106,6 +100,7 @@ export default class ReceiptHandler extends React.Component {
           </div>
         </div>
         ))}
+
         <div className="form-row">
           <div className="col-auto">
             <input type="text"

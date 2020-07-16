@@ -1,4 +1,4 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
