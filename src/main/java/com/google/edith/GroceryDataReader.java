@@ -8,15 +8,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Processes data file of product prices and sizes at different
-  * stores and returns the best value item. */
-public class GroceryDataReader {
+/** 
+  * Processes data file of product prices and sizes at different
+  * stores and returns the best value item. 
+  */
+public final class GroceryDataReader {
     
-  /** Finds the specified product in the file and puts the
-    * data into DealItem objects to be handled. */
+  /**
+    * Finds the specified product in the file and puts the
+    * data into DealItem objects to be handled. 
+    */
   public DealItem readFile(String itemName) throws IOException {
-    URL csvresource = getClass().getClassLoader().getResource("grocerydata.csv");
-    File groceryDataFile = new File(csvresource.getFile());
+    URL csvResource = getClass().getClassLoader().getResource("grocerydata.csv");
+    File groceryDataFile = new File(csvResource.getFile());
 
     CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
     DealItem bestItem = null;
@@ -29,7 +33,7 @@ public class GroceryDataReader {
       if (record[0].equals(itemName)) {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
-	    DealItem item1 = new DealItem();
+        DealItem item1 = new DealItem();
         item1.setStore("Aldi");
         item1.setPrice(record[1]);
         item1.setWeight(record[2]);
@@ -66,14 +70,16 @@ public class GroceryDataReader {
 
         bestItem = getBestDeal(dealItems);
       }
-	}
+    }
 		
 	reader.close();
     return bestItem;
   }
 
-  /** Gets the $/unit value of each item and
-    * returns the best deal. */
+  /** 
+    * Gets the $/unit value of each item and
+    * returns the best deal. 
+    */
   private DealItem getBestDeal(List<DealItem> dealItems) {
     double bestVal = 10;
     DealItem bestItem = dealItems.get(0);

@@ -1,7 +1,9 @@
 package com.google.edith;
 
-/** Represents items of the same type from
-  * different stores in order to compare them. */
+/** 
+  * Represents items of the same type from
+  * different stores in order to compare them. 
+  */
 public final class DealItem {
   private String store;
   private double price;
@@ -15,15 +17,14 @@ public final class DealItem {
 
   public void setPrice(String price) {
     if (price.equals("N/A") || price.equals("") || price.equals("?")) {
-      this.price = new Double(0);
+      this.price = 0.0;
+      return;
     }
-    else {
-      String result = price.substring(1, price.length());
-      try {
-        this.price = (double) Double.parseDouble(result) / 1.0;
-      } catch (NumberFormatException e) {
-        this.price = 0.0;
-      }
+    String result = price.substring(1, price.length());
+    try {
+      this.price = (double) Double.parseDouble(result);
+    } catch (NumberFormatException e) {
+      this.price = 0.0;
     }
   }
 
@@ -49,7 +50,7 @@ public final class DealItem {
         }
       }
       try {
-        this.weight = (double) Double.parseDouble(num) / 1.0;
+        this.weight = (double) Double.parseDouble(num);
       } catch (NumberFormatException e) {
         this.weight = 0.0;
       }
