@@ -35,17 +35,18 @@ public class DealsServlet extends HttpServlet {
     String itemName = json.get("itemName").getAsString();
 
     GroceryDataReader groceryReader = new GroceryDataReader();
-    DealItem bestItem = groceryReader.readFile(itemName);
+    DealItem cheapestItem = groceryReader.readFile(itemName);
+
     response.setContentType("text/plain");
-    if (bestItem == null) {
+    if (cheapestItem == null) {
       System.out.println("no deal found");
       response.getWriter().println("no deal found");
     }
     else {
-      System.out.println(bestItem.getStore());
-      response.getWriter().println(bestItem.getStore());
-      response.getWriter().println(bestItem.getPrice());
-      response.getWriter().println(bestItem.getComment());
+      System.out.println(cheapestItem.getStore());
+      response.getWriter().println(cheapestItem.getStore());
+      response.getWriter().println(cheapestItem.getPrice());
+      response.getWriter().println(cheapestItem.getComment());
     }
   }
 }

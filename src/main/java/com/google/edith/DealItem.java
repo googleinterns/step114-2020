@@ -25,7 +25,7 @@ public final class DealItem {
     * ex: input price "$5.67" -> this.price = 5.67
     */
   public void setPrice(String price) {
-    if (price.equals("N/A") || price.equals("") || price.equals("?")) {
+    if (price.equals("N/A") || price.isEmpty() || price.equals("?")) {
       this.price = 0.0;
       return;
     }
@@ -55,6 +55,9 @@ public final class DealItem {
     }
     else if (weight.equals("dozen")) {
       this.weight = 12.0;
+    }
+    else if (weight.length() == 2) {
+      this.weight = 0.0;
     }
     else if (weight.substring(0, 3).equals("per")) {
       this.weight = 1.0;

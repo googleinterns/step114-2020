@@ -29,7 +29,7 @@ public final class GroceryDataReader {
     File groceryDataFile = new File(csvResource.getFile());
 
     CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
-    DealItem bestItem = null;
+    DealItem cheapestItem = null;
 
     String[] record = null;
     record = reader.readNext();
@@ -74,29 +74,32 @@ public final class GroceryDataReader {
         item5.setComment(record[15]);
         dealItems.add(item5);
 
-        bestItem = getBestDeal(dealItems);
+        cheapestItem = getCheapestItemPerUnit(dealItems);
       }
     }
 		
 	reader.close();
-    return bestItem;
+    return cheapestItem;
   }
 
   /** 
     * Gets the $/unit value of each item and
-    * returns the best deal. 
+    * returns the item that is cheapest per unit. 
+    * dealItems will never be empty because this
+    * function is only ever called when a product match
+    * is found.
     */
-  private DealItem getBestDeal(List<DealItem> dealItems) {
-    double bestVal = 10;
-    DealItem bestItem = dealItems.get(0);
+  private DealItem getCheapestItemPerUnit(List<DealItem> dealItems) {
+    double cheapestValue = 10;
+    DealItem cheapestItem = dealItems.get(0);
 
     for (DealItem item: dealItems) {
-      if (item.getUnitPrice() < bestVal && item.getUnitPrice() != 0) {
-        bestVal = item.getUnitPrice();
-        bestItem = item;
+      if (item.getUnitPrice() < cheapestValue && item.getUnitPrice() != 0) {
+        cheapestValue = item.getUnitPrice();
+        cheapestItem = item;
       }
     }
 
-    return bestItem;
+    return cheapestItem;
   }
 }
