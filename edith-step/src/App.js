@@ -1,21 +1,15 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
-//import "./App.css";
+// import "./App.css";
 
 
+/**
+ * Main webpage for the website.
+ */
 class App extends Component {
-  componentDidMount() {
-    console.log("Inside componentDidMount!");
-    fetch("/api/v1/data-servlet")
-      .then((response) => response.text())
-      .then((text) => {
-        console.log("here is the text from servlet: ", text);
-      });
-  }
-
   render() {
    return (
-      <div className="App">
+      <div className='App'>
         <ReceiptInput />
       </div>
     );
