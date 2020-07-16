@@ -4,7 +4,7 @@ import ReceiptHandler from './ReceiptHandler';
 import './setupTests.js'
 
 let component;
-let handleChange;
+let handleItemChange;
 let getReceiptData;
 
 beforeEach(() => {
