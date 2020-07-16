@@ -1,15 +1,15 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 
 import App from './App';
 
-import './setupTests.js'
+import './setupTests.js';
 
 let component;
 
 beforeEach(() => {
   component = mount(<App />);
-})
+});
 
 afterEach(() => {
   component.unmount();

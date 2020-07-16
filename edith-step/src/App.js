@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import ReceiptInput from './components/ReceiptInput';
 import TopNavbar from './components/TopNavbar';
 
 import './App.css';
 
+/**
+ * Main webpage for the website.
+ */
 class App extends Component {
 
   render() {
@@ -18,7 +21,9 @@ class App extends Component {
             Scroll Down
           </div>
           <div className='app-describe'>
-            <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
+            <span className='border'>
+              Welcome To Edith: The Best Expenditure Analyzer.
+            </span>
           </div>
         </div>
         <ReceiptInput />

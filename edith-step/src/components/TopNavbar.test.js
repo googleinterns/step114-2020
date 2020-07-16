@@ -1,7 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 

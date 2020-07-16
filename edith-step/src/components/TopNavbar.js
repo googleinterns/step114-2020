@@ -3,6 +3,10 @@ import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 
+/**
+ * Top navigation bar for user interaction with loggin, loggin out
+ * and other app features.
+ */
 class TopNavbar extends React.Component {
 
   render() {
