@@ -19,14 +19,11 @@ public class DealsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     StringBuilder stringBuilder = new StringBuilder();
-    BufferedReader reader = request.getReader();
-    try {
+    try (BufferedReader reader = request.getReader()) {
       String line;
       while ((line = reader.readLine()) != null) {
         stringBuilder.append(line).append('\n');
       }
-    } finally {
-      reader.close();
     }
 
     String receiptData = stringBuilder.toString();
