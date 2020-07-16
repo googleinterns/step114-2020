@@ -7,8 +7,11 @@ import ReceiptInput from './ReceiptInput';
  * Main webpage for the website.
  */
 class App extends Component {
+  /**
+   * Renders the main webpage
+   */
   render() {
-   return (
+    return (
       <div className='App'>
         <ReceiptInput />
       </div>
