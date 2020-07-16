@@ -5,9 +5,10 @@ export default class ReceiptHandler extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { items: [] };
+    this.state = { userId: '', storeName: '', date: '', name: '', fileUrl: '', totalPrice: 0.0, items: [] };
     this.getReceiptData = this.getReceiptData.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleItemChange = this.handleItemChange.bind(this);
+    this.handleStoreChange = this.handleStoreChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -23,27 +24,45 @@ export default class ReceiptHandler extends React.Component {
     });
     const receipt = response.data;
     const itemList = receipt.items;
-    console.log(itemList);
     this.setState(state => ({
+      userId: recepit.userId,
+      storeName: receipt.storeName,
+      date: receipt.date,
+      name: receipt.name,
+      fileUrl: receipt.fileUrl,
+      totalPrice: receipt.totalPrice,
       items: itemList
     }));
-    console.log(this.state.items);
   }
 
-  handleChange(i, e, property) {
+  handleItemChange(i, e, property) {
     let itemsList = [...this.state.items];
-    itemsList[i].property = event.target.value;
-    console.log(itemsList[i].property);
+    itemsList[i].property = e.target.value;
     this.setState({ items: itemsList });
+  }
+
+  handleStoreChange(e) {
+    this.setState({ storeName: e.target.value });
   }
 
   async handleSubmit(e) {
     e.preventDefault();
-    const receiptData = JSON.stringify(this.state.items);
+    let totalPrice;
+    this.state.items.forEach(item => {
+      totalPrice += item.price;
+    })
+    this.setState({ totalPrice: totalPrice });
+    const receiptData = JSON.stringify(this.state);
     const response = await axios({
       method: 'post',
       url: '/receipt-deals',
       data: {
+        userId: this.state.userId,
+        storeName: this.state.storeName,
+        date: this.state.date,
+        name: this.state.name,
+        fileUrl: this.state.fileUrl,
+        totalPrice: this.state.price,
         items: receiptData
       }
     });
@@ -71,22 +90,30 @@ export default class ReceiptHandler extends React.Component {
             <input type="text" 
                 className="name"
                 defaultValue={item.name} 
-                onChange={this.handleChange.bind(this, i, "name")}/>
+                onChange={this.handleItemChange.bind(this, i, "name")}/>
           </div>
           <div className="col auto">
             <input type="number" 
                 className="price"
                 defaultValue={item.price} 
-                onChange={this.handleChange.bind(this, i, "price")}/>
+                onChange={this.handleItemChange.bind(this, i, "price")}/>
           </div>
           <div className="col auto">
             <input type="number" 
-                defaultValue={item.quantity} 
                 className="quantity"
-                onChange={this.handleChange.bind(this, i, "quantity")}/>
+                defaultValue={item.quantity} 
+                onChange={this.handleItemChange.bind(this, i, "quantity")}/>
           </div>
         </div>
         ))}
+        <div className="form-row">
+          <div className="col-auto">
+            <input type="text"
+                className="store-name"
+                placeholder="Store"
+                onChange={this.handleStoreChange}/>
+          </div>
+        </div>
         <button className="btn btn-primary"
               id="submit"
               type="submit" 

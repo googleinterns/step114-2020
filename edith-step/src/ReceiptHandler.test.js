@@ -8,9 +8,9 @@ let handleChange;
 let getReceiptData;
 
 beforeEach(() => {
-  handleChange = jest.spyOn(ReceiptHandler.prototype, 'handleChange');
+  handleItemChange = jest.spyOn(ReceiptHandler.prototype, 'handleItemChange');
   getReceiptData = jest.spyOn(ReceiptHandler.prototype, 'getReceiptData');
-  component = mount(<ReceiptHandler onChange={ handleChange }/>);
+  component = mount(<ReceiptHandler onChange={ handleItemChange }/>);
 })
 
 afterEach(() => {
@@ -27,8 +27,8 @@ it('calls getReceiptData on mount', () => {
   expect(getReceiptData).toBeCalled();
 });
 
-// handleChange is called on change.
-it('should call handleChange on form change', () => {
+// handleItemChange is called on change.
+it('should call handleItemChange on form change', () => {
   const newItem = {
     name: '',
     price: 0.0,
@@ -40,16 +40,16 @@ it('should call handleChange on form change', () => {
   const promise = new Promise(getReceiptData);
   promise.then(() => {
     component.find('.name').simulate('change');
-    expect(handleChange).toBeCalled();
+    expect(handleItemChange).toBeCalled();
     component.find('.price').simulate('change');
-    expect(handleChange).toBeCalled();
+    expect(handleItemChange).toBeCalled();
     component.find('.quantity').simulate('change');
-    expect(handleChange).toBeCalled();
+    expect(handleItemChange).toBeCalled();
   });
 });
 
-// handleChange updates state.
-it('should change state when handleChange is called', () => {
+// handleItemChange updates items list in state.
+it('should change state when handleItemChange is called', () => {
   const newItem = {
     name: '',
     price: 0.0,
