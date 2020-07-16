@@ -9,7 +9,7 @@ public final class DealItem {
   private double price;
   private double weight;
   private String comment;
-  private double value;
+  private double unitPrice;
 
   public void setStore(String store) {
     this.store = store;
@@ -50,7 +50,7 @@ public final class DealItem {
     * ex: Input weight '64 fl oz' -> this.weight = 64.0
     */
   public void setWeight(String weight) {
-    if (weight.equals("")) {
+    if (weight.isEmpty()) {
       this.weight = 0.0;
     }
     else if (weight.equals("dozen")) {
@@ -82,9 +82,18 @@ public final class DealItem {
     this.comment = comment;
   }
 
-  public double getValue() {
+  /**
+    * Grocery items are compared by determining unit
+    * value, which is price divided by weight. This is
+    * because the items at each different store are the
+    * same type, but differ by weight and price. Using the
+    * unit price allows us to compare them more equally.
+    * Since invalid input for weight leads to a default weight
+    * of 0.0, we need to prevent divide by 0 values as well.
+    */
+  public double getUnitPrice() {
     if (weight == 0 || price == 0) {
-      this.value = 0;
+      this.value = 0.0;
     }
     else {
       this.value = this.price/this.weight;

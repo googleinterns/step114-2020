@@ -72,10 +72,10 @@ public class DealItemTest {
   }
 
   @Test
-  public void canFindValue() {
+  public void canFindUnitPrice() {
     dealItem.setPrice("$15.0");
     dealItem.setWeight("3 oz");
-    Assert.assertEquals(5.0, dealItem.getValue(), .01);
+    Assert.assertEquals(5.0, dealItem.getUnitPrice(), .01);
   }
 
   @Test
