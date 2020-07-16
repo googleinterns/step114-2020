@@ -18,18 +18,18 @@ public class DealsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     BufferedReader reader = request.getReader();
     try {
       String line;
       while ((line = reader.readLine()) != null) {
-        sb.append(line).append('\n');
+        stringBuilder.append(line).append('\n');
       }
     } finally {
       reader.close();
     }
 
-    String receiptData = sb.toString();
+    String receiptData = stringBuilder.toString();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(receiptData);
     String itemName = json.get("itemName").getAsString();
