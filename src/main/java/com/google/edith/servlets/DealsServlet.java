@@ -1,7 +1,5 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
-import com.google.edith.DealItem;
-import com.google.edith.GroceryDataReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,33 +19,33 @@ public class DealsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     BufferedReader reader = request.getReader();
     try {
       String line;
       while ((line = reader.readLine()) != null) {
-        sb.append(line).append('\n');
+        stringBuilder.append(line).append('\n');
       }
     } finally {
       reader.close();
     }
 
-    String receiptData = sb.toString();
+    String receiptData = stringBuilder.toString();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(receiptData);
     String itemName = json.get("itemName").getAsString();
 
     GroceryDataReader groceryReader = new GroceryDataReader();
-    DealItem bestItem = groceryReader.readFile(itemName);
+    DealItem cheapestItem = groceryReader.readFile(itemName);
 
-    if (bestItem == null) {
+    if (cheapestItem == null) {
       response.setContentType("text/plain");
       response.getWriter().println("no deal found");
       System.out.println("no deal found");
     }
     else {
       Gson gson = new Gson();
-      String responseJson = gson.toJson(bestItem);
+      String responseJson = gson.toJson(cheapestItem);
       response.setContentType("application/json");
       response.getWriter().println(responseJson);
       System.out.println(responseJson);

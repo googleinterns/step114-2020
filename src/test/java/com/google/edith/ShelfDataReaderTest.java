@@ -23,12 +23,12 @@ public class ShelfDataReaderTest {
   }
 
   @Test
-  public void returnsShelfLifeGoodData() {
+  public void readFile_inputStringInJsonFile_returnsShelfLifeString() {
     Assert.assertEquals("Expires in 1.0 2.0 Weeks", reader.readFile("Buttermilk"));
   }
 
   @Test
-  public void handlesBadData() {
+  public void readFile_inputStringNotInFile_returnsNoShelfLifeData() {
     Assert.assertEquals("no shelf life data found", reader.readFile(""));
   }
 }
