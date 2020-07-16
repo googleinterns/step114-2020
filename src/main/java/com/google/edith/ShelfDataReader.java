@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.Exception;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +37,9 @@ public class ShelfDataReader {
       for (int i = 0; i < productListData.size(); i++) {
         JsonArray product = productListData.get(i).getAsJsonArray();
         JsonObject nameObject = product.get(2).getAsJsonObject();
-        String productName = nameObject.get("Name").getAsString();
-        if (productName.equals(itemName)) {
+        String productName = nameObject.get("Name").getAsString().toLowerCase();
+
+        if (productName.equals(itemName.toLowerCase())) {
           potentialMatches.add(product);
         }
       }
@@ -60,7 +62,7 @@ public class ShelfDataReader {
     Gson gson = new Gson();
     Map<String, String> shelfLife = new HashMap<String, String>();
     
-    for (int i = 5; i < 30; i++){
+    for (int i = 5; i < 28; i++){
       JsonObject productTimeElement = product.get(i).getAsJsonObject();
       String json = gson.toJson(productTimeElement);
       String[] keyValuePair = json.split(":");

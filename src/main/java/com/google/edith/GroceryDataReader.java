@@ -22,11 +22,17 @@ public class GroceryDataReader {
     DealItem bestItem = null;
 
     String[] record = null;
-    record = reader.readNext();
-    record = reader.readNext();
+    
+    String item = "";
+    try {
+      GroceryNameProcessor processor = new GroceryNameProcessor();
+      item = processor.process(itemName);
+    } catch (Exception e) {
+      System.out.println("error");
+    }
 
 	while ((record = reader.readNext()) != null) {
-      if (record[0].equals(itemName)) {
+      if (record[0].equals(item)) {
         ShelfDataReader shelfReader = new ShelfDataReader();
         String expirationTime = shelfReader.readFile(itemName);
 

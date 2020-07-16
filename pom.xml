@@ -99,6 +99,10 @@
       <version>3.3.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-language</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
