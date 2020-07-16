@@ -9,20 +9,22 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.UserInsights;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.edith.servlets.UserInsights;
-import com.google.edith.servlets.Item;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.junit.Test;
+
 
 public final class UserInsightsTest {
   private static final String USER_ID = "userId";
@@ -49,7 +51,7 @@ public final class UserInsightsTest {
     // A new UserStats Entity should be added to the datastore
     Assert.assertEquals(1, datastore.prepare(new Query("UserStats"))
                                     .countEntities(FetchOptions.Builder
-                                                            .withLimit(10)));
+                                                    .withLimit(10)));
   }
 
   @Test
@@ -107,7 +109,7 @@ public final class UserInsightsTest {
     setEntityProperties(newEntity2, 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("2020-07-05", "17.0");
    
     userInsights.updateUserStats(items);
@@ -136,7 +138,7 @@ public final class UserInsightsTest {
     setEntityProperties(newEntity4, 8, 4, "2020-07-12");
     datastore.put(newEntity4);  
 
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("2020-07-05", "17.0");
     map.put("2020-07-12", "53.0");
    
@@ -170,7 +172,7 @@ public final class UserInsightsTest {
     itemProperties.add(new Item(8.00, 4L, "2020-07-12"));
     datastore.put(newEntity4);    
 
-    Map<String, String> map = new HashMap<String, String>();
+    Map<String, String> map = new LinkedHashMap<String, String>();
     map.put("2020-07-05", "17.0");
     map.put("2020-07-12", "53.0");
    
@@ -182,6 +184,35 @@ public final class UserInsightsTest {
     String expectedJson = new Gson().toJson(testJson);
    
     Assert.assertEquals(expectedJson, userInsights.createJson());
+  }
+
+  @Test
+  public void retreiveUserStats_withUnknownUser_returnsEmptyOptional() {
+    // If a userStats object is not created with the given userId, an empty
+    // Optional should be returned.
+    userInsights = new UserInsights("unkownUserId");
+    Optional<Entity> emptyOptional = Optional.empty();
+    Assert.assertEquals(emptyOptional, userInsights.retreiveUserStats());
+  }
+
+  @Test
+  public void aggregateUserData_withUnkownUser_returnsDefaultMap() {
+    // If a userStats object is not created with the given userId, an empty
+    // Optional should be returned.
+    userInsights = new UserInsights("unkownUserId");
+    Map<String, String> emptyMap = new LinkedHashMap<String, String>();
+    emptyMap.put("weeklyAggregate", "");
+    emptyMap.put("items", "");
+    Assert.assertEquals(emptyMap, userInsights.aggregateUserData());
+  }
+
+  @Test
+  public void createJson_withUnkownUser_returnsDefaultJson() {
+    userInsights = new UserInsights("unknownUserId");
+    JsonObject userJson = new JsonObject();
+    userJson.addProperty("weeklyAggregate", "");
+    userJson.addProperty("items", "");
+    Assert.assertEquals(new Gson().toJson(userJson), userInsights.createJson());
   }
 
   /**
