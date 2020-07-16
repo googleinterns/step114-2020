@@ -14,7 +14,16 @@ public final class DealItem {
   public void setStore(String store) {
     this.store = store;
   }
-
+  
+  /**
+    * Price values from grocerydata.csv come in two main types:
+    * 'N/A', '', and '?' are invalid type, and a dollar value to
+    * two decimal points with a $ sign in front of it is valid type.
+    * When invalid input is detected, the default price is 0.0.
+    * 
+    * ex: Input price "?" -> this.price = 0.0
+    * ex: input price "$5.67" -> this.price = 5.67
+    */
   public void setPrice(String price) {
     if (price.equals("N/A") || price.equals("") || price.equals("?")) {
       this.price = 0.0;
@@ -28,6 +37,18 @@ public final class DealItem {
     }
   }
 
+  /**
+    * Weight values from grocerydata.csv come in three main types:
+    * '' is invalid type, 'dozen' 'per' and 'head' are salvageable
+    * types, as their meaning can be interpreted, and any input that
+    * starts with a number and ends with a weight unit is valid type.
+    *
+    * ex: Inputs of 'per' or 'head' indicate that the price given is
+    *     for one unit of that item. Therefore, setting the weight to
+    *     one would let the value algorithm still work.
+    *     'per lb' -> this.weight = 1.0
+    * ex: Input weight '64 fl oz' -> this.weight = 64.0
+    */
   public void setWeight(String weight) {
     if (weight.equals("")) {
       this.weight = 0.0;

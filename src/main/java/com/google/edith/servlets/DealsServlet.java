@@ -1,7 +1,5 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
-import com.google.edith.DealItem;
-import com.google.edith.GroceryDataReader;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -11,8 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that takes the user input from the receipt
-  * form and uses it to retrieve the best deal. */
+/** 
+  * Servlet that takes the user input from the receipt
+  * form and uses it to retrieve the best deal. 
+  */
 @WebServlet("/receipt-deals")
 public class DealsServlet extends HttpServlet {
 
