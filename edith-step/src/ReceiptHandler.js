@@ -9,6 +9,7 @@ export default class ReceiptHandler extends React.Component {
     this.getReceiptData = this.getReceiptData.bind(this);
     this.handleItemChange = this.handleItemChange.bind(this);
     this.handleStoreChange = this.handleStoreChange.bind(this);
+    this.addItem = this.addItem.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -43,6 +44,18 @@ export default class ReceiptHandler extends React.Component {
 
   handleStoreChange(e) {
     this.setState({ storeName: e.target.value });
+  }
+
+  addItem(e) {
+    const newItem = {
+      userId: this.state.userId,
+      name: '',
+      price: 0.0,
+      quantity: 0,
+      category: '',
+      expireDate: ''
+    }
+    this.setState({ items: state.items.concat(newItem) });
   }
 
   async handleSubmit(e) {
@@ -100,7 +113,6 @@ export default class ReceiptHandler extends React.Component {
           </div>
         </div>
         ))}
-
         <div className="form-row">
           <div className="col-auto">
             <input type="text"
@@ -109,6 +121,11 @@ export default class ReceiptHandler extends React.Component {
                 onChange={this.handleStoreChange}/>
           </div>
         </div>
+        <button className="btn btn-primary"
+            id="add"
+            type="button"
+            value="Add item"
+            onClick={this.addItem}>Add Item</button>
         <button className="btn btn-primary"
               id="submit"
               type="submit" 
