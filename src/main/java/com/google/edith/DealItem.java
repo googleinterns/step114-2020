@@ -93,12 +93,12 @@ public final class DealItem {
     */
   public double getUnitPrice() {
     if (weight == 0 || price == 0) {
-      this.value = 0.0;
+      this.unitPrice = 0.0;
     }
     else {
-      this.value = this.price/this.weight;
+      this.unitPrice = this.price/this.weight;
     }
-    return value;
+    return unitPrice;
   }
 
   public String getStore() {

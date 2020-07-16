@@ -13,6 +13,12 @@ import java.util.List;
   * stores and returns the best value item. 
   */
 public final class GroceryDataReader {
+
+    private static final String ALDI = "Aldi";
+    private static final String KROGER = "Kroger";
+    private static final String TRADERJOES = "Trader Joe's";
+    private static final String PUBLIX = "Publix";
+    private static final String WALMART = "Walmart";
     
   /**
     * Finds the specified product in the file and puts the
@@ -34,35 +40,35 @@ public final class GroceryDataReader {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
         DealItem item1 = new DealItem();
-        item1.setStore("Aldi");
+        item1.setStore(ALDI);
         item1.setPrice(record[1]);
         item1.setWeight(record[2]);
         item1.setComment(record[3]);
         dealItems.add(item1);
 
         DealItem item2 = new DealItem();
-        item2.setStore("Kroger");
+        item2.setStore(KROGER);
         item2.setPrice(record[4]);
         item2.setWeight(record[5]);
         item2.setComment(record[6]);
         dealItems.add(item2);
 
         DealItem item3 = new DealItem();
-        item3.setStore("Trader Joe's");
+        item3.setStore(TRADERJOES);
         item3.setPrice(record[7]);
         item3.setWeight(record[8]);
         item3.setComment(record[9]);
         dealItems.add(item3);
 
         DealItem item4 = new DealItem();
-        item4.setStore("Publix");
+        item4.setStore(PUBLIX);
         item4.setPrice(record[10]);
         item4.setWeight(record[11]);
         item4.setComment(record[12]);
         dealItems.add(item4);
 
         DealItem item5 = new DealItem();
-        item5.setStore("Walmart");
+        item5.setStore(WALMART);
         item5.setPrice(record[13]);
         item5.setWeight(record[14]);
         item5.setComment(record[15]);
@@ -85,8 +91,8 @@ public final class GroceryDataReader {
     DealItem bestItem = dealItems.get(0);
 
     for (DealItem item: dealItems) {
-      if (item.getValue() < bestVal && item.getValue() != 0) {
-        bestVal = item.getValue();
+      if (item.getUnitPrice() < bestVal && item.getUnitPrice() != 0) {
+        bestVal = item.getUnitPrice();
         bestItem = item;
       }
     }

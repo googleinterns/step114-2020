@@ -79,10 +79,10 @@ public class DealItemTest {
   }
 
   @Test
-  public void canFindValueWithZeroWeight() {
+  public void canFindUnitPriceWithZeroWeight() {
     // Make sure there are no division by 0 errors.
     dealItem.setPrice("$15.0");
     dealItem.setWeight("bad data");
-    Assert.assertEquals(0, dealItem.getValue(), .01);
+    Assert.assertEquals(0, dealItem.getUnitPrice(), .01);
   }
 }
