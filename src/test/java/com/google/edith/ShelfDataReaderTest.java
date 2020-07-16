@@ -31,4 +31,9 @@ public class ShelfDataReaderTest {
   public void handlesBadData() {
     Assert.assertEquals("no shelf life data found", reader.readFile(""));
   }
+
+  @Test
+  public void handlesDifferentCapitalization() {
+    Assert.assertEquals("1.0 2.0 Weeks ", reader.readFile("buttermilk"));
+  }
 }
