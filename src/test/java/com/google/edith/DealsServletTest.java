@@ -1,7 +1,5 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.ByteArrayInputStream;
@@ -12,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletInputStream;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -21,7 +18,7 @@ import org.mockito.Mockito;
 public class DealsServletTest  {
 
   @Test
-  public void testServletGoodInput() throws Exception {
+  public void doPost_itemNameInCsv_respondsWithCheapestStore() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
@@ -41,7 +38,7 @@ public class DealsServletTest  {
   }
 
   @Test
-  public void testServletadInput() throws Exception {
+  public void doPost_emptyStringInput_respondsWithNoDealFound() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
