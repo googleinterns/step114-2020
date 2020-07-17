@@ -89,7 +89,16 @@ public final class DealItem {
   public void setComment(String comment) {
     this.comment = comment;
   }
-
+  
+  /**
+    * Input string expiration is expected to have the minimum
+    * expiration time, the maximum expiration time, and the
+    * unit of time, in no particular order. It parses the string
+    * to find the minimum expiration time and the unit, as that is
+    * the data needed to generate new grocery lists based off of.
+    *
+    * ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
+    */
   public void setExpiration(String expiration) {
     if (expiration.equals("no shelf life data found")) {
       this.expiration = expiration;

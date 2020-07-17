@@ -87,13 +87,13 @@ public class DealItemTest {
   }
 
   @Test
-  public void setsExpirationCorrectly() {
+  public void setExpiration_stringWithShelfLifeData_setsExpirationCorrectly() {
     dealItem.setExpiration("1.0 2.0 Weeks ");
     Assert.assertEquals("1.0 Weeks", dealItem.getExpiration());
   }
 
   @Test
-  public void handlesBadExpirationData() {
+  public void setExpiration_randomString_setsExpirationNotFound() {
     dealItem.setExpiration("no shelf life data found");
     Assert.assertEquals("no shelf life data found", dealItem.getExpiration());
   }

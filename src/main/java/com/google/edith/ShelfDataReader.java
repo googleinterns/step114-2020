@@ -91,7 +91,6 @@ public class ShelfDataReader {
         result += shelfLife.get(item).substring(1, shelfLife.get(item).length()-1) + " ";
       }
     }
-    System.out.println(result);
     return result;
   }
 }
