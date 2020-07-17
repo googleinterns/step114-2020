@@ -21,7 +21,7 @@ const LineChart = () => {
           labels: weekDates,
           datasets: [
             {
-              label: "Weeek Total",
+              label: "Week Total",
               data: values,
               backgroundColor: ["rgba(75, 192, 192, 0.6)"],
               borderWidth: 4
@@ -42,16 +42,36 @@ const LineChart = () => {
   return (
       <Line
         data={chartData}
+        width={100}
+        height={100}
         options={{
-        title:{
-          display: true,
-          text: 'Weekly Aggregate',
-          fontSize: 20
+          maintainAspectRatio: false,
+          title:{
+            display: true,
+            text: 'Weekly Aggregate (trailing total based on week date)',
+            fontSize: 20
           }, 
           legend:{
             display: true,
             position:'right'
-          }
+          },
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Dollars'
+              },
+              ticks: {
+                beginAtZero: true
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Week'
+              }
+            }],
+          }    
         }}
       />
     );
@@ -97,16 +117,36 @@ const BarGraph = () => {
   return (
       <Bar
         data={chartData}
+        width={100}
+        height={100}
         options={{
-        title:{
-          display: true,
-          text: 'Weekly Aggregate',
-          fontSize: 20
+          maintainAspectRatio: false,
+          title:{
+            display: true,
+            text: 'Weekly Aggregate (trailing total based on week date)',
+            fontSize: 20
           }, 
           legend:{
             display: true,
             position:'right'
-          }
+          },
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Dollars'
+              },
+              ticks: {
+                beginAtZero: true
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Week'
+              }
+            }],
+          }    
         }}
       />
     );
@@ -157,16 +197,19 @@ const PieChart = () => {
   return (
       <Pie
         data={chartData}
+        width={100}
+        height={100}
         options={{
-        title:{
-          display: true,
-          text: 'Weekly Aggregate',
-          fontSize: 20
+          maintainAspectRatio: false,
+          title:{
+            display: true,
+            text: 'Item Aggregate',
+            fontSize: 20
           }, 
           legend:{
             display: true,
             position:'right'
-          }
+          },
         }}
       />
     );
