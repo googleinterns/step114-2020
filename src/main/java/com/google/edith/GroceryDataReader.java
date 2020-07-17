@@ -54,8 +54,7 @@ public final class GroceryDataReader {
         cheapestItem = getCheapestItemPerUnit(dealItems);
       }
     }
-		
-	reader.close();
+    reader.close();
     return cheapestItem;
   }
 
