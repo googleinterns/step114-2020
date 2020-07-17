@@ -11,7 +11,6 @@ export default class ReceiptInput extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
     if (this.state.itemName.length === 0) {
       return;
     }
