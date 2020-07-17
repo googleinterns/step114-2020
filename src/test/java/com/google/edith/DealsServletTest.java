@@ -19,7 +19,8 @@ public class DealsServletTest  {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    String json = "{\"itemName\": \"Apple Juice\"}";
+    String json = "{\"data\":"{\"userId\":\"185804764220139124118\",\"storeName\":\"G\",\"date\":\"unknown date\",\"name\":\"Receipt\",\"fileUrl\":\"encoded_gs_key:L2dzL2VkaXRoLXJlY2VpcHRzLzJJU2dmeWJTaUpkaEg1azVRTHViVFE\",\"totalPrice\":0,\"items\":[{\"userId\":\"185804764220139124118\",\"name\":\"apple juice\",\"price\":0
+    .99,\"quantity\":\"1\",\"category\":\"unknown category\",\"expireDate\":\"unknown date\"}}";
     Mockito.when(request.getReader()).thenReturn(
         new BufferedReader(new StringReader(json)));
     
@@ -39,7 +40,8 @@ public class DealsServletTest  {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    String json = "{\"itemName\": \"\"}";
+    String json = "{\"data\":"{\"userId\":\"185804764220139124118\",\"storeName\":\"G\",\"date\":\"unknown date\",\"name\":\"Receipt\",\"fileUrl\":\"encoded_gs_key:L2dzL2VkaXRoLXJlY2VpcHRzLzJJU2dmeWJTaUpkaEg1azVRTHViVFE\",\"totalPrice\":0,\"items\":[{\"userId\":\"185804764220139124118\",\"name\":\"apple juice\",\"price\":0
+    .99,\"quantity\":\"1\",\"category\":\"unknown category\",\"expireDate\":\"unknown date\"}}";
     Mockito.when(request.getReader()).thenReturn(
         new BufferedReader(new StringReader(json)));
     
@@ -51,6 +53,6 @@ public class DealsServletTest  {
 
     Mockito.verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("no deal found"));
+    Assert.assertTrue(stringWriter.toString().isEmpty());
   }*/
 }
