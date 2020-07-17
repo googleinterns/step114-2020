@@ -6,5 +6,6 @@
  <threadsafe>false</threadsafe>
  <sessions-enabled>true</sessions-enabled>
  <runtime>java8</runtime>
+ <resource-files><include path="/**.csv" /></resource-files>
 </appengine-web-app>
 
