@@ -35,7 +35,7 @@ public class Item {
     this.expireDate = expireDate;
   }
 
-  public String getUserID() {
+  public String getUserId() {
     return this.userId;
   }
 
