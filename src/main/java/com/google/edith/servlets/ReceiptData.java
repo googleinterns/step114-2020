@@ -32,7 +32,8 @@ public class ReceiptData {
   private Receipt createReceipt(User user, Item[] items) {
     String expenditureName = ReceiptFileHandlerServlet.getExpenditureName();
     String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
-    Receipt userReceipt = new Receipt(user.getUserId(), "unknown store name", "unknown date", expenditureName, blobKey, 0.0f, items);
+    float totalPrice = calculateTotalPrice(items);
+    Receipt userReceipt = new Receipt(user.getUserId(), "unknown store name", "unknown date", expenditureName, blobKey, totalPrice, items);
     return userReceipt;
   }
 
@@ -42,17 +43,23 @@ public class ReceiptData {
     Item[] items = new Item[totalItems];
     while (index < totalItems) {
       Map<String, String> itemFields = extractedData.get(index);
-      Item receiptItem = Item.builder()
-            .setUserId(user.getUserId())
-            .setName(itemFields.get("itemName"))
-            .setPrice(Float.parseFloat(itemFields.get("itemPrice")))
-            .setQuantity(0)
-            .setCategory("unknown category")
-            .setExpireDate("unknown date")
-            .build();
-
+      Item receiptItem = new Item(
+            user.getUserId(),
+            itemFields.get("itemName"),
+            Float.parseFloat(itemFields.get("itemPrice")),
+            0,
+            "unknown category",
+            "unknown date");
       items[index++] = receiptItem;
     }
     return items;
+  }
+
+  private float calculateTotalPrice(Item[] items) {
+    float totalPrice = 0;
+    for (Item item : items) {
+      totalPrice += item.getPrice();
+    }
+    return totalPrice;
   }
 }

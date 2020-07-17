@@ -35,4 +35,36 @@ public final class Receipt {
     this.totalPrice = totalPrice;
     this.items = items;
   }
+
+  public String toString() {
+    return(this.userId + " " + this.storeName + " " + this.date + " " + this.name + " " + this.fileUrl + " " + this.totalPrice);
+  }
+  
+  public String getUserId() {
+    return this.userId;
+  }
+
+  public String getStoreName() {
+    return this.storeName;
+  }
+
+  public String getDate() {
+    return this.date;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public String getFileUrl() {
+    return this.fileUrl;
+  }
+
+  public float getTotalPrice() {
+    return this.totalPrice;
+  }
+
+  public Item[] getItems() {
+    return this.items;
+  }
 }
