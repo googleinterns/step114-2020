@@ -3,10 +3,13 @@ import TopNavbar from './components/TopNavbar';
 import ReceiptHandler from './ReceiptHandler.js';
 
 import './App.css';
+import React, {Component} from 'react';
+import ReceiptInput from './ReceiptInput';
+// import "./App.css";
 
 
+/** Main webpage for the website. */
 class App extends Component {
-
   render() {
  return (
       <div className='App'>

@@ -24,6 +24,7 @@ public class GroceryDataReaderTest {
     Assert.assertTrue(groceryReader instanceof GroceryDataReader);
   }
 
+  @Test
   public void readFile_itemNameInCsv_returnsCheapestItem() throws IOException {
     cheapestItem = groceryReader.readFile("Apple Juice");
     Assert.assertEquals("Kroger", cheapestItem.getStore());
