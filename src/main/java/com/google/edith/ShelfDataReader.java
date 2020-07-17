@@ -14,11 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** Processes data file of product expiration information
-  * to populate future user grocery lists. */
+/** 
+  * Processes data file of product expiration information
+  * to populate future user grocery lists. 
+  */
 public class ShelfDataReader {
 
-  /** Finds the specified product in the file . */
+  /** Finds the specified product in the file. */
   public String readFile(String itemName) {
     URL jsonresource = getClass().getClassLoader().getResource("foodkeeper.json");
     File shelfLifeData = new File(jsonresource.getFile());
@@ -55,22 +57,28 @@ public class ShelfDataReader {
     }
   }
   
-  /** Retrieves the shelf life data of the specified product. */
+  /** 
+    * Retrieves the shelf life data of the specified product. 
+    * Only looks through pantry and refrigeration data, as freezing
+    * tends to be longer term. Items also tend to have freezing and
+    * fridge data or freezing and pantry data, so removing freezing
+    * makes it so that items have only one set of expiration data.
+    */
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
     Map<String, String> shelfLife = new HashMap<String, String>();
     
-    for (int i = 5; i < 30; i++){
+    for (int i = 5; i < 27; i++){
       JsonObject productTimeElement = product.get(i).getAsJsonObject();
       String json = gson.toJson(productTimeElement);
-      String[] keyValuePair = json.split(":");
+      String[] jsonKeyValuePair = json.split(":");
 
-      if (keyValuePair.length == 2) {
-        String key = keyValuePair[0];
-        key = key.substring(2, key.length()-1);
-        String value = keyValuePair[1];
-        value = value.substring(0, value.length()-1);
-        shelfLife.put(key, value);
+      if (jsonKeyValuePair.length == 2) {
+        String storageType = jsonKeyValuePair[0];
+        storageType = storageType.substring(2, storageType.length()-1);
+        String timeToExpiration = jsonKeyValuePair[1];
+        timeToExpiration = timeToExpiration.substring(0, timeToExpiration.length()-1);
+        shelfLife.put(storageType, timeToExpiration);
       }
     }
 
