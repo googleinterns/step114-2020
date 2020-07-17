@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 export default class ReceiptInput extends React.Component {
   constructor(props) {
@@ -10,7 +11,6 @@ export default class ReceiptInput extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
     if (this.state.itemName.length === 0) {
       return;
     }
@@ -21,10 +21,9 @@ export default class ReceiptInput extends React.Component {
       id: Date.now()
     };
     
-    const axios = require('axios')
     axios({
       method: 'post',
-      url: '/receipt-deals',
+      url: '/receipt-data',
       data: {
         itemName: this.state.itemName,
         itemPrice: this.state.itemPrice,
@@ -115,7 +114,7 @@ export default class ReceiptInput extends React.Component {
   }
 }
 
-var GroceryList = (props) => {
+const GroceryList = (props) => {
   return (
     <div id="grocery-list">
       <ul className="list-group col-lg-3">
