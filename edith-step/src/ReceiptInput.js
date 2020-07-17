@@ -69,8 +69,6 @@ export default class ReceiptInput extends React.Component {
       itemExpiration: expirationMessage,
       id: Date.now()
     };
-<<<<<<< HEAD
-=======
     
     axios({
       method: 'post',
@@ -83,7 +81,6 @@ export default class ReceiptInput extends React.Component {
     }).then((response) => {
       console.log(response);
     });
->>>>>>> master
 
     this.setState(state => ({
       items: state.items.concat(newItem),
