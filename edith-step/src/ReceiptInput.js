@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 export default class ReceiptInput extends React.Component {
   constructor(props) {
@@ -39,7 +40,6 @@ export default class ReceiptInput extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-
     if (this.state.itemName.length === 0) {
       return;
     }
@@ -59,6 +59,18 @@ export default class ReceiptInput extends React.Component {
       itemDeal: dealMessage,
       id: Date.now()
     };
+
+    axios({
+      method: 'post',
+      url: '/receipt-data',
+      data: {
+        itemName: this.state.itemName,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity
+      }
+    }).then((response) => {
+      console.log(response);
+    });
 
     this.setState(state => ({
       items: state.items.concat(newItem),
@@ -145,7 +157,7 @@ export default class ReceiptInput extends React.Component {
   }
 }
 
-var GroceryList = (props) => {
+const GroceryList = (props) => {
   return (
     <div id="grocery-list">
       <ul className="list-group">
