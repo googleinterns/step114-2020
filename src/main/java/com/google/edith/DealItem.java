@@ -1,5 +1,8 @@
 package com.google.edith;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** 
   * Represents items of the same type from
   * different stores in order to compare them. 
@@ -117,8 +120,6 @@ public final class DealItem {
     this.expiration = min + " " + timeMeasurement;
   }
 
-  public double getValue() {
-
   /**
     * Grocery items are compared by determining unit
     * value, which is price divided by weight. This is
@@ -129,7 +130,6 @@ public final class DealItem {
     * of 0.0, we need to prevent divide by 0 values as well.
     */
   public double getUnitPrice() {
->>>>>>> LivDev5
     if (weight == 0 || price == 0) {
       this.unitPrice = 0.0;
     }
