@@ -1,4 +1,4 @@
-package com.google.edith.servlets;
+package com.google.sps.servlets;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
 * Servlet that returns some example content.
 */
-@WebServlet("/")
+@WebServlet("/api/v1/data-servlet")
 public class DataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
@@ -29,5 +29,5 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html;");
     response.getWriter().println("Hello world from data servlet!");
-  }
+    }
 }
