@@ -102,11 +102,11 @@ public final class UserInsightsTest {
     List<Key> items = createTestKeyList(0, 2);
     
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, 5, 1, "2020-06-29");
+    setEntityProperties(newEntity, "corn", 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
+    setEntityProperties(newEntity2, "potato", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
     Map<String, String> map = new LinkedHashMap<String, String>();
@@ -123,19 +123,19 @@ public final class UserInsightsTest {
     List<Item> itemProperties = new ArrayList<>();
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, 5, 1, "2020-06-29");
+    setEntityProperties(newEntity, "corn", 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
+    setEntityProperties(newEntity2, "potato", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3, 7, 3, "2020-07-11");
+    setEntityProperties(newEntity3, "beans", 7, 3, "2020-07-11");
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, 8, 4, "2020-07-12");
+    setEntityProperties(newEntity4, "milk", 8, 4, "2020-07-12");
     datastore.put(newEntity4);  
 
     Map<String, String> map = new LinkedHashMap<String, String>();
@@ -153,23 +153,23 @@ public final class UserInsightsTest {
     List<Item> itemProperties = new ArrayList<>();
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, 5, 1, "2020-06-29");
-    itemProperties.add(new Item(5.00, 1L, "2020-06-29"));
+    setEntityProperties(newEntity, "corn", 5, 1, "2020-06-29");
+    itemProperties.add(new Item("corn", 5.00, 1L, "2020-06-29"));
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
-    itemProperties.add(new Item(6.00, 2L, "2020-06-30"));
+    setEntityProperties(newEntity2,"potato", 6, 2, "2020-06-30");
+    itemProperties.add(new Item("potato", 6.00, 2L, "2020-06-30"));
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3, 7, 3, "2020-07-11");
-    itemProperties.add(new Item(7.00, 3L, "2020-07-11"));
+    setEntityProperties(newEntity3,"beans", 7, 3, "2020-07-11");
+    itemProperties.add(new Item("beans", 7.00, 3L, "2020-07-11"));
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, 8, 4, "2020-07-12");
-    itemProperties.add(new Item(8.00, 4L, "2020-07-12"));
+    setEntityProperties(newEntity4, "milk", 8, 4, "2020-07-12");
+    itemProperties.add(new Item("milk", 8.00, 4L, "2020-07-12"));
     datastore.put(newEntity4);    
 
     Map<String, String> map = new LinkedHashMap<String, String>();
@@ -233,12 +233,14 @@ public final class UserInsightsTest {
   /**
    * Assigns the parameters to the given entity.
    * @param entity the entity to update
+   * @param name the name of the item
    * @param price price
    * @param quantity quantity 
    * @param date date
    */
-  private void setEntityProperties(Entity entity, double price, 
-                                   int quantity, String date) {
+  private void setEntityProperties(Entity entity, String name,
+                                   double price, int quantity, String date) {
+    entity.setProperty("name", name);                                   
     entity.setProperty("price", price);
     entity.setProperty("quantity", quantity);
     entity.setProperty("date", date);

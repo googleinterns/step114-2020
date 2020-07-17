@@ -71,7 +71,11 @@ public final class UserInsights implements UserInsightsInterface {
     if (items == null) {
       items = newItems;
     } else {
-      items.addAll(newItems);
+      for (Key newItem : newItems) {
+        if (!items.contains(newItem)) {
+          items.add(newItem);
+        }
+      }
     }
     userStats.setProperty("Items", items);
     datastore.put(userStats);
@@ -130,6 +134,7 @@ public final class UserInsights implements UserInsightsInterface {
                             try {
                               Entity item = datastore.get(key);
                               return new Item(
+                                (String) item.getProperty("name"),
                                 (Double) item.getProperty("price"),
                                 (long) item.getProperty("quantity"),
                                 (String) item.getProperty("date")

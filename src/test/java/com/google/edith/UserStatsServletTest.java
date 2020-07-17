@@ -68,6 +68,7 @@ public final class UserStatsServletTest {
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
     JsonObject testJson = new JsonObject();
+    testJson.addProperty("itemName", "Corn");
     testJson.addProperty("itemPrice", "5.00");
     testJson.addProperty("itemQuantity", "4");
     testJson.addProperty("itemDate", "2020-07-14");

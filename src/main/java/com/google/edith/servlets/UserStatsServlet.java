@@ -67,6 +67,7 @@ public class UserStatsServlet extends HttpServlet {
     Entity itemEntity = new Entity("Item");
 
     itemEntity.setProperty("userId", "userId");
+    itemEntity.setProperty("name", json.get("itemName").getAsString());
     itemEntity.setProperty("price", Double.parseDouble(json.get("itemPrice").getAsString()));
     itemEntity.setProperty("quantity", Long.parseLong(json.get("itemQuantity").getAsString()));
     itemEntity.setProperty("date", json.get("itemDate").getAsString());
@@ -78,7 +79,7 @@ public class UserStatsServlet extends HttpServlet {
                                                 .withLimit(Integer.MAX_VALUE))
                             .stream()
                             .map(entity -> entity.getKey())
-                            .collect(Collectors.toList());
+                             .collect(Collectors.toList());
     if (!userInsights.retreiveUserStats().isPresent()) {
       userInsights.createUserStats();
     }
