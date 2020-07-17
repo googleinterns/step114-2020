@@ -1,6 +1,7 @@
 package com.google.edith;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -33,18 +34,27 @@ public class DealsServlet extends HttpServlet {
 
     String receiptData = sb.toString();
     JsonParser parser = new JsonParser();
-    JsonObject json = (JsonObject) parser.parse(receiptData);
-    String itemName = json.get("itemName").getAsString();
+    JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
+    System.out.println(inputjson);
+    JsonObject data = parser.parse(inputjson.get("data").getAsString()).getAsJsonObject();
+    System.out.println(data);
+    JsonArray items = parser.parse(inputjson.get("items").getAsString()).getAsJsonArray();
+    System.out.println(items);
+    
+    DealItem bestItem = null;
+    for (int i = 0; i < items.size(); i++) {
+      JsonObject item = items.get(i).getAsJsonObject();
+      String itemName = item.get("name").getAsString();
+      try {
+        GroceryNameProcessor processor = new GroceryNameProcessor();
+        itemName = processor.process(itemName);
+      } catch (Exception e) {
+        System.out.println("error");
+      }
 
-    try {
-      GroceryNameProcessor processor = new GroceryNameProcessor();
-      itemName = processor.process(itemName);
-    } catch (Exception e) {
-      System.out.println("error");
+      GroceryDataReader groceryReader = new GroceryDataReader();
+      bestItem = groceryReader.readFile(itemName.toLowerCase());
     }
-
-    GroceryDataReader groceryReader = new GroceryDataReader();
-    DealItem bestItem = groceryReader.readFile(itemName.toLowerCase());
 
     if (bestItem == null) {
       response.setContentType("text/plain");

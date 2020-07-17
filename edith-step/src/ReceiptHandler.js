@@ -7,7 +7,6 @@ export default class ReceiptHandler extends React.Component {
     super(props);
     this.state = { userId: '', storeName: '', date: '', name: '', fileUrl: '', totalPrice: 0.0, items: [] };
     this.getReceiptData = this.getReceiptData.bind(this);
-    //this.handleItemChange = this.handleItemChange.bind(this);
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.addItem = this.addItem.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -72,9 +71,9 @@ export default class ReceiptHandler extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    let totalPrice;
+    let totalPrice = 0;
     this.state.items.forEach(item => {
-      totalPrice += item.price;
+      totalPrice += item.price * item.quantity;
     })
     this.setState({ totalPrice: totalPrice });
     const receiptData = JSON.stringify(this.state);
