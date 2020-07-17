@@ -17,16 +17,10 @@ public final class GroceryDataReader {
 
     private static final String ALDI = "Aldi";
     private static final String KROGER = "Kroger";
-<<<<<<< HEAD
-    private static final String TRADERJOES = "Trader Joe's";
-    private static final String PUBLIX = "Publix";
-    private static final String WALMART = "Walmart";
-=======
     private static final String TRADER_JOES = "Trader Joe's";
     private static final String PUBLIX = "Publix";
     private static final String WALMART = "Walmart";
     private static final ImmutableList<String> STORES = ImmutableList.of(ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART);
->>>>>>> master
     
   /**
     * Finds the specified product in the file and puts the
