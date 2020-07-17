@@ -34,7 +34,7 @@ public class GroceryDataReader {
 	while ((record = reader.readNext()) != null) {
       if (record[0].equals(item)) {
         ShelfDataReader shelfReader = new ShelfDataReader();
-        String expirationTime = shelfReader.readFile(itemName);
+        String expirationTime = shelfReader.readFile(itemName.toLowerCase());
 
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
