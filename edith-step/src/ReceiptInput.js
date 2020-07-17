@@ -12,7 +12,7 @@ export default class ReceiptInput extends React.Component {
     const axios = require('axios')
     const response = await axios({
       method: 'post',
-      url: '/receipt-deals',
+      url: '/receipt-data',
       data: {
         itemName: name,
         itemPrice: price,
