@@ -15,7 +15,7 @@ import org.mockito.Mockito;
 public class DealsServletTest  {
 /**
   @Test
-  public void testServletGoodInput() throws Exception {
+  public void doPost_itemNameInCsv_respondsWithCheapestStore() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
@@ -36,7 +36,7 @@ public class DealsServletTest  {
   }
 
   @Test
-  public void testServletBadInput() throws Exception {
+  public void doPost_emptyStringInput_respondsWithNoDealFound() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 

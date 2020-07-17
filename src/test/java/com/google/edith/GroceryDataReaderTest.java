@@ -11,56 +11,33 @@ import org.junit.runners.JUnit4;
 public class GroceryDataReaderTest {
 
   private GroceryDataReader groceryReader;
-  private DealItem bestItem;
+  private DealItem cheapestItem;
 
   @Before
   public void setUp() {
     groceryReader = new GroceryDataReader();
-    bestItem = new DealItem();
+    cheapestItem = new DealItem();
   }
 
   @Test
-  public void dealItemInstantiates() {
+  public void instantiate_groceryReader_isSuccessful() {
     Assert.assertTrue(groceryReader instanceof GroceryDataReader);
   }
 
-  @Test
-  public void canGetDealIfExists() {
-    try {
-      bestItem = groceryReader.readFile("Apple Juice");
-      Assert.assertEquals("Kroger", bestItem.getStore());
-    } catch (IOException e) {
-      System.err.println();
-    }
+  public void readFile_itemNameInCsv_returnsCheapestItem() throws IOException {
+    cheapestItem = groceryReader.readFile("Apple Juice");
+    Assert.assertEquals("Kroger", cheapestItem.getStore());
   }
 
   @Test
-  public void canGetDealIgnoringCapitalization() {
-    try {
-      bestItem = groceryReader.readFile("Apple Juice");
-      Assert.assertEquals("Kroger", bestItem.getStore());
-    } catch (IOException e) {
-      System.err.println();
-    }
+  public void readFile_itemNotInCsv_returnsNull() throws IOException {
+    cheapestItem = groceryReader.readFile("no deal");
+    Assert.assertEquals(null, cheapestItem);
   }
 
   @Test
-  public void nullReturnedIfNoDeal() {
-    try {
-      bestItem = groceryReader.readFile("no deal");
-      Assert.assertEquals(null, bestItem);
-    } catch (IOException e) {
-      System.err.println();
-    }
-  }
-
-  @Test
-  public void getsDealDespiteQuestionableData() {
-    try {
-      bestItem = groceryReader.readFile("Coconut Milk");
-      Assert.assertEquals("Trader Joe's", bestItem.getStore());
-    } catch (IOException e) {
-      System.err.println();
-    }
+  public void readFile_itemWithMissingData_returnsCheapestItem() throws IOException {
+    cheapestItem = groceryReader.readFile("Coconut Milk");
+    Assert.assertEquals("Trader Joe's", cheapestItem.getStore());
   }
 }

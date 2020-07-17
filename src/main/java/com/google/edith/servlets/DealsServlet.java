@@ -23,18 +23,18 @@ public class DealsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     BufferedReader reader = request.getReader();
     try {
       String line;
       while ((line = reader.readLine()) != null) {
-        sb.append(line).append('\n');
+        stringBuilder.append(line).append('\n');
       }
     } finally {
       reader.close();
     }
 
-    String receiptData = sb.toString();
+    String receiptData = stringBuilder.toString();
     JsonParser parser = new JsonParser();
     JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
     System.out.println(inputjson);
@@ -57,16 +57,15 @@ public class DealsServlet extends HttpServlet {
       }
 
       GroceryDataReader groceryReader = new GroceryDataReader();
-      bestItem = groceryReader.readFile(itemName.toLowerCase());
+      DealItem cheapestItem = groceryReader.readFile(itemName.toLowerCase());
 
-      if (bestItem != null) {
-        deals.add(bestItem);
+      if (cheapestItem != null) {
+        Gson gson = new Gson();
+        String responseJson = gson.toJson(deals);
+        System.out.println(responseJson);
+        response.setContentType("application/json");
+        response.getWriter().println(responseJson);
       }
     }
-    Gson gson = new Gson();
-    String responseJson = gson.toJson(deals);
-    System.out.println(responseJson);
-    response.setContentType("application/json");
-    response.getWriter().println(responseJson);
   }
 }
