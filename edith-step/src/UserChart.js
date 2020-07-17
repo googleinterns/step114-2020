@@ -57,7 +57,7 @@ const LineChart = () => {
     );
   }
 
-const BarChart = () => {
+const BarGraph = () => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
@@ -173,4 +173,4 @@ const PieChart = () => {
   }
 
 export default LineChart
-export { BarChart, PieChart }
+export { BarGraph, PieChart }
