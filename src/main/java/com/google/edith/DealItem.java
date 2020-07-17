@@ -7,7 +7,6 @@ import java.util.List;
   * Represents items of the same type from
   * different stores in order to compare them. 
   */
-
 public final class DealItem {
   private String store;
   private double price;

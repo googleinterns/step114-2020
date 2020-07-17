@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that takes the user input from the receipt
   * form and uses it to retrieve the best deal. */
-@WebServlet("/receipt-deals")
+@WebServlet("/receipt-data")
 public class DealsServlet extends HttpServlet {
 
   @Override
@@ -48,7 +48,6 @@ public class DealsServlet extends HttpServlet {
       String responseJson = gson.toJson(cheapestItem);
       response.setContentType("application/json");
       response.getWriter().println(responseJson);
-      System.out.println(responseJson);
     }
   }
 }
