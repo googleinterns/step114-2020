@@ -29,7 +29,7 @@ import java.util.List;
 public class UserStatsServlet extends HttpServlet {
 
   private final DatastoreService datastore;
-  private final UserInsightsInterface userInsights;
+  private UserInsightsInterface userInsights;
 
   public UserStatsServlet() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
