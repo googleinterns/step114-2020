@@ -71,11 +71,11 @@ export default class ReceiptHandler extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    let totalPrice = 0;
+    let price = 0;
     this.state.items.forEach(item => {
-      totalPrice += item.price * item.quantity;
+      price += item.price * item.quantity;
     })
-    this.setState({ totalPrice: totalPrice });
+    this.setState({ totalPrice: price });
     const receiptData = JSON.stringify(this.state);
     const response = await axios({
       method: 'post',
@@ -84,6 +84,7 @@ export default class ReceiptHandler extends React.Component {
         data: receiptData
       }
     });
+    const deals = response.data;
   }
 
   render() {
@@ -131,6 +132,7 @@ export default class ReceiptHandler extends React.Component {
           <div className="col-auto">
             <input type="text"
                 className="store-name"
+                name="store-name"
                 placeholder="Store"
                 onChange={this.handleStoreChange}/>
           </div>

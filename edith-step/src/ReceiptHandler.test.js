@@ -4,33 +4,37 @@ import ReceiptHandler from './ReceiptHandler';
 import './setupTests.js'
 
 let component;
-let handleItemChange;
+let handleNameChange;
+let handlePriceChange;
+let handleQuantityChange;
+let handleStoreChange;
 let getReceiptData;
 let addItem;
 
 beforeEach(() => {
-  handleItemChange = jest.spyOn(ReceiptHandler.prototype, 'handleItemChange');
+  handleNameChange = jest.spyOn(ReceiptHandler.prototype, 'handleNameChange');
+  handlePriceChange = jest.spyOn(ReceiptHandler.prototype, 'handlePriceChange');
+  handleQuantityChange = jest.spyOn(ReceiptHandler.prototype, 'handleQuantityChange');
+  handleStoreChange = jest.spyOn(ReceiptHandler.prototype, 'handleStoreChange');
+
   getReceiptData = jest.spyOn(ReceiptHandler.prototype, 'getReceiptData');
   addItem = jest.spyOn(ReceiptHandler.prototype, 'addItem');
-  component = mount(<ReceiptHandler onChange={ handleItemChange }/>);
+  component = mount(<ReceiptHandler />);
 })
 
 afterEach(() => {
   component.unmount();
 });
 
-// ReceiptHandler component renders properly.
 it('renders properly', () => {
   expect(component.exists()).toBe(true);
 });
 
-// ReceiptHandler component renders properly.
 it('calls getReceiptData on mount', () => {
   expect(getReceiptData).toBeCalled();
 });
 
-// handleItemChange is called on change.
-it('should call handleItemChange on form change', () => {
+it('should call appropriate change function on form change', () => {
   const newItem = {
     name: '',
     price: 0.0,
@@ -42,16 +46,17 @@ it('should call handleItemChange on form change', () => {
   const promise = new Promise(getReceiptData);
   promise.then(() => {
     component.find('.name').simulate('change');
-    expect(handleItemChange).toBeCalled();
+    expect(handleNameChange).toBeCalled();
     component.find('.price').simulate('change');
-    expect(handleItemChange).toBeCalled();
+    expect(handlePriceChange).toBeCalled();
     component.find('.quantity').simulate('change');
-    expect(handleItemChange).toBeCalled();
+    expect(handleQuantityChange).toBeCalled();
+    component.find('.store-name').simulate('change');
+    expect(handleStoreChange).toBeCalled();
   });
 });
 
-// handleItemChange updates items list in state.
-it('should change state when handleItemChange is called', () => {
+it('should change state when on change functions are called', () => {
   const newItem = {
     name: '',
     price: 0.0,
@@ -63,6 +68,7 @@ it('should change state when handleItemChange is called', () => {
   const textEvent = {target: { name: "items[0].name", value: 'bread' }};
   const priceEvent = {target: { name: "items[0].price", value: 5.6 }};
   const quantityEvent = {target: {name: "items[0].quantity", value: 3}};
+  const storeEvent = {target: {name: "storeName", value: 'Whole Foods'}};
 
   const targetItem = {
     name: 'bread',
@@ -74,7 +80,9 @@ it('should change state when handleItemChange is called', () => {
     component.find('.name').simulate('change', textEvent);
     component.find('.price').simulate('change', priceEvent);
     component.find('.quantity').simulate('change', quantityEvent);
+    component.find('.store-name').simulate('change', storeEvent)
     expect(component.state('items')).toBe(targetItem);
+    expect(component.state('storeName')).toBe('Whole Foods');
   });
 });
 

@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.lang.Exception;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +44,7 @@ public class DealsServlet extends HttpServlet {
     System.out.println(items);
     
     DealItem bestItem = null;
+    List<DealItem> deals = new ArrayList<DealItem>();
     for (int i = 0; i < items.size(); i++) {
       bestItem = null;
       JsonObject item = items.get(i).getAsJsonObject();
@@ -56,17 +59,14 @@ public class DealsServlet extends HttpServlet {
       GroceryDataReader groceryReader = new GroceryDataReader();
       bestItem = groceryReader.readFile(itemName.toLowerCase());
 
-      if (bestItem == null) {
-        response.setContentType("text/plain");
-        response.getWriter().println("no deal found");
-      }
-      else {
-        Gson gson = new Gson();
-        String responseJson = gson.toJson(bestItem);
-        System.out.println(responseJson);
-        response.setContentType("application/json");
-        response.getWriter().println(responseJson);
+      if (bestItem != null) {
+        deals.add(bestItem);
       }
     }
+    Gson gson = new Gson();
+    String responseJson = gson.toJson(deals);
+    System.out.println(responseJson);
+    response.setContentType("application/json");
+    response.getWriter().println(responseJson);
   }
 }
