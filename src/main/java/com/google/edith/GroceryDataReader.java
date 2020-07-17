@@ -1,6 +1,7 @@
 package com.google.edith;
 
 import com.opencsv.CSVReader;
+import com.google.common.collect.ImmutableList; 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,9 +17,10 @@ public final class GroceryDataReader {
 
     private static final String ALDI = "Aldi";
     private static final String KROGER = "Kroger";
-    private static final String TRADERJOES = "Trader Joe's";
+    private static final String TRADER_JOES = "Trader Joe's";
     private static final String PUBLIX = "Publix";
     private static final String WALMART = "Walmart";
+    private static final ImmutableList<String> STORES = ImmutableList.of(ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART);
     
   /**
     * Finds the specified product in the file and puts the
@@ -31,6 +33,7 @@ public final class GroceryDataReader {
     CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
     DealItem cheapestItem = null;
 
+    // Should never be null with file grocerydatareader.csv.
     String[] record = null;
     record = reader.readNext();
     record = reader.readNext();
@@ -42,51 +45,20 @@ public final class GroceryDataReader {
 
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
-        DealItem item1 = new DealItem();
-        item1.setStore(ALDI);
-        item1.setPrice(record[1]);
-        item1.setWeight(record[2]);
-        item1.setComment(record[3]);
-        item1.setExpiration(expirationTime);
-        dealItems.add(item1);
-
-        DealItem item2 = new DealItem();
-        item2.setStore(KROGER);
-        item2.setPrice(record[4]);
-        item2.setWeight(record[5]);
-        item2.setComment(record[6]);
-        item2.setExpiration(expirationTime);
-        dealItems.add(item2);
-
-        DealItem item3 = new DealItem();
-        item3.setStore(TRADERJOES);
-        item3.setPrice(record[7]);
-        item3.setWeight(record[8]);
-        item3.setComment(record[9]);
-        item3.setExpiration(expirationTime);
-        dealItems.add(item3);
-
-        DealItem item4 = new DealItem();
-        item4.setStore(PUBLIX);
-        item4.setPrice(record[10]);
-        item4.setWeight(record[11]);
-        item4.setComment(record[12]);
-        item4.setExpiration(expirationTime);
-        dealItems.add(item4);
-
-        DealItem item5 = new DealItem();
-        item5.setStore(WALMART);
-        item5.setPrice(record[13]);
-        item5.setWeight(record[14]);
-        item5.setComment(record[15]);
-        item5.setExpiration(expirationTime);
-        dealItems.add(item5);
+        for (int i = 0; i < STORES.size(); i++) {
+          DealItem item = new DealItem();
+          item.setStore(STORES.get(i));
+          item.setPrice(record[i*3+1]);
+          item.setWeight(record[i*3+2]);
+          item.setComment(record[i*3+3]);
+          item.setExpiration(expirationTime);
+          dealItems.add(item);
+        }
 
         cheapestItem = getCheapestItemPerUnit(dealItems);
       }
     }
-		
-	reader.close();
+    reader.close();
     return cheapestItem;
   }
 
@@ -107,7 +79,6 @@ public final class GroceryDataReader {
         cheapestItem = item;
       }
     }
-
     return cheapestItem;
   }
 }
