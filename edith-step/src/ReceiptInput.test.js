@@ -1,7 +1,6 @@
 import React from 'react';
-import { mount, flushPromises } from 'enzyme';
+import { mount } from 'enzyme';
 import ReceiptInput from './ReceiptInput';
-import { screen, wait, getByText } from '@testing-library/react'
 import './setupTests.js'
 
 let component;
