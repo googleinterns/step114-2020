@@ -19,32 +19,20 @@ public class GroceryNameProcessorTest {
   }
 
   @Test
-  public void canGetDealIfExists() {
-    try {
-      result = processor.process("Coleman Farms chicken breast");
-    } catch(Exception e) {
-      System.out.println(e);
-    }
+  public void canGetDealIfExists() throws Exception {
+    result = processor.process("Coleman Farms chicken breast");
     Assert.assertEquals(result, "chicken breast");
   }
 
   @Test
-  public void confusingInput() {
-    try {
-      result = processor.process("SPCIS RED PEPPER <+");
-    } catch(Exception e) {
-      System.out.println(e);
-    }
+  public void confusingInput() throws Exception {
+    result = processor.process("SPCIS RED PEPPER <+");
     Assert.assertEquals(result, "red pepper");
   }
 
   @Test
-  public void canMatch() {
-    try {
-      result = processor.process("Kirkland Farms pasture-raised eggs");
-    } catch(Exception e) {
-      System.out.println(e);
-    }
+  public void canMatch() throws Exception {
+    result = processor.process("Kirkland Farms pasture-raised eggs");
     Assert.assertEquals(result, "eggs");
   }
 }

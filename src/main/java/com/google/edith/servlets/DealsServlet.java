@@ -35,6 +35,7 @@ public class DealsServlet extends HttpServlet {
     }
 
     String receiptData = stringBuilder.toString();
+    System.out.println(receiptData);
     JsonParser parser = new JsonParser();
     JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
     System.out.println(inputjson);

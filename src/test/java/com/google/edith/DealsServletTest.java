@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.PrintWriter;
@@ -19,8 +20,9 @@ public class DealsServletTest  {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    String json = "{\"data\":"{\"userId\":\"185804764220139124118\",\"storeName\":\"G\",\"date\":\"unknown date\",\"name\":\"Receipt\",\"fileUrl\":\"encoded_gs_key:L2dzL2VkaXRoLXJlY2VpcHRzLzJJU2dmeWJTaUpkaEg1azVRTHViVFE\",\"totalPrice\":0,\"items\":[{\"userId\":\"185804764220139124118\",\"name\":\"apple juice\",\"price\":0
-    .99,\"quantity\":\"1\",\"category\":\"unknown category\",\"expireDate\":\"unknown date\"}}";
+    String data = "{data: {userId: 185804764220139124118, storeName: G, date: unknown date, name: Receipt, fileUrl: encoded_gs_key:L2dzL2VkaXRoLXJlY2VpcHRzLzJJU2dmeWJTaUpkaEg1azVRTHViVFE, totalPrice: 0, items:[{userId: 185804764220139124118, name: apple juice, price: 0.99, quantity: 1, category: unknown category, expireDate: unknown date}]}";
+    Gson gson = new Gson();
+    String json = gson.toJson(data);
     Mockito.when(request.getReader()).thenReturn(
         new BufferedReader(new StringReader(json)));
     
@@ -40,8 +42,9 @@ public class DealsServletTest  {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);       
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    String json = "{\"data\":"{\"userId\":\"185804764220139124118\",\"storeName\":\"G\",\"date\":\"unknown date\",\"name\":\"Receipt\",\"fileUrl\":\"encoded_gs_key:L2dzL2VkaXRoLXJlY2VpcHRzLzJJU2dmeWJTaUpkaEg1azVRTHViVFE\",\"totalPrice\":0,\"items\":[{\"userId\":\"185804764220139124118\",\"name\":\"apple juice\",\"price\":0
-    .99,\"quantity\":\"1\",\"category\":\"unknown category\",\"expireDate\":\"unknown date\"}}";
+    String data = "{data: {userId: 185804764220139124118, storeName: G, date: unknown date, name: Receipt, fileUrl: encoded_gs_key:L2dzL2VkaXRoLXJlY2VpcHRzLzJJU2dmeWJTaUpkaEg1azVRTHViVFE, totalPrice: 0, items:[{userId: 185804764220139124118, name: no deal, price: 0.99, quantity: 1, category: unknown category, expireDate: unknown date}}";
+    Gson gson = new Gson();
+    String json = gson.toJson(data);
     Mockito.when(request.getReader()).thenReturn(
         new BufferedReader(new StringReader(json)));
     
