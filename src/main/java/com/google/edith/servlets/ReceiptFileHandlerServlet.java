@@ -20,7 +20,6 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -37,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * file to be stored in the Google Cloud Storage Bucket and redirects the request to
  * ReceiptFileHandlerServlet.
  */
-@WebServlet("/receipt-file-handler")
+@WebServlet("/receipt-file-handle")
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
   private static final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();

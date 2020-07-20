@@ -36,10 +36,10 @@ public class DealsServlet extends HttpServlet {
     JsonObject data = parser.parse(inputjson.get("data").getAsString()).getAsJsonObject();
     JsonArray items = data.get("items").getAsJsonArray();
     
-    DealItem bestItem = null;
+    DealItem cheapestItem = null;
     List<DealItem> deals = new ArrayList<DealItem>();
     for (int i = 0; i < items.size(); i++) {
-      bestItem = null;
+      cheapestItem = null;
       JsonObject item = items.get(i).getAsJsonObject();
       String itemName = item.get("name").getAsString();
       try {
@@ -50,15 +50,21 @@ public class DealsServlet extends HttpServlet {
       }
 
       GroceryDataReader groceryReader = new GroceryDataReader();
-      DealItem cheapestItem = groceryReader.readFile(itemName.toLowerCase());
+      cheapestItem = groceryReader.readFile(itemName.toLowerCase());
 
       if (cheapestItem != null) {
-        Gson gson = new Gson();
-        String responseJson = gson.toJson(cheapestItem);
-        System.out.println(responseJson);
-        response.setContentType("application/json");
-        response.getWriter().println(responseJson);
+        deals.add(cheapestItem);
+        //Gson gson = new Gson();
+        //String responseJson = gson.toJson(cheapestItem);
+        //System.out.println(responseJson);
+        //response.setContentType("application/json");
+       // response.getWriter().println(responseJson);
       }
     }
+    Gson gson = new Gson();
+    String dealItems = gson.toJson(deals);
+    System.out.println(dealItems);
+    response.setContentType("application/json");
+    response.getWriter().println(dealItems);
   }
 }

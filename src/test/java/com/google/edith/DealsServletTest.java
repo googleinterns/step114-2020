@@ -92,6 +92,7 @@ public class DealsServletTest  {
 
     Mockito.verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
-    Assert.assertTrue(stringWriter.toString().isEmpty());
+    System.out.println(stringWriter.toString());
+    Assert.assertTrue(stringWriter.toString().contains("no deal found"));
   }
 }

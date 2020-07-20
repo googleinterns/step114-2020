@@ -56,6 +56,7 @@ public final class GroceryDataReader {
           dealItem.setPrice(record[i*3+1]);
           dealItem.setWeight(record[i*3+2]);
           dealItem.setComment(record[i*3+3]);
+          dealItem.setExpiration(expirationTime);
           dealItems.add(dealItem);
         }
 
@@ -63,6 +64,11 @@ public final class GroceryDataReader {
       }
     }
     reader.close();
+    if (cheapestItem == null) {
+      DealItem emptyDeal = new DealItem();
+      emptyDeal.setStore("no deal found");
+      return emptyDeal;
+    }
     return cheapestItem;
   }
 

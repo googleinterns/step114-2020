@@ -15,6 +15,7 @@ public final class DealItem {
   private double unitPrice;
   private String expiration;
 
+  /** Store name is 'no deal found' if no deal avaliable. */
   public void setStore(String store) {
     this.store = store;
   }
