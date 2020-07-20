@@ -1,5 +1,5 @@
 .background-image-0 {
-  background: fixed url(./receipt.jpg) center/cover no-repeat; 
+  background: fixed url(./receipt.jpg) center/cover no-repeat;
   height: 150vh;
   position: relative;
   width: 100vw;
@@ -26,7 +26,6 @@
   color: white;
 }
 
-<<<<<<< HEAD
 .scroll-down {
   animation-delay: 1s ease-in-out 1s infinite alternate scroll-down;
   left: 0;
