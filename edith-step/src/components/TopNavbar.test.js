@@ -1,9 +1,9 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
 
 import { enableFetchMocks } from 'jest-fetch-mock'
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 let userObj = {'email': 'email'}
@@ -13,6 +13,7 @@ describe('TopNavbar calls', () => {
     const login = jest.spyOn(TopNavbar.prototype, 'login');
     component = mount(<TopNavbar />);
     expect(login).toBeCalled();
+    component.unmount();
   });
 });
 

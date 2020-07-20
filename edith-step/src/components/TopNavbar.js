@@ -1,34 +1,17 @@
 import React from 'react';
 
-import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
+/**
+ * Top navigation bar for user interaction with log-in, log-out
+ * and other app features.
+ */
 class TopNavbar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: null,
-    };
-  }
-  
-  componentDidMount() {
-    this.login();
-  }
-  
-  login() {
-    fetch('/login')
-      .then(response => response.json())
-      .then(userInfo => {
-        sessionStorage.setItem('logged-in', userInfo.email);
-        this.setState({user: userInfo});
-      })
-      .catch(() => {
-        sessionStorage.setItem('logged-in', '');
-        this.setState({user: null});
-    });
-  }
-
+  /**
+   * Renders navigation bar at the top of the webpage.
+   *  @return { React.ReactNode } React virtual DOM.
+   */
   render() {
     return (
       <Navbar bg='dark' variant='dark' fixed='top' expand='lg'>
