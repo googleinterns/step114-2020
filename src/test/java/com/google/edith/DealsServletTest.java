@@ -39,11 +39,9 @@ public class DealsServletTest  {
     String json = gson.toJson(receipt);
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
-    JsonObject dataObject = new JsonObject();
-    dataObject.addProperty("data", inputJson.toString());
 
     Mockito.when(request.getReader()).thenReturn(
-        new BufferedReader(new StringReader(dataObject.toString())));
+        new BufferedReader(new StringReader(inputJson.toString())));
     
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -78,11 +76,9 @@ public class DealsServletTest  {
     String json = gson.toJson(receipt);
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
-    JsonObject dataObject = new JsonObject();
-    dataObject.addProperty("data", inputJson.toString());
     
     Mockito.when(request.getReader()).thenReturn(
-        new BufferedReader(new StringReader(dataObject.toString())));
+        new BufferedReader(new StringReader(inputJson.toString())));
     
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);

@@ -33,8 +33,8 @@ public class DealsServlet extends HttpServlet {
     String receiptData = stringBuilder.toString();
     JsonParser parser = new JsonParser();
     JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
-    JsonObject data = parser.parse(inputjson.get("data").getAsString()).getAsJsonObject();
-    JsonArray items = data.get("items").getAsJsonArray();
+    //JsonObject data = parser.parse(inputjson.get("data").getAsString()).getAsJsonObject();
+    JsonArray items = inputjson.get("items").getAsJsonArray();
     
     DealItem cheapestItem = null;
     List<DealItem> deals = new ArrayList<DealItem>();
