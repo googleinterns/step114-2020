@@ -11,7 +11,7 @@ import './App.css';
 class App extends Component {
   /**
    * Renders TopNavbar, ReceiptInput component.
-   * @return React.ReactNode
+   * @return { React.ReactNode } React virtual DOM.
    */
   render() {
     return (

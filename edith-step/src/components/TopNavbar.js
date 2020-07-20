@@ -10,7 +10,7 @@ import Nav from 'react-bootstrap/Nav';
 class TopNavbar extends React.Component {
   /**
    * Renders navigation bar at the top of the webpage.
-   * @return React.ReactNode
+   * * @return { React.ReactNode } React virtual DOM.
    */
   render() {
     return (
