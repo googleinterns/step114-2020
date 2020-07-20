@@ -7,7 +7,7 @@ let component;
 
 beforeEach(() => {
   component = mount(<TopNavbar />);
-})
+});         
 
 afterEach(() => {
   component.unmount();

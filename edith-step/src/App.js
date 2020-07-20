@@ -9,7 +9,7 @@ import './App.css';
  * Main webpage for the website.
  */
 class App extends Component {
-
+  /** Renders TopNabbar, ReceiptInput component. */
   render() {
     return (
       <div className='App'>
@@ -22,7 +22,7 @@ class App extends Component {
           </div>
           <div className='app-describe'>
             <span className='border'>
-              Welcome To Edith: The Best Expenditure Analyzer.
+              Welcome To Edith: Expenditure Analyzer.
             </span>
           </div>
         </div>
