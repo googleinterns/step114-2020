@@ -100,10 +100,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-language</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
       <version>1.9.64</version>

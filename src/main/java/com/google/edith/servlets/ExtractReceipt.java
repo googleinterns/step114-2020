@@ -1,4 +1,4 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
 import com.google.cloud.documentai.v1beta2.Document;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
@@ -6,6 +6,7 @@ import com.google.cloud.documentai.v1beta2.GcsSource;
 import com.google.cloud.documentai.v1beta2.InputConfig;
 import com.google.cloud.documentai.v1beta2.ProcessDocumentRequest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;

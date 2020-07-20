@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith.servlets;
+package com.google.edith;
 
 import com.google.gson.Gson;
 import com.google.appengine.api.blobstore.BlobInfo;

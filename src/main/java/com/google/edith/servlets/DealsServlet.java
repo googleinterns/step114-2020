@@ -30,16 +30,11 @@ public class DealsServlet extends HttpServlet {
         stringBuilder.append(line).append('\n');
       }
     }
-
     String receiptData = stringBuilder.toString();
-    System.out.println(receiptData);
     JsonParser parser = new JsonParser();
     JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
-    System.out.println(inputjson);
     JsonObject data = parser.parse(inputjson.get("data").getAsString()).getAsJsonObject();
-    System.out.println(data);
     JsonArray items = data.get("items").getAsJsonArray();
-    System.out.println(items);
     
     DealItem bestItem = null;
     List<DealItem> deals = new ArrayList<DealItem>();
@@ -59,7 +54,7 @@ public class DealsServlet extends HttpServlet {
 
       if (cheapestItem != null) {
         Gson gson = new Gson();
-        String responseJson = gson.toJson(deals);
+        String responseJson = gson.toJson(cheapestItem);
         System.out.println(responseJson);
         response.setContentType("application/json");
         response.getWriter().println(responseJson);
