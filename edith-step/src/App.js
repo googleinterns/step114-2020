@@ -9,7 +9,10 @@ import './App.css';
  * Main webpage for the website.
  */
 class App extends Component {
-  /** Renders TopNabbar, ReceiptInput component. */
+  /**
+   * Renders TopNavbar, ReceiptInput component.
+   * @return React.ReactNode
+   */
   render() {
     return (
       <div className='App'>

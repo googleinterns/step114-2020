@@ -8,7 +8,10 @@ import Nav from 'react-bootstrap/Nav';
  * and other app features.
  */
 class TopNavbar extends React.Component {
-  /** Renders navigation bar at the top of the webpage. */
+  /**
+   * Renders navigation bar at the top of the webpage.
+   * @return React.ReactNode
+   */
   render() {
     return (
       <Navbar bg='dark' variant='dark' fixed='top'>
