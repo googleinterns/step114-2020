@@ -14,12 +14,14 @@
 
 package com.google.edith.servlets;
 
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
 import com.google.gson.Gson;
 import com.google.edith.services.ReceiptFileHandlerService;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +58,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     String json = gson.toJson(parsedReceipt);
+    System.out.println(json);
     
     response.setContentType("application/json");
     response.getWriter().println(json);

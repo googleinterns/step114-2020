@@ -3,26 +3,77 @@ import React from 'react';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0};
+    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(e) {
+  async getDeal(name, price, quantity) {
+    const axios = require('axios')
+    const response = await axios({
+      method: 'post',
+      url: '/receipt-deals',
+      data: {
+        itemName: name,
+        itemPrice: price,
+        itemQuantity: quantity
+      }
+    });
+    const dealItem = response.data;
+
+    let newDeal;
+    if (dealItem == "no deal found") {
+      newDeal = {
+        storeName: "no deal found",
+        storePrice: 0,
+        storeExpiration: "no expiration found"
+      }
+    } else {
+      newDeal = {
+        storeName: dealItem.store,
+        storePrice: dealItem.price,
+        storeExpiration: dealItem.expiration
+      };
+    }
+
+    return newDeal;
+  }
+
+  async handleSubmit(e) {
     e.preventDefault();
-    
     if (this.state.itemName.length === 0) {
       return;
     }
+
+    const newDeal = await this.getDeal(this.state.itemName, this.state.itemPrice, this.state.itemQuantity);
+    let dealMessage;
+    if (newDeal.storeName == "no deal found" || newDeal.storePrice > this.state.itemPrice) {
+      dealMessage = "no deal found";
+    } else {
+      dealMessage = "Purchase at " + newDeal.storeName + " for $" + newDeal.storePrice + ".";
+    }
+
+    let expirationMessage;
+    if (newDeal.storeExpiration == "no shelf life data found") {
+      expirationMessage = "data unavailable";
+    } else {
+      expirationMessage = newDeal.storeExpiration;
+    }
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
+      itemQuantity: this.state.itemQuantity,
+      itemDeal: dealMessage,
+      itemExpiration: expirationMessage,
       id: Date.now()
     };
+
     this.setState(state => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
+      itemQuantity: 1
     }));
   }
 
@@ -35,42 +86,69 @@ export default class ReceiptInput extends React.Component {
 
   render() {
     return(
-      <div>
+      <div className="container-fluid">
       <h3>Grocery Items</h3>
-      <GroceryList items={this.state.items} />
       <form onSubmit={this.handleSubmit}>
-        <table>
-        <tbody>
-          <tr>
-            <td>
+        <div className="form-row">
+          <div className="col-auto">
+            <div className="input-group mb-2">
+              <div className="input-group-prepend">
+                <div className="input-group-text">Item</div>
+              </div>
               <input 
                 type="text" 
+                className="form-control"
                 name="itemName"
                 id="name"
                 value={this.state.itemName} 
                 onChange={this.handleChange} />
-            </td>
-            <td>
+            </div>
+          </div>
+          <div className="col-auto">
+            <div className="input-group mb-2">
+              <div className="input-group-prepend">
+                <div className="input-group-text">Price</div>
+              </div>
               <input
                 type="number" 
+                className="form-control"
                 name="itemPrice"
                 id="price"
                 step="0.01"
                 value={this.state.itemPrice} 
                 onChange={this.handleChange} />
-            </td>
-          </tr>
-          <tr>
-            <td>
+            </div>
+          </div>
+          <div className="col-auto">
+            <div className="input-group mb-2">
+              <div className="input-group-prepend">
+                <div className="input-group-text">Quantity</div>
+              </div>
               <input
+                type="number"
+                className="form-control"
+                name="itemQuantity"
+                id="quantity"
+                step="1"
+                value={this.state.itemQuantity}
+                onChange={this.handleChange} />
+            </div>
+          </div>
+          <div className="col-auto">
+            <button className="btn btn-primary"
                 id="submit"
                 type="submit" 
-                value="Submit" />
-            </td>
-          </tr>
-        </tbody>
-        </table>
+                value="Submit">Add Item</button>
+          </div>
+        </div>
       </form>
+      <div className="row">
+        <div className="col-lg-5">
+          {this.state.items.length > 0 &&
+            <GroceryList items={this.state.items}/>
+          }
+        </div>
+      </div>
       </div>
     );
   }
@@ -78,15 +156,25 @@ export default class ReceiptInput extends React.Component {
 
 var GroceryList = (props) => {
   return (
-    <table id="grocery-list">
-      <tbody>
+    <div id="grocery-list">
+      <ul className="list-group">
+        <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
+            <span className="col-lg-2">Item</span>
+            <span className="badge badge-pill col-lg-2">Price</span>
+            <span className="badge badge-pill col-lg-2">#</span>
+            <span className="badge badge-pill col-lg-2">Deal</span>
+            <span className="badge badge-pill col-lg-2">Expiration</span>
+          </li>
         {props.items.map(item => (
-          <tr className="item" key={item.id}>
-            <td className="item-name">{item.itemName}</td>
-            <td className="item-price">{item.itemPrice}</td>
-          </tr>
+          <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
+            <span className="item-name col-lg-2">{item.itemName}</span>
+            <span className="item-price badge badge-pill col-lg-2">{item.itemPrice}</span>
+            <span className="item-quantity badge badge-pill col-lg-2">{item.itemQuantity}</span>
+            <span className="item-deal badge badge-pill col-lg-2">{item.itemDeal}</span>
+            <span className="item-expiration badge badge-pill col-lg-2">{item.itemExpiration}</span>
+          </li>
         ))}
-      </tbody>
-    </table>
+      </ul>
+    </div>
   );
 }

@@ -7,11 +7,16 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@types/whatwg-fetch": "0.0.33",
+    "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "core-js": "^3.6.5",
+    "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
+    "react-fetch": "0.0.9",
     "react-scripts": "3.4.1",
+    "regenerator-runtime": "^0.13.5",
     "serve": "^11.3.2"
   },
   "scripts": {
@@ -40,8 +45,10 @@
     "node": "10.x.x"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.10.3",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
+    "@babel/runtime": "^7.10.4",
     "babel-jest": "^24.9.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",

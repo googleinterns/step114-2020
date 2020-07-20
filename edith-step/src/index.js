@@ -2,8 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+//import '@babel/polyfill'
 
 ReactDOM.render(
   <React.StrictMode>

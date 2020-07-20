@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
 * Servlet that returns some example content.
 */
+@WebServlet("/")
 public class DataServlet extends HttpServlet {
 
  @Override

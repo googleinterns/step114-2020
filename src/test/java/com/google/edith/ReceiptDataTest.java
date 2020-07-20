@@ -76,6 +76,8 @@ public final class ReceiptDataTest {
   @Test
   public void testExtractReceiptData() throws IOException {
     try {
+      List<Map<String, String>> items = Collections.emptyList();
+      when(extractReceipts.extractReceipt()).thenReturn(items);
       Receipt returnedReceipt = receiptData.extractReceiptData();
       assertNotNull(returnedReceipt);
       assertTrue(returnedReceipt instanceof Receipt);

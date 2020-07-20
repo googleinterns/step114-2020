@@ -30,14 +30,29 @@ import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
 public class StoreReceiptService {
+    
   private final DatastoreService datastore;
 
   public StoreReceiptService(DatastoreService datastore) {
     this.datastore = datastore;
   }
+  
+  /**
+  * Stores Receipt and Item entities in datastore
+  * @param receipt - object which holds info of parsed file.
+  */
+  public void storeEntites(Receipt receipt) {
+    storeReceiptEntity(receipt);
+  } 
 
-  public Entity storeReceiptEntity(Receipt receipt) {
+  /**
+  * Receives Receipt object and creates entity
+  * of type Receipt and stores it in Datastore.
+  * @param receipt - object which holds info of parsed file.
+  */
+  private void storeReceiptEntity(Receipt receipt) {
     String userId = receipt.getUserId();
     String storeName = receipt.getStoreName();
     String date = receipt.getDate();
@@ -55,20 +70,34 @@ public class StoreReceiptService {
     receiptEntity.setProperty("fileUrl", fileUrl);
     receiptEntity.setProperty("totalPrice", totalPrice);
     datastore.put(receiptEntity);
-    return receiptEntity;
+    storeReceiptItemsEntity(receipt, receiptEntity);
   }
 
+  /**
+  * Parses the form submitted by user which contains information of
+  * the parsed receipt and creates a Receipt object from the JSON string.
+  * @param request - request which contains the form body.
+  * @return Receipt - Receipt object created from the JSON string.
+  */
   public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
     BufferedReader bufferedReader = request.getReader();
-
     Gson gson = new Gson();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(bufferedReader);
+    System.out.println(json.toString());
     String receiptJsonString = json.get("data").getAsString();
+    System.out.println(receiptJsonString);
     return gson.fromJson(receiptJsonString, Receipt.class);
   }
 
-  public void storeReceiptItemsEntity(Item[] items, Entity receiptEntity) {
+  /**
+  * Stores parsed item from the form with
+  * receiptEntity as a parent in the datastore.
+  * @param items - request which contains the form body.
+  * @param receiptEntity - request which contains the form body.
+  */
+  private void storeReceiptItemsEntity(Receipt receipt, Entity receiptEntity) {
+    Item[] items = receipt.getItems();
     for (Item item: items) {
       String userId = item.getUserId();
       String itemName = item.getName();

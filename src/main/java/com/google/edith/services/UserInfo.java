@@ -18,7 +18,7 @@ import com.google.auto.value.AutoValue;
 
 /** Encapsulate User info and logout url. */
 @AutoValue
-abstract class UserInfo {
+public abstract class UserInfo {
 
   abstract String firstName();
   abstract String lastName();
@@ -28,12 +28,12 @@ abstract class UserInfo {
   abstract String userId();
   abstract String logOutUrl();
   
-  static Builder builder() {
+  public static Builder builder() {
     return new AutoValue_UserInfo.Builder();
   }
 
   @AutoValue.Builder
-  abstract static class Builder {
+  public abstract static class Builder {
     abstract Builder setFirstName(String value);
     abstract Builder setLastName(String value);
     abstract Builder setUserName(String value);

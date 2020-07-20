@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-
-import ReceiptInput from './components/ReceiptInput';
 import TopNavbar from './components/TopNavbar';
+import ReceiptHandler from './ReceiptHandler.js';
 
 import './App.css';
 
 class App extends Component {
 
   render() {
-    return (
+ return (
       <div className='App'>
         <div className='App-header'>
           <TopNavbar />
@@ -21,7 +20,9 @@ class App extends Component {
             <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
-        <ReceiptInput />
+        <div className="receipt-info">
+          <ReceiptHandler />
+        </div>
       </div>
     );
   }

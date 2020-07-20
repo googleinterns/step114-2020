@@ -50,9 +50,7 @@ public class StoreReceipt extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     Receipt receipt = storeReceiptService.parseReceiptFromForm(request);
-    Item[] items = receipt.getItems();
-    Entity receiptEntity = storeReceiptService.storeReceiptEntity(receipt);
-    storeReceiptService.storeReceiptItemsEntity(items, receiptEntity);
+    storeReceiptService.storeEntites(receipt);
     response.sendRedirect("/");
   }
 }
