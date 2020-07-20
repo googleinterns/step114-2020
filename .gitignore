@@ -1,7 +1,6 @@
 target/
 
 /node_modules
-/src/main/webapp/index.html
 /src/main/webapp/*.*
 /.settings
 .cache/
