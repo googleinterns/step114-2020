@@ -14,8 +14,25 @@
 
 package com.google.edith.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.services.LoginService;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,12 +47,52 @@ public class SearchServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    UserService userService = UserServiceFactory.getUserService();
+
+    String loggedInUserId = userService.getCurrentUser().getUserId();
+    List<Filter> filters = new ArrayList<>();
+
     String kind = request.getParameter("kind");
     String name = request.getParameter("name");
     String date = request.getParameter("date");
-    System.out.println(kind);
-    System.out.println(name);
-    System.out.println(date);
+    String sortOrder = request.getParameter("sort-order");
+    String sortOnProperty = request.getParameter("sort-on");
+
+    if (kind.equals("Receipt")) {
+      Filter entityFilter = new CompositeFilter(
+                              CompositeFilterOperator.AND, Arrays.asList(
+                                new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId),
+                                new FilterPredicate("name", FilterOperator.EQUAL, name),
+                                new FilterPredicate("date", FilterOperator.EQUAL, date)
+                              ));
+      Query query = new Query("Receipt").setFilter(entityFilter);
+      PreparedQuery results = datastore.prepare(query);
+      List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
+      for (Entity entity: entities) {
+        System.out.println(entity.toString());
+      }
+    } else if (kind.equals("Item")) {
+      Filter entityFilter = new CompositeFilter(
+                              CompositeFilterOperator.AND, Arrays.asList(
+                                new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId),
+                                new FilterPredicate("name", FilterOperator.EQUAL, name),
+                                new FilterPredicate("expireDate", FilterOperator.EQUAL, date)
+                              ));
+      Query query = new Query("Item")
+                      .setFilter(entityFilter);
+                      // .addSort(sortOnProperty, SortDirection.DESCENDING);
+
+      PreparedQuery results = datastore.prepare(query);
+      List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
+      for (Entity entity: entities) {
+        System.out.println(entity.toString());
+      }
+    }
     response.sendRedirect("/");
+  }
+
+  private Optional<String> getParameter(HttpServletRequest request, String name) {
+    return Optional.ofNullable(request.getParameter(name));
   }
 }

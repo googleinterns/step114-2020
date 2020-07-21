@@ -37,6 +37,16 @@ class SearchModalBox extends React.Component {
                 <Form.Control name = 'name' placeholder='Name' />
                 <Form.Label>Date</Form.Label>
                 <Form.Control name = 'date' placeholder='Date' />
+                <Form.Label>Sort Order</Form.Label>
+                <Form.Control name='sort-order' as='select' defaultValue='Choose...'>
+                  <option>Ascending</option>
+                  <option>Descending</option>
+                </Form.Control>
+                <Form.Label>Sort on Property</Form.Label>
+                <Form.Control name='sort-on' as='select' defaultValue='Choose...'>
+                  <option>Entity Name</option>
+                  <option>Date</option>
+                </Form.Control>
               </Form.Group>
             </Row>
             <Button variant='primary' type='submit' >
