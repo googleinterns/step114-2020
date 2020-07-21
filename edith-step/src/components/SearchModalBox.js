@@ -21,29 +21,22 @@ class SearchModalBox extends React.Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
-            Please Complete The Form
+            Select your search criteria.
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form method='POST' action='/login'>
+          <Form method='GET' action='search-entity'>
             <Row>
-              <Form.Group as={Col}>
-                <Form.Label>First Name</Form.Label>
-                <Form.Control placeholder='First Name' className='first-name' name='first-name' required />
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control placeholder='Last Name' className='last-name' name='last-name' required />
-              </Form.Group>
-            </Row>
-            <Row>
-              <Form.Group as={Col}>
-                <Form.Label>Username</Form.Label>
-                <Form.Control placeholder='Username' className='username' name='username' required />
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Favorite Store</Form.Label>
-                <Form.Control placeholder='Favorite Store' className='favorite-store' name='favorite-store' required />
+              <Form.Group as={Col} controlId='formGridState'>
+                <Form.Label>Select Kind</Form.Label>
+                <Form.Control name='kind' as='select' defaultValue='Choose...'>
+                  <option>Receipt</option>
+                  <option>Item</option>
+                </Form.Control>
+                <Form.Label>Entity Name</Form.Label>
+                <Form.Control name = 'name' placeholder='Name' />
+                <Form.Label>Date</Form.Label>
+                <Form.Control name = 'date' placeholder='Date' />
               </Form.Group>
             </Row>
             <Button variant='primary' type='submit' >
