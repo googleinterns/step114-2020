@@ -68,7 +68,7 @@ public class StoreReceiptService {
     receiptEntity.setProperty("date", date);
     receiptEntity.setProperty("name", name);
     receiptEntity.setProperty("fileUrl", fileUrl);
-    receiptEntity.setProperty("totalPrice", totalPrice);
+    receiptEntity.setProperty("price", totalPrice);
     datastore.put(receiptEntity);
     storeReceiptItemsEntity(receipt, receiptEntity);
   }
@@ -84,7 +84,6 @@ public class StoreReceiptService {
     Gson gson = new Gson();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(bufferedReader);
-    System.out.println(json.toString());
     String receiptJsonString = json.get("data").getAsString();
     System.out.println(receiptJsonString);
     return gson.fromJson(receiptJsonString, Receipt.class);
@@ -110,10 +109,10 @@ public class StoreReceiptService {
       itemEntity.setProperty("userId", userId);
       itemEntity.setProperty("name", itemName);
       itemEntity.setProperty("quantity", quantity);
+      itemEntity.setProperty("price", price);
       itemEntity.setProperty("category", category);
-      itemEntity.setProperty("expireDate", expireDate);
+      itemEntity.setProperty("date", expireDate);
       datastore.put(itemEntity);
-      System.out.println(itemEntity.getParent());
     }
   }
 

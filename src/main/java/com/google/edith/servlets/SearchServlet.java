@@ -56,12 +56,12 @@ public class SearchServlet extends HttpServlet {
     filters.add(new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId));
 
     String kind = getParameter(request, "kind").orElse("");
-    System.out.println(kind);
-    
+
     String name = getParameter(request, "name").orElse("");
     String date = getParameter(request, "date").orElse("");
-    String sortOrder = getParameter(request, "sortOrder").orElse("");
-    String sortOnProperty = getParameter(request, "sortOnProperty").orElse("");
+    String sortOrder = getParameter(request, "sort-order").orElse("");
+    String sortOnProperty = getParameter(request, "sort-on").orElse("")
+                              .toLowerCase();
 
     if (!name.isEmpty()) {
       filters.add(new FilterPredicate("name", FilterOperator.EQUAL, name));
@@ -81,6 +81,9 @@ public class SearchServlet extends HttpServlet {
       query = new Query("Item").setFilter(entityFilter);
     }
     
+    if (sortOrder.equals("Ascending")) query = query.addSort(sortOnProperty, SortDirection.ASCENDING);
+    if (sortOrder.equals("Descending")) query = query.addSort(sortOnProperty, SortDirection.DESCENDING);
+
     PreparedQuery results = datastore.prepare(query);
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
     for (Entity entity: entities) {
