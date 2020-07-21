@@ -21,24 +21,28 @@ class SearchModalBox extends React.Component {
       >
         <Modal.Header closeButton>
           <Modal.Title
-            id='contained-modal-title-vcenter'>
+            id='contained-modal-title-vcenter'
+          >
             Select your search criteria.
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
             method='GET'
-            action='search-entity'>
+            action='search-entity'
+          >
             <Row>
               <Form.Group
                 as={Col}
-                controlId='formGridState'>
+                controlId='formGridState'
+              >
                 <Form.Label>Select Kind</Form.Label>
                 <Form.Control
                   required
                   name='kind' 
-                  s='select'
-                  defaultValue='Choose...'>
+                  as='select'
+                  defaultValue='Choose...'
+                >
                   <option>Receipt</option>
                   <option>Item</option>
                 </Form.Control>
@@ -46,14 +50,19 @@ class SearchModalBox extends React.Component {
                 <Form.Control
                   name = 'name'
                   required
-                  placeholder='Name' />
+                  placeholder='Name'
+                />
                 <Form.Label>Date</Form.Label>
-                <Form.Control name = 'date' placeholder='Date' />
+                <Form.Control
+                  name = 'date'
+                  placeholder='Date'
+                />
                 <Form.Label>Sort Order</Form.Label>
                 <Form.Control
                   name='sort-order'
                   as='select'
-                  defaultValue='Choose...'>
+                  defaultValue='Choose...'
+                >
                   <option>Ascending</option>
                   <option>Descending</option>
                 </Form.Control>
@@ -61,7 +70,8 @@ class SearchModalBox extends React.Component {
                 <Form.Control
                   name='sort-on'
                   as='select'
-                  defaultValue='Choose...'>
+                  defaultValue='Choose...'
+                >
                   <option>Name</option>
                   <option>Date</option>
                   <option>Price</option>
@@ -70,7 +80,8 @@ class SearchModalBox extends React.Component {
             </Row>
             <Button
               variant='primary'
-              type='submit' >
+              type='submit'
+            >
               Submit
             </Button>
           </Form>
