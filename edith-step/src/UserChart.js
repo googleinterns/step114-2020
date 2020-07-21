@@ -112,8 +112,8 @@ const BarGraph = (props) => {
         height={100}
         options={{
           onClick: (event, element) => {
-            console.log(element[0]._chart.config.data.labels[element[0]._index]);
-            props.action();
+            const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
+            props.action(dateSelection);
           },        
           maintainAspectRatio: false,
           title:{
@@ -220,6 +220,7 @@ const DoughnutChart = (props) => {
             position:'bottom',
           }
         }}
+        
       />
     );
 }
