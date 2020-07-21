@@ -130,8 +130,8 @@ export default class ReceiptHandler extends React.Component {
 
   render() {
     return(
-      <div class="receipt-handler row">
-      <div className="container col-lg-8">
+      <div class="receipt-handler">
+       <div className="container col-lg-8">
         {this.state.items.length > 0 &&
         <form onSubmit={this.handleSubmit}>
           <div className="form-row">
@@ -182,15 +182,18 @@ export default class ReceiptHandler extends React.Component {
             }
           </div>
         ))}
-        <button className="btn btn-primary"
+        {this.state.deals.length == 0 &&
+        <div class="buttons">
+          <button className="btn btn-primary"
             id="add"
             type="button"
             value="Add item"
             onClick={this.addItem}>Add Item</button>
-        <button className="btn btn-primary"
+          <button className="btn btn-primary"
               id="submit"
               type="submit" 
-              value="Submit">Submit</button>
+              value="Submit">Next</button>
+        </div>}
         </form>
         }
       </div>
