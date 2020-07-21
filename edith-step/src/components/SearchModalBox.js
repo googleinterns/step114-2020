@@ -29,7 +29,7 @@ class SearchModalBox extends React.Component {
             <Row>
               <Form.Group as={Col} controlId='formGridState'>
                 <Form.Label>Select Kind</Form.Label>
-                <Form.Control name='kind' as='select' defaultValue='Choose...'>
+                <Form.Control required name='kind' as='select' defaultValue='Choose...'>
                   <option>Receipt</option>
                   <option>Item</option>
                 </Form.Control>

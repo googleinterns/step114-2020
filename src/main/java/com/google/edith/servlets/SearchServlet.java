@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,42 +53,38 @@ public class SearchServlet extends HttpServlet {
 
     String loggedInUserId = userService.getCurrentUser().getUserId();
     List<Filter> filters = new ArrayList<>();
+    filters.add(new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId));
 
-    String kind = request.getParameter("kind");
-    String name = request.getParameter("name");
-    String date = request.getParameter("date");
-    String sortOrder = request.getParameter("sort-order");
-    String sortOnProperty = request.getParameter("sort-on");
+    String kind = getParameter(request, "kind").orElse("");
+    System.out.println(kind);
+    
+    String name = getParameter(request, "name").orElse("");
+    String date = getParameter(request, "date").orElse("");
+    String sortOrder = getParameter(request, "sortOrder").orElse("");
+    String sortOnProperty = getParameter(request, "sortOnProperty").orElse("");
 
+    if (!name.isEmpty()) {
+      filters.add(new FilterPredicate("name", FilterOperator.EQUAL, name));
+    }
+
+    if (!date.isEmpty()) {
+      filters.add(new FilterPredicate("date", FilterOperator.EQUAL, date));
+    }
+
+    Filter entityFilter = new CompositeFilter(CompositeFilterOperator.AND, filters);
+
+    Query query;
+    
     if (kind.equals("Receipt")) {
-      Filter entityFilter = new CompositeFilter(
-                              CompositeFilterOperator.AND, Arrays.asList(
-                                new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId),
-                                new FilterPredicate("name", FilterOperator.EQUAL, name),
-                                new FilterPredicate("date", FilterOperator.EQUAL, date)
-                              ));
-      Query query = new Query("Receipt").setFilter(entityFilter);
-      PreparedQuery results = datastore.prepare(query);
-      List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
-      for (Entity entity: entities) {
-        System.out.println(entity.toString());
-      }
-    } else if (kind.equals("Item")) {
-      Filter entityFilter = new CompositeFilter(
-                              CompositeFilterOperator.AND, Arrays.asList(
-                                new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId),
-                                new FilterPredicate("name", FilterOperator.EQUAL, name),
-                                new FilterPredicate("expireDate", FilterOperator.EQUAL, date)
-                              ));
-      Query query = new Query("Item")
-                      .setFilter(entityFilter);
-                      // .addSort(sortOnProperty, SortDirection.DESCENDING);
-
-      PreparedQuery results = datastore.prepare(query);
-      List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
-      for (Entity entity: entities) {
-        System.out.println(entity.toString());
-      }
+      query = new Query("Receipt").setFilter(entityFilter);
+    } else {
+      query = new Query("Item").setFilter(entityFilter);
+    }
+    
+    PreparedQuery results = datastore.prepare(query);
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
+    for (Entity entity: entities) {
+      System.out.println(entity.toString());
     }
     response.sendRedirect("/");
   }
