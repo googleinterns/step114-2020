@@ -2,6 +2,7 @@ import React from 'react';
 
 import FileUploadModalBox from './FileUploadModalBox';
 import UserInfoModalBox from './UserInfoModalBox';
+import SearchModalBox from './SearchModalBox';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
@@ -13,10 +14,12 @@ class TopNavbar extends React.Component {
     this.state = {
       user: null,
       uploadModalBoxShow: false,
-      userInfoModalBoxShow: false
+      userInfoModalBoxShow: false,
+      searchBoxShow: false
     };
     this.handleUploadModalClose = this.handleUploadModalClose.bind(this);
     this.handleUserInfoModalBoxClose = this.handleUserInfoModalBoxClose.bind(this);
+    this.handleSearchModalBoxClose = this.handleSearchModalBoxClose.bind(this);
   }
   
   handleUploadModalClose() {
@@ -25,6 +28,10 @@ class TopNavbar extends React.Component {
 
   handleUserInfoModalBoxClose() {
     this.setState({userInfoModalBoxShow: false });
+  }
+
+  handleSearchModalBoxClose() {
+    this.setState({searchBoxShow: false });
   }
 
   componentDidMount() {
@@ -62,6 +69,11 @@ class TopNavbar extends React.Component {
             {this.state.user &&
               <>
                 <Nav.Link href='#dashboard' className='dashboard'>DASHBOARD</Nav.Link>
+                <Nav.Link href='#search' onClick={() => this.setState({searchBoxShow: true})} className='search'>SEARCH</Nav.Link>
+                <SearchModalBox
+                  show={this.state.searchBoxShow}
+                  handleSearchModalBoxClose={this.handleSearchModalBoxClose}
+                />
                 <Dropdown className='dropdowns'>
                   <Dropdown.Toggle variant='dark' id='dropdown-basic' className='dropdown-toggle'>
                     {this.displayName().toUpperCase()}
