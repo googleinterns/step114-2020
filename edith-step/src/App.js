@@ -11,7 +11,7 @@ class App extends Component {
     super();
     this.state = { "chartType" : LineChart, "dateSelection": "" }; 
     this.updateChartType = this.updateChartType.bind(this); 
-    this.changeChart = this.changeChart.bind(this);  
+    this.showWeeklyChart = this.showWeeklyChart.bind(this);  
     this.revertChart = this.revertChart.bind(this);
   }
 
@@ -42,9 +42,9 @@ class App extends Component {
     return (
       <div className="App">
         <div onChange={this.updateChartType}>
-          <input defaultChecked type="radio" value="Line" name="gender" /> Line
-          <input type="radio" value="Bar" name="gender" /> Bar
-          <input type="radio" value="Doughnut" name="gender" /> Doughnut
+          <input defaultChecked type="radio" value="Line" name="Line" /> Line
+          <input type="radio" value="Bar" name="Bar" /> Bar
+          <input type="radio" value="Doughnut" name="Doughnut" /> Doughnut
         </div>
         <Chart action={this.showWeeklyChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
         <ReceiptInput />
