@@ -19,11 +19,17 @@ class TopNavbar extends React.Component {
     };
   }
   
-  // After the component did mount, call login servlet to get the user status.
+  /**
+   * After the component did mount, call login servlet to get the user status.
+   */
   componentDidMount() {
     this.login();
   }
-
+  
+  /**
+   * Checks the user log-in status and sets
+   * user email in sessionstorage.
+   */
   login() {
     fetch('/login')
       .then(response => response.json())

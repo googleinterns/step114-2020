@@ -18,7 +18,6 @@ afterEach(() => {
 });
 
 describe('App component', () => {
-  
   // Checks if the app is rendered.
   test('renders', () => {
     expect(component.exists()).toBe(true);
