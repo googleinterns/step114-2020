@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith.servlets;
+package com.google.edith;
 
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * file to be stored in the Google Cloud Storage Bucket and redirects the request to
  * ReceiptFileHandlerServlet.
  */
-@WebServlet("/blobstore-upload-url")
+@WebServlet("/blobstore-upload")
 public class BlobstoreUrlServlet extends HttpServlet {
   
   @Override

@@ -27,7 +27,7 @@ class TopNavbar extends React.Component {
   }
   
   login() {
-    fetch('/login')
+    fetch('/log')
       .then(response => response.json())
       .then(userInfo => {
         sessionStorage.setItem('logged-in', userInfo.email);
@@ -40,7 +40,7 @@ class TopNavbar extends React.Component {
   }
 
   getFileUploadUrl() {
-    fetch('/blobstore-upload-url')
+    fetch('/blobstore-upload')
       .then(response => response.text())
       .then(userInfo => {
         this.setState({user: userInfo});

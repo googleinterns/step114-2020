@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith.servlets;
+package com.google.edith;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that checks if user is logging in. */
-@WebServlet("/login")
+@WebServlet("/log")
 public class LoginServlet extends HttpServlet {
   
 
