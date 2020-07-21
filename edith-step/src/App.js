@@ -3,15 +3,24 @@ import TopNavbar from './components/TopNavbar';
 import ReceiptHandler from './ReceiptHandler.js';
 
 import './App.css';
-import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
 // import "./App.css";
 
 
 /** Main webpage for the website. */
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { renderReceiptForm: true };
+    this.handleChildUnmount = this.handleChildUnmount.bind(this);
+  }
+
+  handleChildUnmount() {
+    this.setState({renderReceiptForm: false});
+  }
+  
   render() {
- return (
+    return (
       <div className='App'>
         <div className='App-header'>
           <TopNavbar />
@@ -24,9 +33,7 @@ class App extends Component {
             <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
-        <div className="receipt-info">
-          <ReceiptHandler />
-        </div>
+        {this.state.renderReceiptForm ? <ReceiptHandler unmountMe={this.handleChildUnmount} /> : null}
       </div>
     );
   }

@@ -105,16 +105,14 @@ export default class ReceiptHandler extends React.Component {
   }
 
   async handleExpirationSubmit(e) {
-    e.preventDefault();
     let price = 0;
     this.state.items.forEach(item => {
       price += item.price * item.quantity;
     })
     this.setState({ totalPrice: price });
-    const receiptData = JSON.stringify(this.state);
     const response = await axios({
       method: 'post',
-      url: '/receipt-output',
+      url: '/store-receipt',
       data: {
         userId: this.state.userId,
         storeName: this.state.storeName,
@@ -126,6 +124,7 @@ export default class ReceiptHandler extends React.Component {
         deals: this.state.deals
       }
     });
+    this.props.unmountMe();
   }
 
   render() {
