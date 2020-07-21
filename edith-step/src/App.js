@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
-import LineChart, {BarChart} from './UserChart';
+import LineChart, {BarGraph, DoughnutChart} from './UserChart';
 import axios from 'axios';
 //import "./App.css";
 
@@ -9,38 +9,48 @@ import axios from 'axios';
 class App extends Component {
   constructor() {
     super();
-    this.state = { "chartType" : LineChart }; 
-    this.updateChartType = this.updateChartType.bind(this);   
+    this.state = { "chartType" : LineChart, "dateSelection": "" }; 
+    this.updateChartType = this.updateChartType.bind(this); 
+    this.changeChart = this.changeChart.bind(this);  
+    this.revertChart = this.revertChart.bind(this);
   }
 
   updateChartType(event) {
     switch(event.target.value) {
-      case "LineChart": 
+      case "Line": 
         this.setState({"chartType": LineChart});
         break;
-      case "BarChart":
-        this.setState({"chartType": BarChart});
+      case "Bar":
+        this.setState({"chartType": BarGraph});
+        break;
+      case "Doughnut":
+        this.setState({"chartType": DoughnutChart});
         break;
     }
+  }
+
+  changeChart(dateSelection) {
+    this.setState({"chartType":  DoughnutChart, "dateSelection": dateSelection});
+  }
+  
+  revertChart() {
+    this.setState({"chartType":  DoughnutChart, "dateSelection": ""});
   }
 
   render() {
     const Chart = this.state.chartType;
     return (
-      
       <div className="App">
         <div onChange={this.updateChartType}>
-          <input defaultChecked type="radio" value="LineChart" name="gender" /> Line
-          <input type="radio" value="BarChart" name="gender" /> Bar
+          <input defaultChecked type="radio" value="Line" name="gender" /> Line
+          <input type="radio" value="Bar" name="gender" /> Bar
+          <input type="radio" value="Doughnut" name="gender" /> Doughnut
         </div>
-        <Chart />
+        <Chart action={this.changeChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
         <ReceiptInput />
       </div>
     );
   }
 }
-
-
-
 
 export default App;

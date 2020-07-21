@@ -70,7 +70,7 @@ public class UserStatsServlet extends HttpServlet {
     itemEntity.setProperty("name", json.get("itemName").getAsString());
     itemEntity.setProperty("price", Double.parseDouble(json.get("itemPrice").getAsString()));
     itemEntity.setProperty("quantity", Long.parseLong(json.get("itemQuantity").getAsString()));
-    itemEntity.setProperty("date", json.get("itemDate").getAsString());
+    itemEntity.setProperty("date", "2020-07-03");
     
     datastore.put(itemEntity);
     Query itemQuery = new Query("Item");
@@ -79,7 +79,7 @@ public class UserStatsServlet extends HttpServlet {
                                                 .withLimit(Integer.MAX_VALUE))
                             .stream()
                             .map(entity -> entity.getKey())
-                             .collect(Collectors.toList());
+                           .collect(Collectors.toList());
     if (!userInsights.retreiveUserStats().isPresent()) {
       userInsights.createUserStats();
     }

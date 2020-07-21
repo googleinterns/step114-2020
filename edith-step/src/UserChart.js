@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {Line, Bar, Pie} from 'react-chartjs-2';
+import {Line, Bar, Doughnut} from 'react-chartjs-2';
 import axios from "axios";
 
-const LineChart = () => {
-    
-  const [chartData, setChartData] = useState({});
-  const chart = () => {
+const retreiveData = (setChartData) => {
     axios
       .get("/user-stats-servlet")
       .then(response => {
@@ -28,23 +25,41 @@ const LineChart = () => {
             }
           ]
         });
-        console.log(weekDates, values);
       })
       .catch(err => {
         console.log(err);
       });
-    };
+}
+
+const inSameWeek = (itemDate, dateSelection) => {
+  itemDate = new Date(itemDate);
+  dateSelection = new Date(dateSelection);
+  const diffTime = dateSelection - itemDate;
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  return diffDays < 6 && diffDays > 0;
+}
+
+const LineChart = (props) => {
+    
+  const [chartData, setChartData] = useState({});
+  const chart = () => {
+    retreiveData(setChartData);
+  };
 
   useEffect(() => {
     chart();
   }, []);
-
+   
   return (
       <Line
         data={chartData}
         width={100}
         height={100}
         options={{
+          onClick: (event, element) => {
+            const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
+            props.action(dateSelection);
+          },
           maintainAspectRatio: false,
           title:{
             display: true,
@@ -59,56 +74,32 @@ const LineChart = () => {
             yAxes: [{
               scaleLabel: {
                 display: true,
+                fontSize: 20,
                 labelString: 'Dollars'
               },
               ticks: {
-                beginAtZero: true
+                beginAtZero: true,
               }
             }],
             xAxes: [{
               scaleLabel: {
                 display: true,
+                fontSize: 20,
                 labelString: 'Week'
-              }
+              },
             }],
           }    
         }}
       />
     );
-  }
+}
 
-const BarGraph = () => {
+const BarGraph = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
-    axios
-      .get("/user-stats-servlet")
-      .then(response => {
-        console.log(response);
-        let weekDates = [];
-        let values = [];  
-        const weeklyAggregate = JSON.parse(response.data.weeklyAggregate)
-        weekDates = Object.keys(weeklyAggregate);
-        for (let i = 0; i < weekDates.length; i++) {
-          values.push(weeklyAggregate[weekDates[i]]);
-        }
-        setChartData({
-          labels: weekDates,
-          datasets: [
-            {
-              label: "Weeek Total",
-              data: values,
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
-              borderWidth: 4
-            }
-          ]
-        });
-        console.log(weekDates, values);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    };
+    retreiveData(setChartData);
+  };
 
   useEffect(() => {
     chart();
@@ -120,6 +111,10 @@ const BarGraph = () => {
         width={100}
         height={100}
         options={{
+          onClick: (event, element) => {
+            console.log(element[0]._chart.config.data.labels[element[0]._index]);
+            props.action();
+          },        
           maintainAspectRatio: false,
           title:{
             display: true,
@@ -134,26 +129,27 @@ const BarGraph = () => {
             yAxes: [{
               scaleLabel: {
                 display: true,
+                fontSize: 20,
                 labelString: 'Dollars'
               },
               ticks: {
-                beginAtZero: true
+                beginAtZero: true,
               }
             }],
             xAxes: [{
               scaleLabel: {
                 display: true,
+                fontSize: 20,
                 labelString: 'Week'
-              }
+              },
             }],
           }    
         }}
       />
     );
-  }
+}
 
-
-const PieChart = () => {
+const DoughnutChart = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
@@ -163,8 +159,22 @@ const PieChart = () => {
         console.log(response);
         let itemNames = [];
         let itemValues = [];  
-        const items = JSON.parse(response.data.items);
-        console.log(items);
+        let items = [];
+        const itemsList = JSON.parse(response.data.items);
+        if (props.dateSelection != "") {
+          console.log(props.dateSelection);
+          for (let i = 0; i < itemsList.length; i++) {
+            inSameWeek(itemsList[i].date, props.dateSelection);
+            console.log(itemsList[i]);
+            if (inSameWeek(itemsList[i].date, props.dateSelection)) {
+              items.push(itemsList[i]);
+              console.log(items);
+            }
+          } 
+          props.revertAction();
+        } else {
+            items = itemsList;
+        }
         for (let i = 0; i < items.length; i++) {
             itemNames.push(items[i].name);
         }
@@ -176,14 +186,13 @@ const PieChart = () => {
           labels: itemNames,
           datasets: [
             {
-              label: "Weeek Total",
+              label: "Week Total",
               data: itemValues,
               backgroundColor: ["rgba(75, 192, 192, 0.6)"],
               borderWidth: 4
             }
           ]
         });
-        console.log(itemNames, itemValues);
       })
       .catch(err => {
         console.log(err);
@@ -195,7 +204,7 @@ const PieChart = () => {
   }, []);
 
   return (
-      <Pie
+      <Doughnut
         data={chartData}
         width={100}
         height={100}
@@ -206,14 +215,15 @@ const PieChart = () => {
             text: 'Item Aggregate',
             fontSize: 20
           }, 
-          legend:{
+          legend: {
             display: true,
-            position:'right'
-          },
+            position:'bottom',
+          }
         }}
       />
     );
-  }
+}
+
 
 export default LineChart
-export { BarGraph, PieChart }
+export { BarGraph, DoughnutChart }
