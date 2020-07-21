@@ -29,7 +29,7 @@ class App extends Component {
     }
   }
 
-  changeChart(dateSelection) {
+  showWeeklyChart(dateSelection) {
     this.setState({"chartType":  DoughnutChart, "dateSelection": dateSelection});
   }
   
@@ -46,7 +46,7 @@ class App extends Component {
           <input type="radio" value="Bar" name="gender" /> Bar
           <input type="radio" value="Doughnut" name="gender" /> Doughnut
         </div>
-        <Chart action={this.changeChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
+        <Chart action={this.showWeeklyChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
         <ReceiptInput />
       </div>
     );
