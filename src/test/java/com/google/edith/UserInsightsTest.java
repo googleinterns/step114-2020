@@ -11,7 +11,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.edith.servlets.UserInsights;
+import com.google.edith.servlets.UserInsightsService;
 import com.google.edith.servlets.Item;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -30,15 +30,17 @@ import org.junit.Test;
 
 public final class UserInsightsTest {
   private static final String USER_ID = "userId";
-  private static UserInsights userInsights;
+  private static UserInsightsService userInsights;
+  private static  DatastoreService datastore;
   private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   private static final LocalServiceTestHelper testHelper = 
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     
   @Before
   public void setUp() {
-    userInsights = new UserInsights(USER_ID);
+    userInsights = new UserInsightsService(DatastoreServiceFactory.getDatastoreService());
     testHelper.setUp();    
+    datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   @After
@@ -49,8 +51,7 @@ public final class UserInsightsTest {
   @Test
   public void creatUserInisghts() {
     // A new UserStats Entity should be added to the datastore
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
+    userInsights.createUserStats(USER_ID);
     Assert.assertEquals(1, datastore.prepare(new Query("UserStats"))
                                     .countEntities(FetchOptions.Builder
                                                             .withLimit(10)));
@@ -59,8 +60,7 @@ public final class UserInsightsTest {
   @Test
   public void correctUserId() {
     // Checks to see if the right UserId was added to the datastore  
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
+    userInsights.createUserStats(USER_ID);
     Assert.assertEquals(USER_ID, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("UserId"));
@@ -69,8 +69,7 @@ public final class UserInsightsTest {
   @Test 
   public void correctDefaultItems() {
     // Checks to see if the right UserId was added to the datastore  
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
+    userInsights.createUserStats(USER_ID);
     Assert.assertEquals(null, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("Items"));
@@ -84,9 +83,8 @@ public final class UserInsightsTest {
     for(int i = 0; i < 5; i++) {
       items.add(KeyFactory.createKey("Item", "Item" + i));
     }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
-    userInsights.updateUserStats(items);
+    userInsights.createUserStats(USER_ID);
+    userInsights.updateUserStats(USER_ID);
     Assert.assertEquals(items, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("Items"));
@@ -105,10 +103,9 @@ public final class UserInsightsTest {
     for(int i = 5; i < 10; i++) {
       items2.add(KeyFactory.createKey("Item", "Item" + i));
     }
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights.createUserStats();
-    userInsights.updateUserStats(items);
-    userInsights.updateUserStats(items2);
+    userInsights.createUserStats(USER_ID);
+    userInsights.updateUserStats(USER_ID);
+    userInsights.updateUserStats(USER_ID);
     items.addAll(items2);
     Assert.assertEquals(items, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
@@ -118,7 +115,6 @@ public final class UserInsightsTest {
 
   @Test
   public void aggregateData() {    
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();   
     
     List<Key> items = new ArrayList<>();
 
@@ -158,15 +154,14 @@ public final class UserInsightsTest {
     Map<String, String> map = new HashMap<String, String>();
     map.put("2020-07-05", "17.0");
     map.put("2020-07-12", "53.0");
-    userInsights.createUserStats();
-    userInsights.updateUserStats(items);
+    userInsights.createUserStats(USER_ID);
+    userInsights.updateUserStats(USER_ID);
    
-    Assert.assertEquals(map, userInsights.aggregateUserData());
+    Assert.assertEquals(map, userInsights.aggregateUserData(USER_ID));
   }
 
   @Test
   public void createJson() {    
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();   
     
     List<Key> items = new ArrayList<>();
     List<Item> itemProperties = new ArrayList<>();
@@ -208,14 +203,14 @@ public final class UserInsightsTest {
     String mapJson = new Gson().toJson(map);
     map.put("2020-07-05", "17.0");
     map.put("2020-07-12", "53.0");
-    userInsights.createUserStats();
-    userInsights.updateUserStats(items);
+    userInsights.createUserStats(USER_ID);
+    userInsights.updateUserStats(USER_ID);
 
     JsonObject testJson = new JsonObject();
     testJson.addProperty("weeklyAggregate", new Gson().toJson(map));
     testJson.addProperty("items", new Gson().toJson(itemProperties));
     String expectedJson = new Gson().toJson(testJson);
    
-    Assert.assertEquals(expectedJson, userInsights.createJson());
+    Assert.assertEquals(expectedJson, userInsights.createJson(USER_ID));
   }
 }
