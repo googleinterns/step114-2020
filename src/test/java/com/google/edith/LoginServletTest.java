@@ -21,22 +21,17 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-
+import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.atLeast;
 import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,24 +39,25 @@ import javax.servlet.http.HttpServletResponse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeast;
 
 public final class LoginServletTest {
-  
-  private Map<String, Object> myMap = new HashMap<String, Object>() {{
-        put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-    }};
+  private Map<String, Object> map = ImmutableMap
+            .of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private final LocalServiceTestHelper loggedInTestHelper =
-      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-      .setEnvAttributes(myMap)
-      .setEnvIsLoggedIn(true)
-      .setEnvAuthDomain("gmail")
-      .setEnvIsAdmin(true)
-      .setEnvEmail("user@gmail.com");
+        new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+            .setEnvAttributes(map)
+            .setEnvIsLoggedIn(true)
+            .setEnvAuthDomain("gmail")
+            .setEnvIsAdmin(true)
+            .setEnvEmail("user@gmail.com");
       
   private final LocalServiceTestHelper loggedOutTestHelper =
-      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-      .setEnvIsLoggedIn(false);
+        new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+            .setEnvIsLoggedIn(false);
   
   private final UserService userService = UserServiceFactory.getUserService();
   private LoginServlet loginServlet;
@@ -79,7 +75,8 @@ public final class LoginServletTest {
   }
 
   @Test
-  public void testWhenLoggedIn() throws IOException, ServletException {
+  // Check if the servlet returns with user information if logged-in.
+  public void checks_ifUserLoggedIn_returnsUserInfo() throws IOException, ServletException {
     loggedInTestHelper.setUp();
     assertTrue(userService.isUserLoggedIn());
 
@@ -93,7 +90,8 @@ public final class LoginServletTest {
   }
 
   @Test
-  public void testWhenLoggedOut() throws IOException, ServletException {
+  // Check if the servlet returns log-in information if logged-out.
+  public void checks_ifUserLoggedIn_createsLogInUrl() throws IOException, ServletException {
     loggedOutTestHelper.setUp();
     assertFalse(userService.isUserLoggedIn());
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);

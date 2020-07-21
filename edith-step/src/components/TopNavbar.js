@@ -9,13 +9,17 @@ import Navbar from 'react-bootstrap/Navbar';
  * and other app features.
  */
 class TopNavbar extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        user: null,
-      };
-    }
+  /**
+   * @constructor
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+    };
+  }
   
+  // After the component did mount, call login servlet to get the user status.
   componentDidMount() {
     this.login();
   }

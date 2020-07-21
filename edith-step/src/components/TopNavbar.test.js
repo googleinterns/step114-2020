@@ -1,8 +1,8 @@
 import React from 'react';
+import {enableFetchMocks} from 'jest-fetch-mock'
 import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
 
-import { enableFetchMocks } from 'jest-fetch-mock'
 import '../setupTests.js';
 
 let component;
@@ -13,15 +13,14 @@ describe('TopNavbar calls', () => {
     const login = jest.spyOn(TopNavbar.prototype, 'login');
     component = mount(<TopNavbar />);
     expect(login).toBeCalled();
-    // component.unmount();
   });
 });
 
 describe('When not logged in, Top Navigation Bar', () => {
 
   beforeEach(() => {
-    component = mount(<TopNavbar />);
     enableFetchMocks();
+    component = mount(<TopNavbar />);
     component.setState({user: null});
   });
 

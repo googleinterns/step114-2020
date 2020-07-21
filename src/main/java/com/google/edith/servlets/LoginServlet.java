@@ -24,9 +24,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that checks if user is logged in.
- * if logged in then provides with user information along with logout url.
- * if not logged in then redirectes to a url to log in.
+/**
+ * Servlet that checks if user is logged in.
+ * If user is logged in then provide user related info,
+ * otherwise redirects to login url..
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -37,7 +38,10 @@ public class LoginServlet extends HttpServlet {
 
     if (userService.isUserLoggedIn()) {
       Gson gson = new Gson();
-      String json = gson.toJson(createUserInfo(userService));
+      User loggedInUser = userService.getCurrentUser();
+      String logoutUrl = userService.createLogoutURL("/");
+
+      String json = gson.toJson(createUserInfo(loggedInUser, logoutUrl));
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
@@ -53,12 +57,11 @@ public class LoginServlet extends HttpServlet {
   
   /**
    * Creates UserInfo object encapsulating user data.
-   * @param userService - provides information about ther logged in user.
+   * @param user - User object which represents currently logged in uyser.
+   * @param logoutUrl - url to logout from the app.
    * @return UserInfo - wrapper object for user information and logout url.
    */
-  private UserInfo createUserInfo(UserService userService) {
-    User user = userService.getCurrentUser();
-    String logoutUrl = userService.createLogoutURL("/");
+  private UserInfo createUserInfo(User user, String logoutUrl) {
     UserInfo userInfo = UserInfo.builder()
         .setEmail(user.getEmail())
         .setUserId(user.getUserId())
