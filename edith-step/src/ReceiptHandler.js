@@ -101,7 +101,6 @@ export default class ReceiptHandler extends React.Component {
     this.setState(state => ({
       deals: data
     }));
-    console.log(this.state.deals);
   }
 
   async handleExpirationSubmit(e) {
@@ -124,7 +123,8 @@ export default class ReceiptHandler extends React.Component {
         deals: this.state.deals
       }
     });
-    this.props.unmountMe();
+    this.setState({ items: [], deals: [] });
+    console.log(this.state);
   }
 
   render() {
@@ -207,7 +207,7 @@ export default class ReceiptHandler extends React.Component {
               <span>Expiration</span>
             </div>
         </div>
-        <form onSubmit={this.expirationSubmit}>
+        <form onSubmit={this.handleExpirationSubmit}>
         {this.state.deals.map((deal, i) => (
           <div className="form-row" key={i}>
             <div className="col-lg-2">

@@ -9,15 +9,6 @@ import ReceiptInput from './ReceiptInput';
 
 /** Main webpage for the website. */
 class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { renderReceiptForm: true };
-    this.handleChildUnmount = this.handleChildUnmount.bind(this);
-  }
-
-  handleChildUnmount() {
-    this.setState({renderReceiptForm: false});
-  }
   
   render() {
     return (
@@ -33,7 +24,7 @@ class App extends Component {
             <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
-        {this.state.renderReceiptForm ? <ReceiptHandler unmountMe={this.handleChildUnmount} /> : null}
+        <ReceiptHandler />
       </div>
     );
   }
