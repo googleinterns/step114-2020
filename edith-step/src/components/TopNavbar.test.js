@@ -13,7 +13,7 @@ describe('TopNavbar calls', () => {
     const login = jest.spyOn(TopNavbar.prototype, 'login');
     component = mount(<TopNavbar />);
     expect(login).toBeCalled();
-    component.unmount();
+    // component.unmount();
   });
 });
 

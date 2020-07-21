@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import java.io.IOException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +20,7 @@ import java.util.List;
 /**
 * Servlet that returns some example content.
 */
-
 @WebServlet("/")
->>>>>>> master
 public class DataServlet extends HttpServlet {
 
   private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();  
