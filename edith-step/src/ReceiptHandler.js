@@ -99,15 +99,9 @@ export default class ReceiptHandler extends React.Component {
     });
     const data = response.data;
     this.setState(state => ({
-      userId: data.userId,
-      storeName: data.storeName,
-      date: data.date,
-      name: data.name,
-      fileUrl: data.fileUrl,
-      totalPrice: data.totalPrice,
-      items: data.items,
-      deals: data.deals
+      deals: data
     }));
+    console.log(this.state.deals);
   }
 
   async handleExpirationSubmit(e) {
@@ -136,41 +130,41 @@ export default class ReceiptHandler extends React.Component {
 
   render() {
     return(
-      <div class="receipt-handler">
-      <div className="container">
+      <div class="receipt-handler row">
+      <div className="container col-lg-8">
         {this.state.items.length > 0 &&
         <form onSubmit={this.handleSubmit}>
           <div className="form-row">
-            <div className="col auto input-group-text">
+            <div className="col-lg-2 input-group-text">
               <span>Item</span>
             </div>
-            <div className="col auto input-group-text">
+            <div className="col-lg-2 input-group-text">
               <span>Price</span>
             </div>
-            <div className="col auto input-group-text">
+            <div className="col-lg-2 input-group-text">
               <span>Quantity</span>
             </div>
-            <div className="col auto input-group-text">
+            <div className="col-lg-2 input-group-text">
               <span>Store</span>
             </div>
           </div>
         {this.state.items.map((item, i) => (
           <div className="form-row" key={i}>
-            <div className="col auto">
+            <div className="col-lg-2">
               <input type="text" 
                 className="name form-control"
                 name="name"
                 value={item.name} 
                 onChange={this.handleNameChange.bind(this, i)}/>
             </div>
-            <div className="col auto">
+            <div className="col-lg-2">
               <input type="number" 
                 className="price form-control"
                 name="price"
                 value={item.price} 
                 onChange={this.handlePriceChange.bind(this, i)}/>
             </div>
-            <div className="col auto">
+            <div className="col-lg-2">
               <input type="number" 
                 className="quantity form-control"
                 name="quantity"
@@ -178,7 +172,7 @@ export default class ReceiptHandler extends React.Component {
                 onChange={this.handleQuantityChange.bind(this, i)}/>
             </div>
             {i==0 && 
-            <div className="col-auto">
+            <div className="col-lg-2">
               <input type="text"
                 className="store-name form-control"
                 name="store-name"
@@ -201,15 +195,24 @@ export default class ReceiptHandler extends React.Component {
         }
       </div>
 
-      <div class="deals-container">
+      {this.state.deals.length > 0 &&
+      <div class="deals-container col-lg-8">
+        <div className="form-row">
+            <div className="col-lg-2 input-group-text">
+              <span>Cheapest Place to Buy</span>
+            </div>
+            <div className="col-lg-2 input-group-text">
+              <span>Expiration</span>
+            </div>
+        </div>
         <form onSubmit={this.expirationSubmit}>
         {this.state.deals.map((deal, i) => (
           <div className="form-row" key={i}>
-            <div className="col auto">
+            <div className="col-lg-2">
               <span>{deal.store}</span>
             </div>
-            <div className="col auto">
-              <input type="number" 
+            <div className="col-lg-2">
+              <input type="text" 
                   className="item-expiration form-control"
                   name="expiration"
                   value={deal.expiration} 
@@ -222,7 +225,7 @@ export default class ReceiptHandler extends React.Component {
               type="submit" 
               value="Submit">Submit</button>
         </form>
-      </div>
+      </div>}
       </div>
     );
   }

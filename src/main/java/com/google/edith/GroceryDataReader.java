@@ -47,7 +47,7 @@ public final class GroceryDataReader {
 	while ((record = reader.readNext()) != null) {
       if (record[0].equals(item)) {
         ShelfDataReader shelfReader = new ShelfDataReader();
-        String expirationTime = shelfReader.readFile(itemName.toLowerCase());
+        String expirationTime = shelfReader.readFile(item.toLowerCase());
 
         List<DealItem> dealItems = new ArrayList<DealItem>();
         for (int i = 0; i < STORES.size(); i++) {
@@ -57,6 +57,7 @@ public final class GroceryDataReader {
           dealItem.setWeight(record[i*3+2]);
           dealItem.setComment(record[i*3+3]);
           dealItem.setExpiration(expirationTime);
+          System.out.println(dealItem.getExpiration());
           dealItems.add(dealItem);
         }
 
@@ -67,6 +68,7 @@ public final class GroceryDataReader {
     if (cheapestItem == null) {
       DealItem emptyDeal = new DealItem();
       emptyDeal.setStore("no deal found");
+      emptyDeal.setExpiration("no shelf life data found");
       return emptyDeal;
     }
     return cheapestItem;
