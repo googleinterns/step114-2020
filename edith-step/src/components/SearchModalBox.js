@@ -20,37 +20,57 @@ class SearchModalBox extends React.Component {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
+          <Modal.Title
+            id='contained-modal-title-vcenter'>
             Select your search criteria.
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form method='GET' action='search-entity'>
+          <Form
+            method='GET'
+            action='search-entity'>
             <Row>
-              <Form.Group as={Col} controlId='formGridState'>
+              <Form.Group
+                as={Col}
+                controlId='formGridState'>
                 <Form.Label>Select Kind</Form.Label>
-                <Form.Control required name='kind' as='select' defaultValue='Choose...'>
+                <Form.Control
+                  required
+                  name='kind' 
+                  s='select'
+                  defaultValue='Choose...'>
                   <option>Receipt</option>
                   <option>Item</option>
                 </Form.Control>
                 <Form.Label>Entity Name</Form.Label>
-                <Form.Control name = 'name' placeholder='Name' />
+                <Form.Control
+                  name = 'name'
+                  required
+                  placeholder='Name' />
                 <Form.Label>Date</Form.Label>
                 <Form.Control name = 'date' placeholder='Date' />
                 <Form.Label>Sort Order</Form.Label>
-                <Form.Control name='sort-order' as='select' defaultValue='Choose...'>
+                <Form.Control
+                  name='sort-order'
+                  as='select'
+                  defaultValue='Choose...'>
                   <option>Ascending</option>
                   <option>Descending</option>
                 </Form.Control>
                 <Form.Label>Sort on Property</Form.Label>
-                <Form.Control name='sort-on' as='select' defaultValue='Choose...'>
+                <Form.Control
+                  name='sort-on'
+                  as='select'
+                  defaultValue='Choose...'>
                   <option>Name</option>
                   <option>Date</option>
                   <option>Price</option>
                 </Form.Control>
               </Form.Group>
             </Row>
-            <Button variant='primary' type='submit' >
+            <Button
+              variant='primary'
+              type='submit' >
               Submit
             </Button>
           </Form>
