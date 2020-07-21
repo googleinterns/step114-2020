@@ -1,12 +1,12 @@
 import React from 'react';
-import {enableFetchMocks} from 'jest-fetch-mock'
+import {enableFetchMocks} from 'jest-fetch-mock';
 import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
 
 import '../setupTests.js';
 
 let component;
-let userObj = {'email': 'email'}
+const userObj = {'email': 'email'};
 
 describe('TopNavbar calls', () => {
   test('login method when mounted', () => {
@@ -17,7 +17,6 @@ describe('TopNavbar calls', () => {
 });
 
 describe('When not logged in, Top Navigation Bar', () => {
-
   beforeEach(() => {
     enableFetchMocks();
     component = mount(<TopNavbar />);
@@ -57,7 +56,7 @@ describe('When not logged in, Top Navigation Bar', () => {
   test('has Dashboard section', () => {
     expect(component.find('.dashboard').exists()).toBe(false);
   });
-  
+
   // Checks if dropdown is shown.
   test('should not display dropdown', () => {
     expect(component.find('.dropdowns').exists()).toBe(false);
@@ -65,7 +64,6 @@ describe('When not logged in, Top Navigation Bar', () => {
 });
 
 describe('When logged in, Top Navigation Bar', () => {
-
   beforeEach(() => {
     component = mount(<TopNavbar />);
     enableFetchMocks();
