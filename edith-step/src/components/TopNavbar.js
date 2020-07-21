@@ -11,7 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 class TopNavbar extends React.Component {
   /**
    * @constructor
-   * @param {Object}  prop for React component.
+   * @param {Object}  props for React component.
    */
   constructor(props) {
     super(props);
@@ -59,10 +59,17 @@ class TopNavbar extends React.Component {
             <Nav.Link href='/login' className='login-button'>LOG IN</Nav.Link>
           }
           {this.state.user &&
-            <> // divide
-              <Nav.Link href='#dashboard' className='dashboard'>DASHBOARD</Nav.Link>
-              <Dropdown className='dropdowns'> //divide
-                <Dropdown.Toggle variant='dark' id='dropdown-basic' className='dropdown-toggle'>
+            <>
+              <Nav.Link
+                href='#dashboard'
+                className='dashboard'>
+                DASHBOARD
+              </Nav.Link>
+              <Dropdown className='dropdowns'>
+                <Dropdown.Toggle
+                  variant='dark'
+                  id='dropdown-basic'
+                  className='dropdown-toggle'>
                   {this.state.user.email}
                 </Dropdown.Toggle>
                 <Dropdown.Menu

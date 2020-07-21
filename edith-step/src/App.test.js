@@ -22,7 +22,7 @@ describe('App component', () => {
   test('renders', () => {
     expect(component.exists()).toBe(true);
   });
-  
+
   // Checks TopNavbar is in App.
   test('contains TopNavbar component', () => {
     const topNavBar = component.find('TopNavbar');
