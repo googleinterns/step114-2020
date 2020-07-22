@@ -146,8 +146,8 @@ const GroceryList = (props) => {
         </li>
         {props.items.map((item) => (
           <li className=
-              "h-50 list-group-item d-flex justify-content-between align-items-center"
-            key={item.id}>
+            "h-50 list-group-item d-flex justify-content-between align-items-center"
+          key={item.id}>
             <span className="item-name col-lg-1">
               {item.itemName}
             </span>
