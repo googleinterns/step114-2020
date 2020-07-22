@@ -23,9 +23,9 @@ export default class ReceiptInput extends React.Component {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
-      id: Date.now()
+      id: Date.now(),
     };
-    
+
     axios({
       method: 'post',
       url: '/receipt-data',
@@ -38,11 +38,11 @@ export default class ReceiptInput extends React.Component {
       console.log(response);
     });
 
-    this.setState(state => ({
+    this.setState((state) => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
-      itemQuantity: 1
+      itemQuantity: 1,
     }));
   }
 
@@ -54,7 +54,7 @@ export default class ReceiptInput extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <div className="container-fluid">
         <h3>Grocery Items</h3>
         <form onSubmit={this.handleSubmit}>
@@ -105,15 +105,15 @@ export default class ReceiptInput extends React.Component {
             </div>
             <div className="col-auto">
               <button className="btn btn-primary"
-                  id="submit"
-                  type="submit"
-                  value="Submit">Add Item</button>
+                id="submit"
+                type="submit"
+                value="Submit">Add Item</button>
+            </div>
           </div>
-        </div>
-      </form>
-      {this.state.items.length > 0 &&
+        </form>
+        {this.state.items.length > 0 &&
         <GroceryList items={this.state.items} />
-      }
+        }
       </div>
     );
   }
@@ -129,13 +129,20 @@ const GroceryList = (props) => {
             <span className="badge badge-pill col-lg-1">#</span>
           </li>
         {props.items.map(item => (
-          <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
-            <span className="item-name col-lg-1">{item.itemName}</span>
-            <span className="item-price badge badge-pill col-lg-1">{item.itemPrice}</span>
-            <span className="item-quantity badge badge-pill col-lg-1">{item.itemQuantity}</span>
+          <li className="h-50 list-group-item d-flex justify-content-between align-items-center"
+              key={item.id}>
+            <span className="item-name col-lg-1">
+              {item.itemName}
+            </span>
+            <span className="item-price badge badge-pill col-lg-1">
+              {item.itemPrice}
+            </span>
+            <span className="item-quantity badge badge-pill col-lg-1">
+              {item.itemQuantity}
+            </span>
           </li>
         ))}
       </ul>
     </div>
   );
-}
+};
