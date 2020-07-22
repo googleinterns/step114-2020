@@ -29,7 +29,7 @@ class SearchModalBox extends React.Component {
         <Modal.Body>
           <Form
             method='POST'
-            action='search-entity'
+            action='/search-entity'
           >
             <Row>
               <Form.Group

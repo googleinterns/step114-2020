@@ -49,11 +49,16 @@ import javax.servlet.http.HttpServletResponse;
 public class SearchServlet extends HttpServlet {
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private Receipt[] receipts;
-  
+  private Item[] items;
+  private String kind;
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    String json = gson.toJson(receipts);
+
+    String json = kind.equals("Receipt") 
+            ? gson.toJson(receipts)
+            : gson.toJson(items);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
@@ -66,7 +71,7 @@ public class SearchServlet extends HttpServlet {
     List<Filter> filters = new ArrayList<>();
     filters.add(new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId));
 
-    String kind = getParameter(request, "kind").orElse("");
+    kind = getParameter(request, "kind").orElse("");
 
     String name = getParameter(request, "name").orElse("");
     String date = getParameter(request, "date").orElse("");
@@ -97,7 +102,15 @@ public class SearchServlet extends HttpServlet {
 
     PreparedQuery results = datastore.prepare(query);
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
-    receipts = createReceiptObjects(entities);
+    for (Entity entity: entities) {
+      System.out.println(entity);
+    }
+
+    if (kind.equals("Receipt")) {
+      receipts = createReceiptObjects(entities);
+    } else {
+      items = createItemObjects(entities);
+    }
     response.sendRedirect("/");
   }
 
@@ -121,13 +134,14 @@ public class SearchServlet extends HttpServlet {
       String fileUrl = (String) entity.getProperty("fileUrl");
       float totalPrice = (float) ((double) entity.getProperty("price"));
       Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items);
-
+      receipts.add(receipt);
     }
+
     return receipts.toArray(new Receipt[0]);
   }
 
   private Item[] createItemObjects(List<Entity> entities) {
-    List<Item> items = new ArrayList<>();
+    List<Item> itemsList = new ArrayList<>();
 
     for (Entity entity: entities) {
       String userId = (String) entity.getProperty("userId");
@@ -138,8 +152,10 @@ public class SearchServlet extends HttpServlet {
       String expireDate = (String) entity.getProperty("date");
 
       Item receiptItem = new Item(userId, itemName, price, quantity, category, expireDate);
-      items.add(receiptItem);
+      itemsList.add(receiptItem);
     }
-    return items.toArray(new Item[0]);
+
+    items = itemsList.toArray(new Item[0]);
+    return items;
   }
 }

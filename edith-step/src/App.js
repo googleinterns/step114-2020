@@ -2,22 +2,17 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import TopNavbar from './components/TopNavbar';
 import ReceiptHandler from './ReceiptHandler.js';
-
+import SearchResult from './components/SearchResult';
 import './App.css';
 
 class App extends Component {
-  getEntity() {
-    fetch('/search-entity')
-        .then((response) => response.json())
-        .then((entities) => {
-          entities.forEach((entity) => {
-            console.log(entity.userId);
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      showSearchResults: false,
+    }
+  };
 
   render() {
  return (
@@ -40,10 +35,13 @@ class App extends Component {
           <Button
             type='submit'
             variant='primary'
-            onClick={this.getEntity}
+            onClick={() => this.setState({showSearchResults: true})}
           >
-            Submit
+            Show Search Results
           </Button>
+          {this.state.showSearchResults && 
+            <SearchResult />
+          }
         </div>
       </div>
     );
