@@ -124,13 +124,14 @@ const GroceryList = (props) => {
     <div id="grocery-list">
       <ul className="list-group col-lg-3">
         <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
-            <span className="col-lg-1">Item</span>
-            <span className="badge badge-pill col-lg-1">Price</span>
-            <span className="badge badge-pill col-lg-1">#</span>
-          </li>
-        {props.items.map(item => (
-          <li className="h-50 list-group-item d-flex justify-content-between align-items-center"
-              key={item.id}>
+          <span className="col-lg-1">Item</span>
+          <span className="badge badge-pill col-lg-1">Price</span>
+          <span className="badge badge-pill col-lg-1">#</span>
+        </li>
+        {props.items.map((item) => (
+          <li
+            className="h-50 list-group-item d-flex justify-content-between align-items-center"
+            key={item.id}>
             <span className="item-name col-lg-1">
               {item.itemName}
             </span>
