@@ -84,7 +84,6 @@ export default class ReceiptHandler extends React.Component {
       price += item.price * item.quantity;
     })
     this.setState({ totalPrice: price });
-    const receiptData = JSON.stringify(this.state);
     const response = await axios({
       method: 'post',
       url: '/receipt-data',
