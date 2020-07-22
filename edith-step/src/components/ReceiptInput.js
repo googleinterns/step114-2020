@@ -56,58 +56,58 @@ export default class ReceiptInput extends React.Component {
   render() {
     return(
       <div className="container-fluid">
-      <h3>Grocery Items</h3>
-      <form onSubmit={this.handleSubmit}>
-        <div className="form-row">
-          <div className="col-auto">
-            <div className="input-group mb-2">
-              <div className="input-group-prepend">
-                <div className="input-group-text">Item</div>
+        <h3>Grocery Items</h3>
+        <form onSubmit={this.handleSubmit}>
+          <div className="form-row">
+            <div className="col-auto">
+              <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                  <div className="input-group-text">Item</div>
+                </div>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="itemName"
+                  id="name"
+                  value={this.state.itemName}
+                  onChange={this.handleChange} />
               </div>
-              <input
-                type="text"
-                className="form-control"
-                name="itemName"
-                id="name"
-                value={this.state.itemName}
-                onChange={this.handleChange} />
             </div>
-          </div>
-          <div className="col-auto">
-            <div className="input-group mb-2">
-              <div className="input-group-prepend">
-                <div className="input-group-text">Price</div>
+            <div className="col-auto">
+              <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                  <div className="input-group-text">Price</div>
+                </div>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="itemPrice"
+                  id="price"
+                  step="0.01"
+                  value={this.state.itemPrice}
+                  onChange={this.handleChange} />
               </div>
-              <input
-                type="number"
-                className="form-control"
-                name="itemPrice"
-                id="price"
-                step="0.01"
-                value={this.state.itemPrice}
-                onChange={this.handleChange} />
             </div>
-          </div>
-          <div className="col-auto">
-            <div className="input-group mb-2">
-              <div className="input-group-prepend">
-                <div className="input-group-text">Quantity</div>
+            <div className="col-auto">
+              <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                  <div className="input-group-text">Quantity</div>
+                </div>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="itemQuantity"
+                  id="quantity"
+                  step="1"
+                  value={this.state.itemQuantity}
+                  onChange={this.handleChange} />
               </div>
-              <input
-                type="number"
-                className="form-control"
-                name="itemQuantity"
-                id="quantity"
-                step="1"
-                value={this.state.itemQuantity}
-                onChange={this.handleChange} />
             </div>
-          </div>
-          <div className="col-auto">
-            <button className="btn btn-primary"
-                id="submit"
-                type="submit"
-                value="Submit">Add Item</button>
+            <div className="col-auto">
+              <button className="btn btn-primary"
+                  id="submit"
+                  type="submit"
+                  value="Submit">Add Item</button>
           </div>
         </div>
       </form>
