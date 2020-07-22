@@ -7,7 +7,10 @@ import axios from 'axios';
  * to a list.
  */
 export default class ReceiptInput extends React.Component {
-  /** Constructor. */
+  /**
+   * Constructor
+   * @param props Setup state.
+   */
   constructor(props) {
     super(props);
     this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
@@ -15,10 +18,11 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  /** 
+  /**
    * Send a post request to the receipt-data servlet
    * with a grocery item in it every time a new item
    * is added.
+   * @param e Submission event.
    */
   handleSubmit(e) {
     e.preventDefault();
@@ -52,7 +56,10 @@ export default class ReceiptInput extends React.Component {
     }));
   }
 
-  /** Update state when form changed. */
+  /**
+   * Update state when form changed.
+   * @param e Change event.
+   */
   handleChange(e) {
     const value = e.target.value;
     this.setState({
@@ -131,15 +138,15 @@ const GroceryList = (props) => {
   return (
     <div id="grocery-list">
       <ul className="list-group col-lg-3">
-        <li className="h-50 list-group-item d-flex justify-content-between align-items-center">
+        <li className=
+          "h-50 list-group-item d-flex justify-content-between align-items-center">
           <span className="col-lg-1">Item</span>
           <span className="badge badge-pill col-lg-1">Price</span>
           <span className="badge badge-pill col-lg-1">#</span>
         </li>
         {props.items.map((item) => (
-          <li
-            className="h-50 list-group-item d-flex" 
-            className="justify-content-between align-items-center"
+          <li className=
+              "h-50 list-group-item d-flex justify-content-between align-items-center"
             key={item.id}>
             <span className="item-name col-lg-1">
               {item.itemName}
