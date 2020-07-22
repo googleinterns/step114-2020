@@ -86,6 +86,12 @@ public final class LoginServletTest {
 
     loginServlet.doGet(request, response);
     verify(response, atLeast(1)).getWriter();
+    writer.flush();
+    String returnedJson = stringWriter.toString();
+    // JSON must contains all fields of UserInfo.
+    assertTrue(returnedJson.contains("email"));
+    assertTrue(returnedJson.contains("userId"));
+    assertTrue(returnedJson.contains("logOutUrl"));
     loggedInTestHelper.tearDown();
   }
 
