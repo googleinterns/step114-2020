@@ -143,9 +143,21 @@ export default class ReceiptHandler extends React.Component {
             <div className="col-lg-2 input-group-text">
               <span>Quantity</span>
             </div>
+            {this.state.deals.length == 0 &&
             <div className="col-lg-2 input-group-text">
               <span>Store</span>
             </div>
+            }
+            {this.state.deals.length > 0 &&
+            <>
+              <div className="col-lg-2 input-group-text">
+                <span>Cheapest Place to Buy</span>
+              </div>
+              <div className="col-lg-2 input-group-text">
+                <span>Expiration</span>
+              </div>
+            </>
+            }
           </div>
         {this.state.items.map((item, i) => (
           <div className="form-row" key={i}>
@@ -170,7 +182,7 @@ export default class ReceiptHandler extends React.Component {
                 value={item.quantity} 
                 onChange={this.handleQuantityChange.bind(this, i)}/>
             </div>
-            {i==0 && 
+            {i==0 && this.state.deals.length == 0 && 
             <div className="col-lg-2">
               <input type="text"
                 className="store-name form-control"
@@ -178,6 +190,20 @@ export default class ReceiptHandler extends React.Component {
                 placeholder="Store"
                 onChange={this.handleStoreChange}/>
              </div>
+            }
+            {this.state.deals.length > 0 &&
+              <>
+                <div className="col-lg-2">
+                  <span>{this.state.deals[i].store}</span>
+                </div>
+                <div className="col-lg-2">
+                  <input type="text" 
+                    className="item-expiration form-control"
+                    name="expiration"
+                    value={this.state.deals[i].expiration} 
+                    onChange={this.handleExpirationChange.bind(this, i)}/>
+                </div>
+              </>
             }
           </div>
         ))}
@@ -193,41 +219,15 @@ export default class ReceiptHandler extends React.Component {
               type="submit" 
               value="Submit">Next</button>
         </div>}
+        {this.state.deals.length > 0 &&
+          <button className="btn btn-primary"
+              id="submit"
+              onClick={this.handleExpirationSubmit}
+              value="Submit">Submit</button>
+        }
         </form>
         }
       </div>
-
-      {this.state.deals.length > 0 &&
-      <div class="deals-container col-lg-8">
-        <div className="form-row">
-            <div className="col-lg-2 input-group-text">
-              <span>Cheapest Place to Buy</span>
-            </div>
-            <div className="col-lg-2 input-group-text">
-              <span>Expiration</span>
-            </div>
-        </div>
-        <form onSubmit={this.handleExpirationSubmit}>
-        {this.state.deals.map((deal, i) => (
-          <div className="form-row" key={i}>
-            <div className="col-lg-2">
-              <span>{deal.store}</span>
-            </div>
-            <div className="col-lg-2">
-              <input type="text" 
-                  className="item-expiration form-control"
-                  name="expiration"
-                  value={deal.expiration} 
-                  onChange={this.handleExpirationChange.bind(this, i)}/>
-            </div>
-          </div>))}
-
-          <button className="btn btn-primary"
-              id="submit"
-              type="submit" 
-              value="Submit">Submit</button>
-        </form>
-      </div>}
       </div>
     );
   }
