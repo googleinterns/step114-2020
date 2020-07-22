@@ -28,7 +28,7 @@ class SearchModalBox extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Form
-            method='GET'
+            method='POST'
             action='search-entity'
           >
             <Row>

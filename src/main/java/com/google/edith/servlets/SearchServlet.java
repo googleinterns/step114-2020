@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
@@ -29,6 +30,7 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.services.LoginService;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -45,10 +47,19 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/search-entity")
 public class SearchServlet extends HttpServlet {
-
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private Receipt[] receipts;
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Gson gson = new Gson();
+    String json = gson.toJson(receipts);
+    response.setContentType("application/json");
+    response.getWriter().println(json);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
     String loggedInUserId = userService.getCurrentUser().getUserId();
@@ -85,14 +96,50 @@ public class SearchServlet extends HttpServlet {
     if (sortOrder.equals("Descending")) query = query.addSort(sortOnProperty, SortDirection.DESCENDING);
 
     PreparedQuery results = datastore.prepare(query);
-    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
-    for (Entity entity: entities) {
-      System.out.println(entity.toString());
-    }
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
+    receipts = createReceiptObjects(entities);
     response.sendRedirect("/");
   }
 
   private Optional<String> getParameter(HttpServletRequest request, String name) {
     return Optional.ofNullable(request.getParameter(name));
+  }
+
+  private Receipt[] createReceiptObjects(List<Entity> entities) {
+    List<Receipt> receipts = new ArrayList<>();
+
+    for (Entity entity: entities) {
+      Key entityKey = entity.getKey();
+      Query itemQuery = new Query("Item", entityKey);
+      PreparedQuery results = datastore.prepare(itemQuery);
+      List<Entity> itemEntities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
+      Item[] items = createItemObjects(itemEntities);
+      String userId = (String) entity.getProperty("userId");
+      String storeName = (String) entity.getProperty("storeName");
+      String date = (String) entity.getProperty("date");
+      String name = (String) entity.getProperty("name");
+      String fileUrl = (String) entity.getProperty("fileUrl");
+      float totalPrice = (float) ((double) entity.getProperty("price"));
+      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items);
+
+    }
+    return receipts.toArray(new Receipt[0]);
+  }
+
+  private Item[] createItemObjects(List<Entity> entities) {
+    List<Item> items = new ArrayList<>();
+
+    for (Entity entity: entities) {
+      String userId = (String) entity.getProperty("userId");
+      String itemName = (String) entity.getProperty("name");
+      float price = (float) ((double) entity.getProperty("price"));
+      int quantity = (int ) ((long) entity.getProperty("quantity"));
+      String category = (String) entity.getProperty("category");
+      String expireDate = (String) entity.getProperty("date");
+
+      Item receiptItem = new Item(userId, itemName, price, quantity, category, expireDate);
+      items.add(receiptItem);
+    }
+    return items.toArray(new Item[0]);
   }
 }
