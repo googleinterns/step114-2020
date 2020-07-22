@@ -12,16 +12,9 @@ public class GroceryListServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // call Prashant's file and get a list of receipts
 
-    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    Date date = new Date();
-    String datePhrase = dateFormat.format(date));
-
-    for (Receipt receipt: receipts) {
-      Items[] items = receipt.getItems();
-      for (Item item: items) {
-        String expiration = item.getExpiration();
-      }
-    }
+    QueryItems queryItems = new QueryItems();
+    String items = queryItems.findExpiredItems(receipt);
+    response.setContentType("application/json");
+    response.getWriter().println(items);
   }
-
 }
