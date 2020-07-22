@@ -7,6 +7,7 @@ import axios from 'axios';
  * to a list.
  */
 export default class ReceiptInput extends React.Component {
+  /** Constructor. */
   constructor(props) {
     super(props);
     this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
@@ -14,6 +15,11 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /** 
+   * Send a post request to the receipt-data servlet
+   * with a grocery item in it every time a new item
+   * is added.
+   */
   handleSubmit(e) {
     e.preventDefault();
     if (this.state.itemName.length === 0) {
@@ -46,6 +52,7 @@ export default class ReceiptInput extends React.Component {
     }));
   }
 
+  /** Update state when form changed. */
   handleChange(e) {
     const value = e.target.value;
     this.setState({
@@ -53,6 +60,7 @@ export default class ReceiptInput extends React.Component {
     });
   }
 
+  /** Render grocery list form and items. */
   render() {
     return (
       <div className="container-fluid">
