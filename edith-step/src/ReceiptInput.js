@@ -1,6 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 
+/**
+ * Displays form that takes in user input for a dynamic number
+ * of grocery items and their prices and quantities and adds them
+ * to a list.
+ */
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
@@ -27,8 +32,8 @@ export default class ReceiptInput extends React.Component {
       data: {
         itemName: this.state.itemName,
         itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity
-      }
+        itemQuantity: this.state.itemQuantity,
+      },
     }).then((response) => {
       console.log(response);
     });
@@ -44,7 +49,7 @@ export default class ReceiptInput extends React.Component {
   handleChange(e) {
     const value = e.target.value;
     this.setState({
-      [e.target.name]: value
+      [e.target.name]: value,
     });
   }
 
@@ -59,12 +64,12 @@ export default class ReceiptInput extends React.Component {
               <div className="input-group-prepend">
                 <div className="input-group-text">Item</div>
               </div>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 className="form-control"
                 name="itemName"
                 id="name"
-                value={this.state.itemName} 
+                value={this.state.itemName}
                 onChange={this.handleChange} />
             </div>
           </div>
@@ -74,12 +79,12 @@ export default class ReceiptInput extends React.Component {
                 <div className="input-group-text">Price</div>
               </div>
               <input
-                type="number" 
+                type="number"
                 className="form-control"
                 name="itemPrice"
                 id="price"
                 step="0.01"
-                value={this.state.itemPrice} 
+                value={this.state.itemPrice}
                 onChange={this.handleChange} />
             </div>
           </div>
@@ -101,7 +106,7 @@ export default class ReceiptInput extends React.Component {
           <div className="col-auto">
             <button className="btn btn-primary"
                 id="submit"
-                type="submit" 
+                type="submit"
                 value="Submit">Add Item</button>
           </div>
         </div>
