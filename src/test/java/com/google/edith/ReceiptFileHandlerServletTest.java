@@ -76,21 +76,25 @@ public class ReceiptFileHandlerServletTest {
   
   @Mock
   ReceiptFileHandlerService receiptFileHandlerService;
-
+  
+  // If no file is uploaded, Blob is not stored and Exception is thrown.
   @Test(expected = IllegalStateException.class)
-  public void throwIllegalStateException() throws IOException {
+  public void checks_ifNoFileUpload_returnsException() throws IOException {
     List<FileInfo> files = Collections.emptyList();
-    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file")).thenReturn(Optional.of(files));
+    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file"))
+        .thenReturn(Optional.of(files));
     receiptFileHandlerServlet.doPost(request, response);
   }
 
+  // Serve the blob if file has been stored successfully in Blobstore.
   @Test
   public void testRedirect() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
     List<FileInfo> files = new ArrayList<FileInfo>();
     files.add(uploadFile);
-    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file")).thenReturn(Optional.of(files));
+    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file"))
+        .thenReturn(Optional.of(files));
     receiptFileHandlerServlet.doPost(request, response);
     verify(receiptFileHandlerService, times(1)).serveBlob(response, files);
   }

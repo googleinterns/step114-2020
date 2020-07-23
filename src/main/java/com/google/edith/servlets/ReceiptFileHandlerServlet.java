@@ -51,10 +51,13 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<FileInfo> fileKeys = receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
 
+    // fileKeys never should be empty as file
+    // field in the FE form is required.
     if (fileKeys.isEmpty()) {
       throw new IllegalStateException();
     }
-
+    // Blob is being served right now. But it will change in future
+    // to store it in Receipt object.
     receiptFileHandlerService.serveBlob(response, fileKeys);
   }
 }

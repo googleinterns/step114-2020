@@ -27,7 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 
+ * Servlet that stores file uploaded in Blobstore
+ * and serves that blob on succession.
  */
 public class ReceiptFileHandlerService {
   private final BlobstoreService blobstoreService;

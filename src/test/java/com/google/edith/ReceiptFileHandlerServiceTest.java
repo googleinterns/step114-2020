@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -79,16 +80,17 @@ public class ReceiptFileHandlerServiceTest {
   HttpServletResponse response;
 
   @Test
-  public void getUploadedFileUrlWhenEmpty() throws IOException {
+  public void checks_ifBlobDidNotUpload_returnsNull() throws IOException {
     Map<String, List<FileInfo>> emptyMap = Collections.emptyMap();
 
     when(blobstoreService.getFileInfos(request)).thenReturn(emptyMap);
-    Optional<List<FileInfo>> uploadedFileInfo = receiptFileHandlerService.getUploadedFileUrl(request, "example");
+    Optional<List<FileInfo>> uploadedFileInfo = receiptFileHandlerService
+            .getUploadedFileUrl(request, "example");
     assertFalse(uploadedFileInfo.isPresent());
   }
   
   @Test
-  public void getUploadedFileUrlWhenNotEmpty() throws IOException {
+  public void checks_ifBlobUploaded_returnsFileInfo() throws IOException {
     Date creationDate = new Date();
     List<FileInfo> files = new ArrayList<FileInfo>();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
@@ -97,24 +99,26 @@ public class ReceiptFileHandlerServiceTest {
     fileInfos.put("fileName", files);
 
     when(blobstoreService.getFileInfos(request)).thenReturn(fileInfos);
-    Optional<List<FileInfo>> uploadedFileInfo = receiptFileHandlerService.getUploadedFileUrl(request, "fileName");
+    Optional<List<FileInfo>> uploadedFileInfo = receiptFileHandlerService
+            .getUploadedFileUrl(request, "fileName");
     assertTrue(uploadedFileInfo.isPresent());
   }
 
   @Test(expected = IllegalStateException.class)
-  public void getBlobKeyWhenEmpty() throws IOException {
+  public void checks_ifFileDidNotUpload_throwsException() throws IOException {
     List<FileInfo> files = Collections.emptyList();
     receiptFileHandlerService.getBlobKey(files);
   }
 
   @Test
-  public void getBlobKeyWhenNotEmpty() throws IOException {
+  public void checks_ifFileUploaded_returnsBlobKey() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
     List<FileInfo> files = new ArrayList<FileInfo>();
     files.add(uploadFile);
     BlobKey receiptKey = new BlobKey("key");
-    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName())).thenReturn(receiptKey);
+    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName()))
+            .thenReturn(receiptKey);
     BlobKey returnedKey = receiptFileHandlerService.getBlobKey(files);
     assertTrue(returnedKey.equals(receiptKey));
   }
