@@ -79,7 +79,7 @@ export default class ReceiptInput extends React.Component {
       itemDeal: dealMessage,
       id: Date.now(),
     };
-    
+
     axios({
       method: 'post',
       url: '/receipt-data',
@@ -90,7 +90,7 @@ export default class ReceiptInput extends React.Component {
       },
     });
 
-    this.setState(state => ({
+    this.setState((state) => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
@@ -173,9 +173,9 @@ export default class ReceiptInput extends React.Component {
         </form>
         <div className="row">
           <div className="col-lg-5">
-          {this.state.items.length > 0 &&
+            {this.state.items.length > 0 &&
             <GroceryList items={this.state.items}/>
-          }
+            }
           </div>
         </div>
       </div>
