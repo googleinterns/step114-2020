@@ -67,7 +67,7 @@ export default class ReceiptInput extends React.Component {
         newDeal.storePrice > this.state.itemPrice) {
       dealMessage = 'no deal found';
     } else {
-      dealMessage = 'Purchase at ' + newDeal.storeName + '' for $'' + newDeal.storePrice + '.';
+      dealMessage = 'Purchase at ' + newDeal.storeName + ' for $' + newDeal.storePrice + '.';
     }
 
     const newItem = {
