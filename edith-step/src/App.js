@@ -12,13 +12,23 @@ class App extends Component {
     this.state = {
       showSearchResults: false,
     }
+
+    this.handleSearchResult = this.handleSearchResult.bind(this)
   };
+
+  handleSearchResult() {
+    this.setState({
+      showSearchResults: true
+    })
+  }
 
   render() {
  return (
       <div className='App'>
         <div className='App-header'>
-          <TopNavbar />
+          <TopNavbar 
+            handleSearchResult={this.handleSearchResult}
+          />
         </div>
         <div className='background-image-0'>
           <div className='scroll-down border'>
@@ -31,7 +41,7 @@ class App extends Component {
         <div className='receipt-info'>
           <ReceiptHandler />
         </div>
-        <div className='search-results'>
+        <div className='search-results' id='search-results'>
           <Button
             type='submit'
             variant='primary'

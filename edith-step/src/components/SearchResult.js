@@ -3,9 +3,10 @@ import React from 'react';
 import Card from 'react-bootstrap/Card';
 
 const Receipt = (props) => {
-  console.log(props);
   return (
-    <Card className='text-center'>
+    <Card
+      className='text-center'
+    >
       <Card.Title>
         Receipt Name: {props.name}
       </Card.Title>
@@ -27,7 +28,6 @@ const Receipt = (props) => {
 }
 
 const Item = (props) => {
-  console.log(props);
   return (
     <Card className='text-center'>
       <Card.Body>

@@ -111,7 +111,7 @@ public class SearchServlet extends HttpServlet {
     } else {
       items = createItemObjects(entities);
     }
-    response.sendRedirect("/");
+    response.sendRedirect("/#search-results");
   }
 
   private Optional<String> getParameter(HttpServletRequest request, String name) {
