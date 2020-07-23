@@ -34,7 +34,7 @@ class TopNavbar extends React.Component {
    * Call back function to close the file upload modal box.
    */
   handleModalClose() {
-    this.setState({modalShow: false });
+    this.setState({modalShow: false});
   }
 
   /**

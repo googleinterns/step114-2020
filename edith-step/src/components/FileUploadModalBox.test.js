@@ -4,7 +4,7 @@ import FileUploadModalBox from './FileUploadModalBox';
 import {enableFetchMocks} from 'jest-fetch-mock';
 import {shallow} from 'enzyme';
 
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 

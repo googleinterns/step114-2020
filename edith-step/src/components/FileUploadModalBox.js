@@ -1,11 +1,17 @@
 import React from 'react';
-
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import PropTypes from 'prop-types';
 
+/**
+ * Modal Box where user can select a file to upload.
+ */
 class FileUploadModalBox extends React.Component {
-
+  /**
+   * @constructor
+   * @param {Object}  props for React component.
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -13,16 +19,27 @@ class FileUploadModalBox extends React.Component {
     };
   }
 
+  /**
+   * After the component did mount, get URL to
+   * to direct the file upload.
+   */
   componentDidMount() {
     this.getFileUploadUrl();
   }
-  
+
+  /**
+   * After the component unmounts, reset the state.
+   */
   componentWillUnmount() {
-    this.setState = () =>{
+    this.setState = () => {
       return;
     };
   }
 
+  /**
+   * Calls servlet and retrieves where the file should be uploaded
+   * to be handled by the Blobstore API.
+   */
   getFileUploadUrl() {
     fetch('/blobstore-upload-url')
         .then((response) => response.text())
@@ -34,6 +51,10 @@ class FileUploadModalBox extends React.Component {
         });
   }
 
+  /**
+   * Renders react-bootstrap modal box component.
+   *  @return { React.ReactNode } React virtual DOM.
+   */
   render() {
     return (
       <Modal
@@ -72,5 +93,10 @@ class FileUploadModalBox extends React.Component {
     );
   }
 }
+
+FileUploadModalBox.propTypes = {
+  show: PropTypes.bool,
+  handleModalClose: PropTypes.func
+};
 
 export default FileUploadModalBox;
