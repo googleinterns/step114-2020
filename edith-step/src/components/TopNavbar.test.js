@@ -66,8 +66,8 @@ describe('When not logged in, Top Navigation Bar', () => {
 
 describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
-    component = mount(<TopNavbar />);
     enableFetchMocks();
+    component = mount(<TopNavbar />);
     handleModalClose = jest.spyOn(TopNavbar.prototype, 'handleModalClose');
     component.setState({user: userObj});
   });
@@ -96,14 +96,14 @@ describe('When logged in, Top Navigation Bar', () => {
     expect(component.find('.dropdowns').exists()).toBe(true);
   });
 
-  test('should open upload modal box when upload receipt button is clicked', () => {
+  test('opens upload modal box when upload receipt button is clicked', () => {
     expect(component.state('modalShow')).toBe(false);
     component.find('.dropdown-toggle').at(0).simulate('click');
     component.find('.upload-receipt').at(0).simulate('click');
     expect(component.state('modalShow')).toBe(true);
   });
 
-  test('should close upload modal box when close button is clicked', () => {
+  test('closes upload modal box when close button is clicked', () => {
     component.find('.dropdown-toggle').at(0).simulate('click');
     component.find('.upload-receipt').at(0).simulate('click');
     component.find('.close').at(0).simulate('click');

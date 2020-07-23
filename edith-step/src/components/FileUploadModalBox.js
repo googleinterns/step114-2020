@@ -2,17 +2,17 @@ import React from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal'
+import Modal from 'react-bootstrap/Modal';
 
 class FileUploadModalBox extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
       uploadUrl: '',
     };
   }
-  
+
   componentDidMount() {
     this.getFileUploadUrl();
   }
@@ -25,13 +25,13 @@ class FileUploadModalBox extends React.Component {
 
   getFileUploadUrl() {
     fetch('/blobstore-upload-url')
-      .then(response => response.text())
-      .then(uploadUrl => {
-        this.setState({uploadUrl: uploadUrl});
-      })
-      .catch((error) => {
-        console.error(error);
-    });
+        .then((response) => response.text())
+        .then((uploadUrl) => {
+          this.setState({uploadUrl: uploadUrl});
+        })
+        .catch((error) => {
+          console.error(error);
+        });
   }
 
   render() {
@@ -47,11 +47,23 @@ class FileUploadModalBox extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form method="POST" action={this.state.uploadUrl} encType="multipart/form-data">
+          <Form
+            method="POST"
+            action={this.state.uploadUrl}
+            encType="multipart/form-data"
+          >
             <Form.Group>
-              <Form.File required className="receipt-file" label="Receipt file input" name="receipt-file" />
+              <Form.File
+                required
+                className="receipt-file"
+                label="Receipt file input"
+                name="receipt-file"
+              />
             </Form.Group>
-            <Button variant="primary" type="submit" >
+            <Button
+              variant="primary"
+              type="submit"
+            >
               Submit
             </Button>
           </Form>

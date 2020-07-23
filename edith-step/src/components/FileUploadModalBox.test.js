@@ -1,27 +1,27 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-
-import { enableFetchMocks } from 'jest-fetch-mock'
-enableFetchMocks();
 
 import FileUploadModalBox from './FileUploadModalBox';
+import {enableFetchMocks} from 'jest-fetch-mock';
+import {shallow} from 'enzyme';
 
 import '../setupTests.js'
 
-let component
+let component;
 
 describe('FileUploadModalBox calls', () => {
   test('getFileUploadUrl method when mounted', () => {
-    const getFileUploadUrl = jest.spyOn(FileUploadModalBox.prototype, 'getFileUploadUrl');
+    const getFileUploadUrl =
+            jest.spyOn(FileUploadModalBox.prototype, 'getFileUploadUrl');
+    enableFetchMocks();
     component = shallow(<FileUploadModalBox />);
     expect(getFileUploadUrl).toBeCalled();
     component.unmount();
   });
 });
 
-describe("FileUploadModalBox must", () => {
-  
+describe('FileUploadModalBox must', () => {
   beforeEach(() => {
+    enableFetchMocks();
     component = shallow(<FileUploadModalBox />);
   });
 
@@ -29,7 +29,7 @@ describe("FileUploadModalBox must", () => {
     component.unmount();
   });
 
-  it("have input type file to upload file", () => {
+  it('have input type file to upload file', () => {
     const fileUpload = component.find('.receipt-file');
     expect(fileUpload.exists()).toBe(true);
   });
