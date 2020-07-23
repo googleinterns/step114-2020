@@ -82,7 +82,7 @@ public final class DealItem {
     if (weight == 0 || price == 0) {
       this.unitPrice = 0.0;
     } else {
-      this.unitPrice = this.price/this.weight;
+      this.unitPrice = this.price / this.weight;
     }
     return unitPrice;
   }
