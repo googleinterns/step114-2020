@@ -10,6 +10,7 @@
     "bootstrap": "^4.5.0",
     "core-js": "^3.6.5",
     "create-react-class": "^15.6.3",
+    "jest-fetch-mock": "^3.0.3",
     "node-fetch": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -18,7 +19,8 @@
     "react-fetch": "0.0.9",
     "react-scripts": "3.4.1",
     "regenerator-runtime": "^0.13.5",
-    "serve": "^11.3.2"
+    "serve": "^11.3.2",
+    "whatwg-fetch": "^3.2.0"
   },
   "scripts": {
     "start": "serve -s build",

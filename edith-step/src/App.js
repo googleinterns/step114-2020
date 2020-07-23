@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import ReceiptHandler from './ReceiptHandler.js';
 
-import './App.css';
-
-import ReceiptInput from './components/ReceiptInput';
+import ReceiptHandler from './components/ReceiptHandler';
 import TopNavbar from './components/TopNavbar';
 
 import './App.css';
@@ -12,7 +9,6 @@ import './App.css';
  * Main webpage for the website.
  */
 class App extends Component {
-
   /**
    * Renders TopNavbar, ReceiptInput component.
    * @return { React.ReactNode } React virtual DOM.
