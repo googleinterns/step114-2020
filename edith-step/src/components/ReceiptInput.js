@@ -9,7 +9,7 @@ import axios from 'axios';
 export default class ReceiptInput extends React.Component {
   /**
    * Constructor
-   * @param props Setup state.
+   * @param {Props} props Setup state.
    */
   constructor(props) {
     super(props);
@@ -22,7 +22,7 @@ export default class ReceiptInput extends React.Component {
    * Send a post request to the receipt-data servlet
    * with a grocery item in it every time a new item
    * is added.
-   * @param e Submission event.
+   * @param {Event} e Submission event.
    */
   handleSubmit(e) {
     e.preventDefault();
@@ -58,7 +58,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Update state when form changed.
-   * @param e Change event.
+   * @param {Event} e Change event.
    */
   handleChange(e) {
     const value = e.target.value;
@@ -67,7 +67,10 @@ export default class ReceiptInput extends React.Component {
     });
   }
 
-  /** Render grocery list form and items. */
+  /** 
+   * Render grocery list form and items.
+   * @return grocery list form
+   */
   render() {
     return (
       <div className="container-fluid">
