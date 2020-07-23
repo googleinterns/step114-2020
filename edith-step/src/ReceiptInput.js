@@ -59,7 +59,7 @@ export default class ReceiptInput extends React.Component {
       itemDeal: dealMessage,
       id: Date.now()
     };
-
+    
     axios({
       method: 'post',
       url: '/receipt-data',
@@ -165,14 +165,14 @@ const GroceryList = (props) => {
             <span className="col-lg-2">Item</span>
             <span className="badge badge-pill col-lg-2">Price</span>
             <span className="badge badge-pill col-lg-2">#</span>
-            <span className="badge badge-pill col-lg-2">Deal</span>
+            <span className="badge badge-pill col-lg-4">Deal</span>
           </li>
         {props.items.map(item => (
           <li className="h-50 list-group-item d-flex justify-content-between align-items-center" key={item.id}>
             <span className="item-name col-lg-2">{item.itemName}</span>
             <span className="item-price badge badge-pill col-lg-2">{item.itemPrice}</span>
             <span className="item-quantity badge badge-pill col-lg-2">{item.itemQuantity}</span>
-            <span className="item-deal badge badge-pill col-lg-2">{item.itemDeal}</span>
+            <span className="item-deal badge badge-pill col-lg-4">{item.itemDeal}</span>
           </li>
         ))}
       </ul>
