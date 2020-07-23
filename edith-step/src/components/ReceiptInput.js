@@ -67,9 +67,9 @@ export default class ReceiptInput extends React.Component {
     });
   }
 
-  /** 
+  /**
    * Render grocery list form and items.
-   * @return grocery list form
+   * @return {html} grocery list form
    */
   render() {
     return (
@@ -141,8 +141,9 @@ const GroceryList = (props) => {
   return (
     <div id="grocery-list">
       <ul className="list-group col-lg-3">
-        <li className=
-          "h-50 list-group-item d-flex justify-content-between align-items-center">
+        <li className={
+          'h-50 list-group-item d-flex' +
+          'justify-content-between align-items-center'}>
           <span className="col-lg-1">Item</span>
           <span className="badge badge-pill col-lg-1">Price</span>
           <span className="badge badge-pill col-lg-1">#</span>
