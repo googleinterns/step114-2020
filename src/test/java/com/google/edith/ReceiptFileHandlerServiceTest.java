@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -45,10 +46,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 public class ReceiptFileHandlerServiceTest {
 
   private final LocalServiceTestHelper testHelper = 
@@ -72,7 +72,7 @@ public class ReceiptFileHandlerServiceTest {
 
   @Mock
   BlobstoreService blobstoreService;
-  
+
   @Mock
   HttpServletRequest request;
 
@@ -88,7 +88,8 @@ public class ReceiptFileHandlerServiceTest {
             .getUploadedFileUrl(request, "example");
     assertFalse(uploadedFileInfo.isPresent());
   }
-  
+
+  /** Checks if a file uploaded successfully in Blobstore returns BlobInfo. */
   @Test
   public void checks_ifBlobUploaded_returnsFileInfo() throws IOException {
     Date creationDate = new Date();
@@ -104,12 +105,14 @@ public class ReceiptFileHandlerServiceTest {
     assertTrue(uploadedFileInfo.isPresent());
   }
 
+  /** Checks if a file did not upload in Blobstore throws Exception. */
   @Test(expected = IllegalStateException.class)
   public void checks_ifFileDidNotUpload_throwsException() throws IOException {
     List<FileInfo> files = Collections.emptyList();
     receiptFileHandlerService.getBlobKey(files);
   }
 
+  /** Checks if a file uploaded successfully in Blobstore returns url. */
   @Test
   public void checks_ifFileUploaded_returnsBlobKey() throws IOException {
     Date creationDate = new Date();
@@ -121,5 +124,22 @@ public class ReceiptFileHandlerServiceTest {
             .thenReturn(receiptKey);
     BlobKey returnedKey = receiptFileHandlerService.getBlobKey(files);
     assertTrue(returnedKey.equals(receiptKey));
+  }
+
+  /** 
+   * Checks if the serve method of BlobstoreService
+   * is called with the right parameters.
+   */
+  @Test
+  public void check_redirectsWithRightArguments_callsServeMethod() throws IOException {
+    Date creationDate = new Date();
+    FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
+    List<FileInfo> files = new ArrayList<FileInfo>();
+    files.add(uploadFile);
+    BlobKey key = new BlobKey("key");
+    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName()))
+           .thenReturn(key);
+    receiptFileHandlerService.serveBlob(response, files);
+    verify(blobstoreService, times(1)).serve(key, response);
   }
 }

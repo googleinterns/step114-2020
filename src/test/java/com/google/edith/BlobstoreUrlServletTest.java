@@ -59,9 +59,10 @@ public class BlobstoreUrlServletTest {
 
   @Mock
   HttpServletResponse response;
-
+  
+  /** Checks if the url contains required path. */
   @Test
-  public void testUrl() throws IOException {
+  public void checks_ReturnedUrl_containsRightUrl() throws IOException {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
