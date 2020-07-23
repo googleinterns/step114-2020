@@ -12,9 +12,9 @@ beforeEach(() => {
   handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit')
       .mockResolvedValue();
   handleChange = jest.spyOn(ReceiptInput.prototype, 'handleChange');
-  component = 
+  component =
       mount(<ReceiptInput onSubmit={ handleSubmit } onChange={ handleChange }/>);
-})
+});
 
 afterEach(() => {
   component.unmount();
@@ -33,7 +33,7 @@ it('should call handleSumbit when Submit button is clicked', () => {
 
 // HandleSubmit resets state.
 it('should update form submitted state with button click', () => {
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
   promise.then(() => {
@@ -55,13 +55,13 @@ it('should call handleChange on form change', () => {
 
 // HandleChange updates state.
 it('should change state when handleChange is called', () => {
-  component.setState({ itemName: "", itemPrice: 0, itemQuantity: 1 });
+  component.setState({ itemName: '', itemPrice: 0, itemQuantity: 1 });
   expect(component.state('itemName')).toBe('');
   expect(component.state('itemPrice')).toBe(0.0);
   expect(component.state('itemQuantity')).toBe(1);
 
-  const textEvent = {target: { name: "itemName", value: "bread" }};
-  const priceEvent = {target: { name: "itemPrice", value: 5.6 }};
+  const textEvent = {target: {name: 'itemName', value: 'bread'}};
+  const priceEvent = {target: {name: 'itemPrice', value: 5.6}};
   const quantityEvent = {target: {name: "itemQuantity", value: 3}};
 
   component.find('#name').simulate('change', textEvent);
@@ -81,7 +81,7 @@ it('should display item when form submitted', async () => {
   const quantityFieldBefore = component.find('.item-quantity');
   expect(quantityFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
@@ -99,7 +99,7 @@ it('should display item deal when good form data submitted', async () => {
   const dealFieldBefore = component.find('.item-deal');
   expect(dealFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "Apple Juice", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'Apple Juice', itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
@@ -113,7 +113,7 @@ it('should display no deal found message when bad form data submitted', async ()
   const dealFieldBefore = component.find('.item-deal');
   expect(dealFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
@@ -127,7 +127,7 @@ it('never gives a deal more expensive than the product itself', async () => {
   const dealFieldBefore = component.find('.item-deal');
   expect(dealFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "Apple Juice", itemPrice: 1.0, itemQuantity: 3});
+  component.setState({itemName: 'Apple Juice', itemPrice: 1.0, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
