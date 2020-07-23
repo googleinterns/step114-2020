@@ -9,7 +9,7 @@ const retreiveData = (setChartData) => {
         console.log(response);
         let weekDates = [];
         let values = [];  
-        const weeklyAggregate = JSON.parse(response.data.weeklyAggregate)
+        const weeklyAggregate = JSON.parse(response.weeklyAggregate)
         weekDates = Object.keys(weeklyAggregate);
         for (let i = 0; i < weekDates.length; i++) {
           values.push(weeklyAggregate[weekDates[i]]);
