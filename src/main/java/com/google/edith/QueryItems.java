@@ -1,5 +1,14 @@
 package com.google.edith;
 
+import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Finds the items on past receipts that have expired by the time
+ * of the user's next shopping trip.
+ */
 public class QueryItems {
   public String findExpiredItems(Receipt receipt) {
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -39,9 +48,12 @@ public class QueryItems {
         }
 
         if (number > daysPassedSinceReceipt) {
-          itemsToBuy(item);
+          itemsToBuy.add(item);
         }
       }
     }
+
+    Gson gson = new Gson();
+    return gson.toJson(itemsToBuy);
   }
 }

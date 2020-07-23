@@ -11,7 +11,6 @@ public class GroceryListServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // call Prashant's file and get a list of receipts
-
     QueryItems queryItems = new QueryItems();
     String items = queryItems.findExpiredItems(receipt);
     response.setContentType("application/json");
