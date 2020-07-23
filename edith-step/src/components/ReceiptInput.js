@@ -75,7 +75,7 @@ export default class ReceiptInput extends React.Component {
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
       itemDeal: dealMessage,
-      id: Date.now()
+      id: Date.now(),
     };
     
     axios({
@@ -84,15 +84,15 @@ export default class ReceiptInput extends React.Component {
       data: {
         itemName: this.state.itemName,
         itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity
-      }
+        itemQuantity: this.state.itemQuantity,
+      },
     });
 
     this.setState(state => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
-      itemQuantity: 1
+      itemQuantity: 1,
     }));
   }
 
