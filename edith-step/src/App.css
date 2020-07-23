@@ -1,16 +1,18 @@
-.App {
+.background-image-0 {
+  background: fixed url(./receipt.jpg) center/cover no-repeat;
+  height: 150vh;
+  position: relative;
+  width: 100vw;
+}
+
+.app-describe {
+  color: #000;
+  left: 0;
+  opacity: 0.8;
+  position: absolute;
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  top: 50%;
+  width: 100%;
 }
 
 .App-header {
@@ -24,15 +26,21 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.scroll-down {
+  animation-delay: 1s ease-in-out 1s infinite alternate scroll-down;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  top: 10%;
+  width: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@keyframes scroll-down {
+  0% {
+    margin-top: 0;
   }
-  to {
-    transform: rotate(360deg);
+
+  100% {
+    margin-top: 15px;
   }
 }
