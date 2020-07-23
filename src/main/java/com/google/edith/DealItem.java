@@ -11,12 +11,12 @@ public final class DealItem {
   public void setStore(String store) {
     this.store = store;
   }
-  
+
   /**
    * Price values from grocerydata.csv come in two main types: 'N/A', '', and '?' are invalid type,
    * and a dollar value to two decimal points with a $ sign in front of it is valid type. When
    * invalid input is detected, the default price is 0.0.
-   * 
+   *
    * <p>ex: Input price "?" -> this.price = 0.0 ex: input price "$5.67" -> this.price = 5.67
    */
   public void setPrice(String price) {
