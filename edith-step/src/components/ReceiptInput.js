@@ -21,37 +21,6 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  async getDeal(name, price, quantity) {
-    const axios = require('axios')
-    const response = await axios({
-      method: 'post',
-      url: '/receipt-data',
-      data: {
-        itemName: name,
-        itemPrice: price,
-        itemQuantity: quantity
-      }
-    });
-    const dealItem = response.data;
-
-    let newDeal;
-    if (dealItem == "no deal found") {
-      newDeal = {
-        storeName: "no deal found",
-        storePrice: 0,
-        storeExpiration: "no expiration found"
-      }
-    } else {
-      newDeal = {
-        storeName: dealItem.store,
-        storePrice: dealItem.price,
-        storeExpiration: dealItem.expiration
-      };
-    }
-
-    return newDeal;
-  }
-
   /**
    * Sends item info to the receipt-deals servlet and
    * responds with the cheapest store for that item.
@@ -73,8 +42,8 @@ export default class ReceiptInput extends React.Component {
     const dealItem = response.data;
 
     const newDeal = dealItem === 'no deal found' ?
-      {storeName: 'no deal found', storePrice: 0} :
-      {storeName: dealItem.store, storePrice: dealItem.price};
+      {storeName: 'no deal found', storePrice: 0, storeExpiration: "no expiration found"} :
+      {storeName: dealItem.store, storePrice: dealItem.price, storeExpiration: dealItem.expiration};
 
     return newDeal;
   }
@@ -90,7 +59,7 @@ export default class ReceiptInput extends React.Component {
     if (this.state.itemName.length === 0) {
       return;
     }
-    
+
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
     let dealMessage;
