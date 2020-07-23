@@ -1,34 +1,27 @@
 import React, {useState, useEffect} from 'react';
 import {Line, Bar, Doughnut} from 'react-chartjs-2';
 import axios from "axios";
+require("regenerator-runtime/runtime")
 
-const retreiveData = (setChartData) => {
-    axios
-      .get("/user-stats-servlet")
-      .then(response => {
-        console.log(response);
-        let weekDates = [];
-        let values = [];  
-        const weeklyAggregate = JSON.parse(response.weeklyAggregate)
-        weekDates = Object.keys(weeklyAggregate);
-        for (let i = 0; i < weekDates.length; i++) {
-          values.push(weeklyAggregate[weekDates[i]]);
+async function retrieveData() {
+    const response = await fetch("/user-stats-servlet");
+    const responseJson = await response.json();
+    console.log(responseJson);
+    let weekDates = [];
+    let values = [];  
+    console.log(Object.keys(responseJson.weeklyAggregate));
+    const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
+    Object.keys(weeklyAggregate).forEach(weekDate => {
+        weekDates.push(weekDate.substring(1, 5) + "-" +weekDate.substring(5,7) + "-" + weekDate.substring(7,9));
+        values.push(weeklyAggregate[weekDate]);
+    });
+    return new Promise((resolve, reject) => {
+        if (weekDates.length > 0) {
+          resolve([weekDates, values]);
+        } else {
+          reject([[], []]);
         }
-        setChartData({
-          labels: weekDates,
-          datasets: [
-            {
-              label: "Week Total",
-              data: values,
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
-              borderWidth: 4
-            }
-          ]
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    });
 }
 
 const inSameWeek = (itemDate, dateSelection) => {
@@ -43,7 +36,19 @@ const LineChart = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
-    retreiveData(setChartData);
+    retrieveData().then(fetchData => {
+    setChartData({
+          labels: fetchData[0],
+          datasets: [
+            {
+              label: "Week Total",
+              data: fetchData[1],
+              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
+              borderWidth: 4
+            }
+          ]
+        });
+    });
   };
 
   useEffect(() => {
@@ -98,7 +103,7 @@ const BarGraph = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
-    retreiveData(setChartData);
+    retrieveData(setChartData);
   };
 
   useEffect(() => {
@@ -225,6 +230,5 @@ const DoughnutChart = (props) => {
     );
 }
 
-
 export default LineChart
-export { BarGraph, DoughnutChart }
+export { BarGraph, DoughnutChart, retrieveData }

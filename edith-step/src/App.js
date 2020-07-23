@@ -17,13 +17,13 @@ class App extends Component {
 
   updateChartType(event) {
     switch(event.target.value) {
-      case "Line": 
+      case "line": 
         this.setState({"chartType": LineChart});
         break;
-      case "Bar":
+      case "bar":
         this.setState({"chartType": BarGraph});
         break;
-      case "Doughnut":
+      case "doughnut":
         this.setState({"chartType": DoughnutChart});
         break;
     }
@@ -41,10 +41,10 @@ class App extends Component {
     const Chart = this.state.chartType;
     return (
       <div className="App">
-        <div onChange={this.updateChartType}>
-          <input defaultChecked type="radio" value="Line" name="Line" /> Line
-          <input type="radio" value="Bar" name="Bar" /> Bar
-          <input type="radio" value="Doughnut" name="Doughnut" /> Doughnut
+        <div id="radio-selector" onChange={this.updateChartType}>
+          <input defaultChecked type="radio" value="line" name="chart-selector" id="line-selector" /> Line
+          <input type="radio" value="bar" name="chart-selector" id="bar-selector" /> Bar
+          <input type="radio" value="doughnut" name="chart-selector" id="doughnut-selector" /> Doughnut
         </div>
         <Chart action={this.showWeeklyChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
         <ReceiptInput />

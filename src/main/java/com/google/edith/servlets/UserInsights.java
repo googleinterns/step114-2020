@@ -208,7 +208,8 @@ public final class UserInsights implements UserInsightsInterface {
         // that means that itemDate is after currentEndOfWeek and 
         // currentEndOfWeek needs to be updated.
         if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
-          weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+          String weekString = "w"+currentEndOfWeek.toString().replaceAll("-", "");
+          weeklyTotals.put(weekString, Double.toString(weeklyTotal));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
         }
@@ -221,7 +222,7 @@ public final class UserInsights implements UserInsightsInterface {
       } 
     }
     
-    weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+    weeklyTotals.put("w"+currentEndOfWeek.toString().replaceAll("-",""), Double.toString(weeklyTotal));
 
     return ImmutableMap.copyOf(weeklyTotals);
   }

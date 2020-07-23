@@ -110,7 +110,7 @@ public final class UserInsightsTest {
     datastore.put(newEntity2); 
     
     Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("2020-07-05", "17.0");
+    map.put("w20200705", "17.0");
    
     userInsights.updateUserStats(items);
 
@@ -139,8 +139,8 @@ public final class UserInsightsTest {
     datastore.put(newEntity4);  
 
     Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("2020-07-05", "17.0");
-    map.put("2020-07-12", "53.0");
+    map.put("w20200705", "17.0");
+    map.put("w20200712", "53.0");
    
     userInsights.updateUserStats(items);
    
@@ -173,8 +173,8 @@ public final class UserInsightsTest {
     datastore.put(newEntity4);    
 
     Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("2020-07-05", "17.0");
-    map.put("2020-07-12", "53.0");
+    map.put("w20200705", "17.0");
+    map.put("w20200712", "53.0");
    
     userInsights.updateUserStats(items);
 
