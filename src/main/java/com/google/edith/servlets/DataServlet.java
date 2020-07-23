@@ -20,7 +20,6 @@ import java.util.List;
 /**
 * Servlet that returns some example content.
 */
-
 @WebServlet("/")
 public class DataServlet extends HttpServlet {
 

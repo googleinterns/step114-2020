@@ -16,7 +16,6 @@ package com.google.edith;
 
 import com.google.edith.servlets.LoginServlet;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -27,7 +26,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.ArgumentCaptor;
-import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 import java.io.StringWriter;
