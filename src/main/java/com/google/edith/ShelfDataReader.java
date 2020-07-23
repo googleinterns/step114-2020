@@ -31,7 +31,7 @@ public class ShelfDataReader {
       JsonArray sheets = data.getAsJsonArray("sheets");
       JsonObject productList = sheets.get(2).getAsJsonObject();
       JsonArray productListData = productList.getAsJsonArray("data");
-      
+
       for (int i = 0; i < productListData.size(); i++) {
         JsonArray product = productListData.get(i).getAsJsonArray();
         JsonObject nameObject = product.get(2).getAsJsonObject();
@@ -53,7 +53,7 @@ public class ShelfDataReader {
     }
   }
   
-  /** 
+  /**
     * Retrieves the shelf life data of the specified product. Only looks through pantry and
     * refrigeration data, as freezing tends to be longer term. Items also tend to have freezing and
     * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
@@ -62,7 +62,7 @@ public class ShelfDataReader {
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
     Map<String, String> shelfLife = new HashMap<String, String>();
-    
+
     for (int i = 5; i < 27; i++) {
       JsonObject productTimeElement = product.get(i).getAsJsonObject();
       String json = gson.toJson(productTimeElement);
