@@ -13,7 +13,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
 @RunWith(JUnit4.class)
-public class DealsServletTest  {
+public class DealsServletTest {
 
   @Test
   public void doPost_itemNameInCsv_respondsWithCheapestStore() throws Exception {
@@ -22,7 +22,7 @@ public class DealsServletTest  {
 
     String json = "{\"itemName\": \"Apple Juice\"}";
     Mockito.when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
-    
+
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(writer);
@@ -41,7 +41,7 @@ public class DealsServletTest  {
 
     String json = "{\"itemName\": \"\"}";
     Mockito.when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
-    
+
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(writer);
