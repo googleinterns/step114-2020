@@ -1,6 +1,5 @@
 package com.google.edith;
 
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +8,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class ShelfDataReaderTest {
-  
+
   private ShelfDataReader reader;
 
   @Before
