@@ -52,13 +52,13 @@ public class ShelfDataReader {
       return findTime(potentialMatches.get(0));
     }
   }
-  
+
   /**
-    * Retrieves the shelf life data of the specified product. Only looks through pantry and
-    * refrigeration data, as freezing tends to be longer term. Items also tend to have freezing and
-    * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
-    * one set of expiration data.
-    */
+   * Retrieves the shelf life data of the specified product. Only looks through pantry and
+   * refrigeration data, as freezing tends to be longer term. Items also tend to have freezing and
+   * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
+   * one set of expiration data.
+   */
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
     Map<String, String> shelfLife = new HashMap<String, String>();
