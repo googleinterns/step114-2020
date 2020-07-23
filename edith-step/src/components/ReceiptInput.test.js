@@ -145,21 +145,22 @@ it('should display item expiration when good form data submitted', async () => {
   const expirationFieldBefore = component.find('.item-expiration');
   expect(expirationFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "Apple Juice", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'Apple Juice',
+    itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
   promise.then(() => {
     const expirationFieldAfter = component.find('.item-expiration');
-    expect(expirationFieldAfter).toBe("6.0 Days");
+    expect(expirationFieldAfter).toBe('6.0 Days');
   });
 });
 
-it('should display no shelf life data found message when bad form data submitted', async () => {
+it('displays no shelf life data found on bad form data submitted', async () => {
   const expirationFieldBefore = component.find('.item-expiration');
   expect(expirationFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');

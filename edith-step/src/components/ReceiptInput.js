@@ -16,7 +16,8 @@ export default class ReceiptInput extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1};
+    this.state = {items: [], itemName: '', itemPrice: 0.0,
+      itemQuantity: 1, itemDeal: '', itemExpiration: ''};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -32,7 +33,7 @@ export default class ReceiptInput extends React.Component {
   async getDeal(name, price, quantity) {
     const response = await axios({
       method: 'post',
-      url: '/receipt-deals',
+      url: '/receipt-data',
       data: {
         itemName: name,
         itemPrice: price,
@@ -42,8 +43,10 @@ export default class ReceiptInput extends React.Component {
     const dealItem = response.data;
 
     const newDeal = dealItem === 'no deal found' ?
-      {storeName: 'no deal found', storePrice: 0, storeExpiration: "no expiration found"} :
-      {storeName: dealItem.store, storePrice: dealItem.price, storeExpiration: dealItem.expiration};
+      {storeName: 'no deal found', storePrice: 0,
+        storeExpiration: 'no expiration found'} :
+      {storeName: dealItem.store, storePrice: dealItem.price,
+        storeExpiration: dealItem.expiration};
 
     return newDeal;
   }
@@ -62,19 +65,20 @@ export default class ReceiptInput extends React.Component {
 
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
+
     let dealMessage;
-    if (newDeal.storeName == 'no deal found' ||
+    if (newDeal.storeName === 'no deal found' ||
         newDeal.storePrice > this.state.itemPrice) {
       dealMessage = 'no deal found';
     } else {
       dealMessage = 'Purchase at ' +
-      newDeal.storeName + ' for $' +
-      newDeal.storePrice + '.';
+        newDeal.storeName + ' for $' +
+        newDeal.storePrice + '.';
     }
 
     let expirationMessage;
-    if (newDeal.storeExpiration == "no shelf life data found") {
-      expirationMessage = "data unavailable";
+    if (newDeal.storeExpiration == 'no shelf life data found') {
+      expirationMessage = 'data unavailable';
     } else {
       expirationMessage = newDeal.storeExpiration;
     }
@@ -88,21 +92,13 @@ export default class ReceiptInput extends React.Component {
       id: Date.now(),
     };
 
-    axios({
-      method: 'post',
-      url: '/receipt-data',
-      data: {
-        itemName: this.state.itemName,
-        itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity,
-      },
-    });
-
-    this.setState(state => ({
+    this.setState((state) => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
-      itemQuantity: 1
+      itemQuantity: 1,
+      itemDeal: '',
+      itemExpiration: '',
     }));
   }
 
