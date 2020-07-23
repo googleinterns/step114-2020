@@ -1,18 +1,20 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 import ReceiptInput from './ReceiptInput';
 
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 let handleChange;
 let handleSubmit;
 
 beforeEach(() => {
-  handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit').mockResolvedValue();
+  handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit')
+      .mockResolvedValue();
   handleChange = jest.spyOn(ReceiptInput.prototype, 'handleChange');
-  component = mount(<ReceiptInput onSubmit={ handleSubmit } onChange={ handleChange }/>);
-})
+  component =
+      mount(<ReceiptInput onSubmit={handleSubmit} onChange={handleChange}/>);
+});
 
 afterEach(() => {
   component.unmount();
@@ -31,7 +33,7 @@ it('should call handleSumbit when Submit button is clicked', () => {
 
 // HandleSubmit resets state.
 it('should update form submitted state with button click', () => {
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
   promise.then(() => {
@@ -53,14 +55,14 @@ it('should call handleChange on form change', () => {
 
 // HandleChange updates state.
 it('should change state when handleChange is called', () => {
-  component.setState({ itemName: "", itemPrice: 0, itemQuantity: 1 });
+  component.setState({itemName: '', itemPrice: 0, itemQuantity: 1});
   expect(component.state('itemName')).toBe('');
   expect(component.state('itemPrice')).toBe(0.0);
   expect(component.state('itemQuantity')).toBe(1);
 
-  const textEvent = {target: { name: "itemName", value: "bread" }};
-  const priceEvent = {target: { name: "itemPrice", value: 5.6 }};
-  const quantityEvent = {target: {name: "itemQuantity", value: 3}};
+  const textEvent = {target: {name: 'itemName', value: 'bread'}};
+  const priceEvent = {target: {name: 'itemPrice', value: 5.6}};
+  const quantityEvent = {target: {name: 'itemQuantity', value: 3}};
 
   component.find('#name').simulate('change', textEvent);
   expect(component.state('itemName')).toBe('bread');
@@ -79,7 +81,7 @@ it('should display item when form submitted', async () => {
   const quantityFieldBefore = component.find('.item-quantity');
   expect(quantityFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
@@ -87,7 +89,7 @@ it('should display item when form submitted', async () => {
     const textFieldAfter = component.find('.item-name').text();
     expect(textFieldAfter).toBe('bread');
     const priceFieldAfter = component.find('.item-price').text();
-    expect(priceFieldAfter).toBe("5.6");
+    expect(priceFieldAfter).toBe('5.6');
     const quantityFieldAfter = component.find('.item-quantity').text();
     expect(quantityFieldAfter).toBe('3');
   });
@@ -97,21 +99,23 @@ it('should display item deal when good form data submitted', async () => {
   const dealFieldBefore = component.find('.item-deal');
   expect(dealFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "Apple Juice", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState(
+      {itemName: 'Apple Juice', itemPrice: 5.6, itemQuantity: 3},
+  );
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
   promise.then(() => {
     const dealFieldAfter = component.find('.item-deal');
-    expect(dealFieldAfter).toBe("Purchase at Kroger for $1.5.");
+    expect(dealFieldAfter).toBe('Purchase at Kroger for $1.5.');
   });
 });
 
-it('should display no deal found message when bad form data submitted', async () => {
+it('should display no deal found when bad form data submitted', async () => {
   const dealFieldBefore = component.find('.item-deal');
   expect(dealFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "bread", itemPrice: 5.6, itemQuantity: 3 });
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
@@ -125,14 +129,16 @@ it('never gives a deal more expensive than the product itself', async () => {
   const dealFieldBefore = component.find('.item-deal');
   expect(dealFieldBefore.exists()).toBe(false);
 
-  component.setState({ itemName: "Apple Juice", itemPrice: 1.0, itemQuantity: 3});
+  component.setState(
+      {itemName: 'Apple Juice', itemPrice: 1.0, itemQuantity: 3},
+  );
 
   const promise = new Promise(handleSubmit);
   component.find('form').simulate('submit');
   promise.then(() => {
     const dealFieldAfter = component.find('item-deal');
-    expect(dealFieldAfter).toBe('no deal found')
-  })
+    expect(dealFieldAfter).toBe('no deal found');
+  });
 });
 
 it('should display item expiration when good form data submitted', async () => {
