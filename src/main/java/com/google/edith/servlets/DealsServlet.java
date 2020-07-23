@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** 
- * Servlet that takes the user input from the receipt form and uses it to retrieve the best deal. 
+ * Servlet that takes the user input from the receipt form and uses it to retrieve the best deal.
  */
 @WebServlet("/receipt-data")
 public class DealsServlet extends HttpServlet {

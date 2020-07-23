@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** 
- * Processes data file of product prices and sizes at different stores and returns the best value 
- * item. 
+ * Processes data file of product prices and sizes at different stores and returns the best value
+ * item.
  */
 public final class GroceryDataReader {
 
@@ -20,12 +20,11 @@ public final class GroceryDataReader {
     private static final String TRADER_JOES = "Trader Joe's";
     private static final String PUBLIX = "Publix";
     private static final String WALMART = "Walmart";
-    private static final ImmutableList<String> STORES = 
+    private static final ImmutableList<String> STORES =
         ImmutableList.of(ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART);
 
    /**
-   * Finds the specified product in the file and puts the
-   * data into DealItem objects to be handled. 
+   * Finds the specified product in the file and puts the data into DealItem objects to be handled. 
    */
   public DealItem readFile(String itemName) throws IOException {
     URL csvResource = getClass().getClassLoader().getResource("grocerydata.csv");
@@ -60,7 +59,7 @@ public final class GroceryDataReader {
   }
 
   /** 
-   * Gets the $/unit value of each item and returns the item that is cheapest per unit. dealItems 
+   * Gets the $/unit value of each item and returns the item that is cheapest per unit. dealItems
    * will never be empty because this function is only ever called when a product match is found.
    */
   private DealItem getCheapestItemPerUnit(List<DealItem> dealItems) {
