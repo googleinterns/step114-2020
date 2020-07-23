@@ -1,7 +1,7 @@
 package com.google.edith;
 
+import com.google.common.collect.ImmutableList;
 import com.opencsv.CSVReader;
-import com.google.common.collect.ImmutableList; 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

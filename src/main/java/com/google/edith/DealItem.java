@@ -17,7 +17,7 @@ public final class DealItem {
    * and a dollar value to two decimal points with a $ sign in front of it is valid type. When
    * invalid input is detected, the default price is 0.0.
    * 
-   * ex: Input price "?" -> this.price = 0.0 ex: input price "$5.67" -> this.price = 5.67
+   * <p>ex: Input price "?" -> this.price = 0.0 ex: input price "$5.67" -> this.price = 5.67
    */
   public void setPrice(String price) {
     if (price.equals("N/A") || price.isEmpty() || price.equals("?")) {
@@ -37,9 +37,9 @@ public final class DealItem {
    * and 'head' are salvageable types, as their meaning can be interpreted, and any input that
    * starts with a number and ends with a weight unit is valid type.
    *
-   * ex: Inputs of 'per' or 'head' indicate that the price given is for one unit of that item. 
-   *     Therefore, setting the weight to one would let the value algorithm still work. 'per lb' -> 
-   *     this.weight = 1.0 ex: Input weight '64 fl oz' -> this.weight = 64.0
+   * <p>ex: Inputs of 'per' or 'head' indicate that the price given is for one unit of that item.
+   * Therefore, setting the weight to one would let the value algorithm still work. 'per lb' ->
+   * this.weight = 1.0 ex: Input weight '64 fl oz' -> this.weight = 64.0
    */
   public void setWeight(String weight) {
     if (weight.isEmpty()) {
@@ -74,8 +74,8 @@ public final class DealItem {
 
   /**
    * Grocery items are compared by determining unit value, which is price divided by weight. This is
-   * because the items at each different store are the same type, but differ by weight and price. 
-   * Using the unit price allows us to compare them more equally. Since invalid input for weight 
+   * because the items at each different store are the same type, but differ by weight and price.
+   * Using the unit price allows us to compare them more equally. Since invalid input for weight
    * leads to a default weight of 0.0, we need to prevent divide by 0 values as well.
    */
   public double getUnitPrice() {
