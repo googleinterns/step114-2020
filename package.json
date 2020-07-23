@@ -17,7 +17,7 @@
     "react-dom": "^16.13.1",
     "react-fetch": "0.0.9",
     "react-scripts": "3.4.1",
-    "regenerator-runtime": "^0.13.5",
+    "regenerator-runtime": "^0.13.7",
     "serve": "^11.3.2"
   },
   "scripts": {
@@ -46,10 +46,11 @@
     "node": "10.x.x"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.5",
+    "@babel/polyfill": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
-    "@babel/runtime": "^7.10.4",
+    "@babel/runtime": "^7.10.5",
     "babel-jest": "^24.9.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",

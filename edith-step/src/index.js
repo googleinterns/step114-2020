@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import App from './App';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import App from './App';
+import 'core-js/stable';
 import * as serviceWorker from './serviceWorker';
 // import '@babel/polyfill'
 
