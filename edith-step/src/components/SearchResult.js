@@ -6,14 +6,22 @@ const Receipt = (props) => {
   console.log(props);
   return (
     <Card className='text-center'>
-      <Card.Header>Receipt Name: {props.name}</Card.Header>
-      <Card.Link href={props.fileUrl}>View Receipt Image</Card.Link>
+      <Card.Title>
+        Receipt Name: {props.name}
+      </Card.Title>
+      <Card.Subtitle
+        className="mb-2 text-muted">
+        Store Name: {props.storeName}
+      </Card.Subtitle>
+      <Card.Link
+        href={props.fileUrl}>
+        View Receipt Image
+      </Card.Link>
       <Card.Body>
         <Card.Text>
-          Store Name: {props.storeName}
+         Total Price: {props.totalPrice}
         </Card.Text>
       </Card.Body>
-      <Card.Footer>Total Price: {props.totalPrice}</Card.Footer>
     </Card>
   );
 }
