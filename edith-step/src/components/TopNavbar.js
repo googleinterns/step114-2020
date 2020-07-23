@@ -27,7 +27,7 @@ class TopNavbar extends React.Component {
   }
   
   login() {
-    fetch('/log')
+    fetch('/login')
       .then(response => response.json())
       .then(userInfo => {
         sessionStorage.setItem('logged-in', userInfo.email);

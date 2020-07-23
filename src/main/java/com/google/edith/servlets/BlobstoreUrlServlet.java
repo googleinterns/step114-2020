@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith;
+package com.google.edith.servlets;
 
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -37,7 +37,7 @@ public class BlobstoreUrlServlet extends HttpServlet {
 		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 		UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName("edith-receipts");
 
-		String uploadUrl = blobstoreService.createUploadUrl("/receipt-file-handle", uploadOptions);
+		String uploadUrl = blobstoreService.createUploadUrl("/receipt-file-handler", uploadOptions);
    
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);

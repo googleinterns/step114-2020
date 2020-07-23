@@ -20,7 +20,7 @@ export default class ReceiptHandler extends React.Component {
   async getReceiptData() {
     const response = await axios({
       method: 'get',
-      url: '/receipt-file-handle',
+      url: '/receipt-file-handler',
       responseType: 'json'
     });
     const receipt = response.data;

@@ -1,4 +1,4 @@
-package com.google.edith;
+package com.google.edith.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;

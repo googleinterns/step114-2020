@@ -1,4 +1,4 @@
-package com.google.edith;
+package com.google.edith.servlets;
 
 import com.google.cloud.documentai.v1beta2.Document;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;

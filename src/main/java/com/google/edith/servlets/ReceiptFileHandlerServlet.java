@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith;
+package com.google.edith.servlets;
 
 import com.google.gson.Gson;
 import com.google.appengine.api.blobstore.BlobInfo;
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * file to be stored in the Google Cloud Storage Bucket and redirects the request to
  * ReceiptFileHandlerServlet.
  */
-@WebServlet("/receipt-file-handle")
+@WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
   private static final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
