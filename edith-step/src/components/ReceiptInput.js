@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 /**
  * Displays form that takes in user input for a dynamic number
