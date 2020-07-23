@@ -1,6 +1,7 @@
 package com.google.edith;
 
 import com.google.gson.Gson;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,9 +11,9 @@ import java.util.List;
  * of the user's next shopping trip.
  */
 public class QueryItems {
-  public String findExpiredItems(Receipt receipt) {
+  public String findExpiredItems(Receipt pastReceipt) {
     Date currentDate = new Date();
-    String receiptDateString = receipt.getDate();
+    String receiptDateString = pastReceipt.getDate();
     Date receiptDate = new SimpleDateFormat("dd/MM/yyyy").parse(receiptDateString); 
     long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
     int daysPassedSinceReceipt = (int) (timePassedSinceReceipt / 86400000 );

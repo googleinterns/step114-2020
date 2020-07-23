@@ -4,7 +4,7 @@ import axios from 'axios';
 export default class GroceryList extends React.Component {
   constructor(props) {
     super(props);
-    this.setState({ items: [] });
+    this.state = { items: [] };
   }
 
   componentDidMount() {
@@ -27,14 +27,14 @@ export default class GroceryList extends React.Component {
         {this.state.items.length > 0 &&
         <>
         <div className="row">
-          <div className="col-lg-2">
+          <div className="col-lg-2 item-header">
             <span>Item</span>
           </div>
         </div>
         <>
         {this.state.items.map((item) => (
         <div className="row">
-          <div className="col-lg-2">
+          <div className="col-lg-2 item-name">
             <span>{item.name}</span>
           </div>
         </div>

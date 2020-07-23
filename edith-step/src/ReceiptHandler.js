@@ -129,7 +129,7 @@ export default class ReceiptHandler extends React.Component {
 
   render() {
     return(
-      <div class="receipt-handler">
+      <div className="receipt-handler">
        <div className="container col-lg-8">
         {this.state.items.length > 0 &&
         <form onSubmit={this.handleSubmit}>

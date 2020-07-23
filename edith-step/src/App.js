@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import TopNavbar from './components/TopNavbar';
 import ReceiptHandler from './ReceiptHandler.js';
 
-import './App.css';
-import ReceiptInput from './ReceiptInput';
-// import "./App.css";
+//import './App.css';
 
 
 /** Main webpage for the website. */
