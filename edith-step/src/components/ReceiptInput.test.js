@@ -1,17 +1,19 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 import ReceiptInput from './ReceiptInput';
 
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 let handleChange;
 let handleSubmit;
 
 beforeEach(() => {
-  handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit').mockResolvedValue();
+  handleSubmit = jest.spyOn(ReceiptInput.prototype, 'handleSubmit')
+      .mockResolvedValue();
   handleChange = jest.spyOn(ReceiptInput.prototype, 'handleChange');
-  component = mount(<ReceiptInput onSubmit={ handleSubmit } onChange={ handleChange }/>);
+  component = 
+      mount(<ReceiptInput onSubmit={ handleSubmit } onChange={ handleChange }/>);
 })
 
 afterEach(() => {
