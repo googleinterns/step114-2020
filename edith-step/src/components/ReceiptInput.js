@@ -175,12 +175,10 @@ export default class ReceiptInput extends React.Component {
             </div>
           </div>
         </form>
-        <div className="row">
-          <div className="col-lg-5">
-            {this.state.items.length > 0 &&
-            <GroceryList items={this.state.items}/>
-            }
-          </div>
+        <div className="col-lg-8">
+          {this.state.items.length > 0 &&
+          <GroceryList items={this.state.items}/>
+          }
         </div>
       </div>
     );
@@ -199,7 +197,7 @@ const GroceryList = createReactClass({
     const props = this.props;
     return (
       <div id="grocery-list">
-        <ul className="list-group col-lg-8">
+        <ul className="list-group col-lg-10">
           <li className={
             'h-50 list-group-item d-flex' +
             'justify-content-between align-items-center'}>
