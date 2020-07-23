@@ -2,8 +2,8 @@ package com.google.edith;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
+@RunWith(JUnit4.class)
 public class DealsServletTest  {
 
   @Test
@@ -20,8 +21,7 @@ public class DealsServletTest  {
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
     String json = "{\"itemName\": \"Apple Juice\"}";
-    Mockito.when(request.getReader()).thenReturn(
-        new BufferedReader(new StringReader(json)));
+    Mockito.when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
     
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -40,8 +40,7 @@ public class DealsServletTest  {
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
     String json = "{\"itemName\": \"\"}";
-    Mockito.when(request.getReader()).thenReturn(
-        new BufferedReader(new StringReader(json)));
+    Mockito.when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
     
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
