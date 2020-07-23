@@ -24,7 +24,8 @@ export default class GroceryList extends React.Component {
   render() {
     return (
       <div className="container">
-      {this.state.items.length > 0 &&
+        {this.state.items.length > 0 &&
+        <>
         <div className="row">
           <div className="col-lg-2">
             <span>Item</span>
@@ -39,7 +40,8 @@ export default class GroceryList extends React.Component {
         </div>
         ))}
         </>
-      }
+        </>
+        }
       </div>
     );
   }

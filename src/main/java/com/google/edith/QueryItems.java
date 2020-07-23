@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class QueryItems {
   public String findExpiredItems(Receipt receipt) {
-    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     Date currentDate = new Date();
     String receiptDateString = receipt.getDate();
     Date receiptDate = new SimpleDateFormat("dd/MM/yyyy").parse(receiptDateString); 
@@ -40,10 +39,10 @@ public class QueryItems {
           }
         }
 
-        if (unit.equals("Weeks")) {
+        if (unit.toLowerCase().equals("weeks")) {
           number = number * 7;
         }
-        else if (unit.equals("Months")) {
+        else if (unit.toLowerCase().equals("months")) {
           number = number * 30;
         }
 

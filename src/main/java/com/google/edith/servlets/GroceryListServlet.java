@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import java.io.IOException;
 import java.util.Date;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
