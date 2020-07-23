@@ -1,15 +1,34 @@
 import React, {Component} from 'react';
-import ReceiptInput from './ReceiptInput';
-// import "./App.css";
 
+import ReceiptInput from './components/ReceiptInput';
+import TopNavbar from './components/TopNavbar';
 
-/** Main webpage for the website. */
+import './App.css';
+
+/**
+ * Main webpage for the website.
+ */
 class App extends Component {
-  /** Renders the main webpage. */
+  /**
+   * Renders TopNavbar, ReceiptInput component.
+   * @return { React.ReactNode } React virtual DOM.
+   */
   render() {
-    /** Returns main components. */  
     return (
       <div className='App'>
+        <div className='App-header'>
+          <TopNavbar />
+        </div>
+        <div className='background-image-0'>
+          <div className='scroll-down border'>
+            Scroll Down
+          </div>
+          <div className='app-describe'>
+            <span className='border'>
+              Welcome To Edith: Expenditure Analyzer.
+            </span>
+          </div>
+        </div>
         <ReceiptInput />
       </div>
     );
