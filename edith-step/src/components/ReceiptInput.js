@@ -20,41 +20,90 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  async getDeal(name, price, quantity) {
+    const axios = require('axios')
+    const response = await axios({
+      method: 'post',
+      url: '/receipt-data',
+      data: {
+        itemName: name,
+        itemPrice: price,
+        itemQuantity: quantity
+      }
+    });
+    const dealItem = response.data;
+
+    let newDeal;
+    if (dealItem == "no deal found") {
+      newDeal = {
+        storeName: "no deal found",
+        storePrice: 0,
+        storeExpiration: "no expiration found"
+      }
+    } else {
+      newDeal = {
+        storeName: dealItem.store,
+        storePrice: dealItem.price,
+        storeExpiration: dealItem.expiration
+      };
+    }
+
+    return newDeal;
+  }
+
   /**
    * Send a post request to the receipt-data servlet
    * with a grocery item in it every time a new item
    * is added.
    * @param {Event} e Submission event.
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
     if (this.state.itemName.length === 0) {
       return;
     }
+
+    const newDeal = await this.getDeal(this.state.itemName, this.state.itemPrice, this.state.itemQuantity);
+    let dealMessage;
+    if (newDeal.storeName == "no deal found" || newDeal.storePrice > this.state.itemPrice) {
+      dealMessage = "no deal found";
+    } else {
+      dealMessage = "Purchase at " + newDeal.storeName + " for $" + newDeal.storePrice + ".";
+    }
+
+    let expirationMessage;
+    if (newDeal.storeExpiration == "no shelf life data found") {
+      expirationMessage = "data unavailable";
+    } else {
+      expirationMessage = newDeal.storeExpiration;
+    }
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
-      id: Date.now(),
+      itemDeal: dealMessage,
+      itemExpiration: expirationMessage,
+      id: Date.now()
     };
-
+    
     axios({
       method: 'post',
       url: '/receipt-data',
       data: {
         itemName: this.state.itemName,
         itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity,
-      },
+        itemQuantity: this.state.itemQuantity
+      }
     }).then((response) => {
       console.log(response);
     });
 
-    this.setState((state) => ({
+    this.setState(state => ({
       items: state.items.concat(newItem),
       itemName: '',
       itemPrice: 0.0,
-      itemQuantity: 1,
+      itemQuantity: 1
     }));
   }
 
@@ -131,9 +180,13 @@ export default class ReceiptInput extends React.Component {
             </div>
           </div>
         </form>
-        {this.state.items.length > 0 &&
-        <GroceryList items={this.state.items} />
-        }
+        <div className="row">
+          <div className="col-lg-5">
+          {this.state.items.length > 0 &&
+          <GroceryList items={this.state.items} />
+          }
+          </div>
+        </div>
       </div>
     );
   }
@@ -158,6 +211,7 @@ const GroceryList = createReactClass({
             <span className="col-lg-1">Item</span>
             <span className="badge badge-pill col-lg-1">Price</span>
             <span className="badge badge-pill col-lg-1">#</span>
+            <span className="badge badge-pill col-lg-2">Expiration</span>
           </li>
           {props.items.map((item) => (
             <li className={
@@ -172,6 +226,9 @@ const GroceryList = createReactClass({
               </span>
               <span className="item-quantity badge badge-pill col-lg-1">
                 {item.itemQuantity}
+              </span>
+              <span className="item-expiration badge badge-pill col-lg-2">
+                {item.itemExpiration}
               </span>
             </li>
           ))}
