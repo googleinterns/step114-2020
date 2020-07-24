@@ -10,7 +10,9 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.edith.servlets.Item;
-import com.google.edith.servlets.UserInsights;
+import com.google.edith.servlets.UserInsightsService;
+import com.google.edith.servlets.UserInsightsInterface;
+import com.google.edith.servlets.WeekInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import org.junit.runners.JUnit4;
 public final class UserInsightsTest {
   private static final String USER_ID = "userId";
   private DatastoreService datastore;
-  private static UserInsights userInsights;
+  private static UserInsightsInterface userInsights;
   private final LocalServiceTestHelper testHelper = 
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     
@@ -37,7 +39,7 @@ public final class UserInsightsTest {
   public void setUp() {
     testHelper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
-    userInsights = new UserInsights(USER_ID);
+    userInsights = new UserInsightsService(USER_ID);
     userInsights.createUserStats();
   }
 
@@ -106,15 +108,16 @@ public final class UserInsightsTest {
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, "potato", 6, 2, "2020-06-30");
+
+    setEntityProperties(newEntity2, "corn", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
-    Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("w20200705", "17.0");
+    List<WeekInfo> expected = new ArrayList<WeekInfo>();
+    expected.add(new WeekInfo("2020-07-05", "17.0"));
    
     userInsights.updateUserStats(items);
 
-    Assert.assertEquals(map, userInsights.aggregateUserData());
+    Assert.assertTrue(compareLists(expected, userInsights.aggregateUserData()));
   }
 
   @Test
@@ -127,24 +130,25 @@ public final class UserInsightsTest {
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, "potato", 6, 2, "2020-06-30");
+
+    setEntityProperties(newEntity2, "corn", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3, "beans", 7, 3, "2020-07-11");
+    setEntityProperties(newEntity3, "corn", 7, 3, "2020-07-11");
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, "milk", 8, 4, "2020-07-12");
+    setEntityProperties(newEntity4, "corn", 8, 4, "2020-07-12");
     datastore.put(newEntity4);  
 
-    Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("w20200705", "17.0");
-    map.put("w20200712", "53.0");
+    List<WeekInfo> expected = new ArrayList<>();
+    expected.add(new WeekInfo("2020-07-05", "17.0"));
+    expected.add(new WeekInfo("2020-07-12", "53.0"));
    
     userInsights.updateUserStats(items);
    
-    Assert.assertEquals(map, userInsights.aggregateUserData());
+    Assert.assertTrue(compareLists(expected, userInsights.aggregateUserData()));
   }
 
   @Test
@@ -158,28 +162,29 @@ public final class UserInsightsTest {
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2,"potato", 6, 2, "2020-06-30");
-    itemProperties.add(new Item("potato", 6.00, 2L, "2020-06-30"));
+
+    setEntityProperties(newEntity2,"corn",  6, 2, "2020-06-30");
+    itemProperties.add(new Item("corn", 6.00, 2L, "2020-06-30"));
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3,"beans", 7, 3, "2020-07-11");
-    itemProperties.add(new Item("beans", 7.00, 3L, "2020-07-11"));
+    setEntityProperties(newEntity3,"corn",  7, 3, "2020-07-11");
+    itemProperties.add(new Item("corn", 7.00, 3L, "2020-07-11"));
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, "milk", 8, 4, "2020-07-12");
-    itemProperties.add(new Item("milk", 8.00, 4L, "2020-07-12"));
+    setEntityProperties(newEntity4,"corn",  8, 4, "2020-07-12");
+    itemProperties.add(new Item("corn", 8.00, 4L, "2020-07-12"));
     datastore.put(newEntity4);    
 
-    Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("w20200705", "17.0");
-    map.put("w20200712", "53.0");
+    List<WeekInfo> expected = new ArrayList<>();
+    expected.add(new WeekInfo("2020-07-05", "17.0"));
+    expected.add(new WeekInfo("2020-07-12", "53.0"));
    
     userInsights.updateUserStats(items);
 
     JsonObject testJson = new JsonObject();
-    testJson.addProperty("weeklyAggregate", new Gson().toJson(map));
+    testJson.addProperty("weeklyAggregate", new Gson().toJson(expected));
     testJson.addProperty("items", new Gson().toJson(itemProperties));
     String expectedJson = new Gson().toJson(testJson);
    
@@ -190,7 +195,7 @@ public final class UserInsightsTest {
   public void retreiveUserStats_withUnknownUser_returnsEmptyOptional() {
     // If a userStats object is not created with the given userId, an empty
     // Optional should be returned.
-    userInsights = new UserInsights("unkownUserId");
+    userInsights = new UserInsightsService("unkownUserId");
     Optional<Entity> emptyOptional = Optional.empty();
     Assert.assertEquals(emptyOptional, userInsights.retreiveUserStats());
   }
@@ -199,16 +204,13 @@ public final class UserInsightsTest {
   public void aggregateUserData_withUnkownUser_returnsDefaultMap() {
     // If a userStats object is not created with the given userId, an empty
     // Optional should be returned.
-    userInsights = new UserInsights("unkownUserId");
-    Map<String, String> emptyMap = new LinkedHashMap<String, String>();
-    emptyMap.put("weeklyAggregate", "");
-    emptyMap.put("items", "");
-    Assert.assertEquals(emptyMap, userInsights.aggregateUserData());
+    userInsights = new UserInsightsService("unkownUserId");
+    Assert.assertEquals(new ArrayList<WeekInfo>(), userInsights.aggregateUserData());
   }
 
   @Test
   public void createJson_withUnkownUser_returnsDefaultJson() {
-    userInsights = new UserInsights("unknownUserId");
+    userInsights = new UserInsightsService("unknownUserId");
     JsonObject userJson = new JsonObject();
     userJson.addProperty("weeklyAggregate", "");
     userJson.addProperty("items", "");
@@ -238,11 +240,26 @@ public final class UserInsightsTest {
    * @param quantity quantity 
    * @param date date
    */
-  private void setEntityProperties(Entity entity, String name,
-                                   double price, int quantity, String date) {
-    entity.setProperty("name", name);                                   
+
+  private void setEntityProperties(Entity entity, String name, double price, 
+                                   int quantity, String date) {
+    entity.setProperty("name", name);
     entity.setProperty("price", price);
     entity.setProperty("quantity", quantity);
     entity.setProperty("date", date);
   }
+
+  private boolean compareLists(List<WeekInfo> expected, List<WeekInfo> actual) {
+    if (expected.size() != actual.size()) {
+      return false;
+    } 
+    for (int i = 0; i < expected.size(); i++) {
+      if (!expected.get(i).equals(actual.get(i))) {
+          return false;
+      } 
+    }
+    return true; 
+  }
 }
+
+

@@ -12,7 +12,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.collect.ImmutableMap;
-import com.google.edith.servlets.UserInsights;
+import com.google.edith.servlets.UserInsightsService;
 import com.google.edith.servlets.UserInsightsInterface;
 import com.google.edith.servlets.UserStatsServlet;
 import com.google.edith.servlets.Item;

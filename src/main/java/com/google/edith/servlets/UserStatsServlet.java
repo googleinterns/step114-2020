@@ -33,7 +33,7 @@ public class UserStatsServlet extends HttpServlet {
 
   public UserStatsServlet() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
-    this.userInsights = new UserInsights("userId");
+    this.userInsights = new UserInsightsService("userId");
   }
 
   public UserStatsServlet(DatastoreService datastore, UserInsightsInterface userInsights) {

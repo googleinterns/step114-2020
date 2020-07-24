@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserInsightsInterface {
   void createUserStats();
   void updateUserStats(List<Key> newItems);
-  ImmutableMap<String, String> aggregateUserData();
+  List<WeekInfo> aggregateUserData();
   String createJson();
   Optional<Entity> retreiveUserStats();
 }
