@@ -20,10 +20,25 @@ public class ExtractReceipt {
     String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
     // For local testing. As blobstore API does not store in GCS in local environment.
     String inputGcsUri = "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
-    return extractReceipt(projectId, location, inputGcsUri);
+    String parsedText = extractReceipt(projectId, location, inputGcsUri);
+    return createItems(parsedText);
   }
 
-  private List<Map<String, String>> extractReceipt(String projectId, String location, String inputGcsUri)
+  private List<Map<String, String>> createItems(String parsedText) {
+    List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+
+    for (String item: parsedText.split("\\r?\\n")) {
+      if (item.endsWith(" B")) {
+        String[] itemText = item.split("\\s+");
+        if (itemText.length > 1 && itemText[itemText.length - 2].matches("[-+]?[0-9]*\\.?[0-9]+") && !itemText[0].matches("[-+]?[0-9]*\\.?[0-9]+")) {
+          items.add(processItem(itemText));
+        }
+      }
+    }
+    return items;
+  }
+
+  private String extractReceipt(String projectId, String location, String inputGcsUri)
       throws IOException {
 
     try (DocumentUnderstandingServiceClient client = DocumentUnderstandingServiceClient.create()) {
@@ -41,19 +56,8 @@ public class ExtractReceipt {
       // Recognizes text entities in the PDF document
       Document response = client.processDocument(request);
 
-      // Get all of the document text as one big string
-      String text = response.getText();
-      List<Map<String, String>> items = new ArrayList<Map<String, String>>();
-
-      for (String item: text.split("\\r?\\n")) {
-        if (item.endsWith(" B")) {
-          String[] itemText = item.split("\\s+");
-          if (itemText.length > 1 && itemText[itemText.length - 2].matches("[-+]?[0-9]*\\.?[0-9]+") && !itemText[0].matches("[-+]?[0-9]*\\.?[0-9]+")) {
-            items.add(processItem(itemText));
-          }
-        }
-      }
-      return items;
+      // Return all of the document text as one big string
+      return response.getText();
     }
   }
 

@@ -21,19 +21,17 @@ public class ReceiptData {
     
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
-    Receipt parsedReceipt;
 
-      ExtractReceipt ex = new ExtractReceipt();
-      List<Map<String, String>> items = ex.extractReceipt();
-      Item[] parsedItems = createReceiptItems(user, items);
-      parsedReceipt = createReceipt(user, parsedItems);
-      return parsedReceipt;
+    ExtractReceipt extractReceipt = new ExtractReceipt();
+    List<Map<String, String>> items = extractReceipt.extractReceipt();
+    Item[] parsedItems = createReceiptItems(user, items);
+    Receipt parsedReceipt = createReceipt(user, parsedItems);
+    return parsedReceipt;
   }
   
   private Receipt createReceipt(User user, Item[] items) {
     String expenditureName = ReceiptFileHandlerServlet.getExpenditureName();
     String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
-    
     Receipt userReceipt = new Receipt(user.getUserId(), "unknown store name", "unknown date", expenditureName, blobKey, 0.0f, items);
     return userReceipt;
   }

@@ -26,7 +26,7 @@ public final class Receipt {
   private final float totalPrice;
   private final Item[] items;
 
-  Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice, Item[] items) {
+  public Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice, Item[] items) {
     this.userId = userId;
     this.storeName = storeName;
     this.date = date;
