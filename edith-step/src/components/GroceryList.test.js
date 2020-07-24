@@ -1,8 +1,7 @@
- 
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 import GroceryList from './GroceryList.js';
-import './setupTests.js'
+import './setupTests.js';
 
 let component;
 let getItemData;
@@ -29,9 +28,9 @@ it('displays items', () => {
   const newItem = {
     name: '',
     price: 0.0,
-    quantity: 1
-  }
-  component.setState({ items: newItem });
+    quantity: 1,
+  };
+  component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
   const promise = new Promise(getItemData);

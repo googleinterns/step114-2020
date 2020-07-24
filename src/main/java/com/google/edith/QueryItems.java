@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class QueryItems {
   public String findExpiredItems(Receipt pastReceipt) {
     Date currentDate = new Date();
     String receiptDateString = pastReceipt.getDate();
-    Date receiptDate = new SimpleDateFormat("dd/MM/yyyy").parse(receiptDateString); 
+    Date receiptDate = new SimpleDateFormat("yyyy-mm-dd").parse(receiptDateString); 
     long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
     int daysPassedSinceReceipt = (int) (timePassedSinceReceipt / 86400000 );
     List<Item> itemsToBuy = new ArrayList<Item>();
