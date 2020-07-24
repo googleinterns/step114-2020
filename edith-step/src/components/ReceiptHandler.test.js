@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import {mount} from 'enzyme';
 import ReceiptHandler from './ReceiptHandler';
 import '../setupTests.js';
 
@@ -15,14 +15,15 @@ let addItem;
 beforeEach(() => {
   handleNameChange = jest.spyOn(ReceiptHandler.prototype, 'handleNameChange');
   handlePriceChange = jest.spyOn(ReceiptHandler.prototype, 'handlePriceChange');
-  handleQuantityChange = jest.spyOn(ReceiptHandler.prototype, 'handleQuantityChange');
+  handleQuantityChange = jest.spyOn(ReceiptHandler.prototype,
+      'handleQuantityChange');
   handleStoreChange = jest.spyOn(ReceiptHandler.prototype, 'handleStoreChange');
-  handleExpirationChange = jest.spyOn(ReceiptHandler.prototype, 'handleExpirationChange');
-
+  handleExpirationChange = jest.spyOn(ReceiptHandler.prototype,
+      'handleExpirationChange');
   getReceiptData = jest.spyOn(ReceiptHandler.prototype, 'getReceiptData');
   addItem = jest.spyOn(ReceiptHandler.prototype, 'addItem');
   component = mount(<ReceiptHandler />);
-})
+});
 
 afterEach(() => {
   component.unmount();
@@ -40,9 +41,9 @@ it('should call appropriate change function on form change', () => {
   const newItem = {
     name: '',
     price: 0.0,
-    quantity: 1
-  }
-  component.setState({ items: newItem });
+    quantity: 1,
+  };
+  component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
   const promise = new Promise(getReceiptData);
@@ -64,22 +65,23 @@ it('should change state when on change functions are called', () => {
   const newItem = {
     name: '',
     price: 0.0,
-    quantity: 1
-  }
-  component.setState({ items: newItem });
+    quantity: 1,
+  };
+  component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
-  const textEvent = {target: { name: "items[0].name", value: 'bread' }};
-  const priceEvent = {target: { name: "items[0].price", value: 5.6 }};
-  const quantityEvent = {target: {name: "items[0].quantity", value: 3}};
-  const storeEvent = {target: {name: "storeName", value: 'Whole Foods'}};
-  const expirationEvent = {target: {name: "deals[0].expiration", value: '7.0 Days'}};
+  const textEvent = {target: {name: 'items[0].name', value: 'bread'}};
+  const priceEvent = {target: {name: 'items[0].price', value: 5.6}};
+  const quantityEvent = {target: {name: 'items[0].quantity', value: 3}};
+  const storeEvent = {target: {name: 'storeName', value: 'Whole Foods'}};
+  const expirationEvent =
+    {target: {name: 'deals[0].expiration', value: '7.0 Days'}};
 
   const targetItem = {
     name: 'bread',
     price: 5.6,
-    quantity: 3
-  }
+    quantity: 3,
+  };
   const promise = new Promise(getReceiptData);
   promise.then(() => {
     component.find('.name').simulate('change', textEvent);
@@ -101,6 +103,7 @@ it('should create a new form field when addItem is called', () => {
   const promise = new Promise(getReceiptData);
   promise.then(() => {
     component.find('#add').simulate('click');
+    expect(addItem).toBeCalled();
     expect(component.find('.name').exists()).toBe(true);
     expect(component.find('.price').exists()).toBe(true);
     expect(component.find('.quantity').exists()).toBe(true);
@@ -110,16 +113,16 @@ it('should create a new form field when addItem is called', () => {
 it('should hide Add Item and Next when deals are returned', () => {
   const newDeal = {
     deal: 'Kroger',
-    expiration: '7.0 Days'
-  }
-  component.setState({ deals: newDeal });
+    expiration: '7.0 Days',
+  };
+  component.setState({deals: newDeal});
 
   const newItem = {
     name: '',
     price: 0.0,
-    quantity: 1
-  }
-  component.setState({ items: newItem });
+    quantity: 1,
+  };
+  component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
   const promise = new Promise(getReceiptData);

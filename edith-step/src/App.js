@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import ReceiptHandler from './components/ReceiptHandler';
 import TopNavbar from './components/TopNavbar';
