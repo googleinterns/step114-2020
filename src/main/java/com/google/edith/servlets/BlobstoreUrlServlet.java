@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * file to be stored in the Google Cloud Storage Bucket and redirects the request to
  * ReceiptFileHandlerServlet.
  */
-@WebServlet("/blobstore-upload")
+@WebServlet("/blobstore-upload-url")
 public class BlobstoreUrlServlet extends HttpServlet {
   
   @Override
