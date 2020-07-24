@@ -35,7 +35,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 
-public class SearchServiceTest {
+public final class SearchServiceTest {
 
   private SearchService searchService;
   private final UserService userService = UserServiceFactory.getUserService();
