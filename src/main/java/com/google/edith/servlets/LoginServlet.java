@@ -25,13 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet that checks if user is logged in.
- * If user is logged in then provide user related info,
+ * Servlet that checks if user is logged in. If user is logged in then provide user related info,
  * otherwise redirects to login url.
  */
 @WebServlet("/login")
 public final class LoginServlet extends HttpServlet {
-  
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -49,25 +48,27 @@ public final class LoginServlet extends HttpServlet {
       response.sendRedirect(loginUrl);
     }
   }
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.sendRedirect("/index.html");
   }
-  
+
   /**
    * Creates UserInfo object encapsulating user data.
+   *
    * @param user - User object which represents currently logged in uyser.
    * @param logoutUrl - url to logout from the app.
    * @return UserInfo - wrapper object for user information and logout url.
    */
   private UserInfo createUserInfo(User user, String logoutUrl) {
-    UserInfo userInfo = UserInfo.builder()
-        .setEmail(user.getEmail())
-        .setUserId(user.getUserId())
-        .setLogOutUrl(logoutUrl)
-        .build();
-        
+    UserInfo userInfo =
+        UserInfo.builder()
+            .setEmail(user.getEmail())
+            .setUserId(user.getUserId())
+            .setLogOutUrl(logoutUrl)
+            .build();
+
     return userInfo;
   }
 }
