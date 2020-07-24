@@ -1,7 +1,7 @@
 import React from 'react';
 import {mount} from 'enzyme';
 import GroceryList from './GroceryList.js';
-import './setupTests.js';
+import '../setupTests.js';
 
 let component;
 let getItemData;

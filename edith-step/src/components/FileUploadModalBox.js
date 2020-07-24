@@ -24,11 +24,9 @@ class FileUploadModalBox extends React.Component {
   }
 
   async getFileUploadUrl() {
-    console.log('here');
     await fetch('/blobstore-upload-url')
       .then(response => response.text())
       .then(uploadUrl => {
-        console.log(uploadUrl);
         this.setState({uploadUrl: uploadUrl});
       })
       .catch((error) => {
