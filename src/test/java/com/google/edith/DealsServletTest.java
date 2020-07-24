@@ -1,5 +1,6 @@
-package com.google.edith;
+package com.google.edith.servlets;
 
+import com.google.edith.DealsServlet;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
