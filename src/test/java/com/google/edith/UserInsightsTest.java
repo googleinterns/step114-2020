@@ -11,6 +11,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.UserInsights;
+import com.google.edith.servlets.WeekInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
@@ -102,19 +103,19 @@ public final class UserInsightsTest {
     List<Key> items = createTestKeyList(0, 2);
     
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, 5, 1, "2020-06-29");
+    setEntityProperties(newEntity, "corn", 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
+    setEntityProperties(newEntity2, "corn", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
-    Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("2020-07-05", "17.0");
+    List<WeekInfo> expected = new ArrayList<WeekInfo>();
+    expected.add(new WeekInfo("2020-07-05", "17.0"));
    
     userInsights.updateUserStats(items);
 
-    Assert.assertEquals(map, userInsights.aggregateUserData());
+    Assert.assertTrue(compareLists(expected, userInsights.aggregateUserData()));
   }
 
   @Test
@@ -123,28 +124,28 @@ public final class UserInsightsTest {
     List<Item> itemProperties = new ArrayList<>();
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, 5, 1, "2020-06-29");
+    setEntityProperties(newEntity, "corn", 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
+    setEntityProperties(newEntity2, "corn", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3, 7, 3, "2020-07-11");
+    setEntityProperties(newEntity3, "corn", 7, 3, "2020-07-11");
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, 8, 4, "2020-07-12");
+    setEntityProperties(newEntity4, "corn", 8, 4, "2020-07-12");
     datastore.put(newEntity4);  
 
-    Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("2020-07-05", "17.0");
-    map.put("2020-07-12", "53.0");
+    List<WeekInfo> expected = new ArrayList<>();
+    expected.add(new WeekInfo("2020-07-05", "17.0"));
+    expected.add(new WeekInfo("2020-07-12", "53.0"));
    
     userInsights.updateUserStats(items);
    
-    Assert.assertEquals(map, userInsights.aggregateUserData());
+    Assert.assertTrue(compareLists(expected, userInsights.aggregateUserData()));
   }
 
   @Test
@@ -153,33 +154,33 @@ public final class UserInsightsTest {
     List<Item> itemProperties = new ArrayList<>();
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, 5, 1, "2020-06-29");
-    itemProperties.add(new Item(5.00, 1L, "2020-06-29"));
+    setEntityProperties(newEntity,"corn",  5, 1, "2020-06-29");
+    itemProperties.add(new Item("corn", 5.00, 1L, "2020-06-29"));
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, 6, 2, "2020-06-30");
-    itemProperties.add(new Item(6.00, 2L, "2020-06-30"));
+    setEntityProperties(newEntity2,"corn",  6, 2, "2020-06-30");
+    itemProperties.add(new Item("corn", 6.00, 2L, "2020-06-30"));
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3, 7, 3, "2020-07-11");
-    itemProperties.add(new Item(7.00, 3L, "2020-07-11"));
+    setEntityProperties(newEntity3,"corn",  7, 3, "2020-07-11");
+    itemProperties.add(new Item("corn", 7.00, 3L, "2020-07-11"));
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, 8, 4, "2020-07-12");
-    itemProperties.add(new Item(8.00, 4L, "2020-07-12"));
+    setEntityProperties(newEntity4,"corn",  8, 4, "2020-07-12");
+    itemProperties.add(new Item("corn", 8.00, 4L, "2020-07-12"));
     datastore.put(newEntity4);    
 
-    Map<String, String> map = new LinkedHashMap<String, String>();
-    map.put("2020-07-05", "17.0");
-    map.put("2020-07-12", "53.0");
+    List<WeekInfo> expected = new ArrayList<>();
+    expected.add(new WeekInfo("2020-07-05", "17.0"));
+    expected.add(new WeekInfo("2020-07-12", "53.0"));
    
     userInsights.updateUserStats(items);
 
     JsonObject testJson = new JsonObject();
-    testJson.addProperty("weeklyAggregate", new Gson().toJson(map));
+    testJson.addProperty("weeklyAggregate", new Gson().toJson(expected));
     testJson.addProperty("items", new Gson().toJson(itemProperties));
     String expectedJson = new Gson().toJson(testJson);
    
@@ -200,10 +201,7 @@ public final class UserInsightsTest {
     // If a userStats object is not created with the given userId, an empty
     // Optional should be returned.
     userInsights = new UserInsights("unkownUserId");
-    Map<String, String> emptyMap = new LinkedHashMap<String, String>();
-    emptyMap.put("weeklyAggregate", "");
-    emptyMap.put("items", "");
-    Assert.assertEquals(emptyMap, userInsights.aggregateUserData());
+    Assert.assertEquals(new ArrayList<WeekInfo>(), userInsights.aggregateUserData());
   }
 
   @Test
@@ -237,10 +235,25 @@ public final class UserInsightsTest {
    * @param quantity quantity 
    * @param date date
    */
-  private void setEntityProperties(Entity entity, double price, 
+  private void setEntityProperties(Entity entity, String name, double price, 
                                    int quantity, String date) {
+    entity.setProperty("name", name);
     entity.setProperty("price", price);
     entity.setProperty("quantity", quantity);
     entity.setProperty("date", date);
   }
+
+  private boolean compareLists(List<WeekInfo> expected, List<WeekInfo> actual) {
+    if (expected.size() != actual.size()) {
+      return false;
+    } 
+    for (int i = 0; i < expected.size(); i++) {
+      if (!expected.get(i).equals(actual.get(i))) {
+          return false;
+      } 
+    }
+    return true; 
+  }
 }
+
+

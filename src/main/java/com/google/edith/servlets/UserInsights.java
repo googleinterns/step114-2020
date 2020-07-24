@@ -19,13 +19,13 @@ import java.time.format.FormatStyle;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 /**
  * This class provides the functionality to parse specifc user data from 
@@ -80,17 +80,17 @@ public final class UserInsights {
    * Copmiles the spending using the Item list found in this user's
    * UserStats Entity in datastore.
    * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
-   * @return A map relating a time period to the spending in that time period.
+   * @return A list of {@code WeekInfo} objects relating a time period to the spending in that time period.
    */
-  public ImmutableMap<String, String> aggregateUserData() { 
+  public List<WeekInfo> aggregateUserData() { 
     Optional<Entity> userStatsContainer = retreiveUserStats();
     if (!userStatsContainer.isPresent()) {
-     return createDefaultMap(); 
+      return new ArrayList<WeekInfo>();
     }
     Entity userStats = userStatsContainer.get();
     List<Key> items = (List<Key>) userStats.getProperty("Items");
     if (items == null) {
-      return createDefaultMap();
+      return new ArrayList<WeekInfo>();
     }
 
     /** Assumes dates are in the form yyyy-mm-dd */
@@ -112,8 +112,8 @@ public final class UserInsights {
    * @return a Json formatted String of items and an aggregate.
    */
   public String createJson() {
-    Map<String, String> aggregateValues = aggregateUserData();
-    String aggregateJson =  GSON.toJson(aggregateValues);
+    List<WeekInfo> aggregateValues = aggregateUserData();
+    String aggregateJson = GSON.toJson(aggregateValues);
     Optional<Entity> userStatsContainer = retreiveUserStats();
 
     if (!userStatsContainer.isPresent()){
@@ -129,6 +129,7 @@ public final class UserInsights {
                             try {
                               Entity item = datastore.get(key);
                               return new Item(
+                                (String) item.getProperty("name"),
                                 (Double) item.getProperty("price"),
                                 (long) item.getProperty("quantity"),
                                 (String) item.getProperty("date")
@@ -165,32 +166,31 @@ public final class UserInsights {
   }
 
   /**
-   * Creates a map relating string weekly period keys to string spending values.
+   * Creates a List of {@code WeekInfo} relating string weekly period keys to string spending values.
    * This method calculates the trailing based on a date. 
    * Example: {"06-20-2020" : "53.0"}
-   * @param items - A list of {@code Key} objects that reference Item entities
+   * @param items - A list of {@code WeekInfo} objects that reference Item entities
                   - in the datastore.
-   * @return Creates a map with keys for each ending day of a weekly period and  
+   * @return Creates a List of WeekInfo objects relating the each ending day of a weekly period and  
    *         values for the total spending during that period. 
    * TODO (malachibre) : Modify this method by using an enum to calculate time
    *                     period totals using an enum.
    */
-  private ImmutableMap<String, String> calculateWeeklyTotal(List<Key> itemKeys)  {
+  private List<WeekInfo> calculateWeeklyTotal(List<Key> itemKeys)  {
     if (itemKeys == null || itemKeys.isEmpty()) {
-      return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
+      return new ArrayList<WeekInfo>();
     }
-    Map<String, String> weeklyTotals = new LinkedHashMap<String, String>();
+    List<WeekInfo> weeklyTotals = new ArrayList<WeekInfo>();
     LocalDate currentEndOfWeek;
     try {
       currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(itemKeys.get(0))
                                           .getProperty("date"), DATE_FORMATTER));
     } catch (EntityNotFoundException e) {
       System.err.println("Error: Entity could not be located");
-      return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
+      return new ArrayList<WeekInfo>();
     }
 
     double weeklyTotal = 0;
-    Entity itemEntity;
     for (Key itemKey : itemKeys) {
       try {
         Entity item = datastore.get(itemKey);
@@ -201,7 +201,7 @@ public final class UserInsights {
         // that means that itemDate is after currentEndOfWeek and 
         // currentEndOfWeek needs to be updated.
         if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
-          weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+          weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
         }
@@ -214,9 +214,9 @@ public final class UserInsights {
       } 
     }
     
-    weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+    weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
 
-    return ImmutableMap.copyOf(weeklyTotals);
+    return weeklyTotals;
   }
 
   /**
