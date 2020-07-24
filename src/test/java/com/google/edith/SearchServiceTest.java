@@ -25,6 +25,8 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.SearchService;
+import com.google.edith.servlets.Receipt;
+import com.google.edith.servlets.Item;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
@@ -33,6 +35,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 public final class SearchServiceTest {
@@ -128,6 +131,34 @@ public final class SearchServiceTest {
     foundEntities = searchService
             .findEntityFromDatastore("apple", "expire2", "Item", "", "");
     assertEquals(1, foundEntities.size());
+  }
+  
+  /**
+   * Checks createReceiptObjects method returns Receipt[] with
+   * right number of receipt entities found from the query.
+   */
+  @Test
+  public void check_returnsReceiptArray_withRightSize() {
+    List<Entity> foundEntities = searchService
+            .findEntityFromDatastore("", "unknown", "Receipt", "", "");
+    assertTrue(searchService.createReceiptObjects(foundEntities)
+           instanceof Receipt[]);            
+    Receipt[] receipts = searchService.createReceiptObjects(foundEntities);
+    assertEquals(2, receipts.length);
+  }
+
+  /**
+   * Checks createItemObjects method returns Item[] with
+   * right number of item entities found from the query.
+   */
+  @Test
+  public void check_returnsItemArray_withRightSize() {
+    List<Entity> foundEntities = searchService
+            .findEntityFromDatastore("apple", "", "Item", "", "");
+    assertTrue(searchService.createItemObjects(foundEntities)
+            instanceof Item[]);
+    Item[] items = searchService.createItemObjects(foundEntities);
+    assertEquals(3, items.length);
   }
 
   // Creates and Stores Receipt and Item entities in Datastore.
