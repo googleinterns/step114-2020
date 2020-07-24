@@ -15,6 +15,14 @@ public class GroceryListServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: replace this with call to prashant's servlet
     Item receiptItem =
+      new Item("185804764220139124118",
+        "Apple Juice",
+        (float) 5.99,
+        1,
+        "unknown category",
+        "6.0 Days");
+        /**
+    Item receiptItem =
       Item.builder()
             .setUserId("185804764220139124118")
             .setName("Apple Juice")
@@ -22,7 +30,7 @@ public class GroceryListServlet extends HttpServlet {
             .setQuantity(1)
             .setCategory("unknown category")
             .setExpireDate("2020-07-16")
-            .build();
+            .build();*/
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
@@ -37,7 +45,7 @@ public class GroceryListServlet extends HttpServlet {
 
 
     QueryItems queryItems = new QueryItems();
-    String items = queryItems.findExpiredItems(receipt);
+    String expiredItems = queryItems.findExpiredItems(receipt);
     response.setContentType("application/json");
     response.getWriter().println(items);
   }

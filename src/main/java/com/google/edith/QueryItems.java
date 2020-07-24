@@ -1,9 +1,11 @@
 package com.google.edith;
 
+import java.text.ParseException;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,15 +18,26 @@ public class QueryItems {
   public String findExpiredItems(Receipt pastReceipt) {
     Date currentDate = new Date();
     String receiptDateString = pastReceipt.getDate();
-    Date receiptDate = new SimpleDateFormat("yyyy-mm-dd").parse(receiptDateString); 
+    Date receiptDate;
+    try {
+      receiptDate = new SimpleDateFormat("yyyy-mm-dd").parse(receiptDateString);
+    } catch (ParseException e) {
+      receiptDate = new Date();
+    }
     long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
-    int daysPassedSinceReceipt = (int) (timePassedSinceReceipt / 86400000 );
+    System.out.println(currentDate.getTime());
+    System.out.println(receiptDate.getTime());
+    System.out.println(timePassedSinceReceipt);
+    double daysPassedSinceReceipt = (timePassedSinceReceipt / (1000*60*60*24))/24;
+    System.out.println("days since receipt " + daysPassedSinceReceipt);
     List<Item> itemsToBuy = new ArrayList<Item>();
 
+    Receipt[] receipts = {pastReceipt};
+
     for (Receipt receipt: receipts) {
-      Items[] items = receipt.getItems();
-      for (Item item: items) {
-        String expiration = item.getExpiration();
+      Item[] items = receipt.getItems();
+      for (Item item : items) {
+        String expiration = item.getExpireDate();
 
         if (expiration.equals("no shelf life data found")) {
           continue;
@@ -41,7 +54,8 @@ public class QueryItems {
             unit = expirationPiece;
           }
         }
-
+        System.out.println("number " + number);
+        System.out.println("unit " + unit);
         if (unit.toLowerCase().equals("weeks")) {
           number = number * 7;
         }
@@ -49,13 +63,14 @@ public class QueryItems {
           number = number * 30;
         }
 
-        if (number > daysPassedSinceReceipt) {
+        if (number < daysPassedSinceReceipt) {
           itemsToBuy.add(item);
         }
       }
     }
 
     Gson gson = new Gson();
+    System.out.println(gson.toJson(itemsToBuy));
     return gson.toJson(itemsToBuy);
   }
 }

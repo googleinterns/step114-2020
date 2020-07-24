@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,24 +16,35 @@ public class QueryItemsTest {
   private Receipt receipt;
   private QueryItems query;
 
-  @Before
-  public void setUp() {
-    receiptItem = Item.builder()
-            .setUserId("185804764220139124118")
-            .setName("Apple Juice")
-            .setPrice((float) 5.99)
-            .setQuantity(1)
-            .setCategory("unknown category")
-            .setExpireDate("6.0 Days")
-            .build();
+  @Test
+  public void findExpiredItems_expiredItem_displaysExpiredItem() {
+    receiptItem =
+      new Item("185804764220139124118",
+        "Apple Juice",
+        (float) 5.99,
+        1,
+        "unknown category",
+        "6.0 Days");
     items = new Item[1];
     items[0] = receiptItem;
-    receipt = new Receipt("185804764220139124118", "whole Foods", "16/07/2020", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
+    receipt = new Receipt("185804764220139124118", "whole Foods", "2020-07-13", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
     query = new QueryItems();
+    Assert.assertTrue(query.findExpiredItems(receipt).contains("Apple Juice"));
   }
 
   @Test
-  public void findExpiredItems_expiredItem_displaysExpiredItem() {
-    Assert.assertTrue(query.findExpiredItems(receipt).contains("Apple Juice"));
+  public void findExpiredItems_notExpiredItem_doesntDisplayExpiredItem() {
+    Item receiptItem =
+      new Item("185804764220139124118",
+        "Peanut Butter",
+        (float) 5.99,
+        1,
+        "unknown category",
+        "20.0 Days");
+    items = new Item[1];
+    items[0] = receiptItem;
+    receipt = new Receipt("185804764220139124118", "whole Foods", "2020-07-17", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
+    query = new QueryItems();
+    Assert.assertTrue(query.findExpiredItems(receipt).equals("[]"));
   }
 }
