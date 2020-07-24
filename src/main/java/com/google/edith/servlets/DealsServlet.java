@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.Exception;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +32,7 @@ public class DealsServlet extends HttpServlet {
     JsonParser parser = new JsonParser();
     JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
     JsonArray items = inputjson.get("items").getAsJsonArray();
-    
+
     DealItem cheapestItem = null;
     List<DealItem> deals = new ArrayList<DealItem>();
     for (int i = 0; i < items.size(); i++) {
