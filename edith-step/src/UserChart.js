@@ -9,19 +9,13 @@ async function retrieveData() {
     console.log(responseJson);
     let weekDates = [];
     let values = [];  
-    console.log(Object.keys(responseJson.weeklyAggregate));
-    const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
-    Object.keys(weeklyAggregate).forEach(weekDate => {
-        weekDates.push(weekDate.substring(1, 5) + "-" +weekDate.substring(5,7) + "-" + weekDate.substring(7,9));
-        values.push(weeklyAggregate[weekDate]);
+    const weeklyAggregate = responseJson['weeklyAggregate'];
+    weeklyAggregate.forEach(week => {
+      weekDates.push(week.date);
+      values.push(week.total);
     });
-    return new Promise((resolve, reject) => {
-        if (weekDates.length > 0) {
-          resolve([weekDates, values]);
-        } else {
-          reject([[], []]);
-        }
-    });
+    
+    return [weekDates, values];
 }
 
 const inSameWeek = (itemDate, dateSelection) => {
