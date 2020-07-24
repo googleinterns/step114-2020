@@ -14,7 +14,12 @@
 
 package com.google.edith;
 
-import com.google.edith.servlets.LoginServlet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeast;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -22,6 +27,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableMap;
+import com.google.edith.servlets.LoginServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -35,13 +41,6 @@ import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.atLeast;
 
 public final class LoginServletTest {
   private Map<String, Object> map = ImmutableMap
@@ -75,8 +74,21 @@ public final class LoginServletTest {
   }
 
   @Test
-  // Check if the servlet returns with user information if logged-in.
+  // Check if the servlet calls getWriter() method.
   public void checks_ifUserLoggedIn_returnsUserInfo() throws IOException, ServletException {
+    loggedInTestHelper.setUp();
+    assertTrue(userService.isUserLoggedIn());
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter writer = new PrintWriter(stringWriter);
+    when(response.getWriter()).thenReturn(writer);
+    loginServlet.doGet(request, response);
+    verify(response, atLeast(1)).getWriter();
+    loggedInTestHelper.tearDown();
+  }
+
+  @Test
+  // Check if the servlet returns with user information if logged-in.
+  public void returns_jsonWithCorrect_userInfo() throws IOException, ServletException {
     loggedInTestHelper.setUp();
     assertTrue(userService.isUserLoggedIn());
 
@@ -85,7 +97,6 @@ public final class LoginServletTest {
     when(response.getWriter()).thenReturn(writer);
 
     loginServlet.doGet(request, response);
-    verify(response, atLeast(1)).getWriter();
     writer.flush();
     String returnedJson = stringWriter.toString();
     // JSON must contains all fields of UserInfo.

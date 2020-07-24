@@ -27,10 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet that checks if user is logged in.
  * If user is logged in then provide user related info,
- * otherwise redirects to login url..
+ * otherwise redirects to login url.
  */
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+public final class LoginServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
