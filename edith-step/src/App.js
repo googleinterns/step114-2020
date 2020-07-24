@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
 import LineChart, {BarGraph, DoughnutChart} from './UserChart';
 import axios from 'axios';
+import Chart from 'Chart.ts'
 //import "./App.css";
 
 
@@ -9,7 +10,7 @@ import axios from 'axios';
 class App extends Component {
   constructor() {
     super();
-    this.state = { "chartType" : LineChart, "dateSelection": "" }; 
+    this.state = { "chartType" : LineChart, "dateSelection": ""}; 
     this.updateChartType = this.updateChartType.bind(this); 
     this.showWeeklyChart = this.showWeeklyChart.bind(this);  
     this.revertChart = this.revertChart.bind(this);
@@ -17,7 +18,7 @@ class App extends Component {
 
   updateChartType(event) {
     switch(event.target.value) {
-      case "line": 
+      case "line":
         this.setState({"chartType": LineChart});
         break;
       case "bar":
@@ -37,14 +38,15 @@ class App extends Component {
     this.setState({"chartType":  DoughnutChart, "dateSelection": ""});
   }
 
+jki9
   render() {
     const Chart = this.state.chartType;
     return (
       <div className="App">
         <div id="radio-selector" onChange={this.updateChartType}>
-          <input defaultChecked type="radio" value="line" name="chart-selector" id="line-selector" /> Line
-          <input type="radio" value="bar" name="chart-selector" id="bar-selector" /> Bar
-          <input type="radio" value="doughnut" name="chart-selector" id="doughnut-selector" /> Doughnut
+          <input defaultChecked type="radio" value="line" name="chart-selector" id="line" /> Line
+          <input type="radio" value="bar" name="chart-selector" id="bar" /> Bar
+          <input type="radio" value="doughnut" name="chart-selector" id="doughnut" /> Doughnut
         </div>
         <Chart action={this.showWeeklyChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
         <ReceiptInput />

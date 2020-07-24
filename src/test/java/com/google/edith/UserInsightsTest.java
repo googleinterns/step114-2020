@@ -117,7 +117,7 @@ public final class UserInsightsTest {
    
     userInsights.updateUserStats(items);
 
-    Assert.assertTrue(compareLists(expected, userInsights.aggregateUserData()));
+    Assert.assertTrue(compareOrderedLists(expected, userInsights.aggregateUserData()));
   }
 
   @Test
@@ -148,7 +148,7 @@ public final class UserInsightsTest {
    
     userInsights.updateUserStats(items);
    
-    Assert.assertTrue(compareLists(expected, userInsights.aggregateUserData()));
+    Assert.assertTrue(compareOrderedLists(expected, userInsights.aggregateUserData()));
   }
 
   @Test
@@ -249,7 +249,7 @@ public final class UserInsightsTest {
     entity.setProperty("date", date);
   }
 
-  private boolean compareLists(List<WeekInfo> expected, List<WeekInfo> actual) {
+  private boolean compareOrderedLists(List<WeekInfo> expected, List<WeekInfo> actual) {
     if (expected.size() != actual.size()) {
       return false;
     } 

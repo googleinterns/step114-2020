@@ -6,15 +6,17 @@ require("regenerator-runtime/runtime")
 async function retrieveData() {
     const response = await fetch("/user-stats-servlet");
     const responseJson = await response.json();
-    console.log(responseJson);
     let weekDates = [];
     let values = [];  
-    const weeklyAggregate = responseJson['weeklyAggregate'];
+    const weeklyAggregate = responseJson.weeklyAggregate;
+    console.log(weeklyAggregate);
+    for (let i = 0; i < weeklyAggregate.length; i++) {
+      console.log(weeklyAggregate[i]);
+    }
     weeklyAggregate.forEach(week => {
       weekDates.push(week.date);
       values.push(week.total);
     });
-    
     return [weekDates, values];
 }
 
@@ -30,7 +32,7 @@ const LineChart = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
-    retrieveData().then(fetchData => {
+    const fetchData = retrieveData();
     setChartData({
           labels: fetchData[0],
           datasets: [
@@ -42,7 +44,6 @@ const LineChart = (props) => {
             }
           ]
         });
-    });
   };
 
   useEffect(() => {
@@ -160,7 +161,7 @@ const DoughnutChart = (props) => {
         let itemValues = [];  
         let items = [];
         const itemsList = JSON.parse(response.data.items);
-        if (props.dateSelection != "") {
+        if (props.dateSelection.length > 0) {
           console.log(props.dateSelection);
           for (let i = 0; i < itemsList.length; i++) {
             inSameWeek(itemsList[i].date, props.dateSelection);
