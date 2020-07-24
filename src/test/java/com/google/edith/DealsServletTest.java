@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

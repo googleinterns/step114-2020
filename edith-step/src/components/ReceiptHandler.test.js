@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import ReceiptHandler from './ReceiptHandler';
-import './setupTests.js'
+import '../setupTests.js';
 
 let component;
 let handleNameChange;

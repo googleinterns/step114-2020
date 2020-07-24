@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
  * datastore and send an agreggate of that information in a JSON file.
  */
 public final class UserInsights {
+    /**
   private String userId;  
   private DatastoreService datastore;
   private final Gson GSON = new Gson();
@@ -41,9 +42,10 @@ public final class UserInsights {
   public UserInsights(String userId) {
     this.userId = userId;
     this.datastore = DatastoreServiceFactory.getDatastoreService();
-  }
+  }*/
 
   /** This should only be called each time a new user makes an accout. */
+  /**
   public void createUserStats() { 
     List<Key> items = new ArrayList<>();
 
@@ -52,13 +54,14 @@ public final class UserInsights {
     userStats.setProperty("Items", items);
     
     datastore.put(userStats);
-  }
+  }*/
 
   /** 
    * Updates the Items list in the UserStats Entity in datastore
    * corresponding to this user.
    * @param items - Non-null list of item Keys to be added to the current Item list.
    */
+   /**
   public void updateUserStats(List<Key> newItems) {
     Optional<Entity> userStatsContainer = retreiveUserStats();
     if (!userStatsContainer.isPresent()) {
@@ -73,7 +76,7 @@ public final class UserInsights {
     }
     userStats.setProperty("Items", items);
     datastore.put(userStats);
-  }
+  }*/
  
   /** 
    * Copmiles the spending using the Item list found in this user's
@@ -81,6 +84,7 @@ public final class UserInsights {
    * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
    * @return A map relating a time period to the spending in that time period.
    */
+   /**
   public ImmutableMap<String, String> aggregateUserData() { 
     Optional<Entity> userStatsContainer = retreiveUserStats();
     if (!userStatsContainer.isPresent()) {
@@ -90,9 +94,10 @@ public final class UserInsights {
     List<Key> items = (List<Key>) userStats.getProperty("Items");
     if (items == null) {
       return createDefaultMap();
-    }
+    }*/
 
     /** Assumes dates are in the form yyyy-mm-dd */
+    /**
     Comparator<Key> SORT_BY_DATE = (Key item1, Key item2) -> {
     try {
       return ((String) (datastore.get(item1).getProperty("date")))
@@ -103,13 +108,14 @@ public final class UserInsights {
     };
     items.sort(SORT_BY_DATE);
     return calculateWeeklyTotal(items);
-  }
+  }*/
 
   /**
    * Creates a Json string that contains the weekly aggregate for this user
    * and the items this user purchased.
    * @return a Json formatted String of items and an aggregate.
    */
+   /**
   public String createJson() {
     Map<String, String> aggregateValues = aggregateUserData();
     String aggregateJson =  GSON.toJson(aggregateValues);
@@ -120,10 +126,10 @@ public final class UserInsights {
     }
 
     List<Key> itemKeys = (List<Key>) retreiveUserStats().get()
-                                        .getProperty("Items");
+                                        .getProperty("Items");*/
     // Each item is mapped to an Item object to make their 
     // properties parseable by GSON.
-    
+    /**
     List<Item> items = itemKeys.stream()
                          .map(key ->{
                             try {
@@ -143,13 +149,14 @@ public final class UserInsights {
     userJson.addProperty("weeklyAggregate", aggregateJson);
     userJson.addProperty("items", itemsJson);
     return GSON.toJson(userJson);
-  }
+  }*/
 
   /**
    * Finds the UserStats entity corresponding to {@code userId} in datastore
    * and returns this entity contained inside an Optional.
    * @return UserStats entity for this user
    */
+   /**
   public Optional<Entity> retreiveUserStats() {
     if (userId == null) {
       return Optional.empty();
@@ -162,7 +169,7 @@ public final class UserInsights {
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
     return entities.isEmpty() ? Optional.empty() 
                               : Optional.of(entities.get(0));
-  }
+  }*/
 
   /**
    * Creates a map relating string weekly period keys to string spending values.
@@ -175,6 +182,7 @@ public final class UserInsights {
    * TODO (malachibre) : Modify this method by using an enum to calculate time
    *                     period totals using an enum.
    */
+   /**
   private ImmutableMap<String, String> calculateWeeklyTotal(List<Key> itemKeys)  {
     if (itemKeys == null || itemKeys.isEmpty()) {
       return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
@@ -195,11 +203,12 @@ public final class UserInsights {
       try {
         Entity item = datastore.get(itemKey);
         LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"),
-                                             DATE_FORMATTER);
+                                             DATE_FORMATTER);*/
         // If there is a positive amount of time between
         // {@code currentEndOfWeek} and {@code itemDate}
         // that means that itemDate is after currentEndOfWeek and 
         // currentEndOfWeek needs to be updated.
+        /**
         if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
           weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
           currentEndOfWeek = getEndOfWeek(itemDate);
@@ -217,7 +226,7 @@ public final class UserInsights {
     weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
 
     return ImmutableMap.copyOf(weeklyTotals);
-  }
+  }*/
 
   /**
    * Finds the Date for the last day of the week that {@code itemDate} is in 
@@ -227,20 +236,22 @@ public final class UserInsights {
    * @return the LocalDate representing the end of the week {@code itemDate}
    *         is in.
    */
+   /**
   private LocalDate getEndOfWeek(LocalDate itemDate) {
     int currentDayOfWeek = itemDate.getDayOfWeek().getValue();
     return itemDate.plusDays(7 - currentDayOfWeek);
-  }  
+  }  */
 
   /**
    * Creates a default map when required userStats properties are not found.
    * @return A map with the string keys: weeklyAggregate and items that map to
    *         to empty string values.
    */
+   /**
   private ImmutableMap<String, String> createDefaultMap() {
     Map<String, String> emptyMap = new LinkedHashMap<String, String>();
     emptyMap.put("weeklyAggregate", "");
     emptyMap.put("items", "");
     return ImmutableMap.copyOf(emptyMap);
-  }
+  }*/
 }

@@ -9,7 +9,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.edith.servlets.Item;
+//import com.google.edith.servlets.Item;
 import com.google.edith.servlets.UserInsights;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -27,6 +27,7 @@ import org.junit.runners.JUnit4;
 
 
 public final class UserInsightsTest {
+    /**
   private static final String USER_ID = "userId";
   private DatastoreService datastore;
   private static UserInsights userInsights;
@@ -213,7 +214,7 @@ public final class UserInsightsTest {
     userJson.addProperty("weeklyAggregate", "");
     userJson.addProperty("items", "");
     Assert.assertEquals(new Gson().toJson(userJson), userInsights.createJson());
-  }
+  }*/
 
   /**
    * Creates a list of Item keys
@@ -222,13 +223,14 @@ public final class UserInsightsTest {
    * @return a list of keys with a number assigned to each of them 
    *         "item0, item1... itemN"
    */
+   /**
   private List<Key> createTestKeyList(int startIndex, int endIndex) {
     List<Key> items = new ArrayList<>();
     for(int i = startIndex; i < endIndex; i++) {
       items.add(KeyFactory.createKey("Item", "Item" + i));
     }
     return items;
-  }
+  }*/
 
   /**
    * Assigns the parameters to the given entity.
@@ -237,10 +239,11 @@ public final class UserInsightsTest {
    * @param quantity quantity 
    * @param date date
    */
+   /**
   private void setEntityProperties(Entity entity, double price, 
                                    int quantity, String date) {
     entity.setProperty("price", price);
     entity.setProperty("quantity", quantity);
     entity.setProperty("date", date);
-  }
+  }*/
 }
