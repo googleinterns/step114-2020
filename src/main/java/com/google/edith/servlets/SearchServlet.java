@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.services.SearchService;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -51,8 +52,9 @@ public class SearchServlet extends HttpServlet {
   private String kind;
   
   public SearchServlet() {
-    this.searchService = new SearchService
-        (DatastoreServiceFactory.getDatastoreService());
+    this.searchService = new SearchService(
+        DatastoreServiceFactory.getDatastoreService(),
+        UserServiceFactory.getUserService());
   }
 
   public SearchServlet(SearchService searchService) {

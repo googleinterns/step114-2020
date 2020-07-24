@@ -28,7 +28,6 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import java.io.IOException;
@@ -44,9 +43,11 @@ import javax.servlet.http.HttpServletResponse;
 public class SearchService extends HttpServlet {
 
   private final DatastoreService datastore;
+  private UserService userService;
 
-  public SearchService(DatastoreService datastore) {
+  public SearchService(DatastoreService datastore, UserService userService) {
     this.datastore = datastore;
+    this.userService = userService;
   }
 
   /**
@@ -153,7 +154,6 @@ public class SearchService extends HttpServlet {
    * @return Filter -filter options to filer on entites.
    */
   private Filter prepareFilter(String name, String date) {
-    UserService userService = UserServiceFactory.getUserService();
     String loggedInUserId = userService.getCurrentUser().getUserId();
 
     List<Filter> filters = new ArrayList<>();
