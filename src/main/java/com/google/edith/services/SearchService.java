@@ -39,7 +39,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**
+ * Service to create query and handle searching on entities.
+ */
 public class SearchService extends HttpServlet {
 
   private final DatastoreService datastore;
@@ -74,7 +76,6 @@ public class SearchService extends HttpServlet {
       Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items);
       receipts.add(receipt);
     }
-
     return receipts.toArray(new Receipt[0]);
   }
 
@@ -98,13 +99,12 @@ public class SearchService extends HttpServlet {
       Item receiptItem = new Item(userId, itemName, price, quantity, category, expireDate);
       itemsList.add(receiptItem);
     }
-
     return itemsList.toArray(new Item[0]);
   }
 
   /**
    * Creates a list of entites found from given name, date
-   * kind and sorts on given order on given proprty
+   * kind and sorts on given order on given proprty.
    * @param name -name property of the entity.
    * @param date - date property of the entity.
    * @param kind - kind of the entity stored in datastore.
@@ -143,7 +143,6 @@ public class SearchService extends HttpServlet {
           .addSort(sortOnProperty, SortDirection.ASCENDING);
     if (sortOrder.equals("Descending")) query = query
           .addSort(sortOnProperty, SortDirection.DESCENDING);
-
     return query;
   }
 
@@ -155,18 +154,15 @@ public class SearchService extends HttpServlet {
    */
   private Filter prepareFilter(String name, String date) {
     String loggedInUserId = userService.getCurrentUser().getUserId();
-
     List<Filter> filters = new ArrayList<>();
     filters.add(new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId));
     
     if (!name.isEmpty()) {
       filters.add(new FilterPredicate("name", FilterOperator.EQUAL, name));
     }
-
     if (!date.isEmpty()) {
       filters.add(new FilterPredicate("date", FilterOperator.EQUAL, date));
     }
-
     return new CompositeFilter(CompositeFilterOperator.AND, filters);
   }
 }
