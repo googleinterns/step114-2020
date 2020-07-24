@@ -67,10 +67,10 @@ class SearchResult extends React.Component {
             // Item entity does not have items field.
             if (typeof entities[0].items === 'undefined') {
               this.setState({kind: 'item'});
-              this.createItems(entities);
+              this.setState({items: entities})
             } else {
               this.setState({kind: 'receipt'});
-              this.createReceipts(entities);
+              this.setState({receipts: entities});
             }
           }
         })
@@ -80,43 +80,42 @@ class SearchResult extends React.Component {
   }
 
   createItems(itemEntity) {
+    let itemElements = [];
     itemEntity.forEach((item) => {
-      console.log(item);
-      this.setState({
-        items: [... this.state.items,
-                      <Item
-                        name={item.name}
-                        price={item.price}
-                        quantity={item.quantity}
-                        category={item.category}
-                        expireDate={item.expireDate}
-                      />]
-      });
+      itemElements.push(itemElements,
+                    <Item
+                      name={item.name}
+                      price={item.price}
+                      quantity={item.quantity}
+                      category={item.category}
+                      expireDate={item.expireDate}
+                    />);
     })
+    return itemElements;
   }
 
   createReceipts(receiptsEntity) {
+    let receiptElements = [];
     receiptsEntity.forEach((receipt) => {
-      console.log(receipt);
-      this.setState({
-        receipts: [...this.state.receipts,
-                        <Receipt
-                          name={receipt.name}
-                          fileUrl={receipt.fileUrl}
-                          storeName={receipt.storeName}
-                          totalPrice={receipt.totalPrice} />]
-      });
+      receiptElements.push(
+                      <Receipt
+                        name={receipt.name}
+                        fileUrl={receipt.fileUrl}
+                        storeName={receipt.storeName}
+                        totalPrice={receipt.totalPrice}
+                      />);
     });
+    return receiptElements;
   }
 
   render() {
     return (
       <>
         {this.state.kind === 'receipt' &&
-          this.state.receipts
+          this.createReceipts(this.state.receipts)
         }
         {this.state.kind === 'item' &&
-          this.state.items
+          this.createItems(this.state.items)
         }
       </>
     );
