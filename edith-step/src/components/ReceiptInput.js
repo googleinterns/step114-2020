@@ -22,8 +22,9 @@ export default class ReceiptInput extends React.Component {
   }
 
   /**
-   * Sends item info to the receipt-deals servlet and
+   * Sends item info to the receipt-data servlet and
    * responds with the cheapest store for that item.
+   *
    * @param {String} name item name
    * @param {double} price item price
    * @param {number} quantity item quantity
@@ -32,7 +33,7 @@ export default class ReceiptInput extends React.Component {
   async getDeal(name, price, quantity) {
     const response = await axios({
       method: 'post',
-      url: '/receipt-deals',
+      url: '/receipt-data',
       data: {
         itemName: name,
         itemPrice: price,
@@ -49,9 +50,10 @@ export default class ReceiptInput extends React.Component {
   }
 
   /**
-   * Send a post request to the receipt-data servlet
-   * with a grocery item in it every time a new item
-   * is added.
+   * Calls the getDeal function and passes it data on a particular
+   * item (name, price, quantity). The helper function returns the cheapest
+   * store for the item passed, and the items list in the state is updated
+   * to include the deal.
    * @param {Event} e Submission event.
    */
   async handleSubmit(e) {
@@ -80,16 +82,6 @@ export default class ReceiptInput extends React.Component {
       id: Date.now(),
     };
 
-    axios({
-      method: 'post',
-      url: '/receipt-data',
-      data: {
-        itemName: this.state.itemName,
-        itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity,
-      },
-    });
-
     this.setState((state) => ({
       items: state.items.concat(newItem),
       itemName: '',
@@ -111,7 +103,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Render grocery list form and items.
-   * @return {html} grocery list form
+   * @return {React.ReactNode} React virtual DOM
    */
   render() {
     return (
