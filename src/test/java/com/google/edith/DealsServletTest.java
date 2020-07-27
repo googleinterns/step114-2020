@@ -26,16 +26,6 @@ public class DealsServletTest  {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    /**
-    Item receiptItem =
-      Item.builder()
-            .setUserId("185804764220139124118")
-            .setName("Apple Juice")
-            .setPrice((float) 5.99)
-            .setQuantity(1)
-            .setCategory("unknown category")
-            .setExpireDate("unknown date")
-            .build();*/
     Item receiptItem =
       new Item("185804764220139124118",
         "Apple Juice",
@@ -71,7 +61,6 @@ public class DealsServletTest  {
 
     Mockito.verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
-    System.out.println(stringWriter.toString());
     Assert.assertTrue(stringWriter.toString().contains("Kroger"));
   }
 
@@ -87,16 +76,6 @@ public class DealsServletTest  {
         0,
         "unknown category",
         "unknown date");
-        /**
-    Item receiptItem =
-      Item.builder()
-            .setUserId("185804764220139124118")
-            .setName("no deal")
-            .setPrice((float) 0.99)
-            .setQuantity(0)
-            .setCategory("unknown category")
-            .setExpireDate("unknown date")
-            .build();*/
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
@@ -125,7 +104,6 @@ public class DealsServletTest  {
 
     Mockito.verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
-    System.out.println(stringWriter.toString());
     Assert.assertTrue(stringWriter.toString().contains("no deal found"));
   }
 }

@@ -33,7 +33,6 @@ public class GroceryListServletTest {
     new GroceryListServlet().doGet(request, response);
 
     writer.flush();
-    System.out.println(stringWriter.toString());
     Assert.assertTrue(stringWriter.toString().contains("Apple Juice"));
   }
 }

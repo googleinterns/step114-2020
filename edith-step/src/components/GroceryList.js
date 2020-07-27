@@ -17,7 +17,6 @@ export default class GroceryList extends React.Component {
 
   /** Retrieves expired items when component is mounted. */
   componentDidMount() {
-    console.log('grocery list mount');
     this.getItemData();
   }
 
@@ -29,7 +28,6 @@ export default class GroceryList extends React.Component {
       responseType: 'json',
     });
     const itemsList = response.data;
-    console.log(itemsList);
     this.setState({items: itemsList});
   }
 

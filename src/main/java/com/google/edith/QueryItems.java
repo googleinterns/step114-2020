@@ -25,11 +25,7 @@ public class QueryItems {
       receiptDate = new Date();
     }
     long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
-    System.out.println(currentDate.getTime());
-    System.out.println(receiptDate.getTime());
-    System.out.println(timePassedSinceReceipt);
     double daysPassedSinceReceipt = (timePassedSinceReceipt / (1000*60*60*24))/24;
-    System.out.println("days since receipt " + daysPassedSinceReceipt);
     List<Item> itemsToBuy = new ArrayList<Item>();
 
     Receipt[] receipts = {pastReceipt};
@@ -54,8 +50,6 @@ public class QueryItems {
             unit = expirationPiece;
           }
         }
-        System.out.println("number " + number);
-        System.out.println("unit " + unit);
         if (unit.toLowerCase().equals("weeks")) {
           number = number * 7;
         }
@@ -70,7 +64,6 @@ public class QueryItems {
     }
 
     Gson gson = new Gson();
-    System.out.println(gson.toJson(itemsToBuy));
     return gson.toJson(itemsToBuy);
   }
 }
