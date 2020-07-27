@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
 import LineChart, {BarGraph, DoughnutChart} from './UserChart';
 import axios from 'axios';
-import Chart from 'Chart.ts'
 //import "./App.css";
 
 

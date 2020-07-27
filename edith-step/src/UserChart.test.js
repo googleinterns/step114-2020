@@ -15,17 +15,32 @@ it('Should receive the correct week data from retrieveData', () => {
 //   jest.mock('react-chartjs-2', () => ({
 //       UserChart: () => null
 //     }));
-  const obj = { weeklyAggregate: [ {date: "2020-07-19", total: "25.0"} ] };
+  const obj = { weeklyAggregate: '[{"date":"2020-07-19","total":"25.0"}]' };
   const response = JSON.stringify(obj);
   fetch.mockResponse(response);
 
-  const res = retrieveData();
-  return res.then((resultArray) => {
+  const data = retrieveData();
+  return data.then((resultArray) => {
       expect(resultArray[0]).toStrictEqual(["2020-07-19"]);
       expect(resultArray[1]).toStrictEqual(["25.0"]);
   });
 });
 
+it('Should receive the correct week data from retrieveData', () => {
+//   HTMLCanvasElement.prototype.getContext = jest.fn()
+//   jest.mock('react-chartjs-2', () => ({
+//       UserChart: () => null
+//     }));
+  const obj = { weeklyAggregate: '[{"date":"2020-07-19","total":"25.0"}]' };
+  const response = JSON.stringify(obj);
+  fetch.mockResponse(response);
+  
+  const data = retrieveData();
+  return data.then((resultArray) => {
+      expect(resultArray[0]).toStrictEqual(["2020-07-19"]);
+      expect(resultArray[1]).toStrictEqual(["25.0"]);
+  });
+});
 
 
 

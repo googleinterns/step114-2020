@@ -5,14 +5,11 @@ require("regenerator-runtime/runtime")
 
 async function retrieveData() {
     const response = await fetch("/user-stats-servlet");
+    console.log(response);
     const responseJson = await response.json();
     let weekDates = [];
     let values = [];  
-    const weeklyAggregate = responseJson.weeklyAggregate;
-    console.log(weeklyAggregate);
-    for (let i = 0; i < weeklyAggregate.length; i++) {
-      console.log(weeklyAggregate[i]);
-    }
+    const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
     weeklyAggregate.forEach(week => {
       weekDates.push(week.date);
       values.push(week.total);
@@ -28,12 +25,9 @@ const inSameWeek = (itemDate, dateSelection) => {
   return diffDays < 6 && diffDays > 0;
 }
 
-const LineChart = (props) => {
-    
-  const [chartData, setChartData] = useState({});
-  const chart = () => {
-    const fetchData = retrieveData();
-    setChartData({
+const setChart = (setChartData) => {
+    retrieveData().then(fetchData => {
+        setChartData({
           labels: fetchData[0],
           datasets: [
             {
@@ -44,10 +38,16 @@ const LineChart = (props) => {
             }
           ]
         });
-  };
+    });
+}
+
+const LineChart = (props) => {
+    
+  const [chartData, setChartData] = useState({});
+  setChart(setChartData);
 
   useEffect(() => {
-    chart();
+    setChart();
   }, []);
    
   return (
@@ -97,12 +97,11 @@ const LineChart = (props) => {
 const BarGraph = (props) => {
     
   const [chartData, setChartData] = useState({});
-  const chart = () => {
-    retrieveData(setChartData);
-  };
+  setChart(setChartData);
+
 
   useEffect(() => {
-    chart();
+    setChart();
   }, []);
 
   return (
@@ -149,58 +148,56 @@ const BarGraph = (props) => {
     );
 }
 
+async function setDougnutChart(setChartData) {
+  const response = await fetch("/user-stats-servlet");
+  const responseJson = await reponse.json();
+  let itemNames = [];
+  let itemValues = [];  
+  let items = [];
+  const itemsList = JSON.parse(responseJson.items);
+  if (props.dateSelection.length > 0) {
+  for (let i = 0; i < itemsList.length; i++) {
+    inSameWeek(itemsList[i].date, props.dateSelection);
+    if (inSameWeek(itemsList[i].date, props.dateSelection)) {
+      items.push(itemsList[i]);
+    }
+  } 
+  props.revertAction();
+  } else {
+    items = itemsList;
+  }
+  for (let i = 0; i < items.length; i++) {
+    itemNames.push(items[i].name);
+  }
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    itemValues.push(items[i].quantity);
+  }
+  setChartData({
+    labels: itemNames,
+    datasets: [
+      {
+        label: "Week Total",
+        data: itemValues,
+        backgroundColor: ["rgba(75, 192, 192, 0.6)"],
+        borderWidth: 4
+      }
+    ]
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });
+};
+
+
 const DoughnutChart = (props) => {
     
   const [chartData, setChartData] = useState({});
-  const chart = () => {
-    axios
-      .get("/user-stats-servlet")
-      .then(response => {
-        console.log(response);
-        let itemNames = [];
-        let itemValues = [];  
-        let items = [];
-        const itemsList = JSON.parse(response.data.items);
-        if (props.dateSelection.length > 0) {
-          console.log(props.dateSelection);
-          for (let i = 0; i < itemsList.length; i++) {
-            inSameWeek(itemsList[i].date, props.dateSelection);
-            console.log(itemsList[i]);
-            if (inSameWeek(itemsList[i].date, props.dateSelection)) {
-              items.push(itemsList[i]);
-              console.log(items);
-            }
-          } 
-          props.revertAction();
-        } else {
-            items = itemsList;
-        }
-        for (let i = 0; i < items.length; i++) {
-            itemNames.push(items[i].name);
-        }
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          itemValues.push(items[i].quantity);
-        }
-        setChartData({
-          labels: itemNames,
-          datasets: [
-            {
-              label: "Week Total",
-              data: itemValues,
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
-              borderWidth: 4
-            }
-          ]
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    };
+  setDoughnutChart(setDoughnutChart);
 
   useEffect(() => {
-    chart();
+    setDoughnutChart();
   }, []);
 
   return (
