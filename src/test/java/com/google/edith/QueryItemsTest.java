@@ -47,4 +47,20 @@ public class QueryItemsTest {
     query = new QueryItems();
     Assert.assertTrue(query.findExpiredItems(receipt).equals("[]"));
   }
+
+  @Test
+  public void findExpiredItems_expiredItemInWeeks_displaysExpiredItem() {
+    Item receiptItem =
+      new Item("185804764220139124118",
+        "Peanut Butter",
+        (float) 5.99,
+        1,
+        "unknown category",
+        "1.0 Weeks");
+    items = new Item[1];
+    items[0] = receiptItem;
+    receipt = new Receipt("185804764220139124118", "whole Foods", "2020-07-17", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
+    query = new QueryItems();
+    Assert.assertTrue(query.findExpiredItems(receipt).contains("Peanut Butter"));
+  }
 }
