@@ -91,7 +91,7 @@ export default class ReceiptInput extends React.Component {
     });
 
     this.setState((state) => ({
-      items: state.items.concat(newItem),
+      items: [...state.items, newItem],
       itemName: '',
       itemPrice: 0.0,
       itemQuantity: 1,
