@@ -25,8 +25,6 @@ public class ShelfDataReader {
     JsonParser jsonParser = new JsonParser();
     List<JsonArray> potentialMatches = new ArrayList<JsonArray>();
     try (FileReader reader = new FileReader(shelfLifeData)) {
-      Gson gson = new Gson();
-
       JsonObject data = (JsonObject) jsonParser.parse(reader).getAsJsonObject();
       JsonArray sheets = data.getAsJsonArray("sheets");
       JsonObject productList = sheets.get(2).getAsJsonObject();
@@ -41,9 +39,9 @@ public class ShelfDataReader {
         }
       }
     } catch (FileNotFoundException e) {
-      System.out.println("file not found");
+      System.out.println(e.getMessage());
     } catch (IOException e) {
-      System.out.println("IOException");
+      System.out.println(e.getMessage());
     }
 
     if (potentialMatches.size() == 0) {
