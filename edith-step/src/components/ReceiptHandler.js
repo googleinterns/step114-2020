@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 /**
@@ -200,8 +199,7 @@ export default class ReceiptHandler extends React.Component {
   render() {
     return (
       <>
-      {this.state.hidden == false &&
-      <div className="receipt-handler">
+        {this.state.hidden == false &&
         <div className="container col-lg-8">
           {this.state.items.length > 0 &&
           <form onSubmit={this.handleSubmit}>
@@ -299,8 +297,7 @@ export default class ReceiptHandler extends React.Component {
           </form>
           }
         </div>
-      </div>
-      }
+        }
       </>
     );
   }
