@@ -95,7 +95,8 @@ describe('When logged in, Top Navigation Bar', () => {
   test('has Dropdown menu', () => {
     expect(component.find('.dropdowns').exists()).toBe(true);
   });
-
+  
+  // Checks if upload modal box opens when button is clicked from dropdown.
   test('opens upload modal box when upload receipt button is clicked', () => {
     expect(component.state('modalShow')).toBe(false);
     component.find('.dropdown-toggle').at(0).simulate('click');
@@ -103,6 +104,7 @@ describe('When logged in, Top Navigation Bar', () => {
     expect(component.state('modalShow')).toBe(true);
   });
 
+  // Checks if the modal box closes when close button is clicked.
   test('closes upload modal box when close button is clicked', () => {
     component.find('.dropdown-toggle').at(0).simulate('click');
     component.find('.upload-receipt').at(0).simulate('click');

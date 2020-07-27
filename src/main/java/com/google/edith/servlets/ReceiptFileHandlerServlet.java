@@ -49,14 +49,12 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
         receiptFileHandlerService
             .getUploadedFileUrl(request, "receipt-file")
             .orElse(Collections.emptyList());
-
-    // fileKeys never should be empty as file
-    // field in the FE form is required.
+    
+    // fileKeys never should be empty as file field in the FE form is required.
     if (fileKeys.isEmpty()) {
       throw new IllegalStateException();
     }
-    // Blob is being served right now. But it will change in future
-    // to store it in Receipt object.
+    // Blob is being served right now. But it will change in future to store it in Receipt object.
     receiptFileHandlerService.serveBlob(response, fileKeys);
   }
 }
