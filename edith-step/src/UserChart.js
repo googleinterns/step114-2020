@@ -5,7 +5,6 @@ require("regenerator-runtime/runtime")
 
 async function retrieveWeekData() {
     const response = await fetch("/user-stats-servlet");
-    console.log(response);
     const responseJson = await response.json();
     let weekDates = [];
     let values = [];  
@@ -15,33 +14,6 @@ async function retrieveWeekData() {
       values.push(week.total);
     });
     return [weekDates, values];
-}
-
-async function retrieveItemData(dateSelection) {
-  const response = await fetch("/user-stats-servlet");
-  const responseJson = await response.json();
-  let itemNames = [];
-  let itemValues = [];  
-  let items = [];
-  const itemsList = JSON.parse(responseJson.items);
-  if (dateSelection.length > 0) {
-  for (let i = 0; i < itemsList.length; i++) {
-    inSameWeek(itemsList[i].date, dateSelection);
-    if (inSameWeek(itemsList[i].date, dateSelection)) {
-      items.push(itemsList[i]);
-    }
-  } 
-  } else {
-    items = itemsList;
-  }
-  for (let i = 0; i < items.length; i++) {
-    itemNames.push(items[i].name);
-  }
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    itemValues.push(items[i].quantity);
-  }
-  return [itemNames, itemValues];
 }
 
 const inSameWeek = (itemDate, dateSelection) => {
@@ -183,19 +155,15 @@ const DoughnutChart = (props) => {
     fetch("/user-stats-servlet")
       .then(response => response.json())
       .then(responseJson => {
-        console.log(responseJson);
         let itemNames = [];
         let itemValues = [];  
         let items = [];
         const itemsList = JSON.parse(responseJson.items);
         if (props.dateSelection.length > 0) {
-          console.log(props.dateSelection);
           for (let i = 0; i < itemsList.length; i++) {
             inSameWeek(itemsList[i].date, props.dateSelection);
-            console.log(itemsList[i]);
             if (inSameWeek(itemsList[i].date, props.dateSelection)) {
               items.push(itemsList[i]);
-              console.log(items);
             }
           } 
           props.revertAction();
