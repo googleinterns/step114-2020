@@ -42,12 +42,11 @@ public final class DealItem {
    * this.weight = 1.0 ex: Input weight '64 fl oz' -> this.weight = 64.0
    */
   public void setWeight(String weight) {
-    if (weight.isEmpty()) {
+    // Checks for length of two or less so that the substring check isn't out of bounds.
+    if (weight.isEmpty() || weight.length() <= 2) {
       this.weight = 0.0;
     } else if (weight.equals("dozen")) {
       this.weight = 12.0;
-    } else if (weight.length() == 2) {
-      this.weight = 0.0;
     } else if (weight.substring(0, 3).equals("per")) {
       this.weight = 1.0;
     } else if (weight.equals("head")) {
