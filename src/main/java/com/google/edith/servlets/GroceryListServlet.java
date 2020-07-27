@@ -21,16 +21,7 @@ public class GroceryListServlet extends HttpServlet {
         1,
         "unknown category",
         "6.0 Days");
-        /**
-    Item receiptItem =
-      Item.builder()
-            .setUserId("185804764220139124118")
-            .setName("Apple Juice")
-            .setPrice((float) 5.99)
-            .setQuantity(1)
-            .setCategory("unknown category")
-            .setExpireDate("2020-07-16")
-            .build();*/
+
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
