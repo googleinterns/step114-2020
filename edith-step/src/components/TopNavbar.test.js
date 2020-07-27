@@ -95,7 +95,7 @@ describe('When logged in, Top Navigation Bar', () => {
   test('has Dropdown menu', () => {
     expect(component.find('.dropdowns').exists()).toBe(true);
   });
-  
+
   // Checks if upload modal box opens when button is clicked from dropdown.
   test('opens upload modal box when upload receipt button is clicked', () => {
     expect(component.state('modalShow')).toBe(false);

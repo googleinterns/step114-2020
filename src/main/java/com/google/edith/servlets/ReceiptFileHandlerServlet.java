@@ -49,7 +49,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
         receiptFileHandlerService
             .getUploadedFileUrl(request, "receipt-file")
             .orElse(Collections.emptyList());
-    
+
     // fileKeys never should be empty as file field in the FE form is required.
     if (fileKeys.isEmpty()) {
       throw new IllegalStateException();
