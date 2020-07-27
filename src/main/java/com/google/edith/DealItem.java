@@ -16,12 +16,12 @@ public final class DealItem {
   public void setStore(String store) {
     this.store = store;
   }
-  
+
   /**
    * Price values from grocerydata.csv come in two main types: 'N/A', '', and '?' are invalid type,
    * and a dollar value to two decimal points with a $ sign in front of it is valid type. When
    * invalid input is detected, the default price is 0.0.
-   * 
+   *
    * <p>ex: Input price "?" -> this.price = 0.0 ex: input price "$5.67" -> this.price = 5.67
    */
   public void setPrice(String price) {
@@ -76,15 +76,14 @@ public final class DealItem {
   public void setComment(String comment) {
     this.comment = comment;
   }
-  
+
   /**
-    * Input string expiration is expected to have the minimum
-    * expiration time, the maximum expiration time, and the
-    * unit of time, in no particular order. It parses the string
-    * to find the minimum expiration time and the unit, as that is
-    * the data needed to generate new grocery lists based off of.
+    * Input string expiration is expected to have the minimum expiration time, the maximum expiration
+    * time, and the unit of time, in no particular order. It parses the string to find the minimum
+    * expiration time and the unit, as that is the data needed to generate new grocery lists based
+    * off of.
     *
-    * ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
+    * <p>ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
     */
   public void setExpiration(String expiration) {
     if (expiration.equals("no shelf life data found")) {
@@ -96,7 +95,7 @@ public final class DealItem {
     List<Double> range = new ArrayList<Double>();
     String timeMeasurement = "";
 
-    for (String expirationPiece: expirationPieces) {
+    for (String expirationPiece : expirationPieces) {
       try {
         range.add(Double.parseDouble(expirationPiece));
       } catch (NumberFormatException e) {
@@ -105,10 +104,10 @@ public final class DealItem {
     }
 
     Double min = new Double(0);
-    if (range.size() >= 1){
+    if (range.size() >= 1) {
       min = range.get(0);
     }
-    for (Double time: range) {
+    for (Double time : range) {
       if (time < min) {
         min = time;
       }

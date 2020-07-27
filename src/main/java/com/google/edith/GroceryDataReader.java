@@ -35,7 +35,7 @@ public final class GroceryDataReader {
 
     // Should never be null with file grocerydatareader.csv.
     String[] record = null;
-    
+
     String item = "";
     try {
       GroceryNameProcessor processor = new GroceryNameProcessor();
@@ -53,9 +53,9 @@ public final class GroceryDataReader {
         for (int i = 0; i < STORES.size(); i++) {
           DealItem dealItem = new DealItem();
           dealItem.setStore(STORES.get(i));
-          dealItem.setPrice(record[i*3+1]);
-          dealItem.setWeight(record[i*3+2]);
-          dealItem.setComment(record[i*3+3]);
+          dealItem.setPrice(record[i * 3 + 1]);
+          dealItem.setWeight(record[i * 3 + 2]);
+          dealItem.setComment(record[i * 3 + 3]);
           dealItem.setExpiration(expirationTime);
           dealItems.add(dealItem);
         }

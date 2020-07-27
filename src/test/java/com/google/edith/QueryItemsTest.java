@@ -27,7 +27,15 @@ public class QueryItemsTest {
         "6.0 Days");
     items = new Item[1];
     items[0] = receiptItem;
-    receipt = new Receipt("185804764220139124118", "whole Foods", "2020-07-13", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
+    receipt =
+      new Receipt(
+        "185804764220139124118",
+        "whole Foods",
+        "2020-07-13",
+        "Receipt",
+        "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+        0,
+        items);
     query = new QueryItems();
     Assert.assertTrue(query.findExpiredItems(receipt).contains("Apple Juice"));
   }
@@ -43,7 +51,15 @@ public class QueryItemsTest {
         "20.0 Days");
     items = new Item[1];
     items[0] = receiptItem;
-    receipt = new Receipt("185804764220139124118", "whole Foods", "2020-07-17", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
+    receipt =
+      new Receipt(
+        "185804764220139124118",
+        "whole Foods",
+        "2020-07-17",
+        "Receipt",
+        "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+        0,
+        items);
     query = new QueryItems();
     Assert.assertTrue(query.findExpiredItems(receipt).equals("[]"));
   }
@@ -59,7 +75,15 @@ public class QueryItemsTest {
         "1.0 Weeks");
     items = new Item[1];
     items[0] = receiptItem;
-    receipt = new Receipt("185804764220139124118", "whole Foods", "2020-07-17", "Receipt", "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c", 0, items);
+    receipt =
+      new Receipt(
+        "185804764220139124118",
+        "whole Foods",
+        "2020-07-17",
+        "Receipt",
+        "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+        0,
+        items);
     query = new QueryItems();
     Assert.assertTrue(query.findExpiredItems(receipt).contains("Peanut Butter"));
   }
