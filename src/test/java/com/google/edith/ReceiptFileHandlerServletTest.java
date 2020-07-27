@@ -14,12 +14,16 @@
 
 package com.google.edith;
 
-import com.google.edith.servlets.ReceiptFileHandlerServlet;
-import com.google.edith.services.ReceiptFileHandlerService;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.edith.services.ReceiptFileHandlerService;
+import com.google.edith.servlets.ReceiptFileHandlerServlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,21 +32,16 @@ import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.mockito.MockitoAnnotations;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
 
 public class ReceiptFileHandlerServletTest {
-    private final LocalServiceTestHelper testHelper = 
+  private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
-        new LocalBlobstoreServiceTestConfig(),
-        new LocalDatastoreServiceTestConfig());
+          new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
   private ReceiptFileHandlerServlet receiptFileHandlerServlet;
 
@@ -57,16 +56,13 @@ public class ReceiptFileHandlerServletTest {
   public void tearDown() {
     testHelper.tearDown();
   }
-  
-  @Mock
-  HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
-  
-  @Mock
-  ReceiptFileHandlerService receiptFileHandlerService;
-  
+  @Mock HttpServletRequest request;
+
+  @Mock HttpServletResponse response;
+
+  @Mock ReceiptFileHandlerService receiptFileHandlerService;
+
   // If no file is uploaded, Blob is not stored and Exception is thrown.
   @Test(expected = IllegalStateException.class)
   public void checks_ifNoFileUpload_returnsException() throws IOException {

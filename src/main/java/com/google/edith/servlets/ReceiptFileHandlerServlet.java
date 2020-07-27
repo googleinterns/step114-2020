@@ -26,9 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * When the Upload Receipt button is clicked then this servlet provides an url for the
- * file to be stored in the Google Cloud Storage Bucket and redirects the request to
- * ReceiptFileHandlerServlet.
+ * When the Upload Receipt button is clicked then this servlet provides an url for the file to be
+ * stored in the Google Cloud Storage Bucket and redirects the request to ReceiptFileHandlerServlet.
  */
 @WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
@@ -36,16 +35,20 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   private ReceiptFileHandlerService receiptFileHandlerService;
 
   public ReceiptFileHandlerServlet() {
-    this.receiptFileHandlerService = new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
+    this.receiptFileHandlerService =
+        new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
   }
 
   public ReceiptFileHandlerServlet(ReceiptFileHandlerService receiptFileHandlerService) {
     this.receiptFileHandlerService = receiptFileHandlerService;
   }
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<FileInfo> fileKeys = receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file").orElse(Collections.emptyList());
+    List<FileInfo> fileKeys =
+        receiptFileHandlerService
+            .getUploadedFileUrl(request, "receipt-file")
+            .orElse(Collections.emptyList());
 
     // fileKeys never should be empty as file
     // field in the FE form is required.

@@ -14,6 +14,12 @@
 
 package com.google.edith;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.FileInfo;
@@ -25,8 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -37,17 +43,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 public class ReceiptFileHandlerServiceTest {
 
-  private final LocalServiceTestHelper testHelper = 
+  private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
-        new LocalBlobstoreServiceTestConfig(),
-        new LocalDatastoreServiceTestConfig());
+          new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
   private ReceiptFileHandlerService receiptFileHandlerService;
 
@@ -63,22 +63,19 @@ public class ReceiptFileHandlerServiceTest {
     testHelper.tearDown();
   }
 
-  @Mock
-  BlobstoreService blobstoreService;
+  @Mock BlobstoreService blobstoreService;
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
+  @Mock HttpServletResponse response;
 
   @Test
   public void checks_ifBlobDidNotUpload_returnsNull() throws IOException {
     Map<String, List<FileInfo>> emptyMap = Collections.emptyMap();
 
     when(blobstoreService.getFileInfos(request)).thenReturn(emptyMap);
-    Optional<List<FileInfo>> uploadedFileInfo = receiptFileHandlerService
-            .getUploadedFileUrl(request, "example");
+    Optional<List<FileInfo>> uploadedFileInfo =
+        receiptFileHandlerService.getUploadedFileUrl(request, "example");
     assertFalse(uploadedFileInfo.isPresent());
   }
 
@@ -93,8 +90,8 @@ public class ReceiptFileHandlerServiceTest {
     fileInfos.put("fileName", files);
 
     when(blobstoreService.getFileInfos(request)).thenReturn(fileInfos);
-    Optional<List<FileInfo>> uploadedFileInfo = receiptFileHandlerService
-            .getUploadedFileUrl(request, "fileName");
+    Optional<List<FileInfo>> uploadedFileInfo =
+        receiptFileHandlerService.getUploadedFileUrl(request, "fileName");
     assertTrue(uploadedFileInfo.isPresent());
   }
 
@@ -113,16 +110,12 @@ public class ReceiptFileHandlerServiceTest {
     List<FileInfo> files = new ArrayList<FileInfo>();
     files.add(uploadFile);
     BlobKey receiptKey = new BlobKey("key");
-    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName()))
-            .thenReturn(receiptKey);
+    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName())).thenReturn(receiptKey);
     BlobKey returnedKey = receiptFileHandlerService.getBlobKey(files);
     assertTrue(returnedKey.equals(receiptKey));
   }
 
-  /** 
-   * Checks if the serve method of BlobstoreService
-   * is called with the right parameters.
-   */
+  /** Checks if the serve method of BlobstoreService is called with the right parameters. */
   @Test
   public void check_redirectsWithRightArguments_callsServeMethod() throws IOException {
     Date creationDate = new Date();
@@ -130,8 +123,7 @@ public class ReceiptFileHandlerServiceTest {
     List<FileInfo> files = new ArrayList<FileInfo>();
     files.add(uploadFile);
     BlobKey key = new BlobKey("key");
-    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName()))
-           .thenReturn(key);
+    when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName())).thenReturn(key);
     receiptFileHandlerService.serveBlob(response, files);
     verify(blobstoreService, times(1)).serve(key, response);
   }

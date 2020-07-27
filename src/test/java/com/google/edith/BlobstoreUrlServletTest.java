@@ -14,10 +14,15 @@
 
 package com.google.edith;
 
-import com.google.edith.servlets.BlobstoreUrlServlet;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.edith.servlets.BlobstoreUrlServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,16 +34,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 public class BlobstoreUrlServletTest {
-  private final LocalServiceTestHelper testHelper = 
+  private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
-        new LocalBlobstoreServiceTestConfig(),
-        new LocalDatastoreServiceTestConfig());
+          new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
   private BlobstoreUrlServlet blobstoreUrlServlet;
 
@@ -54,12 +53,10 @@ public class BlobstoreUrlServletTest {
     testHelper.tearDown();
   }
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
-  
+  @Mock HttpServletResponse response;
+
   /** Checks if the url contains required path. */
   @Test
   public void checks_ReturnedUrl_containsRightUrl() throws IOException {

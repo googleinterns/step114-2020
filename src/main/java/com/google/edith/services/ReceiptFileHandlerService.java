@@ -24,17 +24,14 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet that stores file uploaded in Blobstore
- * and serves that blob on succession.
- */
+/** Servlet that stores file uploaded in Blobstore and serves that blob on succession. */
 public class ReceiptFileHandlerService {
   private final BlobstoreService blobstoreService;
 
   public ReceiptFileHandlerService(BlobstoreService blobstoreService) {
     this.blobstoreService = blobstoreService;
   }
-  
+
   /** Redirects the page to a new tab and serves the blob. */
   public void serveBlob(HttpServletResponse response, List<FileInfo> fileKeys) throws IOException {
     BlobKey fileBlobKey = getBlobKey(fileKeys);
@@ -42,15 +39,16 @@ public class ReceiptFileHandlerService {
   }
 
   /**
-   * Returns a List of BlobKey that points to the uploaded files
-   * in the HTML form or null if the user didn't upload a file.
+   * Returns a List of BlobKey that points to the uploaded files in the HTML form or null if the
+   * user didn't upload a file.
    */
-  public Optional<List<FileInfo>> getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+  public Optional<List<FileInfo>> getUploadedFileUrl(
+      HttpServletRequest request, String formInputElementName) {
     Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
     return Optional.ofNullable(fileInfos.get(formInputElementName));
   }
 
-  /** Returns a  BlobKey that points to the uploaded file. */
+  /** Returns a BlobKey that points to the uploaded file. */
   public BlobKey getBlobKey(List<FileInfo> fileKeys) {
     if (fileKeys.isEmpty()) throw new IllegalStateException();
 

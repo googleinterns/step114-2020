@@ -17,7 +17,6 @@ package com.google.edith.servlets;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.UploadOptions;
-
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,22 +24,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * When the Upload Receipt button is clicked then this servlet provides an url for the
- * file to be stored in the Google Cloud Storage Bucket and redirects the request to
- * ReceiptFileHandlerServlet.
+ * When the Upload Receipt button is clicked then this servlet provides an url for the file to be
+ * stored in the Google Cloud Storage Bucket and redirects the request to ReceiptFileHandlerServlet.
  */
 @WebServlet("/blobstore-upload-url")
 public class BlobstoreUrlServlet extends HttpServlet {
-  
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-		UploadOptions uploadOptions = UploadOptions.Builder.withGoogleStorageBucketName("edith-receipts");
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    UploadOptions uploadOptions =
+        UploadOptions.Builder.withGoogleStorageBucketName("edith-receipts");
 
-		String uploadUrl = blobstoreService.createUploadUrl("/receipt-file-handler", uploadOptions);
+    String uploadUrl = blobstoreService.createUploadUrl("/receipt-file-handler", uploadOptions);
 
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);
-
   }
 }
