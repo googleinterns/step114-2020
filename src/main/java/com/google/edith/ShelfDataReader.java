@@ -68,7 +68,7 @@ public class ShelfDataReader {
     */
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
-    Map<String, String> shelfLife = new HashMap<String, String>();
+    String result = "";
     
     for (int i = 5; i < 27; i++){
       JsonObject productTimeElement = product.get(i).getAsJsonObject();
@@ -76,23 +76,21 @@ public class ShelfDataReader {
       String[] jsonKeyValuePair = json.split(":");
 
       if (jsonKeyValuePair.length == 2) {
-        String storageType = jsonKeyValuePair[0];
-        storageType = storageType.substring(2, storageType.length()-1);
-        String timeToExpiration = jsonKeyValuePair[1];
-        timeToExpiration = timeToExpiration.substring(0, timeToExpiration.length()-1);
-        shelfLife.put(storageType, timeToExpiration);
+        String expireData = jsonKeyValuePair[1];
+        expireData = expireData.substring(0, expireData.length()-1);
+        System.out.println(expireData);
+        try {
+          Double.parseDouble(expireData);
+          result += expireData + " ";
+        } catch (NumberFormatException e) {
+          String timeUnit = expireData.substring(1, expireData.length()-1);
+          if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
+            result += timeUnit + " ";
+          }
+        }
       }
     }
-
-    String result="";
-    for (String item: shelfLife.keySet()) {
-      try {
-        Double.parseDouble(shelfLife.get(item));
-        result += shelfLife.get(item) + " ";
-      } catch (NumberFormatException e) {
-        result += shelfLife.get(item).substring(1, shelfLife.get(item).length()-1) + " ";
-      }
-    }
+    result = result.substring(0, result.length()-1);
     return result;
   }
 }
