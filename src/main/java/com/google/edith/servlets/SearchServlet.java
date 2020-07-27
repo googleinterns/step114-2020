@@ -68,7 +68,6 @@ public class SearchServlet extends HttpServlet {
     String json = kind.equals("Receipt") 
             ? gson.toJson(receipts)
             : gson.toJson(items);
-    System.out.println(json);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
