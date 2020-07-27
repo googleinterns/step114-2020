@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 
 /**
@@ -13,7 +14,8 @@ export default class ReceiptHandler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {userId: '', storeName: '', date: '',
-      name: '', fileUrl: '', totalPrice: 0.0, items: [], deals: []};
+      name: '', fileUrl: '', totalPrice: 0.0, items: [],
+      deals: [], hidden: false};
     this.getReceiptData = this.getReceiptData.bind(this);
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.addItem = this.addItem.bind(this);
@@ -178,7 +180,17 @@ export default class ReceiptHandler extends React.Component {
     }).catch((response) => {
       console.log('file does not exist yet');
     });*/
-    this.setState({});
+    this.setState((state) => ({
+      userId: '',
+      storeName: '',
+      date: '',
+      name: '',
+      fileUrl: '',
+      totalPrice: 0.0,
+      items: [],
+      deals: [],
+      hidden: true,
+    }));
   }
 
   /**
@@ -187,6 +199,8 @@ export default class ReceiptHandler extends React.Component {
    */
   render() {
     return (
+      <>
+      {this.state.hidden == false &&
       <div className="receipt-handler">
         <div className="container col-lg-8">
           {this.state.items.length > 0 &&
@@ -286,6 +300,8 @@ export default class ReceiptHandler extends React.Component {
           }
         </div>
       </div>
+      }
+      </>
     );
   }
 }

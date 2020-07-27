@@ -34,7 +34,9 @@ class App extends Component {
           </div>
         </div>
         <div className='app-body'>
-          <ReceiptHandler />
+          <div id='receipt-input'>
+            <ReceiptHandler />
+          </div>
           <button onClick={this.handleGroceryListShow} className='show-list'>Generate grocery list.</button>
           <>
           {this.state.showGroceryList==true &&
