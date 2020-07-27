@@ -39,7 +39,7 @@ class TopNavbar extends React.Component {
           this.setState({user: userInfo});
         })
         .catch(() => {
-          sessionStorage.setItem('logged-in', '');
+          sessionStorage.removeItem('logged-in');
           this.setState({user: null});
         });
   }
