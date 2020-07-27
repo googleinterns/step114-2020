@@ -1,15 +1,15 @@
 import React from 'react';
 import {mount} from 'enzyme';
+import {enableFetchMocks} from 'jest-fetch-mock';
+enableFetchMocks();
 
 import App from './App';
 
 import './setupTests.js';
-import {enableFetchMocks} from 'jest-fetch-mock';
 
 let component;
 
 beforeEach(() => {
-  enableFetchMocks();
   component = mount(<App />);
 });
 
