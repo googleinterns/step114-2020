@@ -23,7 +23,7 @@ public class ShelfDataReaderTest {
 
   @Test
   public void readFile_inputStringInJsonFile_returnsShelfLifeString() {
-    Assert.assertEquals("Expires in 1.0 2.0 Weeks", reader.readFile("Buttermilk"));
+    Assert.assertEquals("1.0 2.0 Weeks", reader.readFile("Buttermilk"));
   }
 
   @Test
