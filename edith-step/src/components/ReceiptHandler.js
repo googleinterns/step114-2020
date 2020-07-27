@@ -159,6 +159,9 @@ export default class ReceiptHandler extends React.Component {
       price += item.price * item.quantity;
     });
     this.setState({totalPrice: price});
+    console.log('here');
+    // TODO: uncomment when store-receipt implemented
+    /**
     await axios({
       method: 'post',
       url: '/store-receipt',
@@ -172,7 +175,9 @@ export default class ReceiptHandler extends React.Component {
         items: this.state.items,
         deals: this.state.deals,
       },
-    });
+    }).catch((response) => {
+      console.log('file does not exist yet');
+    });*/
     this.setState({});
   }
 

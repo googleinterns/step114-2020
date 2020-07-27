@@ -13,10 +13,12 @@ class TopNavbar extends React.Component {
     this.state = {
       user: null,
       uploadModalBoxShow: false,
-      userInfoModalBoxShow: false
+      userInfoModalBoxShow: false,
+      groceryListShow: false,
     };
     this.handleUploadModalClose = this.handleUploadModalClose.bind(this);
     this.handleUserInfoModalBoxClose = this.handleUserInfoModalBoxClose.bind(this);
+    this.handleGroceryListShow = this.handleGroceryListShow.bind(this);
   }
   
   handleUploadModalClose() {
@@ -25,6 +27,10 @@ class TopNavbar extends React.Component {
 
   handleUserInfoModalBoxClose() {
     this.setState({userInfoModalBoxShow: false });
+  }
+
+  handleGroceryListShow() {
+    this.setState({groceryListShow: false});
   }
 
   componentDidMount() {

@@ -8,6 +8,16 @@ import './App.css';
 
 class App extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {showGroceryList: false};
+    this.handleGroceryListShow = this.handleGroceryListShow.bind(this);
+  }
+
+  handleGroceryListShow() {
+    this.setState({showGroceryList: false});
+  }
+
   render() {
     return (
       <div className='App'>
@@ -22,8 +32,13 @@ class App extends Component {
             <span className='border'>Welcome To Edith: The Best Expenditure Analyzer</span>
           </div>
         </div>
-        <ReceiptHandler />
-        <GroceryList />
+        <div className='app-body'>
+          <ReceiptHandler />
+          <button onClick={() => this.setState({showGroceryList: true})} className='show-list'>Generate grocery list.</button>
+          {this.showGroceryList &&
+            <GroceryList />
+          }
+        </div>
       </div>
     );
   }
