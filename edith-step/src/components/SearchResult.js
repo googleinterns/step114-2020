@@ -82,7 +82,7 @@ class SearchResult extends React.Component {
   createItems(itemEntity) {
     let itemElements = [];
     itemEntity.forEach((item) => {
-      itemElements.push(itemElements,
+      itemElements.push(
                     <Item
                       name={item.name}
                       price={item.price}
@@ -90,7 +90,7 @@ class SearchResult extends React.Component {
                       category={item.category}
                       expireDate={item.expireDate}
                     />);
-    })
+    });
     return itemElements;
   }
 
