@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/receipt-data")
 public class DealsServlet extends HttpServlet {
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     StringBuilder stringBuilder = new StringBuilder();
@@ -37,7 +36,6 @@ public class DealsServlet extends HttpServlet {
       response.setContentType("text/plain");
       response.getWriter().println("no deal found");
     } else {
-      System.out.println(cheapestItem.getStore());
       response.getWriter().println(cheapestItem.getStore());
       response.getWriter().println(cheapestItem.getPrice());
       response.getWriter().println(cheapestItem.getComment());
