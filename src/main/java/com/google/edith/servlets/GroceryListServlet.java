@@ -47,6 +47,6 @@ public class GroceryListServlet extends HttpServlet {
     QueryItems queryItems = new QueryItems();
     String expiredItems = queryItems.findExpiredItems(receipt);
     response.setContentType("application/json");
-    response.getWriter().println(items);
+    response.getWriter().println(expiredItems);
   }
 }

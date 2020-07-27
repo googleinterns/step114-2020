@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import ReceiptHandler from './components/ReceiptHandler';
 import TopNavbar from './components/TopNavbar';
-import GroceryList from './components/GroceryList'
+import GroceryList from './components/GroceryList';
 
 import './App.css';
 
@@ -15,7 +15,8 @@ class App extends Component {
   }
 
   handleGroceryListShow() {
-    this.setState({showGroceryList: false});
+    console.log('show list');
+    this.setState({showGroceryList: true});
   }
 
   render() {
@@ -34,10 +35,12 @@ class App extends Component {
         </div>
         <div className='app-body'>
           <ReceiptHandler />
-          <button onClick={() => this.setState({showGroceryList: true})} className='show-list'>Generate grocery list.</button>
-          {this.showGroceryList &&
+          <button onClick={this.handleGroceryListShow} className='show-list'>Generate grocery list.</button>
+          <>
+          {this.state.showGroceryList==true &&
             <GroceryList />
           }
+          </>
         </div>
       </div>
     );
