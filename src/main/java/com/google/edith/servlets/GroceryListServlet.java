@@ -37,10 +37,10 @@ public class GroceryListServlet extends HttpServlet {
       new Receipt(
         "185804764220139124118",
         "whole Foods",
-        "unknown date",
+        "2020-07-16",
         "Receipt",
         "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
-        0,
+        1,
         items);
 
 

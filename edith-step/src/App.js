@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import ReceiptHandler from './components/ReceiptHandler';
 import TopNavbar from './components/TopNavbar';
+import GroceryList from './components/GroceryList'
 
 import './App.css';
 
@@ -22,6 +23,7 @@ class App extends Component {
           </div>
         </div>
         <ReceiptHandler />
+        <GroceryList />
       </div>
     );
   }
