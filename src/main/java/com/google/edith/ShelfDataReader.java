@@ -70,15 +70,19 @@ public class ShelfDataReader {
     Gson gson = new Gson();
     String result = "";
     
-    for (int i = 5; i < 27; i++){
-      JsonObject productTimeElement = product.get(i).getAsJsonObject();
+    for (int i = 5; i < 27; i++) {
+      JsonObject productTimeElement;
+      try {
+        productTimeElement = product.get(i).getAsJsonObject();
+      } catch (IndexOutOfBoundsException e) {
+        break;
+      }
       String json = gson.toJson(productTimeElement);
       String[] jsonKeyValuePair = json.split(":");
 
       if (jsonKeyValuePair.length == 2) {
         String expireData = jsonKeyValuePair[1];
         expireData = expireData.substring(0, expireData.length()-1);
-        System.out.println(expireData);
         try {
           Double.parseDouble(expireData);
           result += expireData + " ";
@@ -90,6 +94,7 @@ public class ShelfDataReader {
         }
       }
     }
+
     result = result.substring(0, result.length()-1);
     return result;
   }
