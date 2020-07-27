@@ -18,6 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -231,16 +233,14 @@ public final class UserInsightsTest {
   /**
    * Creates a list of Item keys
    *
-   * @param startIndex the number of the first element in the list
-   * @param endIndex the number of the last element in the list
+   * @param start the number of the first element in the list
+   * @param count the number of the elements after first element
    * @return a list of keys with a number assigned to each of them "item0, item1... itemN"
    */
-  private List<Key> createTestKeyList(int startIndex, int endIndex) {
-    List<Key> items = new ArrayList<>();
-    for (int i = startIndex; i < endIndex; i++) {
-      items.add(KeyFactory.createKey("Item", "Item" + i));
-    }
-    return items;
+  private List<Key> createTestKeyList(int start, int count) {
+    return IntStream.range(start, start + count)
+        .mapToObj(i -> KeyFactory.createKey("Item", "Item" + i))
+        .collect(Collectors.toList());
   }
 
   /**
