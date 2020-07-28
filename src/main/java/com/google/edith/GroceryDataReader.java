@@ -41,14 +41,14 @@ public final class GroceryDataReader {
       GroceryNameProcessor processor = new GroceryNameProcessor();
       item = processor.process(itemName);
     } catch (Exception e) {
-      System.out.println("error");
+      item = itemName;
     }
 
-    while ((record = reader.readNext()) != null) {
-      if (record[0].equals(itemName.toLowerCase())) {
-        ShelfDataReader shelfReader = new ShelfDataReader();
-        String expirationTime = shelfReader.readFile(item.toLowerCase());
+    ShelfDataReader shelfReader = new ShelfDataReader();
+    String expirationTime = shelfReader.readFile(item.toLowerCase());
 
+    while ((record = reader.readNext()) != null) {
+      if (record[0].equals(item.toLowerCase())) {
         List<DealItem> dealItems = new ArrayList<DealItem>();
         for (int i = 0; i < STORES.size(); i++) {
           DealItem dealItem = new DealItem();
@@ -56,7 +56,11 @@ public final class GroceryDataReader {
           dealItem.setPrice(record[i * 3 + 1]);
           dealItem.setWeight(record[i * 3 + 2]);
           dealItem.setComment(record[i * 3 + 3]);
-          dealItem.setExpiration(expirationTime);
+          if (!expirationTime.isEmpty()) {
+            dealItem.setExpiration(expirationTime);
+          } else {
+            dealItem.setExpiration("no shelf life data found");
+          }
           dealItems.add(dealItem);
         }
 
@@ -67,7 +71,11 @@ public final class GroceryDataReader {
     if (cheapestItem == null) {
       DealItem emptyDeal = new DealItem();
       emptyDeal.setStore("no deal found");
-      emptyDeal.setExpiration("no shelf life data found");
+      if (!expirationTime.isEmpty()) {
+        emptyDeal.setExpiration(expirationTime);
+      } else {
+        emptyDeal.setExpiration("no shelf life data found");
+      }
       return emptyDeal;
     }
     return cheapestItem;

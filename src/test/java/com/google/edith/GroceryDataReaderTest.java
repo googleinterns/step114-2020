@@ -41,4 +41,28 @@ public class GroceryDataReaderTest {
     cheapestItem = groceryReader.readFile("Coconut Milk");
     Assert.assertEquals("Trader Joe's", cheapestItem.getStore());
   }
+
+  @Test
+  public void readFile_itemHasDealNotDate_returnsDeal() throws IOException {
+    cheapestItem = groceryReader.readFile("bread crumbs");
+    Assert.assertEquals("Aldi", cheapestItem.getStore());
+  }
+
+  @Test
+  public void readFile_itemHasDealNotDate_hasNoExpiration() throws IOException {
+    cheapestItem = groceryReader.readFile("bread crumbs");
+    Assert.assertEquals("no shelf life data found", cheapestItem.getExpiration());
+  }
+
+  @Test
+  public void readFile_itemHasDateNotDeal_hasNoDeal() throws IOException {
+    cheapestItem = groceryReader.readFile("tortillas");
+    Assert.assertEquals("no deal found", cheapestItem.getStore());
+  }
+
+  @Test
+  public void readFile_itemHasDateNotDeal_returnsDate() throws IOException {
+    cheapestItem = groceryReader.readFile("tortillas");
+    Assert.assertEquals("3.0 Months", cheapestItem.getExpiration());
+  }
 }
