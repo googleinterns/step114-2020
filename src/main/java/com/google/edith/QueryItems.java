@@ -5,31 +5,21 @@ import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Finds the items on past receipts that have expired by the time of the user's next shopping trip.
  */
 public class QueryItems {
-  public String findExpiredItems(Receipt pastReceipt) {
-    Date currentDate = new Date();
-    String receiptDateString = pastReceipt.getDate();
-    Date receiptDate;
-    try {
-      receiptDate = new SimpleDateFormat("yyyy-mm-dd").parse(receiptDateString);
-    } catch (ParseException e) {
-      receiptDate = new Date();
-    }
-    long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
-    double daysPassedSinceReceipt = (timePassedSinceReceipt / (1000 * 60 * 60 * 24)) / 24;
-    List<Item> itemsToBuy = new ArrayList<Item>();
+  public String findExpiredItems(Receipt[] pastReceipts) {
+    Set<Item> itemsToBuy = new HashSet<Item>();
 
-    Receipt[] receipts = {pastReceipt};
-
-    for (Receipt receipt : receipts) {
+    for (Receipt receipt : pastReceipts) {
+      double daysPassedSinceReceipt = findTimePassed(receipt.getDate());
       Item[] items = receipt.getItems();
+
       for (Item item : items) {
         String expiration = item.getExpireDate();
 
@@ -62,5 +52,22 @@ public class QueryItems {
 
     Gson gson = new Gson();
     return gson.toJson(itemsToBuy);
+  }
+
+  /**
+   * Determines the number of days between when the receipt was stored in datastore
+   * and the current time.
+   */
+  public double findTimePassed(String receiptDateString) {
+    Date currentDate = new Date();
+    Date receiptDate;
+    try {
+      receiptDate = new SimpleDateFormat("yyyy-mm-dd").parse(receiptDateString);
+    } catch (ParseException e) {
+      receiptDate = new Date();
+    }
+    long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
+    double daysPassedSinceReceipt = (timePassedSinceReceipt / (1000 * 60 * 60 * 24)) / 24;
+    return daysPassedSinceReceipt;
   }
 }

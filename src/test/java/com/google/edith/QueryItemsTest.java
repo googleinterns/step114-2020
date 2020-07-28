@@ -35,8 +35,9 @@ public class QueryItemsTest {
             "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
             0,
             items);
+    Receipt[] receipts = {receipt};
     query = new QueryItems();
-    Assert.assertTrue(query.findExpiredItems(receipt).contains("Apple Juice"));
+    Assert.assertTrue(query.findExpiredItems(receipts).contains("Apple Juice"));
   }
 
   @Test
@@ -59,8 +60,9 @@ public class QueryItemsTest {
             "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
             0,
             items);
+    Receipt[] receipts = {receipt};
     query = new QueryItems();
-    Assert.assertTrue(query.findExpiredItems(receipt).equals("[]"));
+    Assert.assertTrue(query.findExpiredItems(receipts).equals("[]"));
   }
 
   @Test
@@ -83,7 +85,8 @@ public class QueryItemsTest {
             "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
             0,
             items);
+    Receipt[] receipts = {receipt};
     query = new QueryItems();
-    Assert.assertTrue(query.findExpiredItems(receipt).contains("Peanut Butter"));
+    Assert.assertTrue(query.findExpiredItems(receipts).contains("Peanut Butter"));
   }
 }

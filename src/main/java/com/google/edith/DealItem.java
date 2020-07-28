@@ -130,6 +130,17 @@ public final class DealItem {
     return unitPrice;
   }
 
+  public boolean equals(DealItem item) {
+    if (this.price == item.getPrice() &&
+        this.store.equals(item.getStore()) &&
+        this.weight == item.getWeight() &&
+        this.comment.equals(item.getComment()) &&
+        this.expiration.equals(item.getExpiration())) {
+          return true;
+    }
+    return false;
+  }
+
   public String getStore() {
     return store;
   }
