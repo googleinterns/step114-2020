@@ -33,6 +33,13 @@ public class DealsServlet extends HttpServlet {
     JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
     JsonArray items = inputjson.get("items").getAsJsonArray();
 
+    Gson gson = new Gson();
+    String dealItems = gson.toJson(findDeals(items));
+    response.setContentType("application/json");
+    response.getWriter().println(dealItems);
+  }
+
+  private List<DealItem> findDeals(JsonArray items) throws IOException {
     DealItem cheapestItem = null;
     List<DealItem> deals = new ArrayList<DealItem>();
     for (int i = 0; i < items.size(); i++) {
@@ -54,9 +61,6 @@ public class DealsServlet extends HttpServlet {
         deals.add(cheapestItem);
       }
     }
-    Gson gson = new Gson();
-    String dealItems = gson.toJson(deals);
-    response.setContentType("application/json");
-    response.getWriter().println(dealItems);
+    return deals;
   }
 }
