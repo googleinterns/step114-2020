@@ -75,13 +75,11 @@ public final class DealItem {
   public void setComment(String comment) {
     this.comment = comment;
   }
-  
+
   /**
-    * Input string expiration is expected to have the minimum
-    * expiration time, the maximum expiration time, and the
-    * unit of time, in no particular order. It parses the string
-    * to find the minimum expiration time and the unit, as that is
-    * the data needed to generate new grocery lists based off of.
+    * Input string expiration is expected to have the minimum expiration time, the maximum expiration 
+    * time, and the unit of time, in no particular order. It parses the string to find the minimum
+    * expiration time and the unit, as that is the data needed to generate new grocery lists based off of.
     *
     * ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
     */
@@ -95,7 +93,7 @@ public final class DealItem {
     List<Double> range = new ArrayList<Double>();
     String timeMeasurement = "";
 
-    for (String expirationPiece: expirationPieces) {
+    for (String expirationPiece : expirationPieces) {
       try {
         range.add(Double.parseDouble(expirationPiece));
       } catch (NumberFormatException e) {
@@ -104,10 +102,10 @@ public final class DealItem {
     }
 
     Double min = new Double(0);
-    if (range.size() >= 1){
+    if (range.size() >= 1) {
       min = range.get(0);
     }
-    for (Double time: range) {
+    for (Double time : range) {
       if (time < min) {
         min = time;
       }
