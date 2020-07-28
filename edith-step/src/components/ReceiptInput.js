@@ -44,7 +44,8 @@ export default class ReceiptInput extends React.Component {
     console.log(dealItem);
 
     const newDeal = dealItem === 'no deal found' ?
-      {storeName: 'no deal found', storePrice: 0} : {storeName: dealItem.store, storePrice: dealItem.price};
+      {storeName: 'no deal found', storePrice: 0} :
+      {storeName: dealItem.store, storePrice: dealItem.price};
 
     return newDeal;
   }

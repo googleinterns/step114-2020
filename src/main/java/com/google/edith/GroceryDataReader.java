@@ -43,11 +43,13 @@ public final class GroceryDataReader {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
         for (int i = 0; i < STORES.size(); i++) {
+          // Each store has 3 columns of data, so if i is the store number, the starting index of the data is i*3.
+          int storeDataStartColumn = i * 3;
           DealItem item = new DealItem();
           item.setStore(STORES.get(i));
-          item.setPrice(record[i * 3 + 1]);
-          item.setWeight(record[i * 3 + 2]);
-          item.setComment(record[i * 3 + 3]);
+          item.setPrice(record[storeDataStartColumn + 1]);
+          item.setWeight(record[storeDataStartColumn + 2]);
+          item.setComment(record[storeDataStartColumn + 3]);
           dealItems.add(item);
         }
 
