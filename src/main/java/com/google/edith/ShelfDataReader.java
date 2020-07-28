@@ -10,9 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /** Processes data file of product expiration information to populate future user grocery lists. */
 public class ShelfDataReader {
