@@ -9,7 +9,7 @@ package com.google.edith;
  * @throws MessagingException
  */
 public static Message createMessageWithEmail(MimeMessage emailContent)
-      throws MessagingException, IOException {
+    throws MessagingException, IOException {
   ByteArrayOutputStream buffer = new ByteArrayOutputStream();
   emailContent.writeTo(buffer);
   byte[] bytes = buffer.toByteArray();
