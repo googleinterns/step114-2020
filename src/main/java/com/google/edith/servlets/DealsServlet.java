@@ -39,6 +39,7 @@ public class DealsServlet extends HttpServlet {
       cheapestItem = null;
       JsonObject item = items.get(i).getAsJsonObject();
       String itemName = item.get("name").getAsString();
+      String itemPrice = item.get("price").getAsString();
       try {
         GroceryNameProcessor processor = new GroceryNameProcessor();
         itemName = processor.process(itemName);
@@ -47,7 +48,7 @@ public class DealsServlet extends HttpServlet {
       }
 
       GroceryDataReader groceryReader = new GroceryDataReader();
-      cheapestItem = groceryReader.readFile(itemName.toLowerCase());
+      cheapestItem = groceryReader.readFile(itemName.toLowerCase(), itemPrice);
 
       if (cheapestItem != null) {
         deals.add(cheapestItem);

@@ -26,9 +26,10 @@ public final class GroceryDataReader {
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
    */
-  public DealItem readFile(String itemName) throws IOException {
+  public DealItem readFile(String itemName, String itemPrice) throws IOException {
     URL csvResource = getClass().getClassLoader().getResource("grocerydata.csv");
     File groceryDataFile = new File(csvResource.getFile());
+    double price = (double) Double.parseDouble(itemPrice);
 
     CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
     DealItem cheapestItem = null;
@@ -68,7 +69,7 @@ public final class GroceryDataReader {
       }
     }
     reader.close();
-    if (cheapestItem == null) {
+    if (cheapestItem == null || cheapestItem.getPrice() > price) {
       DealItem emptyDeal = new DealItem();
       emptyDeal.setStore("no deal found");
       if (!expirationTime.isEmpty()) {
