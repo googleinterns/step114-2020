@@ -58,7 +58,7 @@ public class QueryItems {
    * Determines the number of days between when the receipt was stored in datastore
    * and the current time.
    */
-  public double findTimePassed(String receiptDateString) {
+  private double findTimePassed(String receiptDateString) {
     Date currentDate = new Date();
     Date receiptDate;
     try {

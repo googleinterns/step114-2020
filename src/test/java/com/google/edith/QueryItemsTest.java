@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import org.junit.Assert;
@@ -42,7 +44,7 @@ public class QueryItemsTest {
 
   @Test
   public void findExpiredItems_notExpiredItem_doesntDisplayExpiredItem() {
-    Item receiptItem =
+    receiptItem =
         new Item("185804764220139124118",
             "Peanut Butter",
             (float) 5.99,
@@ -67,7 +69,7 @@ public class QueryItemsTest {
 
   @Test
   public void findExpiredItems_expiredItemInWeeks_displaysExpiredItem() {
-    Item receiptItem =
+    receiptItem =
         new Item("185804764220139124118",
             "Peanut Butter",
             (float) 5.99,
@@ -88,5 +90,51 @@ public class QueryItemsTest {
     Receipt[] receipts = {receipt};
     query = new QueryItems();
     Assert.assertTrue(query.findExpiredItems(receipts).contains("Peanut Butter"));
+  }
+
+  @Test
+  public void findExpiredItems_duplicateItemsInReceipt_onlyDisplaysOne() {
+    receiptItem =
+        new Item("185804764220139124118",
+            "Peanut Butter",
+            (float) 5.99,
+            1,
+            "unknown category",
+            "1.0 Weeks");
+    items = new Item[1];
+    items[0] = receiptItem;
+    receipt =
+        new Receipt(
+            "185804764220139124118",
+            "whole Foods",
+            "2020-07-17",
+            "Receipt",
+            "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+            0,
+            items);
+    Item receiptItem2 =
+        new Item("185804764220139124118",
+            "Peanut Butter",
+            (float) 5.99,
+            1,
+            "unknown category",
+            "1.0 Weeks");
+    Item[] items2 = new Item[1];
+    items2[0] = receiptItem2;
+    Receipt receipt2 =
+        new Receipt(
+            "185804764220139124118",
+            "whole Foods",
+            "2020-07-17",
+            "Receipt",
+            "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+            0,
+            items2);
+    Receipt[] receipts = {receipt, receipt2};
+    query = new QueryItems();
+    String json = query.findExpiredItems(receipts);
+    JsonParser parser = new JsonParser();
+    JsonArray inputJson = parser.parse(json).getAsJsonArray();
+    Assert.assertTrue(inputJson.size() == 1);
   }
 }

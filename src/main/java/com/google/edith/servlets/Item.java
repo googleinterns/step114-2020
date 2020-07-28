@@ -35,6 +35,25 @@ public class Item {
     this.expireDate = expireDate;
   }
 
+  @Override
+  public boolean equals(Object object) {
+    Item item = (Item) object;
+    if (this.price == item.getPrice() &&
+        this.name.equals(item.getName()) &&
+        this.expireDate.equals(item.getExpireDate())) {
+          return true;
+    }
+    return false;
+  }
+  
+  @Override
+  public int hashCode() {
+    int hashcode = 0;
+    hashcode = (int) price*20;
+    hashcode += this.name.hashCode();
+    return hashcode;
+  }
+
   public String getUserId() {
     return this.userId;
   }
