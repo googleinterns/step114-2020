@@ -42,10 +42,11 @@ export default class ReceiptInput extends React.Component {
     });
     // TODO: Implement enum.
     const dealItem = response.data;
+    console.log(dealItem);
 
     const newDeal = dealItem === 'NO_STORE' ?
       {storeName: 'no deal found', storePrice: 0} :
-      {storeName: dealItem.store, storePrice: dealItem.price};
+      {storeName: dealItem.storeName, storePrice: dealItem.price};
 
     return newDeal;
   }
@@ -66,7 +67,7 @@ export default class ReceiptInput extends React.Component {
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
 
-    const dealMessage = newDeal.storeName == 'no deal found' ||
+    const dealMessage = newDeal.storeName == 'NO_STORE' ||
       newDeal.storePrice > this.state.itemPrice ?
       'no deal found' :
       `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
