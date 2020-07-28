@@ -84,6 +84,7 @@ class SearchResult extends React.Component {
     itemEntity.forEach((item) => {
       itemElements.push(
                     <Item
+                      key={`${item.name} ${item.price}`}
                       name={item.name}
                       price={item.price}
                       quantity={item.quantity}
@@ -99,6 +100,7 @@ class SearchResult extends React.Component {
     receiptsEntity.forEach((receipt) => {
       receiptElements.push(
                       <Receipt
+                        key={receipt.fileUrl}
                         name={receipt.name}
                         fileUrl={receipt.fileUrl}
                         storeName={receipt.storeName}

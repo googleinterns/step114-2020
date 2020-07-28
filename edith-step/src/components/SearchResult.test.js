@@ -54,6 +54,7 @@ describe('When api call response is of receipt', () => {
 
   test('receipts state is to be receipt object', () => {
     expect(component.state('receipts')).toStrictEqual(receipt);
+    expect(component.state('items')).toStrictEqual([]);
   });
 });
 
@@ -79,6 +80,7 @@ describe('When api call response is of item', () => {
   });
 
   test('items state is to be item object', () => {
+    expect(component.state('receipts')).toStrictEqual([]);
     expect(component.state('items')).toStrictEqual(item);
   });
 });
