@@ -2,14 +2,44 @@ package com.google.edith;
 
 /** Represents items of the same type from different stores in order to compare them. */
 public final class DealItem {
-  private String store;
+  enum Store {
+    ALDI,
+    KROGER,
+    TRADER_JOES,
+    PUBLIX,
+    WALMART,
+    NO_STORE;
+  }
+
+  private Store store;
+  private String storeName;
   private double price;
   private double weight;
   private String comment;
   private double unitPrice;
 
-  public void setStore(String store) {
+  public void setStore(Store store) {
     this.store = store;
+    switch (store) {
+      case ALDI:
+        this.storeName = "Aldi";
+        break;
+      case KROGER:
+        this.storeName = "Kroger";
+        break;
+      case TRADER_JOES:
+        this.storeName = "Trader Joe's";
+        break;
+      case PUBLIX:
+        this.storeName = "Publix";
+        break;
+      case WALMART:
+        this.storeName = "Walmart";
+        break;
+      default:
+        this.storeName = "NO_STORE";
+        break;
+    }
   }
 
   /**
@@ -87,7 +117,7 @@ public final class DealItem {
   }
 
   public String getStore() {
-    return store;
+    return storeName;
   }
 
   public Double getPrice() {

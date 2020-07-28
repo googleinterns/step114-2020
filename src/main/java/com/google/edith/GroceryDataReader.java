@@ -1,6 +1,7 @@
 package com.google.edith;
 
 import com.google.common.collect.ImmutableList;
+import com.google.edith.DealItem.Store;
 import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,13 +16,13 @@ import java.util.List;
  */
 public final class GroceryDataReader {
 
-  private static final String ALDI = "Aldi";
-  private static final String KROGER = "Kroger";
-  private static final String TRADER_JOES = "Trader Joe's";
-  private static final String PUBLIX = "Publix";
-  private static final String WALMART = "Walmart";
-  private static final ImmutableList<String> STORES =
-      ImmutableList.of(ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART);
+  private static final Store ALDI = Store.ALDI;
+  private static final Store KROGER = Store.KROGER;
+  private static final Store TRADER_JOES = Store.TRADER_JOES;
+  private static final Store PUBLIX = Store.PUBLIX;
+  private static final Store WALMART = Store.WALMART;
+  private static final Store NO_STORE = Store.NO_STORE;
+  private static final Store[] STORES = {ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART};
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -42,11 +43,11 @@ public final class GroceryDataReader {
       if (record[0].equals(itemName)) {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
-        for (int i = 0; i < STORES.size(); i++) {
+        for (int i = 0; i < STORES.length; i++) {
           // Each store has 3 columns of data, so if i is the store number, the starting index of the data is i*3.
           int storeDataStartColumn = i * 3;
           DealItem item = new DealItem();
-          item.setStore(STORES.get(i));
+          item.setStore(STORES[i]);
           item.setPrice(record[storeDataStartColumn + 1]);
           item.setWeight(record[storeDataStartColumn + 2]);
           item.setComment(record[storeDataStartColumn + 3]);
@@ -57,6 +58,10 @@ public final class GroceryDataReader {
       }
     }
     reader.close();
+    if (cheapestItem == null) {
+      cheapestItem = new DealItem();
+      cheapestItem.setStore(NO_STORE);
+    }
     return cheapestItem;
   }
 

@@ -14,7 +14,29 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet that takes the user input from the receipt form and uses it to retrieve the best deal.
  */
 @WebServlet("/receipt-data")
+
 public class DealsServlet extends HttpServlet {
+
+  enum Stores {
+    ALDI("Aldi"),
+    KROGER("Kroger"),
+    TRADER_JOES("Trader Joe's"),
+    PUBLIX("Publix"),
+    WALMART("Walmart"),
+    NO_STORE("NO_STORE");
+
+    private final String storeName;
+
+    private Stores(String storeName) {
+      this.storeName = storeName;
+    }
+       
+    @Override
+    public String toString() {
+      return this.storeName;
+    }
+  }
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     StringBuilder stringBuilder = new StringBuilder();
@@ -33,14 +55,9 @@ public class DealsServlet extends HttpServlet {
     GroceryDataReader groceryReader = new GroceryDataReader();
     DealItem cheapestItem = groceryReader.readFile(itemName);
 
-    if (cheapestItem == null) {
-      response.setContentType("text/plain");
-      response.getWriter().println("no deal found");
-    } else {
-      Gson gson = new Gson();
-      String responseJson = gson.toJson(cheapestItem);
-      response.setContentType("application/json");
-      response.getWriter().println(responseJson);
-    }
+    Gson gson = new Gson();
+    String responseJson = gson.toJson(cheapestItem);
+    response.setContentType("application/json");
+    response.getWriter().println(responseJson);
   }
 }
