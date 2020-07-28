@@ -40,7 +40,7 @@ export default class ReceiptInput extends React.Component {
         itemQuantity: quantity,
       },
     });
-
+    // TODO: Implement enum.
     const dealItem = response.data;
     const newDeal = dealItem === 'no deal found' ?
       {storeName: 'no deal found', storePrice: 0} :
