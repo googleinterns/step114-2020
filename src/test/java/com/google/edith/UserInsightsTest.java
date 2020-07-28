@@ -231,7 +231,7 @@ public final class UserInsightsTest {
   }
 
   /**
-   * Creates a list of Item keys
+   * Creates a list of Item keys.
    *
    * @param start the number of the first element in the list
    * @param count the number of the elements after first element
