@@ -45,7 +45,7 @@ export default class ReceiptInput extends React.Component {
     const newDeal = dealItem === 'no deal found' ?
       {storeName: 'no deal found', storePrice: 0} :
       {storeName: dealItem.store, storePrice: dealItem.price};
-      
+
     return newDeal;
   }
 
@@ -65,8 +65,8 @@ export default class ReceiptInput extends React.Component {
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
 
-    const dealMessage = newDeal.storeName == 'no deal found' || 
-      newDeal.storePrice > this.state.itemPrice ? 
+    const dealMessage = newDeal.storeName == 'no deal found' ||
+      newDeal.storePrice > this.state.itemPrice ?
       'no deal found' :
       `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
 
