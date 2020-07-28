@@ -40,13 +40,12 @@ export default class ReceiptInput extends React.Component {
         itemQuantity: quantity,
       },
     });
-    const dealItem = response.data;
-    console.log(dealItem);
 
+    const dealItem = response.data;
     const newDeal = dealItem === 'no deal found' ?
       {storeName: 'no deal found', storePrice: 0} :
       {storeName: dealItem.store, storePrice: dealItem.price};
-
+      
     return newDeal;
   }
 
@@ -65,15 +64,11 @@ export default class ReceiptInput extends React.Component {
 
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
-    let dealMessage;
-    if (newDeal.storeName == 'no deal found' ||
-        newDeal.storePrice > this.state.itemPrice) {
-      dealMessage = 'no deal found';
-    } else {
-      dealMessage = 'Purchase at ' +
-      newDeal.storeName + ' for $' +
-      newDeal.storePrice + '.';
-    }
+
+    const dealMessage = newDeal.storeName == 'no deal found' || 
+      newDeal.storePrice > this.state.itemPrice ? 
+      'no deal found' :
+      `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
 
     const newItem = {
       itemName: this.state.itemName,
@@ -164,13 +159,9 @@ export default class ReceiptInput extends React.Component {
             </div>
           </div>
         </form>
-        <div className="row">
-          <div className="col-lg-5">
-            {this.state.items.length > 0 &&
-            <GroceryList items={this.state.items}/>
-            }
-          </div>
-        </div>
+        {this.state.items.length > 0 &&
+          <GroceryList items={this.state.items}/>
+        }
       </div>
     );
   }
@@ -187,8 +178,8 @@ const GroceryList = createReactClass({
   render() {
     const props = this.props;
     return (
-      <div id="grocery-list">
-        <ul className="list-group col-lg-8">
+      <div id="grocery-list" className="list-group">
+        <ul className="list-group col-lg-3">
           <li className={
             'h-50 list-group-item d-flex' +
             'justify-content-between align-items-center'}>
