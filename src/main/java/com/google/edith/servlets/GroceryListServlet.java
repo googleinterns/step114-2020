@@ -3,7 +3,6 @@ package com.google.edith;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import java.io.IOException;
-import java.util.Date;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,25 +14,25 @@ public class GroceryListServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // TODO: replace this with call to prashant's servlet
     Item receiptItem =
-      new Item(
-          "185804764220139124118",
-          "Apple Juice",
-          (float) 5.99,
-          1,
-          "unknown category",
-          "6.0 Days");
+        new Item(
+            "185804764220139124118",
+            "Apple Juice",
+            (float) 5.99,
+            1,
+            "unknown category",
+            "6.0 Days");
 
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
-      new Receipt(
-          "185804764220139124118",
-          "whole Foods",
-          "2020-07-16",
-          "Receipt",
-          "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
-          1,
-          items);
+        new Receipt(
+            "185804764220139124118",
+            "whole Foods",
+            "2020-07-16",
+            "Receipt",
+            "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+            1,
+            items);
 
 
     QueryItems queryItems = new QueryItems();

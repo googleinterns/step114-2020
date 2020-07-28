@@ -1,6 +1,5 @@
 package com.google.edith;
 
-// Imports the Google Cloud client library
 import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
 import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
 import com.google.cloud.language.v1.Document;
@@ -16,7 +15,7 @@ public class GroceryNameProcessor {
   public String process(String text) throws Exception {
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc =
-        Document.newBuilder().setContent(text.toLowerCase()).setType(Type.PLAIN_TEXT).build();
+          Document.newBuilder().setContent(text.toLowerCase()).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =
           AnalyzeEntitiesRequest.newBuilder()
               .setDocument(doc)
