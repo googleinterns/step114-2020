@@ -46,9 +46,6 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     if (loginService.checkUserLoggedIn()) {
-      UserService userService = UserServiceFactory.getUserService();
-      String userEmail = userService.getCurrentUser().getEmail();
-
       String json = loginService.createJsonOfUserInfo();
       response.setContentType("application/json");
       response.getWriter().println(json);

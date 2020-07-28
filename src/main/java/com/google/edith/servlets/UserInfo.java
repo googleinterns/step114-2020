@@ -27,4 +27,8 @@ public final class UserInfo {
     this.userId = user.getUserId();
     this.logOutUrl = logOutUrl;
   }
+
+  public String getEmail() {
+    return email;
+  }
 }
