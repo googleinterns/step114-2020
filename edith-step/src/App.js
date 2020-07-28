@@ -12,23 +12,13 @@ class App extends Component {
     this.state = {
       showSearchResults: false,
     }
-
-    this.handleSearchResult = this.handleSearchResult.bind(this)
   };
-
-  handleSearchResult() {
-    this.setState({
-      showSearchResults: true
-    })
-  }
 
   render() {
  return (
       <div className='App'>
         <div className='App-header'>
-          <TopNavbar 
-            handleSearchResult={this.handleSearchResult}
-          />
+          <TopNavbar />
         </div>
         <div className='background-image-0'>
           <div className='scroll-down border'>

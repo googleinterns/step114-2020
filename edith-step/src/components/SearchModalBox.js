@@ -12,10 +12,6 @@ class SearchModalBox extends React.Component {
     super(props);
   }
   
-  handleSearchResult() {
-    this.props.handleSearchResult();
-  }
-
   render() {
     return (
       <Modal
@@ -90,7 +86,6 @@ class SearchModalBox extends React.Component {
               className='submit'
               variant='primary'
               type='submit'
-              onClick = {this.handleSearchResult}
             >
               Submit
             </Button>

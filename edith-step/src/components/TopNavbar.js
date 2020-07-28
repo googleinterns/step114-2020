@@ -73,7 +73,6 @@ class TopNavbar extends React.Component {
                 <SearchModalBox
                   show={this.state.searchBoxShow}
                   handleSearchModalBoxClose={this.handleSearchModalBoxClose}
-                  handleSearchResult={this.props.handleSearchResult}
                 />
                 <Dropdown className='dropdowns'>
                   <Dropdown.Toggle variant='dark' id='dropdown-basic' className='dropdown-toggle'>
