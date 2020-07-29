@@ -9,15 +9,19 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.UserInsights;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -96,11 +100,13 @@ public final class UserInsightsTest {
   public void updateUserStats_whenNonEmpty_addsNewItems() {
     // The Items property in thie UserStats entity should be equal to
     // {@code items} + {@code items2}
-    List<Key> items = createTestKeyList(0, 5);
+    List<Key> items1 = createTestKeyList(0, 5);
     List<Key> items2 = createTestKeyList(5, 10);
-    userInsights.updateUserStats(items);
-    userInsights.updateUserStats(items2);
+    List<Key> items = new ArrayList<>(items1);
     items.addAll(items2);
+    userInsights.updateUserStats(items1);
+    userInsights.updateUserStats(items2);
+    // items.addAll(items2);
     Assert.assertEquals(
         items,
         datastore
@@ -229,18 +235,19 @@ public final class UserInsightsTest {
   }
 
   /**
-   * Creates a list of Item keys
+   * Creates a list of Item keys.
    *
-   * @param startIndex the number of the first element in the list
-   * @param endIndex the number of the last element in the list
-   * @return a list of keys with a number assigned to each of them "item0, item1... itemN"
+   * @param start the number of the first element in the list
+   * @param count the number of the elements after first element
+   * @return an immutableList of keys with a number assigned to each of them "item0, item1... itemN"
    */
-  private List<Key> createTestKeyList(int startIndex, int endIndex) {
-    List<Key> items = new ArrayList<>();
-    for (int i = startIndex; i < endIndex; i++) {
-      items.add(KeyFactory.createKey("Item", "Item" + i));
-    }
-    return items;
+  private List<Key> createTestKeyList(int start, int count) {
+    // System.out.println(ImmutableList.class);
+    List<Key> keys = IntStream.range(start, start + count)
+        .mapToObj(i -> KeyFactory.createKey("Item", "Item" + i))
+        .collect(Collectors.toList());
+    // Could not use toImmutableList().
+    return ImmutableList.copyOf(keys);
   }
 
   /**
