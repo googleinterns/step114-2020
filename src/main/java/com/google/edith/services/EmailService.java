@@ -56,7 +56,8 @@ public class EmailService {
   public void sendEmail(String subject, String body) throws IOException, GeneralSecurityException, MessagingException {
     if (userService.isUserLoggedIn()) {
       User currentUser = userService.getCurrentUser();
-      String recipient = currentUser.getEmail();
+      // String recipient = currentUser.getEmail();
+      String recipient = "livseibert@google.com";
       String userId = currentUser.getUserId();
       HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
       Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
