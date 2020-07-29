@@ -61,10 +61,10 @@ public class ShelfDataReader {
     
     /**
      * The bounds 6 and 27 correspond to the array indices in the JsonArray that contain shelf life
-     * data. More specifically, the lower bounds marks where data about the type of product stops and
-     * the data about expiration date begins, and the higher bound is where freezing data begins which,
-     * as previously mentioned, is being excluded to minimize duplicate data and very long term
-     * expiration dates.
+     * data. More specifically, the lower bounds marks where data about the type of product stops
+     * and the data about expiration date begins, and the higher bound is where freezing data begins
+     * which, as previously mentioned, is being excluded to minimize duplicate data and very long
+     * term expiration dates.
      */
     for (int i = 6; i < 27; i++) {
       JsonObject productTimeElement;
