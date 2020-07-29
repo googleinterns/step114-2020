@@ -15,7 +15,6 @@ import com.google.edith.servlets.UserInsights;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,9 +242,10 @@ public final class UserInsightsTest {
    */
   private List<Key> createTestKeyList(int start, int count) {
     // System.out.println(ImmutableList.class);
-    List<Key> keys = IntStream.range(start, start + count)
-        .mapToObj(i -> KeyFactory.createKey("Item", "Item" + i))
-        .collect(Collectors.toList());
+    List<Key> keys =
+        IntStream.range(start, start + count)
+            .mapToObj(i -> KeyFactory.createKey("Item", "Item" + i))
+            .collect(Collectors.toList());
     // Could not use toImmutableList().
     return ImmutableList.copyOf(keys);
   }
