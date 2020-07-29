@@ -44,21 +44,21 @@ const inSameWeek = (itemDate, dateSelection) => {
  * and sets other phsyical attributes  
  */
 async function setChart(setChartData) {
-    const fetchData = await retrieveWeekData();
-    setChartData({
-      labels: fetchData[0],
-      datasets: [
-        {
-          label: "Week Total",
-          data: fetchData[1],
-          backgroundColor: ['rgb(0, 191, 255, 0.6)', 
-                            'rgb(100, 191, 255, 0.6)',
-                            'rgb(200, 191, 255, 0.6)',
-                            'rgb(0, 0, 255, 0.6)' ],
-          borderWidth: 4
-        }
-      ]
-    });
+  const fetchData = await retrieveWeekData();
+  setChartData({
+    labels: fetchData[0],
+    datasets: [
+    {
+      label: "Week Total",
+      data: fetchData[1],
+      backgroundColor: ['rgb(0, 191, 255, 0.6)', 
+                        'rgb(100, 191, 255, 0.6)',
+                        'rgb(200, 191, 255, 0.6)',
+                        'rgb(0, 0, 255, 0.6)' ],
+      borderWidth: 4
+    }
+    ]
+  });
 }
 
 /**
@@ -136,7 +136,6 @@ const BarGraph = (props) => {
   const [chartData, setChartData] = useState({});
   setChart(setChartData);
 
-
   useEffect(() => {
     setChart();
   }, []);
@@ -196,8 +195,8 @@ const DoughnutChart = (props) => {
   const [chartData, setChartData] = useState({});
   const chart = () => {
     fetch("/user-stats-servlet")
-      .then(response => response.json())
-      .then(responseJson => {
+      .then((response) => response.json())
+      .then((responseJson) => {
         let itemNames = [];
         let itemValues = [];  
         let items = [];
@@ -211,10 +210,10 @@ const DoughnutChart = (props) => {
           } 
           props.revertAction();
         } else {
-            items = itemsList;
+          items = itemsList;
         }
         for (let i = 0; i < items.length; i++) {
-            itemNames.push(items[i].name);
+          itemNames.push(items[i].name);
         }
         for (let i = 0; i < items.length; i++) {
           const item = items[i];
@@ -236,8 +235,7 @@ const DoughnutChart = (props) => {
         console.log(err);
       });
     };
-
-
+    
   useEffect(() => {
     chart();
   }, []);
