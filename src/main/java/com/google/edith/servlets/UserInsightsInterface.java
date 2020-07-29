@@ -2,7 +2,6 @@ package com.google.edith.servlets;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import java.util.Optional;
 

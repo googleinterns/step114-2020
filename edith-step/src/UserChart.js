@@ -1,45 +1,71 @@
+/**
+ * This module contains three charts/graphs used to display user information
+ * and the helper methods used within them.
+ */
 import React, {useState, useEffect} from 'react';
 import {Line, Bar, Doughnut} from 'react-chartjs-2';
-import axios from "axios";
 require("regenerator-runtime/runtime")
 
+/**
+ * Makes a get request to "/user-stats-servlet"to receieve week information
+ * used in all three charts in this module.
+ */
 async function retrieveWeekData() {
-    const response = await fetch("/user-stats-servlet");
-    const responseJson = await response.json();
-    let weekDates = [];
-    let values = [];  
-    const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
-    weeklyAggregate.forEach(week => {
+  const response = await fetch("/user-stats-servlet");
+  const responseJson = await response.json();
+  let weekDates = [];
+  let values = [];  
+  const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
+  weeklyAggregate.forEach((week) => {
       weekDates.push(week.date);
       values.push(week.total);
-    });
-    return [weekDates, values];
+  });
+  return [weekDates, values];
 }
 
+/**
+ * Determines if {@code itemDate} is in the same as {@code dateSelection}
+ * (a week starts on Monday and ends on Sunday)
+ * @param itemDate - the date the specific item was purchased on
+ * @param dateSelection - the date to compare itemDate to
+ * @return a boolean representing whether itemDate is in the same week as dateSelection
+ */
 const inSameWeek = (itemDate, dateSelection) => {
   itemDate = new Date(itemDate);
   dateSelection = new Date(dateSelection);
   const diffTime = dateSelection - itemDate;
+  // Then length of a day is 1000ms * 60 seconds * 60 minutues * 24 hours
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
   return diffDays < 6 && diffDays > 0;
 }
 
-const setChart = (setChartData) => {
-    retrieveWeekData().then(fetchData => {
-        setChartData({
-          labels: fetchData[0],
-          datasets: [
-            {
-              label: "Week Total",
-              data: fetchData[1],
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
-              borderWidth: 4
-            }
-          ]
-        });
+/**
+ * Populates the chart data using information pulled from retrieveWeekData()
+ * and sets other phsyical attributes  
+ */
+async function setChart(setChartData) {
+    const fetchData = await retrieveWeekData();
+    setChartData({
+      labels: fetchData[0],
+      datasets: [
+        {
+          label: "Week Total",
+          data: fetchData[1],
+          backgroundColor: ['rgb(0, 191, 255, 0.6)', 'rgb(100, 191, 255, 0.6)', 'rgb(200, 191, 255, 0.6)', 'rgb(0, 0, 255, 0.6)' ],
+          borderWidth: 4
+        }
+      ]
     });
 }
 
+/**
+ * LineChart that relates weeks with the trailing total calculated for that
+ * week. Each data point can be clicked on to show a more in-depth spending
+ * for that week.
+ * @param props - contains the methods used to update/revert the state to 
+ *                display a drill-downed chart and a dateSelection variable
+ * @return React node object containing a canvas and a LineChart.
+ */
 const LineChart = (props) => {
     
   const [chartData, setChartData] = useState({});
@@ -49,6 +75,7 @@ const LineChart = (props) => {
     setChart();
   }, []);
    
+  /** returns the react node */ 
   return (
       <Line
         data={chartData}
@@ -93,6 +120,14 @@ const LineChart = (props) => {
     );
 }
 
+/**
+ * BarGraph that relates weeks with the trailing total calculated for that
+ * week. Each data point can be clicked on to show a more in-depth spending
+ * for that week.
+ * @param props - contains the methods used to update/revert the state to 
+ *                display a drill-downed chart and a dateSelection variable
+ * @return React node object containing a canvas and a BarGraph.
+ */
 const BarGraph = (props) => {
     
   const [chartData, setChartData] = useState({});
@@ -147,7 +182,12 @@ const BarGraph = (props) => {
     );
 }
 
-
+/**
+ * DoughnutChart that shows the total amount of spending for each item.
+ * @param props - contains the methods used to update/revert the state to 
+ *                display a drill-downed chart and a dateSelection variable
+ * @return React node object containing a canvas and a DoughnutChart.
+ */
 const DoughnutChart = (props) => {
     
   const [chartData, setChartData] = useState({});
@@ -199,6 +239,7 @@ const DoughnutChart = (props) => {
     chart();
   }, []);
 
+  /** returns the react node */
   return (
       <Doughnut
         data={chartData}
