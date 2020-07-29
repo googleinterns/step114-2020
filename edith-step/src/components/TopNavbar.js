@@ -45,11 +45,9 @@ class TopNavbar extends React.Component {
     fetch('/login')
         .then((response) => response.json())
         .then((userInfo) => {
-          sessionStorage.setItem('logged-in', userInfo.email);
           this.setState({user: userInfo});
         })
         .catch(() => {
-          sessionStorage.removeItem('logged-in');
           this.setState({user: null});
         });
   }
