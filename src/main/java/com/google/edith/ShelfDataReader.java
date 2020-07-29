@@ -58,7 +58,7 @@ public class ShelfDataReader {
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
     String result = "";
-    
+
     /**
      * The bounds 6 and 27 correspond to the array indices in the JsonArray that contain shelf life
      * data. More specifically, the lower bounds marks where data about the type of product stops
