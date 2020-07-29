@@ -23,7 +23,7 @@ public class ShelfDataReader {
     JsonParser jsonParser = new JsonParser();
     List<JsonArray> potentialMatches = new ArrayList<JsonArray>();
     try (FileReader reader = new FileReader(shelfLifeData)) {
-      JsonObject data = (JsonObject) jsonParser.parse(reader).getAsJsonObject();
+      JsonObject data = (JsonObject) jsonParser.parseReader(reader).getAsJsonObject();
       JsonArray sheets = data.getAsJsonArray("sheets");
       JsonObject productList = sheets.get(2).getAsJsonObject();
       JsonArray productListData = productList.getAsJsonArray("data");
@@ -42,7 +42,7 @@ public class ShelfDataReader {
       System.out.println(e.getMessage());
     }
 
-    if (potentialMatches.size() == 0) {
+    if (potentialMatches.isEmpty()) {
       return "no shelf life data found";
     } else {
       return findTime(potentialMatches.get(0));
@@ -58,8 +58,15 @@ public class ShelfDataReader {
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
     String result = "";
-
-    for (int i = 5; i < 27; i++) {
+    
+    /**
+     * The bounds 6 and 27 correspond to the array indices in the JsonArray that contain shelf life
+     * data. More specifically, the lower bounds marks where data about the type of product stops and
+     * the data about expiration date begins, and the higher bound is where freezing data begins which,
+     * as previously mentioned, is being excluded to minimize duplicate data and very long term
+     * expiration dates.
+     */
+    for (int i = 6; i < 27; i++) {
       JsonObject productTimeElement;
       try {
         productTimeElement = product.get(i).getAsJsonObject();
