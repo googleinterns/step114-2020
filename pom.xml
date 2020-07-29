@@ -118,6 +118,11 @@
       <version>3.3.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-gmail</artifactId>
+      <version>v1-rev20200720-1.30.10</version>
+    </dependency>
     <!--
     <dependency>
       <groupId>com.google.guava</groupId>

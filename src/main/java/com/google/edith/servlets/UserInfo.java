@@ -31,4 +31,8 @@ public final class UserInfo {
   public String getEmail() {
     return email;
   }
+
+  public String getUserId() {
+    return userId;
+  }
 }
