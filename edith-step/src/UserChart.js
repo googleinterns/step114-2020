@@ -51,7 +51,10 @@ async function setChart(setChartData) {
         {
           label: "Week Total",
           data: fetchData[1],
-          backgroundColor: ['rgb(0, 191, 255, 0.6)', 'rgb(100, 191, 255, 0.6)', 'rgb(200, 191, 255, 0.6)', 'rgb(0, 0, 255, 0.6)' ],
+          backgroundColor: ['rgb(0, 191, 255, 0.6)', 
+                            'rgb(100, 191, 255, 0.6)',
+                            'rgb(200, 191, 255, 0.6)',
+                            'rgb(0, 0, 255, 0.6)' ],
           borderWidth: 4
         }
       ]
