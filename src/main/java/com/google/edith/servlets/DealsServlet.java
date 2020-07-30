@@ -34,17 +34,6 @@ public class DealsServlet extends HttpServlet {
     GroceryDataReader groceryReader = new GroceryDataReader();
     DealItem cheapestItem = groceryReader.readFile(itemName);
 
-/**
-    if (cheapestItem == null) {
-      response.setContentType("text/plain");
-      response.getWriter().println("no deal found");
-    } else {
-      Gson gson = new Gson();
-      String responseJson = gson.toJson(cheapestItem);
-      response.setContentType("application/json");
-      response.getWriter().println(responseJson);
-    }
-*/
     Gson gson = new Gson();
     String responseJson = gson.toJson(cheapestItem);
     response.setContentType("application/json");
