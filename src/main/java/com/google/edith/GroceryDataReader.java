@@ -16,7 +16,7 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-  
+
   private static final String NO_EXPIRATION = "NO_EXPIRATION";
   private static final Store NO_STORE = Store.NO_STORE;
   private static final List<Store> stores =

@@ -100,7 +100,7 @@ public final class DealItem {
     * time, and the unit of time, in no particular order. It parses the string to find the minimum
     * expiration time and the unit, as that is the data needed to generate new grocery lists based off of.
     *
-    * ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
+    * <p>ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
     */
   public void setExpiration(String expiration) {
     if (expiration.equals("NO_EXPIRATION")) {
