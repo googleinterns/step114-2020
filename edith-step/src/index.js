@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'regenerator-runtime/runtime';
 import 'core-js/stable';
 import * as serviceWorker from './serviceWorker';
-// import '@babel/polyfill'
 
 ReactDOM.render(
     <React.StrictMode>
