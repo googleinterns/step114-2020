@@ -28,6 +28,6 @@ public class ShelfDataReaderTest {
 
   @Test
   public void readFile_inputStringNotInFile_returnsNoShelfLifeData() {
-    Assert.assertEquals("no shelf life data found", reader.readFile(""));
+    Assert.assertEquals("NO_EXPIRATION", reader.readFile(""));
   }
 }
