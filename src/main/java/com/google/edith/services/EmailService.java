@@ -51,7 +51,7 @@ public class EmailService {
    * If modifying these scopes, delete your previously saved tokens/ folder.
    */
   private static final List<String> SCOPES = Collections.singletonList(GmailScopes.GMAIL_LABELS);
-  private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+  private static final String CREDENTIALS_FILE_PATH = "oauth-key.json";
   
   public void sendEmail(String subject, String body) throws IOException, GeneralSecurityException, MessagingException {
     if (userService.isUserLoggedIn()) {
@@ -75,9 +75,10 @@ public class EmailService {
    * @return An authorized Credential object.
    * @throws IOException If the credentials.json file cannot be found.
    */
-  private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+  private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
     // Load client secrets.
-    InputStream in = EmailService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+    //InputStream in = EmailService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+    InputStream in = getClass().getClassLoader().getResourceAsStream(CREDENTIALS_FILE_PATH);
     if (in == null) {
       throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
     }
@@ -89,7 +90,7 @@ public class EmailService {
             .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
             .setAccessType("offline")
             .build();
-    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+    LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8080).build();
     return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
   }
 
