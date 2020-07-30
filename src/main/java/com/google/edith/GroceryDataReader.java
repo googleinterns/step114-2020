@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +16,11 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-
-  private static final Store ALDI = Store.ALDI;
-  private static final Store KROGER = Store.KROGER;
-  private static final Store TRADER_JOES = Store.TRADER_JOES;
-  private static final Store PUBLIX = Store.PUBLIX;
-  private static final Store WALMART = Store.WALMART;
   private static final Store NO_STORE = Store.NO_STORE;
-  private static final Store[] STORES = {ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART};
+  private static final List<Store> stores =
+      new ArrayList<>(
+          Arrays.asList(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART));
+  private static final ImmutableList<Store> STORES = ImmutableList.copyOf(stores);
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -43,14 +41,14 @@ public final class GroceryDataReader {
       if (record[0].equals(itemName)) {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
-        for (int i = 0; i < STORES.length; i++) {
+        for (int i = 0; i < STORES.size(); i++) {
           /**
            * Each store has 3 columns of data, so if i is the store number, the starting index of
            * the data is i*3.
            */
           int storeDataStartColumn = i * 3;
           DealItem item = new DealItem();
-          item.setStore(STORES[i]);
+          item.setStore(STORES.get(i));
           item.setPrice(record[storeDataStartColumn + 1]);
           item.setWeight(record[storeDataStartColumn + 2]);
           item.setComment(record[storeDataStartColumn + 3]);

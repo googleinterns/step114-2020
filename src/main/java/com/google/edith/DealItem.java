@@ -3,15 +3,25 @@ package com.google.edith;
 /** Represents items of the same type from different stores in order to compare them. */
 public final class DealItem {
   enum Store {
-    ALDI,
-    KROGER,
-    TRADER_JOES,
-    PUBLIX,
-    WALMART,
-    NO_STORE;
+    ALDI("Aldi"),
+    KROGER("Kroger"),
+    TRADER_JOES("Trader Joe's"),
+    PUBLIX("Publix"),
+    WALMART("Walmart"),
+    NO_STORE("NO_STORE");
+
+    private final String storeName;
+
+    private Store(String store) {
+      this.storeName = store;
+    }
+
+    @Override
+    public String toString() {
+      return storeName;
+    }
   }
 
-  private Store store;
   private String storeName;
   private double price;
   private double weight;
@@ -19,27 +29,7 @@ public final class DealItem {
   private double unitPrice;
 
   public void setStore(Store store) {
-    this.store = store;
-    switch (store) {
-      case ALDI:
-        this.storeName = "Aldi";
-        break;
-      case KROGER:
-        this.storeName = "Kroger";
-        break;
-      case TRADER_JOES:
-        this.storeName = "Trader Joe's";
-        break;
-      case PUBLIX:
-        this.storeName = "Publix";
-        break;
-      case WALMART:
-        this.storeName = "Walmart";
-        break;
-      default:
-        this.storeName = "NO_STORE";
-        break;
-    }
+    this.storeName = store.toString();
   }
 
   /**
