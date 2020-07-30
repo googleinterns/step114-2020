@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -9,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class DealsServletTest {
 
