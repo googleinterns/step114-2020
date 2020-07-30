@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 export default class ReceiptInput extends React.Component {
   constructor(props) {
@@ -9,7 +10,11 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDate = this.getDate.bind(this);
   }
-
+  
+  /**
+   * Calculates the current in yyyy-mm-dd format.
+   * @return the date in yyyy-mm-dd format
+   */
   getDate() {
       const date = new Date(Date.now());
       let month = date.getMonth() + 1;
@@ -40,7 +45,6 @@ export default class ReceiptInput extends React.Component {
       itemQuantity: 1
     }));
 
-    const axios = require('axios')
     axios({
       method: 'post',
       url: '/user-stats-servlet',

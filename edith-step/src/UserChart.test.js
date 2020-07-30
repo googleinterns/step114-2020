@@ -1,8 +1,5 @@
 import React from 'react';
-import { mount, unmount } from 'enzyme';
-import ReceiptInput from './ReceiptInput';
-import axios from 'axios';
-jest.mock('axios');
+import {mount} from 'enzyme';
 import './setupTests.js';
 import App from './App';
 import UserChart from "./UserChart";

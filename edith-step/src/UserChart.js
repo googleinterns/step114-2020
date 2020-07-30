@@ -216,4 +216,4 @@ const PieChart = () => {
   }
 
 export default LineChart
-export { BarGraph, PieChart }
+export {BarGraph, PieChart}

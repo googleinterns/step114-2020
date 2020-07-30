@@ -1,18 +1,19 @@
 import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
 import LineChart, {BarChart} from './UserChart';
-import axios from 'axios';
-//import "./App.css";
-
 
 /** Main webpage for the website. */
 class App extends Component {
   constructor() {
     super();
-    this.state = { "chartType" : LineChart }; 
+    this.state = {"chartType" : LineChart}; 
     this.updateChartType = this.updateChartType.bind(this);   
   }
 
+  /**
+   * Updates the current value in {@code state.chartType} based on the 
+   * value of {@code even}.
+   */
   updateChartType(event) {
     switch(event.target.value) {
       case "LineChart": 
@@ -27,7 +28,6 @@ class App extends Component {
   render() {
     const Chart = this.state.chartType;
     return (
-      
       <div className="App">
         <div onChange={this.updateChartType}>
           <input defaultChecked type="radio" value="LineChart" name="gender" /> Line
@@ -39,8 +39,5 @@ class App extends Component {
     );
   }
 }
-
-
-
 
 export default App;

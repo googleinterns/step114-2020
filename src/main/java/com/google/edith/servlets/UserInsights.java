@@ -39,7 +39,6 @@ public final class UserInsights implements UserInsightsInterface {
   private final Gson GSON = new Gson();
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-
   public UserInsights(String userId) {
     this.userId = userId;
     this.datastore = DatastoreServiceFactory.getDatastoreService();

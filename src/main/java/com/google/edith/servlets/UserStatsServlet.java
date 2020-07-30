@@ -5,8 +5,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.edith.servlets.UserInsights;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,9 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,20 +46,19 @@ public class UserStatsServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder stringBuilder = new StringBuilder();
     BufferedReader reader = request.getReader();
     try {
       String line;
       while ((line = reader.readLine()) != null) {
-        sb.append(line).append("\n");
+        stringBuilder.append(line).append("\n");
       }
     } finally {
       reader.close();
     }
 
-    String receiptData = sb.toString();
-    JsonParser parser = new JsonParser();
-    JsonObject json = (JsonObject) parser.parse(receiptData);
+    String receiptData = stringBuilder.toString();
+    JsonObject json = (JsonObject) JsonParser.parseReader(receiptData);
 
     Entity itemEntity = new Entity("Item");
 
