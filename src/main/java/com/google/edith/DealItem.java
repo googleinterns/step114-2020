@@ -2,14 +2,34 @@ package com.google.edith;
 
 /** Represents items of the same type from different stores in order to compare them. */
 public final class DealItem {
-  private String store;
+  enum Store {
+    ALDI("Aldi"),
+    KROGER("Kroger"),
+    TRADER_JOES("Trader Joe's"),
+    PUBLIX("Publix"),
+    WALMART("Walmart"),
+    NO_STORE("NO_STORE");
+
+    private final String storeName;
+
+    private Store(String store) {
+      this.storeName = store;
+    }
+
+    @Override
+    public String toString() {
+      return storeName;
+    }
+  }
+
+  private String storeName;
   private double price;
   private double weight;
   private String comment;
   private double unitPrice;
 
-  public void setStore(String store) {
-    this.store = store;
+  public void setStore(Store store) {
+    this.storeName = store.toString();
   }
 
   /**
@@ -42,12 +62,11 @@ public final class DealItem {
    * this.weight = 1.0 ex: Input weight '64 fl oz' -> this.weight = 64.0
    */
   public void setWeight(String weight) {
-    if (weight.isEmpty()) {
+    // Checks for length of two or less so that the substring check isn't out of bounds.
+    if (weight.isEmpty() || weight.length() <= 2) {
       this.weight = 0.0;
     } else if (weight.equals("dozen")) {
       this.weight = 12.0;
-    } else if (weight.length() == 2) {
-      this.weight = 0.0;
     } else if (weight.substring(0, 3).equals("per")) {
       this.weight = 1.0;
     } else if (weight.equals("head")) {
@@ -88,7 +107,7 @@ public final class DealItem {
   }
 
   public String getStore() {
-    return store;
+    return storeName;
   }
 
   public Double getPrice() {
