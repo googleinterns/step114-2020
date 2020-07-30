@@ -43,13 +43,15 @@ export default class ReceiptInput extends React.Component {
     });
 
     const dealItem = response.data;
+    console.log(dealItem);
 
-    const newDeal = dealItem === 'NO_STORE' ?
-      {storeName: 'No deal found.', storePrice: 0,
-        storeExpiration: 'No expiration found.'} :
+    const newDeal = dealItem.storeName === 'NO_STORE' ?
+      {storeName: 'NO_STORE', storePrice: 0,
+        itemExpiration: dealItem.expiration} :
       {storeName: dealItem.storeName, storePrice: dealItem.price,
-        storeExpiration: dealItem.expiration};
-    console.log(newDeal.itemExpiration);
+        itemExpiration: dealItem.expiration};
+
+    console.log(newDeal);
     return newDeal;
   }
 
@@ -74,9 +76,9 @@ export default class ReceiptInput extends React.Component {
       'No deal found.' :
       `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
 
-    const expirationMessage = newDeal.storeExpiration === 'No expiration found.' ?
+    const expirationMessage = newDeal.itemExpiration === 'NO_EXPIRATION' ?
       'No expiration found.' :
-      `${newDeal.storeExpiration}`;
+      `${newDeal.itemExpiration}`;
 
     const newItem = {
       itemName: this.state.itemName,

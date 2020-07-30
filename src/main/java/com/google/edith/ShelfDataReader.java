@@ -14,6 +14,7 @@ import java.util.List;
 
 /** Processes data file of product expiration information to populate future user grocery lists. */
 public class ShelfDataReader {
+  private static final String NO_EXPIRATION = "NO_EXPIRATION";
 
   /** Finds the specified product in the file. */
   public String readFile(String itemName) {
@@ -43,7 +44,7 @@ public class ShelfDataReader {
     }
 
     if (potentialMatches.isEmpty()) {
-      return "no shelf life data found";
+      return NO_EXPIRATION;
     } else {
       return findTime(potentialMatches.get(0));
     }

@@ -16,6 +16,8 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
+  
+  private static final String NO_EXPIRATION = "NO_EXPIRATION";
   private static final Store NO_STORE = Store.NO_STORE;
   private static final List<Store> stores =
       new ArrayList<>(
@@ -37,10 +39,11 @@ public final class GroceryDataReader {
     record = reader.readNext();
     record = reader.readNext();
 
+    ShelfDataReader shelfReader = new ShelfDataReader();
+    String expirationTime = shelfReader.readFile(itemName);
+
     while ((record = reader.readNext()) != null) {
       if (record[0].equals(itemName)) {
-        ShelfDataReader shelfReader = new ShelfDataReader();
-        String expirationTime = shelfReader.readFile(itemName);
 
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
@@ -55,7 +58,11 @@ public final class GroceryDataReader {
           item.setPrice(record[storeDataStartColumn + 1]);
           item.setWeight(record[storeDataStartColumn + 2]);
           item.setComment(record[storeDataStartColumn + 3]);
-          item.setExpiration(expirationTime);
+          if (!expirationTime.isEmpty()) {
+            item.setExpiration(expirationTime);
+          } else {
+            item.setExpiration(NO_EXPIRATION);
+          }
           dealItems.add(item);
         }
 
@@ -66,6 +73,11 @@ public final class GroceryDataReader {
     if (cheapestItem == null) {
       cheapestItem = new DealItem();
       cheapestItem.setStore(NO_STORE);
+      if (!expirationTime.isEmpty()) {
+        cheapestItem.setExpiration(expirationTime);
+      } else {
+        cheapestItem.setExpiration(NO_EXPIRATION);
+      }
     }
     return cheapestItem;
   }
