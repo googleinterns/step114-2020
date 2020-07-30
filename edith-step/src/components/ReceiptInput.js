@@ -23,8 +23,9 @@ export default class ReceiptInput extends React.Component {
   }
 
   /**
-   * Sends item info to the receipt-deals servlet and
+   * Sends item info to the receipt-data servlet and
    * responds with the cheapest store for that item.
+   *
    * @param {String} name item name
    * @param {double} price item price
    * @param {number} quantity item quantity
@@ -40,21 +41,23 @@ export default class ReceiptInput extends React.Component {
         itemQuantity: quantity,
       },
     });
+
     const dealItem = response.data;
 
-    const newDeal = dealItem === 'no deal found' ?
-      {storeName: 'no deal found', storePrice: 0,
-        storeExpiration: 'no expiration found'} :
-      {storeName: dealItem.store, storePrice: dealItem.price,
+    const newDeal = dealItem === 'NO_STORE' ?
+      {storeName: 'No deal found.', storePrice: 0,
+        storeExpiration: 'No expiration found.'} :
+      {storeName: dealItem.storeName, storePrice: dealItem.price,
         storeExpiration: dealItem.expiration};
-
+    console.log(newDeal.itemExpiration);
     return newDeal;
   }
 
   /**
-   * Send a post request to the receipt-data servlet
-   * with a grocery item in it every time a new item
-   * is added.
+   * Calls the getDeal function and passes it data on a particular
+   * item (name, price, quantity). The helper function returns the cheapest
+   * store for the item passed, and the items list in the state is updated
+   * to include the deal.
    * @param {Event} e Submission event.
    */
   async handleSubmit(e) {
@@ -66,22 +69,14 @@ export default class ReceiptInput extends React.Component {
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
 
-    let dealMessage;
-    if (newDeal.storeName === 'no deal found' ||
-        newDeal.storePrice > this.state.itemPrice) {
-      dealMessage = 'no deal found';
-    } else {
-      dealMessage = 'Purchase at ' +
-        newDeal.storeName + ' for $' +
-        newDeal.storePrice + '.';
-    }
+    const dealMessage = newDeal.storeName === 'NO_STORE' ||
+      newDeal.storePrice > this.state.itemPrice ?
+      'No deal found.' :
+      `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
 
-    let expirationMessage;
-    if (newDeal.storeExpiration == 'no shelf life data found') {
-      expirationMessage = 'data unavailable';
-    } else {
-      expirationMessage = newDeal.storeExpiration;
-    }
+    const expirationMessage = newDeal.storeExpiration === 'No expiration found.' ?
+      'No expiration found.' :
+      `${newDeal.storeExpiration}`;
 
     const newItem = {
       itemName: this.state.itemName,
@@ -93,7 +88,7 @@ export default class ReceiptInput extends React.Component {
     };
 
     this.setState((state) => ({
-      items: state.items.concat(newItem),
+      items: [...state.items, newItem],
       itemName: '',
       itemPrice: 0.0,
       itemQuantity: 1,
@@ -115,7 +110,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Render grocery list form and items.
-   * @return {html} grocery list form
+   * @return {React.ReactNode} React virtual DOM
    */
   render() {
     return (
@@ -175,11 +170,9 @@ export default class ReceiptInput extends React.Component {
             </div>
           </div>
         </form>
-        <div className="col-lg-8">
-          {this.state.items.length > 0 &&
+        {this.state.items.length > 0 &&
           <GroceryList items={this.state.items}/>
-          }
-        </div>
+        }
       </div>
     );
   }
@@ -196,12 +189,12 @@ const GroceryList = createReactClass({
   render() {
     const props = this.props;
     return (
-      <div id="grocery-list">
-        <ul className="list-group col-lg-10">
+      <div id="grocery-list" className="list-group col-lg-8">
+        <ul className="list-group">
           <li className={
             'h-50 list-group-item d-flex' +
             'justify-content-between align-items-center'}>
-            <span className="col-lg-1">Item</span>
+            <span className="col-lg-2">Item</span>
             <span className="badge badge-pill col-lg-2">Price</span>
             <span className="badge badge-pill col-lg-2">#</span>
             <span className="badge badge-pill col-lg-4">Deal</span>

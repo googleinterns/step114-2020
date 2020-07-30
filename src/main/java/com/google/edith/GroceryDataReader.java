@@ -1,12 +1,14 @@
 package com.google.edith;
 
 import com.google.common.collect.ImmutableList;
+import com.google.edith.DealItem.Store;
 import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,14 +16,11 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-
-  private static final String ALDI = "Aldi";
-  private static final String KROGER = "Kroger";
-  private static final String TRADER_JOES = "Trader Joe's";
-  private static final String PUBLIX = "Publix";
-  private static final String WALMART = "Walmart";
-  private static final ImmutableList<String> STORES =
-      ImmutableList.of(ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART);
+  private static final Store NO_STORE = Store.NO_STORE;
+  private static final List<Store> stores =
+      new ArrayList<>(
+          Arrays.asList(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART));
+  private static final ImmutableList<Store> STORES = ImmutableList.copyOf(stores);
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -46,11 +45,16 @@ public final class GroceryDataReader {
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
         for (int i = 0; i < STORES.size(); i++) {
+          /**
+           * Each store has 3 columns of data, so if i is the store number, the starting index of
+           * the data is i*3.
+           */
+          int storeDataStartColumn = i * 3;
           DealItem item = new DealItem();
           item.setStore(STORES.get(i));
-          item.setPrice(record[i * 3 + 1]);
-          item.setWeight(record[i * 3 + 2]);
-          item.setComment(record[i * 3 + 3]);
+          item.setPrice(record[storeDataStartColumn + 1]);
+          item.setWeight(record[storeDataStartColumn + 2]);
+          item.setComment(record[storeDataStartColumn + 3]);
           item.setExpiration(expirationTime);
           dealItems.add(item);
         }
@@ -59,6 +63,10 @@ public final class GroceryDataReader {
       }
     }
     reader.close();
+    if (cheapestItem == null) {
+      cheapestItem = new DealItem();
+      cheapestItem.setStore(NO_STORE);
+    }
     return cheapestItem;
   }
 

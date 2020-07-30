@@ -15,19 +15,16 @@
   width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.border {
+  border: none !important;
+  color: #fff;
+  font-size: 30px;
+  letter-spacing: 10px;
+  padding: 15px;
 }
 
 .scroll-down {
-  animation-delay: 1s ease-in-out 1s infinite alternate scroll-down;
+  animation: 1s ease-in-out 1s infinite alternate scroll-down;
   left: 0;
   position: absolute;
   text-align: center;

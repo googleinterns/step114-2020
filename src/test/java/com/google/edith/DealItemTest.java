@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.edith.DealItem.Store;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class DealItemTest {
 
   @Test
   public void setStore_setsStoreValueToArgument() {
-    dealItem.setStore("Walmart");
+    dealItem.setStore(Store.WALMART);
     Assert.assertEquals("Walmart", dealItem.getStore());
   }
 
