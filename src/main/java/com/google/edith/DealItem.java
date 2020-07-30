@@ -103,7 +103,7 @@ public final class DealItem {
     * ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
     */
   public void setExpiration(String expiration) {
-    if (expiration.equals("no shelf life data found")) {
+    if (expiration.equals("NO_EXPIRATION")) {
       this.expiration = expiration;
       return;
     }

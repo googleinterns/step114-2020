@@ -95,7 +95,7 @@ public class DealItemTest {
 
   @Test
   public void setExpiration_randomString_setsExpirationNotFound() {
-    dealItem.setExpiration("no shelf life data found");
-    Assert.assertEquals("no shelf life data found", dealItem.getExpiration());
+    dealItem.setExpiration("NO_EXPIRATION");
+    Assert.assertEquals("NO_EXPIRATION", dealItem.getExpiration());
   }
 }
