@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
+import 'regenerator-runtime/runtime';
 
 /**
  * Displays form that takes in user input for a dynamic number
@@ -21,34 +22,63 @@ export default class ReceiptInput extends React.Component {
   }
 
   /**
-   * Send a post request to the receipt-data servlet
-   * with a grocery item in it every time a new item
-   * is added.
+   * Sends item info to the receipt-data servlet and
+   * responds with the cheapest store for that item.
+   *
+   * @param {String} name item name
+   * @param {double} price item price
+   * @param {number} quantity item quantity
+   * @return {Object} newDeal cheapest item
+   */
+  async getDeal(name, price, quantity) {
+    const response = await axios({
+      method: 'post',
+      url: '/receipt-data',
+      data: {
+        itemName: name,
+        itemPrice: price,
+        itemQuantity: quantity,
+      },
+    });
+    // TODO: Implement enum.
+    const dealItem = response.data;
+    console.log(dealItem);
+
+    const newDeal = dealItem === 'NO_STORE' ?
+      {storeName: 'No deal found.', storePrice: 0} :
+      {storeName: dealItem.storeName, storePrice: dealItem.price};
+
+    return newDeal;
+  }
+
+  /**
+   * Calls the getDeal function and passes it data on a particular
+   * item (name, price, quantity). The helper function returns the cheapest
+   * store for the item passed, and the items list in the state is updated
+   * to include the deal.
    * @param {Event} e Submission event.
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
     if (this.state.itemName.length === 0) {
       return;
     }
+
+    const newDeal = await this.getDeal(this.state.itemName,
+        this.state.itemPrice, this.state.itemQuantity);
+
+    const dealMessage = newDeal.storeName == 'NO_STORE' ||
+      newDeal.storePrice > this.state.itemPrice ?
+      'No deal found.' :
+      `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
+      itemDeal: dealMessage,
       id: Date.now(),
     };
-
-    axios({
-      method: 'post',
-      url: '/receipt-data',
-      data: {
-        itemName: this.state.itemName,
-        itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity,
-      },
-    }).then((response) => {
-      console.log(response);
-    });
 
     this.setState((state) => ({
       items: state.items.concat(newItem),
@@ -71,7 +101,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Render grocery list form and items.
-   * @return {html} grocery list form
+   * @return {React.ReactNode} React virtual DOM
    */
   render() {
     return (
@@ -132,7 +162,7 @@ export default class ReceiptInput extends React.Component {
           </div>
         </form>
         {this.state.items.length > 0 &&
-        <GroceryList items={this.state.items} />
+          <GroceryList items={this.state.items}/>
         }
       </div>
     );
@@ -150,28 +180,32 @@ const GroceryList = createReactClass({
   render() {
     const props = this.props;
     return (
-      <div id="grocery-list">
+      <div id="grocery-list" className="list-group">
         <ul className="list-group col-lg-3">
           <li className={
             'h-50 list-group-item d-flex' +
             'justify-content-between align-items-center'}>
-            <span className="col-lg-1">Item</span>
-            <span className="badge badge-pill col-lg-1">Price</span>
-            <span className="badge badge-pill col-lg-1">#</span>
+            <span className="col-lg-2">Item</span>
+            <span className="badge badge-pill col-lg-2">Price</span>
+            <span className="badge badge-pill col-lg-2">#</span>
+            <span className="badge badge-pill col-lg-4">Deal</span>
           </li>
           {props.items.map((item) => (
             <li className={
               'h-50 list-group-item d-flex' +
               'justify-content-between align-items-center'}
             key={item.id}>
-              <span className="item-name col-lg-1">
+              <span className="item-name col-lg-2">
                 {item.itemName}
               </span>
-              <span className="item-price badge badge-pill col-lg-1">
+              <span className="item-price badge badge-pill col-lg-2">
                 {item.itemPrice}
               </span>
-              <span className="item-quantity badge badge-pill col-lg-1">
+              <span className="item-quantity badge badge-pill col-lg-2">
                 {item.itemQuantity}
+              </span>
+              <span className="item-deal badge badge-pill col-lg-4">
+                {item.itemDeal}
               </span>
             </li>
           ))}
