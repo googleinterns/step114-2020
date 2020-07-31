@@ -99,7 +99,7 @@ class FileUploadModalBox extends React.Component {
 
 FileUploadModalBox.propTypes = {
   show: PropTypes.bool,
-  handleModalClose: PropTypes.func,
+  handleUploadModalClose: PropTypes.func,
 };
 
 export default FileUploadModalBox;

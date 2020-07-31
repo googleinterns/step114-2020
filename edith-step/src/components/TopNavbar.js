@@ -20,24 +20,25 @@ class TopNavbar extends React.Component {
     this.state = {
       user: null,
       uploadModalBoxShow: false,
-      userInfoModalBoxShow: false
+      userInfoModalBoxShow: false,
     };
     this.handleUploadModalClose = this.handleUploadModalClose.bind(this);
-    this.handleUserInfoModalBoxClose = this.handleUserInfoModalBoxClose.bind(this);
+    this.handleUserInfoModalBoxClose =
+        this.handleUserInfoModalBoxClose.bind(this);
   }
 
   /**
    * Call back function to close the file upload modal box.
    */
   handleUploadModalClose() {
-    this.setState({uploadModalBoxShow: false });
+    this.setState({uploadModalBoxShow: false});
   }
 
   /**
    * Call back function to close the user upload modal box.
    */
   handleUserInfoModalBoxClose() {
-    this.setState({userInfoModalBoxShow: false });
+    this.setState({userInfoModalBoxShow: false});
   }
 
   /**
@@ -49,6 +50,7 @@ class TopNavbar extends React.Component {
 
   /**
    * Returns display name as username if set other wise email.
+   * @return {String}  displayName name to display for the user
    */
   displayName() {
     const displayName = this.state.user.userName || this.state.user.email;
@@ -105,10 +107,10 @@ class TopNavbar extends React.Component {
                     className='upload-receipt'>
                     Upload Receipt
                   </Dropdown.Item>
-                   <FileUploadModalBox
-                      show={this.state.uploadModalBoxShow}
-                      handleUploadModalClose={this.handleUploadModalClose}
-                    />
+                  <FileUploadModalBox
+                    show={this.state.uploadModalBoxShow}
+                    handleUploadModalClose={this.handleUploadModalClose}
+                  />
                   <Dropdown.Item
                     onClick={() => this.setState({userInfoModalBoxShow: true})}
                     className='update-info'>
@@ -116,7 +118,8 @@ class TopNavbar extends React.Component {
                   </Dropdown.Item>
                   <UserInfoModalBox
                     show={this.state.userInfoModalBoxShow}
-                    handleUserInfoModalBoxClose={this.handleUserInfoModalBoxClose}
+                    handleUserInfoModalBoxClose=
+                      {this.handleUserInfoModalBoxClose}
                   />
                   <Dropdown.Item
                     className='invite-friends'>

@@ -1,17 +1,16 @@
-import {enableFetchMocks} from 'jest-fetch-mock'
+import {enableFetchMocks} from 'jest-fetch-mock';
 enableFetchMocks();
 import React from 'react';
 import {shallow} from 'enzyme';
 
 import UserInfoModalBox from './UserInfoModalBox';
 
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 let form;
 
 describe('UserInfoModalBox must', () => {
-  
   beforeEach(() => {
     component = shallow(<UserInfoModalBox />);
     form = component.find('Form');

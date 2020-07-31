@@ -6,12 +6,23 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 
+/**
+ * A react-bootstrap modal component with first name, last name, user name
+ * and favorite store field.
+ */
 class UserInfoModalBox extends React.Component {
-  
+  /**
+  * @constructor
+  * @param {Object}  props for React component.
+  */
   constructor(props) {
     super(props);
   }
-  
+
+  /**
+   * Renders a modal box.
+   *  @return { React.ReactNode } React virtual DOM.
+   */
   render() {
     return (
       <Modal
@@ -77,5 +88,10 @@ class UserInfoModalBox extends React.Component {
     );
   }
 }
+
+UserInfoModalBox.propTypes = {
+  show: PropTypes.bool,
+  handleUserInfoModalBoxClose: PropTypes.func,
+};
 
 export default UserInfoModalBox;
