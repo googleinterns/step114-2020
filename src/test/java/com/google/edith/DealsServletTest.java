@@ -61,7 +61,6 @@ public class DealsServletTest {
 
     verify(request, atLeast(1)).getReader();
     writer.flush();
-    System.out.println(stringWriter.toString());
     Assert.assertTrue(stringWriter.toString().contains("Kroger"));
   }
 
@@ -107,7 +106,6 @@ public class DealsServletTest {
 
     verify(request, atLeast(1)).getReader();
     writer.flush();
-    System.out.println(stringWriter.toString());
     Assert.assertTrue(stringWriter.toString().contains("no deal found"));
   }
 }

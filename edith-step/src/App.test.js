@@ -1,12 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-import { mount } from 'enzyme';
-
-import App from './App';
-
-import './setupTests.js'
-import { enableFetchMocks } from 'jest-fetch-mock'
-=======
 import {mount} from 'enzyme';
 import {enableFetchMocks} from 'jest-fetch-mock';
 enableFetchMocks();
@@ -14,18 +6,12 @@ enableFetchMocks();
 import App from './App';
 
 import './setupTests.js';
->>>>>>> 22c5aef8ee5657d248d74e9ea2f946f3ad34cce2
 
 let component;
 
 beforeEach(() => {
   component = mount(<App />);
-<<<<<<< HEAD
-  enableFetchMocks();
-})
-=======
 });
->>>>>>> 22c5aef8ee5657d248d74e9ea2f946f3ad34cce2
 
 afterEach(() => {
   component.unmount();
@@ -44,8 +30,8 @@ describe('App component', () => {
   });
 
   // Checks ReceiptInput is in App.
-  test('contains ReceiptInput component', () => {
-    const ReceiptInput = component.find('ReceiptInput');
+  test('contains ReceiptHandler component', () => {
+    const ReceiptInput = component.find('ReceiptHandler');
     expect(ReceiptInput.exists()).toBe(true);
   });
 
