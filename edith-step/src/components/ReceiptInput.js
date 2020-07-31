@@ -43,7 +43,6 @@ export default class ReceiptInput extends React.Component {
     });
 
     const dealItem = response.data;
-    console.log(dealItem);
 
     const newDeal = dealItem.storeName === 'NO_STORE' ?
       {storeName: 'NO_STORE', storePrice: 0,
@@ -51,7 +50,6 @@ export default class ReceiptInput extends React.Component {
       {storeName: dealItem.storeName, storePrice: dealItem.price,
         itemExpiration: dealItem.expiration};
 
-    console.log(newDeal);
     return newDeal;
   }
 
