@@ -72,12 +72,15 @@ public final class LoginServletTest {
   // Check if the servlet calls getWriter() method.
   public void checks_ifUserLoggedIn_returnsUserInfo() throws IOException, ServletException {
     loggedInTestHelper.setUp();
-    assertTrue(userService.isUserLoggedIn());
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
+    
     loginServlet.doGet(request, response);
+    
     verify(response, atLeast(1)).getWriter();
+    assertTrue(userService.isUserLoggedIn());
+    
     loggedInTestHelper.tearDown();
   }
 
@@ -85,19 +88,21 @@ public final class LoginServletTest {
   // Check if the servlet returns with user information if logged-in.
   public void returns_jsonWithCorrect_userInfo() throws IOException, ServletException {
     loggedInTestHelper.setUp();
-    assertTrue(userService.isUserLoggedIn());
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
     loginServlet.doGet(request, response);
+    
     writer.flush();
     String returnedJson = stringWriter.toString();
     // JSON must contains all fields of UserInfo.
+    assertTrue(userService.isUserLoggedIn());
     assertTrue(returnedJson.contains("email"));
     assertTrue(returnedJson.contains("userId"));
     assertTrue(returnedJson.contains("logOutUrl"));
+    
     loggedInTestHelper.tearDown();
   }
 
@@ -105,11 +110,14 @@ public final class LoginServletTest {
   // Check if the servlet returns log-in information if logged-out.
   public void checks_ifUserLoggedIn_createsLogInUrl() throws IOException, ServletException {
     loggedOutTestHelper.setUp();
-    assertFalse(userService.isUserLoggedIn());
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    
     loginServlet.doGet(request, response);
+    
     verify(response).sendRedirect(captor.capture());
+    assertFalse(userService.isUserLoggedIn());
     assertEquals(userService.createLoginURL("/"), captor.getValue());
+    
     loggedOutTestHelper.tearDown();
   }
 }

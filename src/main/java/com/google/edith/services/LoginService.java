@@ -37,9 +37,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 
+ * Service that handles user accounts and keeps user information like user name and favortie
+ * store in datastore.
  */
-public class LoginService {
+public final class LoginService {
   private final UserService userService;
   private final DatastoreService datastore;
 

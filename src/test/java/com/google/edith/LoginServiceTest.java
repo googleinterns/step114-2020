@@ -25,6 +25,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.LoginService;
 import java.util.Map;
 import java.util.HashMap;
@@ -41,11 +42,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
-public class LoginServiceTest {
+public final class LoginServiceTest {
 
-  private Map<String, Object> myMap = new HashMap<String, Object>() {{
-        put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-    }};
+  private Map<String, Object> map =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
@@ -75,38 +75,46 @@ public class LoginServiceTest {
   @Mock
   HttpServletRequest request;
 
+  // Checks the login status of the user.
   @Test
-  public void checkIfUserIsLoggedIn() {
+  public void checkUserLoggedIn_returnsUserLoggedInStatus() {
     assertTrue(loginService.checkUserLoggedIn());
   }
 
+  // Checks if the entity is stored correctly in Datatstore.
   @Test
-  public void storeUserInfoIfUnique() {
+  public void storeUserInfoEntityInDatastore_addsOneUserInfoEntity() {
     retrieveStubUserInfo(request);
     loginService.storeUserInfoEntityInDatastore(request);
     assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
   }
 
+  // Checks that only one entity is created for a user.
   @Test
-  public void doNotStoreMakeUserInfoForSameUser() {
+  public void  storeUserInfoEntityInDatastore_ifSameEntityExists_doNotStore() {
     retrieveStubUserInfo(request);
     // Call storeUserInfoEntityInDatastore() twice to
-    // mimick storing UserInfo entity twice for same user.
+    // mimic storing UserInfo entity twice for same user.
     loginService.storeUserInfoEntityInDatastore(request);
     loginService.storeUserInfoEntityInDatastore(request);
     assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
   }
   
+  // Checks if the JSON created has all the user info fields.
   @Test
-  public void testCreatedJson() {
+  public void createJsonOfUserInfo_containsAllFieldsOfUserInfo() {
     retrieveStubUserInfo(request);
+    
     String userInfo = loginService.createJsonOfUserInfo();
+    
     assertTrue(userInfo.contains("firstName"));
     assertTrue(userInfo.contains("lastName"));
     assertTrue(userInfo.contains("favoriteStore"));
     assertTrue(userInfo.contains("email"));
     assertTrue(userInfo.contains("logOutUrl"));
   }
+
+  // Creates a stub user info for testing.
   private void retrieveStubUserInfo(HttpServletRequest request) {
     when(request.getParameter("first-name")).thenReturn("testfirst");
     when(request.getParameter("last-name")).thenReturn("testlast");
