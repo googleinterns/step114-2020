@@ -17,8 +17,8 @@ public class ShelfDataReader {
   private static final String NO_EXPIRATION = "NO_EXPIRATION";
 
   /** Finds the specified product in the file. */
-  public String readFile(String itemName) {
-    URL jsonresource = getClass().getClassLoader().getResource("foodkeeper.json");
+  public static String readFile(String itemName) {
+    URL jsonresource = ShelfDataReader.class.getClassLoader().getResource("foodkeeper.json");
     File shelfLifeData = new File(jsonresource.getFile());
 
     JsonParser jsonParser = new JsonParser();
@@ -56,7 +56,7 @@ public class ShelfDataReader {
    * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
    * one set of expiration data.
    */
-  private String findTime(JsonArray product) {
+  private static String findTime(JsonArray product) {
     Gson gson = new Gson();
     String result = "";
 
@@ -71,6 +71,7 @@ public class ShelfDataReader {
       JsonObject productTimeElement;
       try {
         productTimeElement = product.get(i).getAsJsonObject();
+
       } catch (IndexOutOfBoundsException e) {
         break;
       }
