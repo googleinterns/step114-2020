@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
+import com.google.edith.interfaces.LoginInterface;
 import com.google.gson.Gson;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  * Service that handles user accounts and keeps user information like user name and favortie store
  * in datastore.
  */
-public class LoginService {
+public final class LoginService implements LoginInterface {
   private final UserService userService;
   private final DatastoreService datastore;
 

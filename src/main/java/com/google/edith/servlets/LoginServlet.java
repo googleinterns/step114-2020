@@ -16,6 +16,7 @@ package com.google.edith.servlets;
 
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.edith.interfaces.LoginInterface;
 import com.google.edith.services.LoginService;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -30,27 +31,27 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public final class LoginServlet extends HttpServlet {
 
-  private LoginService loginService;
+  private LoginInterface loginImpl;
 
   public LoginServlet() {
-    this.loginService =
+    this.loginImpl =
         new LoginService(
             UserServiceFactory.getUserService(), DatastoreServiceFactory.getDatastoreService());
   }
 
-  public LoginServlet(LoginService loginService) {
-    this.loginService = loginService;
+  public LoginServlet(LoginInterface loginImpl) {
+    this.loginImpl = loginImpl;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    if (loginService.checkUserLoggedIn()) {
-      String json = loginService.createJsonOfUserInfo();
+    if (loginImpl.checkUserLoggedIn()) {
+      String json = loginImpl.createJsonOfUserInfo();
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
-      String loginUrl = loginService.createLoginUrl("/");
+      String loginUrl = loginImpl.createLoginUrl("/");
       response.sendRedirect(loginUrl);
     }
   }
@@ -58,8 +59,8 @@ public final class LoginServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // User who are not logged in can not upload their info. This is handled in FE too.
-    if (loginService.checkUserLoggedIn()) {
-      loginService.storeUserInfoEntityInDatastore(request);
+    if (loginImpl.checkUserLoggedIn()) {
+      loginImpl.storeUserInfoEntityInDatastore(request);
     }
     response.sendRedirect("/index.html");
   }

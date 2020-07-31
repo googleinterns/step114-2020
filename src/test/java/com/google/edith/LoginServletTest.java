@@ -19,7 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.edith.services.LoginService;
+import com.google.edith.interfaces.LoginInterface;
 import com.google.edith.servlets.LoginServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,12 +40,12 @@ public final class LoginServletTest {
 
   @Mock HttpServletResponse response;
 
-  @Mock LoginService loginService;
+  @Mock LoginInterface loginImpl;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    loginServlet = new LoginServlet(loginService);
+    loginServlet = new LoginServlet(loginImpl);
   }
 
   @Test
@@ -53,7 +53,7 @@ public final class LoginServletTest {
   public void doGet_whenUserLoggedIn_callsGetWriterMethod() throws IOException {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    when(loginService.checkUserLoggedIn()).thenReturn(true);
+    when(loginImpl.checkUserLoggedIn()).thenReturn(true);
     when(response.getWriter()).thenReturn(writer);
 
     loginServlet.doGet(request, response);
@@ -62,28 +62,28 @@ public final class LoginServletTest {
   }
 
   @Test
-  // Check if the servlet calls checkUserLoggedIn() and createJsonOfUserInfo method of LoginService.
+  // Check if the servlet calls checkUserLoggedIn() and createJsonOfUserInfo method of loginImpl.
   public void doGet_whenUserLoggedIn_callsRequiredServiceMethods() throws IOException {
-    when(loginService.checkUserLoggedIn()).thenReturn(true);
+    when(loginImpl.checkUserLoggedIn()).thenReturn(true);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
     loginServlet.doGet(request, response);
 
-    verify(loginService, times(1)).checkUserLoggedIn();
-    verify(loginService, times(1)).createJsonOfUserInfo();
+    verify(loginImpl, times(1)).checkUserLoggedIn();
+    verify(loginImpl, times(1)).createJsonOfUserInfo();
   }
 
   @Test
-  // Check if the servlet calls createLogin() method of LoginService.
+  // Check if the servlet calls createLogin() method of loginImpl.
   public void doGet_whenUserLoggedOut_callsCreateLoginMethod() throws IOException {
-    when(loginService.checkUserLoggedIn()).thenReturn(false);
-    when(loginService.createLoginUrl("/")).thenReturn("/logIn");
+    when(loginImpl.checkUserLoggedIn()).thenReturn(false);
+    when(loginImpl.createLoginUrl("/")).thenReturn("/logIn");
 
     loginServlet.doGet(request, response);
 
-    verify(loginService, times(1)).createLoginUrl("/");
+    verify(loginImpl, times(1)).createLoginUrl("/");
     verify(response, times(1)).sendRedirect("/logIn");
   }
 
@@ -91,11 +91,11 @@ public final class LoginServletTest {
   // Check if storeUserInfoEntityInDatastore method is called when the user is logged in.
   public void doPost_whenUserLoggedIn_callStoreUserInfoEntityInDatastore() throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    when(loginService.checkUserLoggedIn()).thenReturn(true);
+    when(loginImpl.checkUserLoggedIn()).thenReturn(true);
 
     loginServlet.doPost(request, response);
 
-    verify(loginService, times(1)).storeUserInfoEntityInDatastore(request);
+    verify(loginImpl, times(1)).storeUserInfoEntityInDatastore(request);
     verify(response).sendRedirect(captor.capture());
     assertEquals("/index.html", captor.getValue());
   }
@@ -105,11 +105,11 @@ public final class LoginServletTest {
   public void doPost_whenUserLoggedOut_doesNotCallStoreUserInfoEntityInDatastore()
       throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    when(loginService.checkUserLoggedIn()).thenReturn(false);
+    when(loginImpl.checkUserLoggedIn()).thenReturn(false);
 
     loginServlet.doPost(request, response);
 
-    verify(loginService, times(0)).storeUserInfoEntityInDatastore(request);
+    verify(loginImpl, times(0)).storeUserInfoEntityInDatastore(request);
     verify(response).sendRedirect(captor.capture());
     assertEquals("/index.html", captor.getValue());
   }
