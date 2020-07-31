@@ -30,16 +30,16 @@ import javax.servlet.http.HttpServletResponse;
  * stored in the Google Cloud Storage Bucket and redirects the request to ReceiptFileHandlerServlet.
  */
 @WebServlet("/receipt-file-handler")
-public class ReceiptFileHandlerServlet extends HttpServlet {
+public final class ReceiptFileHandlerServlet extends HttpServlet {
 
-  private ReceiptFileHandlerService receiptFileHandlerService;
+  private ReceiptFileHandlerService receiptFileHandlerService; // interface
 
   public ReceiptFileHandlerServlet() {
-    this.receiptFileHandlerService =
+    this.receiptFileHandlerService = // impl
         new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
   }
 
-  public ReceiptFileHandlerServlet(ReceiptFileHandlerService receiptFileHandlerService) {
+  public ReceiptFileHandlerServlet(ReceiptFileHandlerService receiptFileHandlerService) { // interface
     this.receiptFileHandlerService = receiptFileHandlerService;
   }
 
@@ -47,8 +47,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<FileInfo> fileKeys =
         receiptFileHandlerService
-            .getUploadedFileUrl(request, "receipt-file")
-            .orElse(Collections.emptyList());
+            .getUploadedFileUrl(request, "receipt-file");
 
     // fileKeys never should be empty as file field in the FE form is required.
     if (fileKeys.isEmpty()) {

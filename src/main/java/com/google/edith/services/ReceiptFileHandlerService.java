@@ -18,6 +18,7 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.FileInfo;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,15 +43,21 @@ public class ReceiptFileHandlerService {
    * Returns a List of BlobKey that points to the uploaded files in the HTML form or null if the
    * user didn't upload a file.
    */
-  public Optional<List<FileInfo>> getUploadedFileUrl(
+  public List<FileInfo> getUploadedFileUrl(
       HttpServletRequest request, String formInputElementName) {
+    
     Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
-    return Optional.ofNullable(fileInfos.get(formInputElementName));
+    List<FileInfo> uploadedFile = fileInfos.get(formInputElementName);
+    return uploadedFile == null
+      ? Collections.emptyList()
+      : uploadedFile;
   }
 
   /** Returns a BlobKey that points to the uploaded file. */
   public BlobKey getBlobKey(List<FileInfo> fileKeys) {
-    if (fileKeys.isEmpty()) throw new IllegalStateException();
+    if (fileKeys.isEmpty()) {
+      throw new IllegalStateException();
+    }
 
     FileInfo fileInfo = fileKeys.get(0);
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());

@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class ReceiptFileHandlerServletTest {
+public final class ReceiptFileHandlerServletTest {
   private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
           new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
@@ -68,7 +68,7 @@ public class ReceiptFileHandlerServletTest {
   public void checks_ifNoFileUpload_returnsException() throws IOException {
     List<FileInfo> files = Collections.emptyList();
     when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file"))
-        .thenReturn(Optional.of(files));
+        .thenReturn(files);
     receiptFileHandlerServlet.doPost(request, response);
   }
 
@@ -80,7 +80,7 @@ public class ReceiptFileHandlerServletTest {
     List<FileInfo> files = new ArrayList<FileInfo>();
     files.add(uploadFile);
     when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file"))
-        .thenReturn(Optional.of(files));
+        .thenReturn(files);
     receiptFileHandlerServlet.doPost(request, response);
     verify(receiptFileHandlerService, times(1)).serveBlob(response, files);
   }

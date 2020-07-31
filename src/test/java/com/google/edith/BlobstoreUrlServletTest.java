@@ -34,18 +34,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class BlobstoreUrlServletTest {
+public final class BlobstoreUrlServletTest {
   private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
           new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
-  private BlobstoreUrlServlet blobstoreUrlServlet;
+  private BlobstoreUrlServlet blobstoreUrlServlet = new BlobstoreUrlServlet();
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    blobstoreUrlServlet = new BlobstoreUrlServlet();
   }
 
   @After
@@ -59,7 +58,7 @@ public class BlobstoreUrlServletTest {
 
   /** Checks if the url contains required path. */
   @Test
-  public void checks_ReturnedUrl_containsRightUrl() throws IOException {
+  public void doGet_containsRightUrl() throws IOException {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);

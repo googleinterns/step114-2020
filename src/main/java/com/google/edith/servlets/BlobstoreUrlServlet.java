@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  * stored in the Google Cloud Storage Bucket and redirects the request to ReceiptFileHandlerServlet.
  */
 @WebServlet("/blobstore-upload-url")
-public class BlobstoreUrlServlet extends HttpServlet {
+public final class BlobstoreUrlServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
