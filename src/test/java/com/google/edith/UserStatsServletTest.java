@@ -55,6 +55,7 @@ public final class UserStatsServletTest {
   private final LocalServiceTestHelper testHelper = 
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private final Gson gson = new Gson();
+  private final String USER_ID = "userId";
 
   @Before
   public void setUp() {
@@ -69,9 +70,13 @@ public final class UserStatsServletTest {
 
     JsonObject testJson = new JsonObject();
     testJson.addProperty("itemName", "Corn");
+    testJson.addProperty("itemUserId", "userId");
+    testJson.addProperty("itemCategory", "Vegetable");
     testJson.addProperty("itemPrice", "5.00");
     testJson.addProperty("itemQuantity", "4");
     testJson.addProperty("itemDate", "2020-07-14");
+    testJson.addProperty("itemReceiptId", "receiptId");
+
 
     String json = gson.toJson(testJson);
     Mockito.when(request.getReader()).thenReturn(
@@ -97,10 +102,10 @@ public final class UserStatsServletTest {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     Mockito.when(response.getWriter()).thenReturn(writer);
-    Mockito.when(userInsights.createJson()).thenReturn("");
+    Mockito.when(userInsights.createJson(USER_ID)).thenReturn("");
 
     new UserStatsServlet(datastore, userInsights).doGet(request, response);
-    Mockito.verify(userInsights, Mockito.atLeast(1)).createJson();
+    Mockito.verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
   }
 
 }

@@ -40,13 +40,12 @@ public final class UserInsightsService implements UserInsightsInterface {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
-  public UserInsightsService(String userId) {
-    this.userId = userId;
+  public UserInsightsService() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
   /** This should only be called each time a new user makes an accout. */
-  public void createUserStats() { 
+  public void createUserStats(String userId) { 
     List<Key> items = new ArrayList<>();
 
     Entity userStats = new Entity("UserStats");
@@ -61,8 +60,8 @@ public final class UserInsightsService implements UserInsightsInterface {
    * corresponding to this user.
    * @param items - Non-null list of item Keys to be added to the current Item list.
    */
-  public void updateUserStats(List<Key> newItems) {
-    Optional<Entity> userStatsContainer = retreiveUserStats();
+  public void updateUserStats(String userId, List<Key> newItems) {
+    Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
         return;
     } 
@@ -87,8 +86,8 @@ public final class UserInsightsService implements UserInsightsInterface {
    * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
    * @return A list of {@code WeekInfo} objects relating a time period to the spending in that time period.
    */
-  public ImmutableList<WeekInfo> aggregateUserData() { 
-    Optional<Entity> userStatsContainer = retreiveUserStats();
+  public ImmutableList<WeekInfo> aggregateUserData(String userId) { 
+    Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
       return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
@@ -116,29 +115,45 @@ public final class UserInsightsService implements UserInsightsInterface {
    * and the items this user purchased.
    * @return a Json formatted String of items and an aggregate.
    */
-  public String createJson() {
-    List<WeekInfo> aggregateValues = aggregateUserData();
+  public String createJson(String userId) {
+    List<WeekInfo> aggregateValues = aggregateUserData(userId);
     String aggregateJson = GSON.toJson(aggregateValues);
-    Optional<Entity> userStatsContainer = retreiveUserStats();
+    Optional<Entity> userStatsContainer = retreiveUserStats(userId);
 
     if (!userStatsContainer.isPresent()){
       return GSON.toJson(createDefaultMap()); 
     }
 
-    List<Key> itemKeys = (List<Key>) retreiveUserStats().get()
+    List<Key> itemKeys = (List<Key>) userStatsContainer.get()
                                         .getProperty("Items");
+
+    if (itemKeys == null) {
+      return GSON.toJson(createDefaultMap());
+    }
+
     // Each item is mapped to an Item object to make their 
     // properties parseable by GSON.
     List<Item> items = itemKeys.stream()
                          .map(key ->{
                             try {
                               Entity item = datastore.get(key);
-                              return new Item(
-                                (String) item.getProperty("name"),
-                                (Double) item.getProperty("price"),
-                                (long) item.getProperty("quantity"),
-                                (String) item.getProperty("date")
-                              );
+                              return Item.builder()
+                                         .setName((String) item.getProperty("name"))
+                                         .setUserId((String) item.getProperty("userId"))
+                                         .setCategory((String) item.getProperty("category"))
+                                         .setPrice((double) item.getProperty("price"))
+                                         .setQuantity((long) item.getProperty("quantity"))
+                                         .setDate((String) item.getProperty("date"))
+                                         .setReceiptId((String) item.getProperty("receiptId"))
+                                         .build();
+                            //     (String) item.getProperty("name"),
+                            //     (String) item.getProperty("userId"),
+                            //     (String) item.getProperty("category"),
+                            //     (Double) item.getProperty("price"),
+                            //     (long) item.getProperty("quantity"),
+                            //     (String) item.getProperty("date"),
+                            //     (String) item.getProperty("receiptId")
+                            //   );
                             } catch (EntityNotFoundException e) {
                               return null;
                             }
@@ -156,7 +171,7 @@ public final class UserInsightsService implements UserInsightsInterface {
    * and returns this entity contained inside an Optional.
    * @return UserStats entity for this user
    */
-  public Optional<Entity> retreiveUserStats() {
+  public Optional<Entity> retreiveUserStats(String userId) {
     if (userId == null) {
       return Optional.empty();
     }
@@ -164,10 +179,9 @@ public final class UserInsightsService implements UserInsightsInterface {
                                 FilterOperator.EQUAL,
                                 userId);
     Query query = new Query("UserStats").setFilter(idFilter);
-    PreparedQuery results = datastore.prepare(query);
-    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
-    return entities.isEmpty() ? Optional.empty() 
-                              : Optional.of(entities.get(0));
+    Entity result = datastore.prepare(query).asSingleEntity();
+    return result == null ? Optional.empty() 
+                          : Optional.of(result);
   }
 
   /**
@@ -219,7 +233,6 @@ public final class UserInsightsService implements UserInsightsInterface {
         System.err.println("Error: Entity could not be found");
       } 
     }
-    
 
     weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
 

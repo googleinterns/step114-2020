@@ -1,53 +1,58 @@
 import React, {Component} from 'react';
 import ReceiptInput from './ReceiptInput';
-import LineChart, {BarGraph, DoughnutChart} from './UserChart';
+import LineChart, {BarGraph, CategoryDoughnutChart, ItemDoughnutChart} from './UserChart';
 import axios from 'axios';
-//import "./App.css";
 
+ const chart = {
+    'LINE': 'LINE',
+    'BAR': 'BAR',
+    'DOUGHNUT':  'DOUGHNUT' 
+  }
 
 /** Main webpage for the website. */
 class App extends Component {
   constructor() {
     super();
-    this.state = { "chartType" : LineChart, "dateSelection": ""}; 
+    this.state = {'chartType': LineChart, 'dateSelection': '', 'categorySelection': ''}; 
     this.updateChartType = this.updateChartType.bind(this); 
-    this.showWeeklyChart = this.showWeeklyChart.bind(this);  
-    this.revertChart = this.revertChart.bind(this);
-  }
+    this.showItemChart = this.showItemChart.bind(this);  
+  } 
 
   updateChartType(event) {
     switch(event.target.value) {
-      case "line":
-        this.setState({"chartType": LineChart});
+      case 'line':
+        this.setState({'chartType': LineChart});
         break;
-      case "bar":
-        this.setState({"chartType": BarGraph});
+      case 'bar':
+        this.setState({'chartType': BarGraph});
         break;
-      case "doughnut":
-        this.setState({"chartType": DoughnutChart});
+      case 'doughnut':
+        this.setState({'chartType': CategoryDoughnutChart});
         break;
     }
   }
 
-  showWeeklyChart(dateSelection) {
-    this.setState({"chartType":  DoughnutChart, "dateSelection": dateSelection});
+  showItemChart(chartType, dateSelection, categorySelection) {
+    if (chartType === 'category') { 
+      this.setState({'chartType':  CategoryDoughnutChart, 
+                     'dateSelection': dateSelection, 'categorySelection': categorySelection});
+    } else {
+      this.setState({'chartType':  ItemDoughnutChart, 
+                     'dateSelection': dateSelection, 'categorySelection': categorySelection});
+    }
   }
   
-  revertChart() {
-    this.setState({"chartType":  DoughnutChart, "dateSelection": ""});
-  }
-
-jki9
   render() {
     const Chart = this.state.chartType;
     return (
-      <div className="App">
-        <div id="radio-selector" onChange={this.updateChartType}>
-          <input defaultChecked type="radio" value="line" name="chart-selector" id="line" /> Line
-          <input type="radio" value="bar" name="chart-selector" id="bar" /> Bar
-          <input type="radio" value="doughnut" name="chart-selector" id="doughnut" /> Doughnut
+      <div className='App'>
+        <div id='chart-selector' onChange={this.updateChartType}>
+          <input defaultChecked type='radio' value='line' name='chart-selector' id='line' /> Line
+          <input type='radio' value='bar' name='chart-selector' id='bar' /> Bar
+          <input type='radio' value='doughnut' name='chart-selector' id='doughnut' /> Doughnut
         </div>
-        <Chart action={this.showWeeklyChart} revertAction={this.revertChart} dateSelection={this.state.dateSelection}/>
+        <Chart action={this.showItemChart} dateSelection={this.state.dateSelection}
+               categorySelection={this.state.categorySelection} />
         <ReceiptInput />
       </div>
     );

@@ -87,7 +87,7 @@ const LineChart = (props) => {
         options={{
           onClick: (event, element) => {
             const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
-            props.action(dateSelection);
+            props.action("category", dateSelection, '');
           },
           maintainAspectRatio: false,
           title:{
@@ -148,8 +148,8 @@ const BarGraph = (props) => {
         options={{
           onClick: (event, element) => {
             const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
-            props.action(dateSelection);
-          },        
+            props.action("category", dateSelection, '');      
+          },  
           maintainAspectRatio: false,
           title:{
             display: true,
@@ -190,7 +190,7 @@ const BarGraph = (props) => {
  *                display a drill-downed chart and a dateSelection variable
  * @return React node object containing a canvas and a DoughnutChart.
  */
-const DoughnutChart = (props) => {
+const CategoryDoughnutChart = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
@@ -199,26 +199,99 @@ const DoughnutChart = (props) => {
       .then((responseJson) => {
         let itemNames = [];
         let itemValues = [];  
-        let items = [];
-        const itemsList = JSON.parse(responseJson.items);
+        const itemsJson = JSON.parse(responseJson.items);
+        let items = {};
         if (props.dateSelection.length > 0) {
-          for (let i = 0; i < itemsList.length; i++) {
-            inSameWeek(itemsList[i].date, props.dateSelection);
-            if (inSameWeek(itemsList[i].date, props.dateSelection)) {
-              items.push(itemsList[i]);
-            }
-          } 
-          props.revertAction();
+          itemsJson.forEach((item) => {
+              if(inSameWeek(item.date, props.dateSelection)) {
+                if (items[item.category]) {
+                  items[item.category] = items[item.category] + 1;
+                } else {
+                  items[item.category] = 1;
+               }
+              }
+          });
         } else {
-          items = itemsList;
+          itemsJson.forEach((item) => {
+              if (items[item.category]) {
+                items[item.category] = items[item.category] + 1;
+              } else {
+                items[item.category] = 1;
+              }
+          });
         }
-        for (let i = 0; i < items.length; i++) {
-          itemNames.push(items[i].name);
-        }
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          itemValues.push(items[i].quantity);
-        }
+        Object.keys(items).forEach((item) => {
+          itemNames.push(item);
+          itemValues.push(items[item]);
+        });
+        setChartData({
+          labels: itemNames,
+          datasets: [
+            {
+              label: "Week Total",
+              data: itemValues,
+              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
+              borderWidth: 4
+            }
+          ]
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    };
+    
+  useEffect(() => {
+    chart();
+  }, []);
+
+  /** returns the react node */
+  return (
+      <Doughnut
+        data={chartData}
+        width={100}
+        height={100}
+        options={{
+          onClick: (event, element) => {
+            const categorySelection = element[0]._chart.config.data.labels[element[0]._index];
+            props.action("item", props.dateSelection, categorySelection);      
+          },
+          maintainAspectRatio: false,
+          title:{
+            display: true,
+            text: 'Item Aggregate',
+            fontSize: 20
+          }, 
+          legend: {
+            display: true,
+            position:'bottom',
+          }
+        }}
+      />
+  );
+}
+
+const ItemDoughnutChart = (props) => {
+const [chartData, setChartData] = useState({});
+  const chart = () => {
+    fetch("/user-stats-servlet")
+      .then((response) => response.json())
+      .then((responseJson) => {
+        let itemNames = [];
+        let itemValues = [];  
+        const itemsJson = JSON.parse(responseJson.items);
+        let items = {};
+        itemsJson.forEach((item) => {
+          console.log(item);
+          if((props.dateSelection === '' || inSameWeek(item.date, props.dateSelection))
+              && (props.categorySelection === '' || item.category === props.categorySelection)) {
+            if (!(item.name in itemNames)) {
+                itemNames.push(item.name);
+                itemValues.push(item.quantity);
+              }
+          }
+        });
+        console.log(itemNames, itemValues);
         setChartData({
           labels: itemNames,
           datasets: [
@@ -263,4 +336,4 @@ const DoughnutChart = (props) => {
 }
 
 export default LineChart
-export { BarGraph, DoughnutChart, retrieveWeekData }
+export { BarGraph, CategoryDoughnutChart, ItemDoughnutChart, retrieveWeekData }

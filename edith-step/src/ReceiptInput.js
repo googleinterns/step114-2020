@@ -3,8 +3,8 @@ import React from 'react';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1, 
-                  };
+    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1,
+                  itemCategory: 'category', itemReceiptId: 'receiptId' };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDate = this.getDate.bind(this);
@@ -46,9 +46,11 @@ export default class ReceiptInput extends React.Component {
       url: '/user-stats-servlet',
       data: {
         itemName: this.state.itemName,
+        itemCategory: this.state.itemCategory,
         itemPrice: this.state.itemPrice,
         itemQuantity: this.state.itemQuantity,
-        itemDate: this.getDate()
+        itemDate: this.getDate(),
+        itemReceiptId: this.state.itemReceiptId
       }
     }).then((response) => {
       console.log(response);
