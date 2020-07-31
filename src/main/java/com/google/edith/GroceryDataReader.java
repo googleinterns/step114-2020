@@ -16,11 +16,8 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-  private static final Store NO_STORE = Store.NO_STORE;
-  private static final List<Store> stores =
-      new ArrayList<>(
-          Arrays.asList(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART));
-  private static final ImmutableList<Store> STORES = ImmutableList.copyOf(stores);
+  private static final ImmutableList<Store> STORES =
+      ImmutableList.of(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART);
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -61,7 +58,7 @@ public final class GroceryDataReader {
     reader.close();
     if (cheapestItem == null) {
       cheapestItem = new DealItem();
-      cheapestItem.setStore(NO_STORE);
+      cheapestItem.setStore(Store.NO_STORE);
     }
     return cheapestItem;
   }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Processes data file of product expiration information to populate future user grocery lists. */
-public class ShelfDataReader {
+public final class ShelfDataReader {
   private static final String NO_EXPIRATION = "NO_EXPIRATION";
 
   /** Finds the specified product in the file. */

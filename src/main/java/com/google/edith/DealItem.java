@@ -63,7 +63,7 @@ public final class DealItem {
    */
   public void setWeight(String weight) {
     // Checks for length of two or less so that the substring check isn't out of bounds.
-    if (weight.isEmpty() || weight.length() <= 2) {
+    if (weight.length() <= 2) {
       this.weight = 0.0;
     } else if (weight.equals("dozen")) {
       this.weight = 12.0;
