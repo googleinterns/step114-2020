@@ -14,30 +14,18 @@
 
 package com.google.edith.servlets;
 
-import com.google.auto.value.AutoValue;
+/** Used to hold the properties of an item Entity in datastore. */
+public final class Item {
+  // TODO (malachibre): Add name, user, category, and receiptId fields.
+  // TODO (malachibre): Create a builder for this class inclduing checks
+  //                    for valid assignments.
+  double price;
+  long quantity;
+  String date;
 
-/** Encapsulate User info and logout url. */
-@AutoValue
-public abstract class Item {
-  abstract String userId();
-  abstract String name();
-  abstract float price();
-  abstract int quantity();
-  abstract String category();
-  abstract String expireDate();
-  
-  public static Builder builder() {
-    return new AutoValue_Item.Builder();
-  }
-
-  @AutoValue.Builder
-  public abstract static class Builder {
-    abstract Builder setUserId(String value);
-    abstract Builder setName(String value);
-    abstract Builder setPrice(float value);
-    abstract Builder setQuantity(int value);
-    abstract Builder setCategory(String value);
-    abstract Builder setExpireDate(String value);
-    abstract Item build();
+  public Item(double price, long quantity, String date) {
+    this.price = price;
+    this.quantity = quantity;
+    this.date = date;
   }
 }
