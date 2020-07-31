@@ -14,33 +14,22 @@
 
 package com.google.edith.services;
 
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Service that handles user accounts and keeps user information like user name and favortie
  * store in datastore.
  */
-public final class LoginService {
+public class LoginService {
   private final UserService userService;
   private final DatastoreService datastore;
 
@@ -69,7 +58,7 @@ public final class LoginService {
 
   /**
   * Creates a url of a user to log in.
-  *  @param destinationUrl - url to return when after visiting login portal.
+  * @param destinationUrl - url to return when after visiting login portal.
   * @return String - url which redirects to login portal.
   */
   public String createLoginUrl(String destinationUrl) {

@@ -62,8 +62,11 @@ class FileUploadModalBox extends React.Component {
         onHide={this.props.handleUploadModalClose}
         centered
       >
-        <Modal.Header closeButton className='modal-header'>
-          <Modal.Title id="contained-modal-title-vcenter">
+        <Modal.Header
+          closeButton
+          className='modal-header'>
+          <Modal.Title
+            id="contained-modal-title-vcenter">
             Please Upload Your Receipt File
           </Modal.Title>
         </Modal.Header>

@@ -57,7 +57,9 @@ public final class LoginServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    loginService.storeUserInfoEntityInDatastore(request);
+    if (loginService.checkUserLoggedIn()) {
+      loginService.storeUserInfoEntityInDatastore(request);
+    }
     response.sendRedirect("/index.html");
   }
 }

@@ -1,8 +1,7 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-
-import { enableFetchMocks } from 'jest-fetch-mock'
+import {enableFetchMocks} from 'jest-fetch-mock'
 enableFetchMocks();
+import React from 'react';
+import {shallow} from 'enzyme';
 
 import UserInfoModalBox from './UserInfoModalBox';
 

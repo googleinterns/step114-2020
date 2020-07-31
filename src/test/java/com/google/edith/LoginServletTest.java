@@ -17,7 +17,7 @@ package com.google.edith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +26,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
+import com.google.edith.services.LoginService;
 import com.google.edith.servlets.LoginServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,7 +42,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public final class LoginServletTest {
-  private Map<String, Object> map =
+  private final Map<String, Object> map =
       ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private final LocalServiceTestHelper loggedInTestHelper =
@@ -55,69 +56,97 @@ public final class LoginServletTest {
   private final LocalServiceTestHelper loggedOutTestHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig()).setEnvIsLoggedIn(false);
 
-  private final UserService userService = UserServiceFactory.getUserService();
   private LoginServlet loginServlet;
+  private final UserService userService = UserServiceFactory.getUserService();
 
-  @Mock HttpServletRequest request;
+  @Mock
+  HttpServletRequest request;
 
-  @Mock HttpServletResponse response;
+  @Mock
+  HttpServletResponse response;
+  
+  @Mock
+  LoginService loginService;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     MockitoAnnotations.initMocks(this);
-    loginServlet = new LoginServlet();
+    loginServlet = new LoginServlet(loginService);
   }
 
   @Test
   // Check if the servlet calls getWriter() method.
-  public void checks_ifUserLoggedIn_returnsUserInfo() throws IOException, ServletException {
+  public void doGet_whenUserLoggedIn_callsGetWriterMethod() throws IOException {
     loggedInTestHelper.setUp();
+    when(loginService.checkUserLoggedIn()).thenReturn(true);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
     
     loginServlet.doGet(request, response);
     
-    verify(response, atLeast(1)).getWriter();
+    verify(response, times(1)).getWriter();
     assertTrue(userService.isUserLoggedIn());
     
     loggedInTestHelper.tearDown();
   }
 
   @Test
-  // Check if the servlet returns with user information if logged-in.
-  public void returns_jsonWithCorrect_userInfo() throws IOException, ServletException {
+  // Check if the servlet calls checkUserLoggedIn() and createJsonOfUserInfo method of LoginService.
+  public void doGet_whenUserLoggedIn_callsRequiredServiceMethods() throws IOException {
     loggedInTestHelper.setUp();
-
+    when(loginService.checkUserLoggedIn()).thenReturn(true);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
-
+    
     loginServlet.doGet(request, response);
     
-    writer.flush();
-    String returnedJson = stringWriter.toString();
-    // JSON must contains all fields of UserInfo.
     assertTrue(userService.isUserLoggedIn());
-    assertTrue(returnedJson.contains("email"));
-    assertTrue(returnedJson.contains("userId"));
-    assertTrue(returnedJson.contains("logOutUrl"));
+    verify(loginService, times(1)).checkUserLoggedIn();
+    verify(loginService, times(1)).createJsonOfUserInfo();
     
     loggedInTestHelper.tearDown();
   }
 
   @Test
-  // Check if the servlet returns log-in information if logged-out.
-  public void checks_ifUserLoggedIn_createsLogInUrl() throws IOException, ServletException {
+  // Check if the servlet calls createLogin() method of LoginService.
+  public void doGet_whenUserLoggedOut_callsCreateLoginMethod() throws IOException {
     loggedOutTestHelper.setUp();
-    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    
+    when(loginService.checkUserLoggedIn()).thenReturn(false);
+    when(loginService.createLoginUrl("/")).thenReturn("/logIn");
     loginServlet.doGet(request, response);
     
-    verify(response).sendRedirect(captor.capture());
     assertFalse(userService.isUserLoggedIn());
-    assertEquals(userService.createLoginURL("/"), captor.getValue());
+    verify(loginService, times(1)).createLoginUrl("/");
+    verify(response, times(1)).sendRedirect("/logIn");
     
     loggedOutTestHelper.tearDown();
+  }
+
+  @Test
+  // Check if storeUserInfoEntityInDatastore method is called when the user is logged in.
+  public void doPost_whenUserLoggedIn_callStoreUserInfoEntityInDatastore() throws IOException {
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    when(loginService.checkUserLoggedIn()).thenReturn(true);
+    
+    loginServlet.doPost(request, response);
+    
+    verify(loginService, times(1)).storeUserInfoEntityInDatastore(request);
+    verify(response).sendRedirect(captor.capture());
+    assertEquals("/index.html", captor.getValue());
+  }
+
+  @Test
+  // Check if storeUserInfoEntityInDatastore method is not called when the user is logged out.
+  public void doPost_whenUserLoggedOut_doesNotCallStoreUserInfoEntityInDatastore() throws IOException {
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    when(loginService.checkUserLoggedIn()).thenReturn(false);
+    
+    loginServlet.doPost(request, response);
+    
+    verify(loginService, times(0)).storeUserInfoEntityInDatastore(request);
+    verify(response).sendRedirect(captor.capture());
+    assertEquals("/index.html", captor.getValue());
   }
 }

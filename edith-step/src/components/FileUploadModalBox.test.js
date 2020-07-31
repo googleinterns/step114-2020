@@ -1,7 +1,9 @@
+import {enableFetchMocks} from 'jest-fetch-mock';
+enableFetchMocks();
+
 import React from 'react';
 
 import FileUploadModalBox from './FileUploadModalBox';
-import {enableFetchMocks} from 'jest-fetch-mock';
 import {shallow} from 'enzyme';
 
 import '../setupTests.js';
@@ -12,7 +14,6 @@ describe('FileUploadModalBox calls', () => {
   test('getFileUploadUrl method when mounted', () => {
     const getFileUploadUrl =
             jest.spyOn(FileUploadModalBox.prototype, 'getFileUploadUrl');
-    enableFetchMocks();
     component = shallow(<FileUploadModalBox />);
     expect(getFileUploadUrl).toBeCalled();
     component.unmount();
