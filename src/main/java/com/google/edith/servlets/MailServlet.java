@@ -45,7 +45,8 @@ public class MailServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+    String subject = "test";
+    String message = "test";
     sendSimpleMail(subject, message);
     response.sendRedirect("/");
   }
