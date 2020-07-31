@@ -22,14 +22,13 @@ import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.edith.services.ReceiptFileHandlerService;
+import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import com.google.edith.servlets.ReceiptFileHandlerServlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -49,7 +48,7 @@ public final class ReceiptFileHandlerServletTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    receiptFileHandlerServlet = new ReceiptFileHandlerServlet(receiptFileHandlerService);
+    receiptFileHandlerServlet = new ReceiptFileHandlerServlet(receiptFileHandler);
   }
 
   @After
@@ -61,27 +60,28 @@ public final class ReceiptFileHandlerServletTest {
 
   @Mock HttpServletResponse response;
 
-  @Mock ReceiptFileHandlerService receiptFileHandlerService;
+  @Mock ReceiptFileHandlerInterface receiptFileHandler;
 
   // If no file is uploaded, Blob is not stored and Exception is thrown.
   @Test(expected = IllegalStateException.class)
-  public void checks_ifNoFileUpload_returnsException() throws IOException {
+  public void doPost_ifNoFileUpload_throwException() throws IOException {
     List<FileInfo> files = Collections.emptyList();
-    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file"))
-        .thenReturn(files);
+    when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
+
     receiptFileHandlerServlet.doPost(request, response);
   }
 
   // Serve the blob if file has been stored successfully in Blobstore.
   @Test
-  public void testRedirect() throws IOException {
+  public void doPost_ifNoFileUpload_redirectToDisplayFile() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
     List<FileInfo> files = new ArrayList<FileInfo>();
     files.add(uploadFile);
-    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file"))
-        .thenReturn(files);
+    when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
+
     receiptFileHandlerServlet.doPost(request, response);
-    verify(receiptFileHandlerService, times(1)).serveBlob(response, files);
+
+    verify(receiptFileHandler, times(1)).serveBlob(response, files);
   }
 }

@@ -16,9 +16,9 @@ package com.google.edith.servlets;
 
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
+import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import com.google.edith.services.ReceiptFileHandlerService;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,28 +32,26 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-file-handler")
 public final class ReceiptFileHandlerServlet extends HttpServlet {
 
-  private ReceiptFileHandlerService receiptFileHandlerService; // interface
+  private ReceiptFileHandlerInterface receiptFileHandler;
 
   public ReceiptFileHandlerServlet() {
-    this.receiptFileHandlerService = // impl
+    this.receiptFileHandler =
         new ReceiptFileHandlerService(BlobstoreServiceFactory.getBlobstoreService());
   }
 
-  public ReceiptFileHandlerServlet(ReceiptFileHandlerService receiptFileHandlerService) { // interface
-    this.receiptFileHandlerService = receiptFileHandlerService;
+  public ReceiptFileHandlerServlet(ReceiptFileHandlerInterface receiptFileHandler) {
+    this.receiptFileHandler = receiptFileHandler;
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<FileInfo> fileKeys =
-        receiptFileHandlerService
-            .getUploadedFileUrl(request, "receipt-file");
+    List<FileInfo> fileKeys = receiptFileHandler.getUploadedFileUrl(request, "receipt-file");
 
     // fileKeys never should be empty as file field in the FE form is required.
     if (fileKeys.isEmpty()) {
       throw new IllegalStateException();
     }
     // Blob is being served right now. But it will change in future to store it in Receipt object.
-    receiptFileHandlerService.serveBlob(response, fileKeys);
+    receiptFileHandler.serveBlob(response, fileKeys);
   }
 }

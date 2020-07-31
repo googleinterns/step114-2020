@@ -17,16 +17,16 @@ package com.google.edith.services;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.FileInfo;
+import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that stores file uploaded in Blobstore and serves that blob on succession. */
-public class ReceiptFileHandlerService {
+/** Service that stores file uploaded in Blobstore and serves that blob on succession. */
+public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
   private final BlobstoreService blobstoreService;
 
   public ReceiptFileHandlerService(BlobstoreService blobstoreService) {
@@ -45,12 +45,10 @@ public class ReceiptFileHandlerService {
    */
   public List<FileInfo> getUploadedFileUrl(
       HttpServletRequest request, String formInputElementName) {
-    
+
     Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
     List<FileInfo> uploadedFile = fileInfos.get(formInputElementName);
-    return uploadedFile == null
-      ? Collections.emptyList()
-      : uploadedFile;
+    return uploadedFile == null ? Collections.emptyList() : uploadedFile;
   }
 
   /** Returns a BlobKey that points to the uploaded file. */

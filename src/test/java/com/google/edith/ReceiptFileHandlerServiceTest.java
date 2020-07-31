@@ -14,8 +14,8 @@
 
 package com.google.edith;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,13 +29,11 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.edith.services.ReceiptFileHandlerService;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -69,7 +67,7 @@ public final class ReceiptFileHandlerServiceTest {
   @Mock HttpServletRequest request;
 
   @Mock HttpServletResponse response;
-  
+
   /** Checks if a file was not uploaded in Blobstore. */
   @Test
   public void getUploadedFileUrl_ifBlobDidNotUpload_returnEmptyList() throws IOException {
@@ -91,10 +89,10 @@ public final class ReceiptFileHandlerServiceTest {
     Map<String, List<FileInfo>> fileInfos = new HashMap<>();
     fileInfos.put("fileName", files);
     when(blobstoreService.getFileInfos(request)).thenReturn(fileInfos);
-    
+
     List<FileInfo> uploadedFileInfo =
         receiptFileHandlerService.getUploadedFileUrl(request, "fileName");
-    
+
     assertFalse(uploadedFileInfo.isEmpty());
   }
 
@@ -114,9 +112,9 @@ public final class ReceiptFileHandlerServiceTest {
     List<FileInfo> files = ImmutableList.of(uploadFile);
     BlobKey receiptKey = new BlobKey("key");
     when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName())).thenReturn(receiptKey);
-    
+
     BlobKey returnedKey = receiptFileHandlerService.getBlobKey(files);
-    
+
     assertTrue(returnedKey.equals(receiptKey));
   }
 
@@ -128,9 +126,9 @@ public final class ReceiptFileHandlerServiceTest {
     List<FileInfo> files = ImmutableList.of(uploadFile);
     BlobKey key = new BlobKey("key");
     when(blobstoreService.createGsBlobKey(uploadFile.getGsObjectName())).thenReturn(key);
-    
+
     receiptFileHandlerService.serveBlob(response, files);
-    
+
     verify(blobstoreService, times(1)).serve(key, response);
   }
 }
