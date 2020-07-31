@@ -47,7 +47,7 @@ abstract class UserInfo {
     abstract Builder setUserName(String value);
 
     abstract Builder setFavoriteStore(String value);
-    
+
     abstract Builder setEmail(String value);
 
     abstract Builder setUserId(String value);
@@ -55,6 +55,5 @@ abstract class UserInfo {
     abstract Builder setLogOutUrl(String value);
 
     abstract UserInfo build();
-
   }
 }

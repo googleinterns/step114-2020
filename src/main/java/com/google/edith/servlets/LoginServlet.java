@@ -29,13 +29,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/login")
 public final class LoginServlet extends HttpServlet {
-  
+
   private LoginService loginService;
 
   public LoginServlet() {
-    this.loginService = new LoginService(
-          UserServiceFactory.getUserService(),
-          DatastoreServiceFactory.getDatastoreService());
+    this.loginService =
+        new LoginService(
+            UserServiceFactory.getUserService(), DatastoreServiceFactory.getDatastoreService());
   }
 
   public LoginServlet(LoginService loginService) {
