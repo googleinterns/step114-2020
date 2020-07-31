@@ -1,5 +1,5 @@
 package com.google.edith;
-
+/**
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -46,8 +46,8 @@ import org.mockito.Mockito;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-
+import com.google.appengine.api.datastore.DatastoreServiceFactory;*/
+/**
 
 public final class UserStatsServletTest {
   
@@ -108,4 +108,4 @@ public final class UserStatsServletTest {
     Mockito.verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
   }
 
-}
+}*/

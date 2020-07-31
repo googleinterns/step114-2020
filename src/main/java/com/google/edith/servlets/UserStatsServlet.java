@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Servlet that returns some example content.
  */
+ /**
 @WebServlet("/user-stats-servlet")
 public class UserStatsServlet extends HttpServlet {
 
@@ -91,4 +92,4 @@ public class UserStatsServlet extends HttpServlet {
     response.setContentType("text/html");
     response.getWriter().println("Item posted");
   }
-}
+}*/

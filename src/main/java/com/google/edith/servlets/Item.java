@@ -16,32 +16,70 @@ package com.google.edith.servlets;
 
 import com.google.auto.value.AutoValue;
 
- /** Used to hold the properties of an item Entity in datastore. */
-@AutoValue
-public abstract class Item {
-  public abstract String name();
-  public abstract String userId();
-  public abstract String category();
-  public abstract double price(); 
-  public abstract long quantity();  
-  public abstract String date(); 
-  public abstract String receiptId();
-  public abstract String expireDate();
+/** Encapsulate User info and logout url. */
 
-  public static Builder builder() {
-    return new AutoValue_Item.Builder();
+public class Item {
+  public String userId;
+  public String name;
+  public float price;
+  public int quantity;
+  public String category;
+  public String expireDate;
+
+  public Item(String userId, String name, float price, int quantity, String category, String expireDate) {
+    this.userId = userId;
+    this.name = name;
+    this.price = price;
+    this.quantity = quantity;
+    this.category = category;
+    this.expireDate = expireDate;
   }
 
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder setName(String value);
-    public abstract Builder setUserId(String value);
-    public abstract Builder setCategory(String value);
-    public abstract Builder setPrice(double value); 
-    public abstract Builder setQuantity(long value);  
-    public abstract Builder setDate(String value); 
-    public abstract Builder setReceiptId(String value);
-    public abstract Builder setExpireDate(String value);
-    public abstract Item build();
+  @Override
+  public boolean equals(Object object) {
+    Item item = (Item) object;
+    if (this.price == item.getPrice() &&
+        this.name.equals(item.getName()) &&
+        this.expireDate.equals(item.getExpireDate())) {
+          return true;
+    }
+    return false;
   }
+  
+  @Override
+  public int hashCode() {
+    int hashcode = 0;
+    hashcode = (int) price*20;
+    hashcode += this.name.hashCode();
+    return hashcode;
+  }
+
+  public String getUserId() {
+    return this.userId;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public float getPrice() {
+    return this.price;
+  }
+
+  public int getQuantity() {
+    return this.quantity;
+  }
+
+  public String getCategory() {
+    return this.category;
+  }
+
+  public String getExpireDate() {
+    return this.expireDate;
+  }
+
+  public String toString() {
+    return (this.userId + " " + this.name + " " + this.price + " " + this.quantity + " " + this.category);
+  }
+
 }

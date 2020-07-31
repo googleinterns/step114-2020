@@ -24,15 +24,7 @@ public class DealsServletTest {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    Item receiptItem =
-      Item.builder()
-            .setUserId("185804764220139124118")
-            .setName("Apple Juice")
-            .setPrice((float) 5.99)
-            .setQuantity(1)
-            .setCategory("unknown category")
-            .setExpireDate("unknown date")
-            .build();
+    Item receiptItem = new Item("185804764220139124118", "Apple Juice", (float) 5.99, 1, "unknown category", "unknown date");
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
@@ -69,7 +61,8 @@ public class DealsServletTest {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    Item receiptItem =
+    Item receiptItem = new Item("185804764220139124118", "no deal", (float) 5.99, 1, "unknown category", "unknown date");
+    /**
       Item.builder()
             .setUserId("185804764220139124118")
             .setName("no deal")
@@ -77,7 +70,7 @@ public class DealsServletTest {
             .setQuantity(0)
             .setCategory("unknown category")
             .setExpireDate("unknown date")
-            .build();
+            .build();*/
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =

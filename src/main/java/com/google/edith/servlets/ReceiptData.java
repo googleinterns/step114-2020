@@ -42,14 +42,16 @@ public class ReceiptData {
     Item[] items = new Item[totalItems];
     while (index < totalItems) {
       Map<String, String> itemFields = extractedData.get(index);
-      Item receiptItem = Item.builder()
+      Item receiptItem = new Item(user.getUserId(), itemFields.get("itemName"), Float.parseFloat(itemFields.get("itemPrice")), 0, "unknown category", "unknown date");
+      /**
+      Item.builder()
             .setUserId(user.getUserId())
             .setName(itemFields.get("itemName"))
             .setPrice(Float.parseFloat(itemFields.get("itemPrice")))
             .setQuantity(0)
             .setCategory("unknown category")
             .setExpireDate("unknown date")
-            .build();
+            .build();*/
 
       items[index++] = receiptItem;
     }
