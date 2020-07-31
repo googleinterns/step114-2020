@@ -15,9 +15,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator; 
@@ -29,16 +28,13 @@ import java.util.stream.Collectors;
 
 
 /**
- * This class provides the functionality to parse specifc user data from 
- * datastore and send an agreggate of that information in a JSON file.
+ * This class provides the functionality to parse specifc user data from datastore and send an
+ * agreggate of that information in a JSON file.
  */
 public final class UserInsightsService implements UserInsightsInterface {
-  
-  private String userId;  
   private DatastoreService datastore;
   private final Gson GSON = new Gson();
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
 
   public UserInsightsService() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
@@ -46,26 +42,27 @@ public final class UserInsightsService implements UserInsightsInterface {
 
   /** This should only be called each time a new user makes an accout. */
   public void createUserStats(String userId) { 
+
     List<Key> items = new ArrayList<>();
 
     Entity userStats = new Entity("UserStats");
     userStats.setProperty("userId", userId);
     userStats.setProperty("Items", items);
-    
+
     datastore.put(userStats);
   }
 
-  /** 
-   * Updates the Items list in the UserStats Entity in datastore
-   * corresponding to this user.
+  /**
+   * Updates the Items list in the UserStats Entity in datastore corresponding to this user.
+   *
    * @param items - Non-null list of item Keys to be added to the current Item list.
    */
   public void updateUserStats(String userId, List<Key> newItems) {
     Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
-        return;
-    } 
-    Entity userStats = userStatsContainer.get();   
+      return;
+    }
+    Entity userStats = userStatsContainer.get();
     List<Key> items = (List<Key>) userStats.getProperty("Items");
     if (items == null) {
       items = newItems;
@@ -79,10 +76,9 @@ public final class UserInsightsService implements UserInsightsInterface {
     userStats.setProperty("Items", items);
     datastore.put(userStats);
   }
- 
-  /** 
-   * Copmiles the spending using the Item list found in this user's
-   * UserStats Entity in datastore.
+
+  /**
+   * Copmiles the spending using the Item list found in this user's UserStats Entity in datastore.
    * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
    * @return A list of {@code WeekInfo} objects relating a time period to the spending in that time period.
    */
@@ -91,6 +87,7 @@ public final class UserInsightsService implements UserInsightsInterface {
     if (!userStatsContainer.isPresent()) {
       return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
+
     Entity userStats = userStatsContainer.get();
     List<Key> items = (List<Key>) userStats.getProperty("Items");
     if (items == null) {
@@ -98,21 +95,23 @@ public final class UserInsightsService implements UserInsightsInterface {
     }
 
     /** Assumes dates are in the form yyyy-mm-dd */
-    Comparator<Key> SORT_BY_DATE = (Key item1, Key item2) -> {
-    try {
-      return ((String) (datastore.get(item1).getProperty("date")))
-        .compareTo((String) (datastore.get(item2).getProperty("date")));
-      } catch (EntityNotFoundException | NullPointerException e )  {
-        return 0;
-      }
-    };
+    Comparator<Key> SORT_BY_DATE =
+        (Key item1, Key item2) -> {
+          try {
+            return ((String) (datastore.get(item1).getProperty("date")))
+                .compareTo((String) (datastore.get(item2).getProperty("date")));
+          } catch (EntityNotFoundException | NullPointerException e) {
+            return 0;
+          }
+        };
     items.sort(SORT_BY_DATE);
     return calculateWeeklyTotal(items);
   }
 
   /**
-   * Creates a Json string that contains the weekly aggregate for this user
-   * and the items this user purchased.
+   * Creates a Json string that contains the weekly aggregate for this user and the items this user
+   * purchased.
+   *
    * @return a Json formatted String of items and an aggregate.
    */
   public String createJson(String userId) {
@@ -120,8 +119,8 @@ public final class UserInsightsService implements UserInsightsInterface {
     String aggregateJson = GSON.toJson(aggregateValues);
     Optional<Entity> userStatsContainer = retreiveUserStats(userId);
 
-    if (!userStatsContainer.isPresent()){
-      return GSON.toJson(createDefaultMap()); 
+    if (!userStatsContainer.isPresent()) {
+      return GSON.toJson(createDefaultMap());
     }
 
     List<Key> itemKeys = (List<Key>) userStatsContainer.get()
@@ -146,14 +145,6 @@ public final class UserInsightsService implements UserInsightsInterface {
                                          .setDate((String) item.getProperty("date"))
                                          .setReceiptId((String) item.getProperty("receiptId"))
                                          .build();
-                            //     (String) item.getProperty("name"),
-                            //     (String) item.getProperty("userId"),
-                            //     (String) item.getProperty("category"),
-                            //     (Double) item.getProperty("price"),
-                            //     (long) item.getProperty("quantity"),
-                            //     (String) item.getProperty("date"),
-                            //     (String) item.getProperty("receiptId")
-                            //   );
                             } catch (EntityNotFoundException e) {
                               return null;
                             }
@@ -167,43 +158,43 @@ public final class UserInsightsService implements UserInsightsInterface {
   }
 
   /**
-   * Finds the UserStats entity corresponding to {@code userId} in datastore
-   * and returns this entity contained inside an Optional.
+   * Finds the UserStats entity corresponding to {@code userId} in datastore and returns this entity
+   * contained inside an Optional.
+   *
    * @return UserStats entity for this user
    */
   public Optional<Entity> retreiveUserStats(String userId) {
     if (userId == null) {
       return Optional.empty();
     }
-    Filter idFilter = new FilterPredicate("userId", 
-                                FilterOperator.EQUAL,
-                                userId);
+    Filter idFilter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
     Query query = new Query("UserStats").setFilter(idFilter);
-    Entity result = datastore.prepare(query).asSingleEntity();
-    return result == null ? Optional.empty() 
-                          : Optional.of(result);
+
+    PreparedQuery results = datastore.prepare(query);
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
+    return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
   }
 
   /**
-   * Creates a List of {@code WeekInfo} relating string weekly period keys to string spending values.
-   * This method calculates the trailing based on a date. 
-   * Example: {"06-20-2020" : "53.0"}
-   * @param items - A list of {@code WeekInfo} objects that reference Item entities
-                  - in the datastore.
-   * @return Creates a List of WeekInfo objects relating the each ending day of a weekly period and  
-   *         values for the total spending during that period. 
-   * TODO (malachibre) : Modify this method by using an enum to calculate time
-   *                     period totals using an enum.
+   * Creates a map relating string weekly period keys to string spending values. This method
+   * calculates the trailing based on a date. Example: {"06-20-2020" : "53.0"}
+   *
+   * @param items - A list of {@code Key} objects that reference Item entities - in the datastore.
+   * @return Creates a map with keys for each ending day of a weekly period and values for the total
+   *     spending during that period. TODO (malachibre) : Modify this method by using an enum to
+   *     calculate time period totals using an enum.
    */
-  private ImmutableList<WeekInfo> calculateWeeklyTotal(List<Key> itemKeys)  {
+  private ImmutableList<WeekInfo> calculateWeeklyTotal(List<Key> itemKeys) {
     if (itemKeys == null || itemKeys.isEmpty()) {
       return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
     List<WeekInfo> weeklyTotals = new ArrayList<WeekInfo>();
     LocalDate currentEndOfWeek;
     try {
-      currentEndOfWeek = getEndOfWeek(LocalDate.parse((String) datastore.get(itemKeys.get(0))
-                                          .getProperty("date"), DATE_FORMATTER));
+      currentEndOfWeek =
+          getEndOfWeek(
+              LocalDate.parse(
+                  (String) datastore.get(itemKeys.get(0)).getProperty("date"), DATE_FORMATTER));
     } catch (EntityNotFoundException e) {
       System.err.println("Error: Entity could not be located");
       return ImmutableList.copyOf(new ArrayList<WeekInfo>());
@@ -218,7 +209,7 @@ public final class UserInsightsService implements UserInsightsInterface {
 
         // If there is a positive amount of time between
         // {@code currentEndOfWeek} and {@code itemDate}
-        // that means that itemDate is after currentEndOfWeek and 
+        // that means that itemDate is after currentEndOfWeek and
         // currentEndOfWeek needs to be updated.
         if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
           weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
@@ -226,12 +217,11 @@ public final class UserInsightsService implements UserInsightsInterface {
           weeklyTotal = 0;
         }
 
-        weeklyTotal += ((double) item.getProperty("price")) * 
-                           ((long) item.getProperty("quantity"));
-    
+        weeklyTotal += ((double) item.getProperty("price")) * ((long) item.getProperty("quantity"));
+
       } catch (EntityNotFoundException e) {
         System.err.println("Error: Entity could not be found");
-      } 
+      }
     }
 
     weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
@@ -240,22 +230,23 @@ public final class UserInsightsService implements UserInsightsInterface {
   }
 
   /**
-   * Finds the Date for the last day of the week that {@code itemDate} is in 
-   * (weeks start on Monday and end on Sunday).
-   * @param itemDate - Uses the int day value of the week from this 
-   *                   paramter to calculate the end of its week.
-   * @return the LocalDate representing the end of the week {@code itemDate}
-   *         is in.
+   * Finds the Date for the last day of the week that {@code itemDate} is in (weeks start on Monday
+   * and end on Sunday).
+   *
+   * @param itemDate - Uses the int day value of the week from this paramter to calculate the end of
+   *     its week.
+   * @return the LocalDate representing the end of the week {@code itemDate} is in.
    */
   private LocalDate getEndOfWeek(LocalDate itemDate) {
     int currentDayOfWeek = itemDate.getDayOfWeek().getValue();
     return itemDate.plusDays(7 - currentDayOfWeek);
-  }  
+  }
 
   /**
    * Creates a default map when required userStats properties are not found.
-   * @return A map with the string keys: weeklyAggregate and items that map to
-   *         to empty string values.
+   *
+   * @return A map with the string keys: weeklyAggregate and items that map to to empty string
+   *     values.
    */
   private ImmutableMap<String, String> createDefaultMap() {
     Map<String, String> emptyMap = new LinkedHashMap<String, String>();

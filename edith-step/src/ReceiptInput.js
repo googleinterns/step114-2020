@@ -10,15 +10,7 @@ export default class ReceiptInput extends React.Component {
     this.getDate = this.getDate.bind(this);
   }
 
-  getDate() {
-      const date = new Date(Date.now());
-      let month = date.getMonth() + 1;
-      month < 10 ? month = "0" + month.toString() : month = month.toString();
-      let day = date.getDate();
-      day < 10 ? day = "0" + day.toString() : day = day.toString();
-      let year = date.getFullYear();
-      return [year, month, day].join("-");   
-  }
+  
 
   handleSubmit(e) {
     e.preventDefault();

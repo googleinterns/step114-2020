@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.UserInsightsService;
 import com.google.edith.servlets.UserInsightsInterface;
@@ -20,24 +21,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 
 public final class UserInsightsTest {
   private static final String USER_ID = "userId";
   private static final String UNKNOWN_USER_ID = "unkownUserId";
   private static final String RECEIPT_ID = "receiptId";
   private DatastoreService datastore;
+
   private static UserInsightsInterface userInsights;
-  private final LocalServiceTestHelper testHelper = 
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-    
+  private final LocalServiceTestHelper testHelper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+
   @Before
   public void setUp() {
     testHelper.setUp();
@@ -67,7 +68,7 @@ public final class UserInsightsTest {
                                    .get(0).getProperty("userId"));
   }
 
-  @Test 
+  @Test
   public void createUserStats_addsCorrectItems() {
     // Checks to see if the right UserId was added to the datastore  
     assertEquals(null, datastore.prepare(new Query("UserStats"))
@@ -77,35 +78,41 @@ public final class UserInsightsTest {
 
   @Test
   public void updateUserStats_addsNewItems() {
-    // The Items property in thie UserStats entity should be equal to 
+    // The Items property in thie UserStats entity should be equal to
     // {@code items}
     List<Key> items = createTestKeyList(0, 5);
     userInsights.updateUserStats(USER_ID, items);
     assertEquals(items, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("Items"));
-
   }
 
   @Test
   public void updateUserStats_whenNonEmpty_addsNewItems() {
-    // The Items property in thie UserStats entity should be equal to 
-    // {@code items} + {@code items2}
-    List<Key> items = createTestKeyList(0, 5);
-    List<Key> items2 = createTestKeyList(5, 10);
-    userInsights.updateUserStats(USER_ID, items);
+    // The Items property in thie UserStats entity should be equal to
+    // {@code items1} + {@code items2}
+    List<Key> items1 = createTestKeyList(0, 5);
+    List<Key> items2 = createTestKeyList(5, 5);
+    userInsights.updateUserStats(USER_ID, items1);
     userInsights.updateUserStats(USER_ID, items2);
-    items.addAll(items2);
-    assertEquals(items, datastore.prepare(new Query("UserStats"))
+    List<Key> allItems = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      if (i < 5) {
+        allItems.add(items1.get(i));
+      } else {
+        allItems.add(items2.get(i-5));
+      }
+    }
+    assertEquals(allItems, datastore.prepare(new Query("UserStats"))
                                    .asList(FetchOptions.Builder.withLimit(10))
                                    .get(0).getProperty("Items"));
 
   }
 
   @Test
-  public void aggregateUserData_withQuantityTwoOrLess_returnsCorrectJsonString() {    
+  public void aggregateUserData_withQuantityTwoOrLess_returnsCorrectJsonString() {
     List<Key> items = createTestKeyList(0, 2);
-    
+
     Entity newEntity = new Entity(items.get(0));
     setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29", RECEIPT_ID);
     datastore.put(newEntity); 
@@ -124,7 +131,7 @@ public final class UserInsightsTest {
   }
 
   @Test
-  public void aggregateUserData_withQuantityMoreThanTwo_returnsCorrectJsonString() {    
+  public void aggregateUserData_withQuantityMoreThanTwo_returnsCorrectJsonString() {
     List<Key> items = createTestKeyList(0, 4);
     List<Item> itemProperties = new ArrayList<>();
 
@@ -133,7 +140,6 @@ public final class UserInsightsTest {
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-
     setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30", RECEIPT_ID);
     datastore.put(newEntity2); 
     
@@ -155,7 +161,7 @@ public final class UserInsightsTest {
   }
 
   @Test
-  public void createJson_returnsCorrectJsonString() {        
+  public void createJson_returnsCorrectJsonString() {
     List<Key> items = createTestKeyList(0, 4);
     List<Item> itemProperties = new ArrayList<>();
 
@@ -227,6 +233,7 @@ public final class UserInsightsTest {
     String expectedJson = new Gson().toJson(testJson);
    
     assertEquals(expectedJson, userInsights.createJson(USER_ID));
+
   }
 
   @Test
@@ -257,26 +264,29 @@ public final class UserInsightsTest {
   }
 
   /**
-   * Creates a list of Item keys
-   * @param startIndex the number of the first element in the list
-   * @param endIndex the number of the last element in the list
-   * @return a list of keys with a number assigned to each of them 
-   *         "item0, item1... itemN"
+   * Creates a list of Item keys.
+   *
+   * @param start the number of the first element in the list
+   * @param count the number of the elements after first element
+   * @return an immutableList of keys with a number assigned to each of them "item0, item1... itemN"
    */
-  private List<Key> createTestKeyList(int startIndex, int endIndex) {
-    List<Key> items = new ArrayList<>();
-    for(int i = startIndex; i < endIndex; i++) {
-      items.add(KeyFactory.createKey("Item", "Item" + i));
-    }
-    return items;
+  private List<Key> createTestKeyList(int start, int count) {
+    // System.out.println(ImmutableList.class);
+    List<Key> keys =
+        IntStream.range(start, start + count)
+            .mapToObj(i -> KeyFactory.createKey("Item", "Item" + i))
+            .collect(Collectors.toList());
+    // Could not use toImmutableList().
+    return ImmutableList.copyOf(keys);
   }
 
   /**
    * Assigns the parameters to the given entity.
+   *
    * @param entity the entity to update
    * @param name the name of the item
    * @param price price
-   * @param quantity quantity 
+   * @param quantity quantity
    * @param date date
    */
   private void setEntityProperties(Entity entity, String name, String userId,

@@ -1,38 +1,43 @@
-.App {
+.background-image-0 {
+  background: fixed url(./receipt.jpg) center/cover no-repeat;
+  height: 150vh;
+  position: relative;
+  width: 100vw;
+}
+
+.app-describe {
+  color: #000;
+  left: 0;
+  opacity: 0.8;
+  position: absolute;
   text-align: center;
+  top: 50%;
+  width: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.border {
+  border: none !important;
+  color: #fff;
+  font-size: 30px;
+  letter-spacing: 10px;
+  padding: 15px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.scroll-down {
+  animation: 1s ease-in-out 1s infinite alternate scroll-down;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  top: 10%;
+  width: 100%;
+}
+
+@keyframes scroll-down {
+  0% {
+    margin-top: 0;
   }
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  100% {
+    margin-top: 15px;
   }
 }

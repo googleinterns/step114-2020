@@ -12,11 +12,18 @@ public abstract class Item {
   public abstract long quantity();  
   public abstract String date(); 
   public abstract String receiptId();
-
+  
+  /**
+   * Creates an AutoValue Builder for this class.
+   * @return AutoValue Builder
+   */
   public static Builder builder() {
     return new AutoValue_Item.Builder();
   }
 
+  /**
+   * Builder used to set the fields of this class.
+   */
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder setName(String value);
