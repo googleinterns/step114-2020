@@ -44,13 +44,13 @@ import javax.servlet.annotation.WebServlet;
 public class MailServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    resp.getWriter().print("Sending simple email.");
-    sendSimpleMail();
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    sendSimpleMail(subject, message);
+    response.sendRedirect("/");
   }
 
-  private void sendSimpleMail() {
-    // [START simple_example]
+  private void sendSimpleMail(String subject, String message) {
     Properties props = new Properties();
     Session session = Session.getDefaultInstance(props, null);
 
@@ -59,8 +59,8 @@ public class MailServlet extends HttpServlet {
       msg.setFrom(new InternetAddress("livseibert@google.com", "Example.com Admin"));
       msg.addRecipient(Message.RecipientType.TO,
                        new InternetAddress("livseibert@google.com", "Mr. User"));
-      msg.setSubject("Your Example.com account has been activated");
-      msg.setText("This is a test");
+      msg.setSubject(subject);
+      msg.setText(message);
       Transport.send(msg);
     } catch (AddressException e) {
       System.out.println(e.getMessage());
