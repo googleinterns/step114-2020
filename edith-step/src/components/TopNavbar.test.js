@@ -117,7 +117,6 @@ describe('When logged in, Top Navigation Bar', () => {
   test('should open user info modal box when update information button is clicked', () => {
     expect(component.state('userInfoModalBoxShow')).toBe(false);
     component.find('.dropdown-toggle').at(0).simulate('click');
-    console.log(component.debug());
     component.find('.update-info').at(0).simulate('click');
     expect(component.state('userInfoModalBoxShow')).toBe(true);
   });

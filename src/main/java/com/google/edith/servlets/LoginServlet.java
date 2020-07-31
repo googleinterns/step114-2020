@@ -57,6 +57,7 @@ public final class LoginServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // User who are not logged in can not upload their info. This is handled in FE too.
     if (loginService.checkUserLoggedIn()) {
       loginService.storeUserInfoEntityInDatastore(request);
     }

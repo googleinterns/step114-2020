@@ -22,7 +22,6 @@ describe('FileUploadModalBox calls', () => {
 
 describe('FileUploadModalBox must', () => {
   beforeEach(() => {
-    enableFetchMocks();
     component = shallow(<FileUploadModalBox />);
   });
 

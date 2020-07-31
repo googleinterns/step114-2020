@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -80,7 +81,9 @@ public final class LoginServiceTest {
   public void storeUserInfoEntityInDatastore_addsOneUserInfoEntity() {
     retrieveStubUserInfo(request);
     loginService.storeUserInfoEntityInDatastore(request);
-    assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
+    assertEquals(
+        1,
+        datastore.prepare(new Query("UserInfo")).countEntities(FetchOptions.Builder.withLimit(10)));
   }
 
   // Checks that only one entity is created for a user.
@@ -91,7 +94,9 @@ public final class LoginServiceTest {
     // mimic storing UserInfo entity twice for same user.
     loginService.storeUserInfoEntityInDatastore(request);
     loginService.storeUserInfoEntityInDatastore(request);
-    assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
+    assertEquals(
+        1,
+        datastore.prepare(new Query("UserInfo")).countEntities(FetchOptions.Builder.withLimit(10)));
   }
 
   // Checks if the JSON created has all the user info fields.
