@@ -27,10 +27,8 @@ public final class ShelfDataReader {
     try (FileReader reader = new FileReader(shelfLifeData)) {
       JsonObject data = (JsonObject) jsonParser.parseReader(reader).getAsJsonObject();
       JsonArray sheets = data.getAsJsonArray("sheets");
-      /*
-       * Get(2) is used because the product data starts at that index, previous data is all
-       * header data on the file.
-       */
+      // Get(2) is used because the product data starts at that index, previous data is all
+      // header data on the file.
       JsonObject productList = sheets.get(2).getAsJsonObject();
       JsonArray productListData = productList.getAsJsonArray("data");
 
@@ -63,7 +61,7 @@ public final class ShelfDataReader {
    */
   private String findTime(JsonArray product) {
     Gson gson = new Gson();
-    String result = "";
+    StringBuilder result = new StringBuilder();
 
     /**
      * The bounds 6 and 27 correspond to the array indices in the JsonArray that contain shelf life
@@ -87,17 +85,19 @@ public final class ShelfDataReader {
         expireData = expireData.substring(0, expireData.length() - 1);
         try {
           Double.parseDouble(expireData);
-          result += expireData + " ";
+          result.append(expireData);
+          result.append(" ");
         } catch (NumberFormatException e) {
           String timeUnit = expireData.substring(1, expireData.length() - 1);
           if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
-            result += timeUnit + " ";
+            result.append(timeUnit);
+            result.append(" ");
           }
         }
       }
     }
 
-    result = result.substring(0, result.length() - 1);
-    return result;
+    result.deleteCharAt(result.length() - 1);
+    return result.toString();
   }
 }
