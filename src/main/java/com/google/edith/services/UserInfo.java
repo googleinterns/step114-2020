@@ -25,9 +25,11 @@ abstract class UserInfo {
   abstract String userName();
   abstract String favoriteStore();
   abstract String email();
+
   abstract String userId();
+
   abstract String logOutUrl();
-  
+
   static Builder builder() {
     return new AutoValue_UserInfo.Builder();
   }
@@ -39,8 +41,11 @@ abstract class UserInfo {
     abstract Builder setUserName(String value);
     abstract Builder setFavoriteStore(String value);
     abstract Builder setEmail(String value);
+
     abstract Builder setUserId(String value);
+
     abstract Builder setLogOutUrl(String value);
+
     abstract UserInfo build();
 
   }

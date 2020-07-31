@@ -1,5 +1,6 @@
 target/
 
+/yarn-error.log
 /node_modules
 /src/main/webapp/*.*
 /.settings

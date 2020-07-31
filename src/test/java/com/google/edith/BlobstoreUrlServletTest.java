@@ -14,10 +14,15 @@
 
 package com.google.edith;
 
-import com.google.edith.servlets.BlobstoreUrlServlet;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.edith.servlets.BlobstoreUrlServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,24 +34,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-public class BlobstoreUrlServletTest {
-  private final LocalServiceTestHelper testHelper = 
+public final class BlobstoreUrlServletTest {
+  private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
-        new LocalBlobstoreServiceTestConfig(),
-        new LocalDatastoreServiceTestConfig());
+          new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
-  private BlobstoreUrlServlet blobstoreUrlServlet;
+  private BlobstoreUrlServlet blobstoreUrlServlet = new BlobstoreUrlServlet();
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    blobstoreUrlServlet = new BlobstoreUrlServlet();
   }
 
   @After
@@ -54,14 +52,13 @@ public class BlobstoreUrlServletTest {
     testHelper.tearDown();
   }
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
+  @Mock HttpServletResponse response;
 
+  /** Checks if the url contains required path. */
   @Test
-  public void testUrl() throws IOException {
+  public void doGet_containsRightUrl() throws IOException {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);

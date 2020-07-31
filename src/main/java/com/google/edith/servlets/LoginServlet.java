@@ -23,12 +23,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that checks if user is logged in.
- * if logged in then provides with user information along with logout url.
- * if not logged in then redirectes to a url to log in.
+/**
+ * Servlet that checks if user is logged in. If user is logged in then provide user related info,
+ * otherwise redirects to login url.
  */
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+public final class LoginServlet extends HttpServlet {
   
   private LoginService loginService;
 
@@ -54,10 +54,10 @@ public class LoginServlet extends HttpServlet {
       response.sendRedirect(loginUrl);
     }
   }
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     loginService.storeUserInfoEntityInDatastore(request);
-    response.sendRedirect("/");
+    response.sendRedirect("/index.html");
   }
 }
