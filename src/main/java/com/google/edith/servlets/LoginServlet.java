@@ -14,50 +14,61 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.edith.services.LoginService;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that checks if user is logged in.
- * if logged in then provides with user information along with logout url.
- * if not logged in then redirectes to a url to log in.
+/**
+ * Servlet that checks if user is logged in. If user is logged in then provide user related info,
+ * otherwise redirects to login url.
  */
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
-  
-  private LoginService loginService;
-
-  public LoginServlet() {
-    this.loginService = new LoginService(
-          UserServiceFactory.getUserService(),
-          DatastoreServiceFactory.getDatastoreService());
-  }
-
-  public LoginServlet(LoginService loginService) {
-    this.loginService = loginService;
-  }
+public final class LoginServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
 
-    if (loginService.checkUserLoggedIn()) {
-      String json = loginService.createJsonOfUserInfo();
+    if (userService.isUserLoggedIn()) {
+      Gson gson = new Gson();
+      User loggedInUser = userService.getCurrentUser();
+      String logoutUrl = userService.createLogoutURL("/");
+
+      String json = gson.toJson(createUserInfo(loggedInUser, logoutUrl));
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
-      String loginUrl = loginService.createLoginUrl("/");
+      String loginUrl = userService.createLoginURL("/");
       response.sendRedirect(loginUrl);
     }
   }
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    loginService.storeUserInfoEntityInDatastore(request);
-    response.sendRedirect("/");
+    response.sendRedirect("/index.html");
+  }
+
+  /**
+   * Creates UserInfo object encapsulating user data.
+   *
+   * @param user - User object which represents currently logged in uyser.
+   * @param logoutUrl - url to logout from the app.
+   * @return UserInfo - wrapper object for user information and logout url.
+   */
+  private UserInfo createUserInfo(User user, String logoutUrl) {
+    UserInfo userInfo =
+        UserInfo.builder()
+            .setEmail(user.getEmail())
+            .setUserId(user.getUserId())
+            .setLogOutUrl(logoutUrl)
+            .build();
+
+    return userInfo;
   }
 }
