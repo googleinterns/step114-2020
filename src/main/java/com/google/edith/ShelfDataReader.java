@@ -69,29 +69,27 @@ public class ShelfDataReader {
      */
     for (int i = 6; i < 27; i++) {
       JsonObject productTimeElement;
+      String expireData = "";
       try {
         productTimeElement = product.get(i).getAsJsonObject();
-
-      } catch (IndexOutOfBoundsException e) {
-        break;
-      }
-      String json = gson.toJson(productTimeElement);
-      String[] jsonKeyValuePair = json.split(":");
-
-      if (jsonKeyValuePair.length == 2) {
-        String expireData = jsonKeyValuePair[1];
-        expireData = expireData.substring(0, expireData.length() - 1);
-        try {
+        String json = gson.toJson(productTimeElement);
+        String[] jsonKeyValuePair = json.split(":");
+        if (jsonKeyValuePair.length == 2) {
+          expireData = jsonKeyValuePair[1];
+          expireData = expireData.substring(0, expireData.length() - 1);
           Double.parseDouble(expireData);
           result += expireData + " ";
-        } catch (NumberFormatException e) {
-          String timeUnit = expireData.substring(1, expireData.length() - 1);
-          if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
-            result += timeUnit + " ";
-          }
+        }
+      } catch (IndexOutOfBoundsException e) {
+        break;
+      } catch (NumberFormatException e) {
+        String timeUnit = expireData.substring(1, expireData.length() - 1);
+        if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
+          result += timeUnit + " ";
         }
       }
     }
+
     result = result.substring(0, result.length() - 1);
     return result;
   }
