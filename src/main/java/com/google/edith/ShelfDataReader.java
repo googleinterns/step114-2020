@@ -38,7 +38,7 @@ public final class ShelfDataReader {
         JsonArray product = productListData.get(i).getAsJsonArray();
         JsonObject nameObject = product.get(2).getAsJsonObject();
         String productName = nameObject.get("Name").getAsString();
-        if (productName.equals(itemName)) {
+        if (productName.toLowerCase().contains(itemName.toLowerCase())) {
           potentialMatches.add(product);
         }
       }
