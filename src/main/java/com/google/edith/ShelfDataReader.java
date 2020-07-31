@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -79,10 +80,10 @@ public final class ShelfDataReader {
         break;
       }
       String json = gson.toJson(productTimeElement);
-      String[] jsonKeyValuePair = json.split(":");
+      List<String> jsonKeyValuePair = Splitter.on(":").splitToList(gson.toJson(productTimeElement));
 
-      if (jsonKeyValuePair.length == 2) {
-        String expireData = jsonKeyValuePair[1];
+      if (jsonKeyValuePair.size() == 2) {
+        String expireData = jsonKeyValuePair.get(1);
         expireData = expireData.substring(0, expireData.length() - 1);
         try {
           Double.parseDouble(expireData);
