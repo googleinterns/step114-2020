@@ -336,4 +336,5 @@ const [chartData, setChartData] = useState({});
 }
 
 export default LineChart
-export { BarGraph, CategoryDoughnutChart, ItemDoughnutChart, retrieveWeekData }
+export { BarGraph, CategoryDoughnutChart, ItemDoughnutChart, 
+         retrieveWeekData, inSameWeek }
