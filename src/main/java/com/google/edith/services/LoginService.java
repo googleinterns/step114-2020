@@ -135,6 +135,7 @@ public final class LoginService {
     
     Optional<Entity> optEntity = getUserInfoEntity(user.getUserId());
     
+    // If the entity is present then update the fields.
     if (optEntity.isPresent()) {
       Entity userInfoEntity = optEntity.get();
       firstName = (String) userInfoEntity.getProperty("firstName");

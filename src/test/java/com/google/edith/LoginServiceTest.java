@@ -49,7 +49,7 @@ public final class LoginServiceTest {
 
   private LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
-      .setEnvAttributes(myMap)
+      .setEnvAttributes(map)
       .setEnvIsLoggedIn(true)
       .setEnvAuthDomain("gmail")
       .setEnvIsAdmin(true)
