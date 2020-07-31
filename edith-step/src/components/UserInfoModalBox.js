@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
+import PropTypes from 'prop-types';
 
 /**
  * A react-bootstrap modal component with first name, last name, user name
