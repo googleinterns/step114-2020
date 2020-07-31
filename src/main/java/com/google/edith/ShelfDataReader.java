@@ -26,6 +26,10 @@ public final class ShelfDataReader {
     try (FileReader reader = new FileReader(shelfLifeData)) {
       JsonObject data = (JsonObject) jsonParser.parseReader(reader).getAsJsonObject();
       JsonArray sheets = data.getAsJsonArray("sheets");
+      /*
+       * Get(2) is used because the product data starts at that index, previous data is all
+       * header data on the file.
+       */
       JsonObject productList = sheets.get(2).getAsJsonObject();
       JsonArray productListData = productList.getAsJsonArray("data");
 
