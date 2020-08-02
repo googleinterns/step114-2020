@@ -84,13 +84,15 @@ class App extends Component {
             </span>
           </div>
         </div>
+        <div>
           <div id='chart-selector' onChange={this.updateChartType}>
             <input defaultChecked type='radio' value={chart.LINE} name='chart-selector' id='line' /> Line
             <input type='radio' value={chart.BAR} name='chart-selector' id='bar' /> Bar
             <input type='radio' value={chart.DOUGHNUT} name='chart-selector' id='doughnut' /> Doughnut
           </div>
-        <Chart action={this.showItemChart} dateSelection={this.state.dateSelection}
+          <Chart action={this.showItemChart} dateSelection={this.state.dateSelection}
                categorySelection={this.state.categorySelection} />
+        </div>
         <ReceiptInput />
       </div>
     );

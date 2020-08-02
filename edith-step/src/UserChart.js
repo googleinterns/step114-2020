@@ -14,7 +14,8 @@ async function retrieveWeekData() {
   const response = await fetch("/user-stats-servlet");
   const responseJson = await response.json();
   let weekDates = [];
-  let values = [];  
+  let values = []; 
+  console.log(responseJson);
   const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
   weeklyAggregate.forEach((week) => {
       weekDates.push(week.date);
@@ -53,7 +54,7 @@ async function setChart(setChartData) {
       data: fetchData[1],
       backgroundColor: ['rgb(0, 191, 255, 0.6)', 
                         'rgb(100, 191, 255, 0.6)',
-                        'rgb(200, 191, 255, 0.6)',
+                        'rgb(500, 191, 255, 0.6)',
                         'rgb(0, 0, 255, 0.6)' ],
       borderWidth: 4
     }
@@ -82,8 +83,8 @@ const LineChart = (props) => {
   return (
       <Line
         data={chartData}
-        width={100}
-        height={100}
+        width={500}
+        height={500}
         options={{
           onClick: (event, element) => {
             const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
@@ -143,8 +144,8 @@ const BarGraph = (props) => {
   return (
       <Bar
         data={chartData}
-        width={100}
-        height={100}
+        width={500}
+        height={500}
         options={{
           onClick: (event, element) => {
             const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
@@ -249,8 +250,8 @@ const CategoryDoughnutChart = (props) => {
   return (
       <Doughnut
         data={chartData}
-        width={100}
-        height={100}
+        width={500}
+        height={500}
         options={{
           onClick: (event, element) => {
             const categorySelection = element[0]._chart.config.data.labels[element[0]._index];

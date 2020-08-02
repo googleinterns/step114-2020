@@ -92,13 +92,6 @@ export default class ReceiptInput extends React.Component {
       id: Date.now(),
     };
 
-    this.setState((state) => ({
-      items: state.items.concat(newItem),
-      itemName: '',
-      itemPrice: 0.0,
-      itemQuantity: 1,
-    }));
-
     axios({
       method: 'post',
       url: '/user-stats-servlet',
@@ -113,6 +106,15 @@ export default class ReceiptInput extends React.Component {
     }).then((response) => {
       console.log(response);
     });
+
+    this.setState((state) => ({
+      items: state.items.concat(newItem),
+      itemName: '',
+      itemPrice: 0.0,
+      itemQuantity: 1,
+    }));
+
+    
   }
 
   /**
