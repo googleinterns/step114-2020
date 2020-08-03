@@ -2,6 +2,7 @@ package com.google.edith;
 
 import com.google.common.base.Splitter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /** Represents items of the same type from different stores in order to compare them. */
@@ -112,26 +113,18 @@ public final class DealItem {
     List<String> expirationPieces =
         Splitter.on(" ").splitToList(expirationTime);
 
-    List<Double> range = new ArrayList<Double>();
+    List<Double> expirationTimeRange = new ArrayList<Double>();
     String timeMeasurement = "";
 
     for (String expirationPiece : expirationPieces) {
       try {
-        range.add(Double.parseDouble(expirationPiece));
+        expirationTimeRange.add(Double.parseDouble(expirationPiece));
       } catch (NumberFormatException e) {
         timeMeasurement = expirationPiece;
       }
     }
 
-    Double min = new Double(0);
-    if (range.size() >= 1) {
-      min = range.get(0);
-    }
-    for (Double time : range) {
-      if (time < min) {
-        min = time;
-      }
-    }
+    Double min = Collections.min(expirationTimeRange);
     this.expirationTime = min + " " + timeMeasurement;
   }
 
