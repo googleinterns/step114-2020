@@ -144,6 +144,7 @@ public final class UserInsightsService implements UserInsightsInterface {
                                          .setQuantity((long) item.getProperty("quantity"))
                                          .setDate((String) item.getProperty("date"))
                                          .setReceiptId((String) item.getProperty("receiptId"))
+                                         .setExpiration("")
                                          .build();
                             } catch (EntityNotFoundException e) {
                               return null;

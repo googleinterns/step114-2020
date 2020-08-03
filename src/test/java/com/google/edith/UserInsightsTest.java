@@ -175,6 +175,8 @@ public final class UserInsightsTest {
                            .setQuantity(1)
                            .setDate("2020-06-29")
                            .setReceiptId(RECEIPT_ID)
+                           .setExpiration("")
+                           .setExpiration("")
                            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 5.00, 1L, "2020-06-29", RECEIPT_ID));
     datastore.put(newEntity); 
@@ -189,6 +191,7 @@ public final class UserInsightsTest {
                            .setQuantity(2)
                            .setDate("2020-06-30")
                            .setReceiptId(RECEIPT_ID)
+                           .setExpiration("")
                            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 6.00, 2L, "2020-06-30", RECEIPT_ID));
     datastore.put(newEntity2); 
@@ -203,6 +206,7 @@ public final class UserInsightsTest {
                            .setQuantity(3)
                            .setDate("2020-07-11")
                            .setReceiptId(RECEIPT_ID)
+                           .setExpiration("")
                            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 7.00, 3L, "2020-07-11", RECEIPT_ID));
     datastore.put(newEntity3);  
@@ -217,6 +221,7 @@ public final class UserInsightsTest {
                            .setQuantity(4)
                            .setDate("2020-07-12")
                            .setReceiptId(RECEIPT_ID)
+                           .setExpiration("")
                            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 8.00, 4L, "2020-07-12", RECEIPT_ID));
     datastore.put(newEntity4);    

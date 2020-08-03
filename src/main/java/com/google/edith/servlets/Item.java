@@ -12,6 +12,7 @@ public abstract class Item {
   public abstract long quantity();  
   public abstract String date(); 
   public abstract String receiptId();
+  public abstract String expiration();
   
   /**
    * Creates an AutoValue Builder for this class.
@@ -33,6 +34,7 @@ public abstract class Item {
     public abstract Builder setQuantity(long value);  
     public abstract Builder setDate(String value); 
     public abstract Builder setReceiptId(String value);
+    public abstract Builder setExpiration(String value);
     public abstract Item build();
   }
 }
