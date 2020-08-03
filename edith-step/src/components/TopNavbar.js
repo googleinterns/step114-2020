@@ -53,6 +53,16 @@ class TopNavbar extends React.Component {
         sessionStorage.setItem('logged-in', '');
         this.setState({user: null});
     });
+    const params = new URLSearchParams();
+    params.append('type', 'expirationQuery');
+    fetch('/grocery-list-query')
+      .then(response => response.json())
+      .then((expirationInfo) => {
+          params.append('body', expirationInfo);
+    });
+    fetch('/notifications', {
+      body: params,
+    });
   }
 
   render() {
