@@ -1,8 +1,6 @@
 import React from 'react';
 
 class DeviceCamera extends React.Component {
-  canvas;
-  player;
   constructor() {
     super();
   }
@@ -16,18 +14,11 @@ class DeviceCamera extends React.Component {
   }
 
   capturePhoto = () => {
-    console.log('i am here');
-    this.canvas = this.refs.canvas;
+    const canvas = this.refs.canvas;
     let ctx = this.refs.canvas.getContext('2d');
-    this.player = this.refs.player;
-    ctx.drawImage(this.player, 0, 0, this.canvas.width, this.canvas.height);
+    const player = this.refs.player;
+    ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
     const imageUrl = this.canvas.toDataURL('image/png');
-    console.log(imageUrl);
-    // canvas.toBlob() = (blob) => {
-    //   const img = new Image();
-    //   img.src = window.URL.createObjectUrl(blob);
-    // };
-    this.player.srcObject.getVideoTracks().forEach(track => track.stop());
   }
 
   showVideo() {
@@ -35,11 +26,11 @@ class DeviceCamera extends React.Component {
       video: true,
       audio: false,
     };
-    this.player = this.refs.player;
+    const player = this.refs.player;
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
-          this.player.srcObject = stream;
-          this.player.play();
+          player.srcObject = stream;
+          player.play();
         });
   }
 
@@ -56,7 +47,6 @@ class DeviceCamera extends React.Component {
         width={300}
         height={300}
       />
-      
       <button
         onClick={this.capturePhoto}>
         Capture
