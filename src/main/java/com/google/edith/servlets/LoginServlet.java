@@ -58,6 +58,6 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     loginService.storeUserInfoEntityInDatastore(request);
-    response.sendRedirect("/notifications");
+    response.sendRedirect("/");
   }
 }

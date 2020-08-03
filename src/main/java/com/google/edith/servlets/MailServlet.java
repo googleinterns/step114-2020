@@ -17,6 +17,9 @@
 
 package com.example.appengine.mail;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.io.IOException;
 import java.util.Properties;
 import javax.mail.Message;
@@ -45,9 +48,23 @@ public class MailServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String subject = "test";
-    String message = "test";
-    sendSimpleMail(subject, message);
+    String type = request.getParameter("type");
+    StringBuilder body = new StringBuilder();
+    String subject;
+
+    if (type.equals(expirationQuery)) {
+      String json = request.getParameter("body");
+      subject = "Restock Alert";
+      JsonArray groceryItems = json.getAsJsonArray();
+      body.append("Hello! You're running low on a few items. You might want to restock:");
+      body.append("/n");
+      for (int i = 0; i < groceryItems.length; i++) {
+        body.append(groceryItems[i]);
+        body.append("/n");
+      }
+    }
+
+    sendSimpleMail(subject, body.toString());
     response.sendRedirect("/");
   }
 
