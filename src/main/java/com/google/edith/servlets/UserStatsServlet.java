@@ -5,8 +5,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.edith.servlets.UserInsightsService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,9 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,9 +59,9 @@ public class UserStatsServlet extends HttpServlet {
     }
 
     String receiptData = stringBuilder.toString();
-    JsonParser parser = new JsonParser();
-    JsonObject json = (JsonObject) parser.parse(receiptData);
+    JsonObject json = (JsonObject) JsonParser.parseString(receiptData);
     String userId = "userId";
+
 
     Entity itemEntity = new Entity("Item");
 

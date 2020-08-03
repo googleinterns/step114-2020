@@ -24,31 +24,15 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.junit.Test;
 import org.mockito.Mockito;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
+
 
 
 public final class UserStatsServletTest {

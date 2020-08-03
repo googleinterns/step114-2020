@@ -10,6 +10,23 @@ export default class ReceiptInput extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDate = this.getDate.bind(this);
   }
+<<<<<<< HEAD
+=======
+  
+  /**
+   * Calculates the current in yyyy-mm-dd format.
+   * @return the date in yyyy-mm-dd format
+   */
+  getDate() {
+      const date = new Date(Date.now());
+      let month = date.getMonth() + 1;
+      month < 10 ? month = "0" + month.toString() : month = month.toString();
+      let day = date.getDate();
+      day < 10 ? day = "0" + day.toString() : day = day.toString();
+      let year = date.getFullYear();
+      return [year, month, day].join("-");   
+  }
+>>>>>>> user-charts
 
   handleSubmit(e) {
     e.preventDefault();
@@ -46,6 +63,23 @@ export default class ReceiptInput extends React.Component {
       itemPrice: 0.0,
       itemQuantity: 1
     }));
+<<<<<<< HEAD
+=======
+
+    axios({
+      method: 'post',
+      url: '/user-stats-servlet',
+      data: {
+        itemName: this.state.itemName,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity,
+        itemDate: this.getDate()
+      }
+    }).then((response) => {
+      console.log(response);
+    });
+
+>>>>>>> user-charts
   }
 
   handleChange(e) {
