@@ -52,9 +52,9 @@ public final class GroceryDataReader {
           item.setWeight(record[storeDataStartColumn + 2]);
           item.setComment(record[storeDataStartColumn + 3]);
           if (!expirationTime.isEmpty()) {
-            item.setExpiration(expirationTime);
+            item.setExpirationTime(expirationTime);
           } else {
-            item.setExpiration("NO_EXPIRATION");
+            item.setExpirationTime("NO_EXPIRATION");
           }
           dealItems.add(item);
         }
@@ -67,9 +67,9 @@ public final class GroceryDataReader {
       cheapestItem = new DealItem();
       cheapestItem.setStore(Store.NO_STORE);
       if (!expirationTime.isEmpty()) {
-        cheapestItem.setExpiration(expirationTime);
+        cheapestItem.setExpirationTime(expirationTime);
       } else {
-        cheapestItem.setExpiration("NO_EXPIRATION");
+        cheapestItem.setExpirationTime("NO_EXPIRATION");
       }
     }
     return cheapestItem;

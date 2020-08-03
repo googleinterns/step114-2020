@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public final class DealItem {
   private double weight;
   private String comment;
   private double unitPrice;
-  private String expiration;
+  private String expirationTime;
 
   public void setStore(Store store) {
     this.storeName = store.toString();
@@ -99,17 +100,18 @@ public final class DealItem {
    * Input string expiration is expected to have the minimum expiration time, the maximum expiration
    * time, and the unit of time, in no particular order. It parses the string to find the minimum
    * expiration time and the unit, as that is the data needed to generate new grocery lists based
-   * off of.
+   * off of. The expiration unit can be Days, Weeks, or Months.
    *
    * <p>ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
    */
-  public void setExpiration(String expiration) {
-    if (expiration.equals("NO_EXPIRATION")) {
-      this.expiration = expiration;
+  public void setExpirationTime(String expirationTime) {
+    if (expirationTime.equals("NO_EXPIRATION")) {
+      this.expirationTime = expirationTime;
       return;
     }
+    List<String> expirationPieces =
+        Splitter.on(" ").splitToList(expirationTime);
 
-    String[] expirationPieces = expiration.split(" ");
     List<Double> range = new ArrayList<Double>();
     String timeMeasurement = "";
 
@@ -130,7 +132,7 @@ public final class DealItem {
         min = time;
       }
     }
-    this.expiration = min + " " + timeMeasurement;
+    this.expirationTime = min + " " + timeMeasurement;
   }
 
   /**
@@ -164,7 +166,7 @@ public final class DealItem {
     return comment;
   }
 
-  public String getExpiration() {
-    return expiration;
+  public String getExpirationTime() {
+    return expirationTime;
   }
 }

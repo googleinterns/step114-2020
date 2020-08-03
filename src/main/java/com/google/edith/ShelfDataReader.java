@@ -19,8 +19,8 @@ public class ShelfDataReader {
 
   /** Finds the specified product in the file. */
   public static String readFile(String itemName) {
-    URL jsonresource = ShelfDataReader.class.getClassLoader().getResource("foodkeeper.json");
-    File shelfLifeData = new File(jsonresource.getFile());
+    URL jsonResource = ShelfDataReader.class.getClassLoader().getResource("foodkeeper.json");
+    File shelfLifeData = new File(jsonResource.getFile());
 
     JsonParser jsonParser = new JsonParser();
     List<JsonArray> potentialMatches = new ArrayList<JsonArray>();
