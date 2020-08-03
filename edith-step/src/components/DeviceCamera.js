@@ -64,7 +64,7 @@ class DeviceCamera extends React.Component {
     const canvas = this.refs.canvas;
     const player = this.refs.player;
     player.srcObject.getVideoTracks().forEach(track => track.stop());
-    const imageUrl = canvas.toDataURL('image/gif');
+    const imageUrl = canvas.toDataURL('image/jpeg');
     console.log(imageUrl);
   }
 
