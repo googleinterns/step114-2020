@@ -4,12 +4,14 @@ import axios from 'axios';
 export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1, 
-                  };
+    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1,
+                  itemCategory: 'category', itemReceiptId: 'receiptId' };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getDate = this.getDate.bind(this);
   }
+<<<<<<< HEAD
+=======
   
   /**
    * Calculates the current in yyyy-mm-dd format.
@@ -24,6 +26,7 @@ export default class ReceiptInput extends React.Component {
       let year = date.getFullYear();
       return [year, month, day].join("-");   
   }
+>>>>>>> user-charts
 
   handleSubmit(e) {
     e.preventDefault();
@@ -31,6 +34,22 @@ export default class ReceiptInput extends React.Component {
     if (this.state.itemName.length === 0) {
       return;
     }
+  
+    axios({
+      method: 'post',
+      url: '/user-stats-servlet',
+      data: {
+        itemName: this.state.itemName,
+        itemCategory: this.state.itemCategory,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity,
+        itemDate: this.getDate(),
+        itemReceiptId: this.state.itemReceiptId
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
@@ -44,6 +63,8 @@ export default class ReceiptInput extends React.Component {
       itemPrice: 0.0,
       itemQuantity: 1
     }));
+<<<<<<< HEAD
+=======
 
     axios({
       method: 'post',
@@ -58,6 +79,7 @@ export default class ReceiptInput extends React.Component {
       console.log(response);
     });
 
+>>>>>>> user-charts
   }
 
   handleChange(e) {

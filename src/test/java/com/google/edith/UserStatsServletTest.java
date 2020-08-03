@@ -1,7 +1,20 @@
 package com.google.edith;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.common.collect.ImmutableMap;
+import com.google.edith.servlets.UserInsightsService;
 import com.google.edith.servlets.UserInsightsInterface;
 import com.google.edith.servlets.UserStatsServlet;
 import com.google.edith.servlets.Item;
@@ -28,6 +41,7 @@ public final class UserStatsServletTest {
   private final LocalServiceTestHelper testHelper = 
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private final Gson gson = new Gson();
+  private final String USER_ID = "userId";
 
   @Before
   public void setUp() {
@@ -42,21 +56,25 @@ public final class UserStatsServletTest {
 
     JsonObject testJson = new JsonObject();
     testJson.addProperty("itemName", "Corn");
+    testJson.addProperty("itemUserId", "userId");
+    testJson.addProperty("itemCategory", "Vegetable");
     testJson.addProperty("itemPrice", "5.00");
     testJson.addProperty("itemQuantity", "4");
     testJson.addProperty("itemDate", "2020-07-14");
+    testJson.addProperty("itemReceiptId", "receiptId");
+
 
     String json = gson.toJson(testJson);
-    Mockito.when(request.getReader()).thenReturn(
+    when(request.getReader()).thenReturn(
         new BufferedReader(new StringReader(json)));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
+    when(response.getWriter()).thenReturn(writer);
 
     new UserStatsServlet().doPost(request, response);
 
-    Mockito.verify(request, Mockito.atLeast(1)).getReader();
+    verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("Item posted"));
   }
@@ -69,11 +87,11 @@ public final class UserStatsServletTest {
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
-    Mockito.when(userInsights.createJson()).thenReturn("");
+    when(response.getWriter()).thenReturn(writer);
+    when(userInsights.createJson(USER_ID)).thenReturn("");
 
     new UserStatsServlet(datastore, userInsights).doGet(request, response);
-    Mockito.verify(userInsights, Mockito.atLeast(1)).createJson();
+    verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
   }
 
 }
