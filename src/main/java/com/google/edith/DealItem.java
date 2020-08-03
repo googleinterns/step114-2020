@@ -159,7 +159,7 @@ public final class DealItem {
     return comment;
   }
 
-  /** 
+  /**
    * Returns time until item expires.
    *
    * <p>ex: '6.0 Days', '2.0 Weeks', '3.0 Months'

@@ -36,6 +36,8 @@ public class ShelfDataReader {
         JsonArray product = productListData.get(i).getAsJsonArray();
         JsonObject nameObject = product.get(2).getAsJsonObject();
         String productName = nameObject.get("Name").getAsString();
+
+        // TODO: currently has some false positives, fixed with nlp algorithm in later PR.
         if (productName.toLowerCase().contains(itemName.toLowerCase())) {
           potentialMatches.add(product);
         }
