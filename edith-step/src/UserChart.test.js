@@ -66,8 +66,3 @@ it('Should mount CategoryDoughnutChart to App when selected', () => {
   component.find("#doughnut").simulate('click', { target: { checked: true } })
   return expect(component.find(<CategoryDoughnutChart />)).toBeTruthy();
 });
-
-
-
-
-

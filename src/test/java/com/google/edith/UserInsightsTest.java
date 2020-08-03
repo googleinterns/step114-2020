@@ -318,5 +318,3 @@ public final class UserInsightsTest {
     return true; 
   }
 }
-
-

@@ -10,8 +10,6 @@ export default class ReceiptInput extends React.Component {
     this.getDate = this.getDate.bind(this);
   }
 
-  
-
   handleSubmit(e) {
     e.preventDefault();
 
