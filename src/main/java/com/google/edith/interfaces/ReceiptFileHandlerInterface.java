@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Operations for handling blobs. */
 public interface ReceiptFileHandlerInterface {
-  public void serveBlob(HttpServletResponse response, List<FileInfo> fileKeys) throws IOException;
+  void serveBlob(HttpServletResponse response, List<FileInfo> fileKeys) throws IOException;
 
-  public List<FileInfo> getUploadedFileUrl(HttpServletRequest request, String formInputElementName);
+  List<FileInfo> getUploadedFileUrl(HttpServletRequest request, String formInputElementName);
 
-  public BlobKey getBlobKey(List<FileInfo> fileKeys);
+  BlobKey getBlobKey(List<FileInfo> fileKeys);
 }
