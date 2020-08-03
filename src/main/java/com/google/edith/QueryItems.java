@@ -14,6 +14,7 @@ import java.util.Set;
  */
 public class QueryItems {
   public String findExpiredItems(Receipt[] pastReceipts) {
+    Query query = new Query("Receipt").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, id));
     Set<Item> itemsToBuy = new HashSet<Item>();
 
     for (Receipt receipt : pastReceipts) {

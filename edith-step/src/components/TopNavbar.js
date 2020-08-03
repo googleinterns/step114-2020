@@ -63,7 +63,7 @@ class TopNavbar extends React.Component {
     });
     fetch('/notifications', {
       body: params,
-    };
+    });
   }
 
   render() {

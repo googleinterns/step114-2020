@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import ReceiptHandler from './components/ReceiptHandler';
 import TopNavbar from './components/TopNavbar';
 import GroceryList from './components/GroceryList';
+import axios from 'axios';
 
 import './App.css';
 
