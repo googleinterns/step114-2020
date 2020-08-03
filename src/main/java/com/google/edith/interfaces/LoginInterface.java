@@ -18,11 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 
 /** Operations for handling user authentication. */
 public interface LoginInterface {
-  public String createJsonOfUserInfo();
+  String createJsonOfUserInfo();
 
-  public boolean checkUserLoggedIn();
+  boolean checkUserLoggedIn();
 
-  public String createLoginUrl(String destinationUrl);
+  String createLoginUrl(String destinationUrl);
 
-  public void storeUserInfoEntityInDatastore(HttpServletRequest request);
+  void storeUserInfoEntityInDatastore(HttpServletRequest request);
 }
