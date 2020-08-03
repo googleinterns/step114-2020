@@ -104,7 +104,7 @@ public final class DealItem {
    * expiration time and the unit, as that is the data needed to generate new grocery lists based
    * off of. The expiration unit can be Days, Weeks, or Months.
    *
-   * <p>ex: '1.0 2.0 Weeks' -> this.expiration = '1.0 Weeks'
+   * <p>ex: '1.0 2.0 Weeks' -> this.expirationTime = '1.0 Weeks'
    */
   public void setExpirationTime(String expirationTime) {
     if (expirationTime.equals("NO_EXPIRATION")) {
