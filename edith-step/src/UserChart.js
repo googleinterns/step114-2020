@@ -4,14 +4,14 @@
  */
 import React, {useState, useEffect} from 'react';
 import {Line, Bar, Doughnut} from 'react-chartjs-2';
-require("regenerator-runtime/runtime")
+require('regenerator-runtime/runtime')
 
 /**
- * Makes a get request to "/user-stats-servlet"to receieve week information
+ * Makes a get request to '/user-stats-servlet'to receieve week information
  * used in all three charts in this module.
  */
 async function retrieveWeekData() {
-  const response = await fetch("/user-stats-servlet");
+  const response = await fetch('/user-stats-servlet');
   const responseJson = await response.json();
   let weekDates = [];
   let values = []; 
@@ -25,16 +25,16 @@ async function retrieveWeekData() {
 }
 
 /**
- * Determines if {@code itemDate} is in the same as {@code dateSelection}
+ * Determines if {@code itemDate} is in the same as {@code dateFilter}
  * (a week starts on Monday and ends on Sunday)
  * @param itemDate - the date the specific item was purchased on
- * @param dateSelection - the date to compare itemDate to
- * @return a boolean representing whether itemDate is in the same week as dateSelection
+ * @param dateFilter - the date to compare itemDate to
+ * @return a boolean representing whether itemDate is in the same week as dateFilter
  */
-const inSameWeek = (itemDate, dateSelection) => {
+const inSameWeek = (itemDate, dateFilter) => {
   itemDate = new Date(itemDate);
-  dateSelection = new Date(dateSelection);
-  const diffTime = dateSelection - itemDate;
+  dateFilter = new Date(dateFilter);
+  const diffTime = dateFilter - itemDate;
   // Then length of a day is 1000ms * 60 seconds * 60 minutues * 24 hours
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
   return diffDays < 6 && diffDays > 0;
@@ -50,7 +50,7 @@ async function setChart(setChartData) {
     labels: fetchData[0],
     datasets: [
     {
-      label: "Week Total",
+      label: 'Week Total',
       data: fetchData[1],
       backgroundColor: ['rgb(0, 191, 255, 0.6)', 
                         'rgb(100, 191, 255, 0.6)',
@@ -67,7 +67,7 @@ async function setChart(setChartData) {
  * week. Each data point can be clicked on to show a more in-depth spending
  * for that week.
  * @param props - contains the methods used to update/revert the state to 
- *                display a drill-downed chart and a dateSelection variable
+ *                display a drill-downed chart and a dateFilter variable
  * @return React node object containing a canvas and a LineChart.
  */
 const LineChart = (props) => {
@@ -87,8 +87,8 @@ const LineChart = (props) => {
         height={500}
         options={{
           onClick: (event, element) => {
-            const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
-            props.action("category", dateSelection, '');
+            const dateFilter = element[0]._chart.config.data.labels[element[0]._index];
+            props.action('category', dateFilter, '');
           },
           maintainAspectRatio: false,
           title:{
@@ -129,7 +129,7 @@ const LineChart = (props) => {
  * week. Each data point can be clicked on to show a more in-depth spending
  * for that week.
  * @param props - contains the methods used to update/revert the state to 
- *                display a drill-downed chart and a dateSelection variable
+ *                display a drill-downed chart and a dateFilter variable
  * @return React node object containing a canvas and a BarGraph.
  */
 const BarGraph = (props) => {
@@ -148,8 +148,8 @@ const BarGraph = (props) => {
         height={500}
         options={{
           onClick: (event, element) => {
-            const dateSelection = element[0]._chart.config.data.labels[element[0]._index];
-            props.action("category", dateSelection, '');      
+            const dateFilter = element[0]._chart.config.data.labels[element[0]._index];
+            props.action('category', dateFilter, '');      
           },  
           maintainAspectRatio: false,
           title:{
@@ -188,23 +188,23 @@ const BarGraph = (props) => {
 /**
  * DoughnutChart that shows the total amount of spending for each item.
  * @param props - contains the methods used to update/revert the state to 
- *                display a drill-downed chart and a dateSelection variable
+ *                display a drill-downed chart and a dateFilter variable
  * @return React node object containing a canvas and a DoughnutChart.
  */
 const CategoryDoughnutChart = (props) => {
     
   const [chartData, setChartData] = useState({});
   const chart = () => {
-    fetch("/user-stats-servlet")
+    fetch('/user-stats-servlet')
       .then((response) => response.json())
       .then((responseJson) => {
         let itemNames = [];
         let itemValues = [];  
         const itemsJson = JSON.parse(responseJson.items);
         let items = {};
-        if (props.dateSelection.length > 0) {
+        if (props.dateFilter.length > 0) {
           itemsJson.forEach((item) => {
-              if(inSameWeek(item.date, props.dateSelection)) {
+              if(inSameWeek(item.date, props.dateFilter)) {
                 if (items[item.category]) {
                   items[item.category] = items[item.category] + 1;
                 } else {
@@ -229,9 +229,9 @@ const CategoryDoughnutChart = (props) => {
           labels: itemNames,
           datasets: [
             {
-              label: "Week Total",
+              label: 'Week Total',
               data: itemValues,
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
+              backgroundColor: ['rgba(75, 192, 192, 0.6)'],
               borderWidth: 4
             }
           ]
@@ -255,7 +255,7 @@ const CategoryDoughnutChart = (props) => {
         options={{
           onClick: (event, element) => {
             const categorySelection = element[0]._chart.config.data.labels[element[0]._index];
-            props.action("item", props.dateSelection, categorySelection);      
+            props.action('item', props.dateFilter, categorySelection);      
           },
           maintainAspectRatio: false,
           title:{
@@ -275,7 +275,7 @@ const CategoryDoughnutChart = (props) => {
 const ItemDoughnutChart = (props) => {
 const [chartData, setChartData] = useState({});
   const chart = () => {
-    fetch("/user-stats-servlet")
+    fetch('/user-stats-servlet')
       .then((response) => response.json())
       .then((responseJson) => {
         let itemNames = [];
@@ -284,7 +284,7 @@ const [chartData, setChartData] = useState({});
         let items = {};
         itemsJson.forEach((item) => {
           console.log(item);
-          if((props.dateSelection === '' || inSameWeek(item.date, props.dateSelection))
+          if((props.dateFilter === '' || inSameWeek(item.date, props.dateFilter))
               && (props.categorySelection === '' || item.category === props.categorySelection)) {
             if (!(item.name in itemNames)) {
                 itemNames.push(item.name);
@@ -297,9 +297,9 @@ const [chartData, setChartData] = useState({});
           labels: itemNames,
           datasets: [
             {
-              label: "Week Total",
+              label: 'Week Total',
               data: itemValues,
-              backgroundColor: ["rgba(75, 192, 192, 0.6)"],
+              backgroundColor: ['rgba(75, 192, 192, 0.6)'],
               borderWidth: 4
             }
           ]

@@ -98,8 +98,12 @@ public final class UserInsightsService implements UserInsightsInterface {
     Comparator<Key> SORT_BY_DATE =
         (Key item1, Key item2) -> {
           try {
-            return ((String) (datastore.get(item1).getProperty("date")))
-                .compareTo((String) (datastore.get(item2).getProperty("date")));
+            return (LocalDate.parse((String) (datastore.get(item1)
+                                                  .getProperty("date")), 
+                                                  DATE_FORMATTER)
+                .compareTo(LocalDate.parse((String) (datastore.get(item2)
+                                                        .getProperty("date")), 
+                                                        DATE_FORMATTER)));
           } catch (EntityNotFoundException | NullPointerException e) {
             return 0;
           }
@@ -133,9 +137,17 @@ public final class UserInsightsService implements UserInsightsInterface {
     // Each item is mapped to an Item object to make their 
     // properties parseable by GSON.
     List<Item> items = itemKeys.stream()
-                         .map(key ->{
-                            try {
-                              Entity item = datastore.get(key);
+                         .map(key -> {
+                                try {
+                                  return Optional.of(datastore.get(key));
+                                } catch (EntityNotFoundException e) {
+                                  return Optional.empty();
+                                }
+                         })
+                         .filter(Optional::isPresent)
+                         .map(Optional::get) 
+                         .map(object ->{
+                              Entity item = (Entity) object;
                               return Item.builder()
                                          .setName((String) item.getProperty("name"))
                                          .setUserId((String) item.getProperty("userId"))
@@ -143,12 +155,8 @@ public final class UserInsightsService implements UserInsightsInterface {
                                          .setPrice((double) item.getProperty("price"))
                                          .setQuantity((long) item.getProperty("quantity"))
                                          .setDate((String) item.getProperty("date"))
-                                         .setReceiptId((String) item.getProperty("receiptId"))
                                          .setExpiration("")
                                          .build();
-                            } catch (EntityNotFoundException e) {
-                              return null;
-                            }
                           })
                           .collect(Collectors.toList());
     String itemsJson = GSON.toJson(items);

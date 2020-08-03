@@ -1,7 +1,7 @@
-import React from 'react';
-import {mount} from 'enzyme';
 import {enableFetchMocks} from 'jest-fetch-mock';
 enableFetchMocks();
+import React from 'react';
+import {mount} from 'enzyme';
 import App from './App';
 import './setupTests.js';
 

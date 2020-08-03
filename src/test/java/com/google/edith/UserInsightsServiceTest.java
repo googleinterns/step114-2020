@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,15 +26,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public final class UserInsightsTest {
+public final class UserInsightsServiceTest {
   private static final String USER_ID = "userId";
   private static final String UNKNOWN_USER_ID = "unkownUserId";
-  private static final String RECEIPT_ID = "receiptId";
   private DatastoreService datastore;
 
   private static UserInsightsInterface userInsights;
@@ -114,12 +113,12 @@ public final class UserInsightsTest {
     List<Key> items = createTestKeyList(0, 2);
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29", RECEIPT_ID);
+    setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
 
-    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30", RECEIPT_ID);
+    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
     List<WeekInfo> expected = new ArrayList<WeekInfo>();
@@ -136,19 +135,19 @@ public final class UserInsightsTest {
     List<Item> itemProperties = new ArrayList<>();
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29", RECEIPT_ID);
+    setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29");
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30", RECEIPT_ID);
+    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30");
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3, "corn", USER_ID, "vegetable", 7, 3, "2020-07-11", RECEIPT_ID);
+    setEntityProperties(newEntity3, "corn", USER_ID, "vegetable", 7, 3, "2020-07-11");
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, "corn", USER_ID, "vegetable", 8, 4, "2020-07-12", RECEIPT_ID);
+    setEntityProperties(newEntity4, "corn", USER_ID, "vegetable", 8, 4, "2020-07-12");
     datastore.put(newEntity4);  
 
     List<WeekInfo> expected = new ArrayList<>();
@@ -166,7 +165,7 @@ public final class UserInsightsTest {
     List<Item> itemProperties = new ArrayList<>();
 
     Entity newEntity = new Entity(items.get(0));
-    setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29", RECEIPT_ID);
+    setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29");
     itemProperties.add(Item.builder()
                            .setName("corn")
                            .setUserId(USER_ID)
@@ -174,15 +173,14 @@ public final class UserInsightsTest {
                            .setPrice(5)
                            .setQuantity(1)
                            .setDate("2020-06-29")
-                           .setReceiptId(RECEIPT_ID)
                            .setExpiration("")
                            .setExpiration("")
                            .build());
-    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 5.00, 1L, "2020-06-29", RECEIPT_ID));
+    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 5.00, 1L, "2020-06-29"));
     datastore.put(newEntity); 
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable",  6, 2, "2020-06-30", RECEIPT_ID);
+    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable",  6, 2, "2020-06-30");
     itemProperties.add(Item.builder()
                            .setName("corn")
                            .setUserId(USER_ID)
@@ -190,14 +188,13 @@ public final class UserInsightsTest {
                            .setPrice(6)
                            .setQuantity(2)
                            .setDate("2020-06-30")
-                           .setReceiptId(RECEIPT_ID)
                            .setExpiration("")
                            .build());
-    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 6.00, 2L, "2020-06-30", RECEIPT_ID));
+    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 6.00, 2L, "2020-06-30"));
     datastore.put(newEntity2); 
     
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3,"corn", USER_ID, "vegetable",  7, 3, "2020-07-11", RECEIPT_ID);
+    setEntityProperties(newEntity3,"corn", USER_ID, "vegetable",  7, 3, "2020-07-11");
     itemProperties.add(Item.builder()
                            .setName("corn")
                            .setUserId(USER_ID)
@@ -205,14 +202,13 @@ public final class UserInsightsTest {
                            .setPrice(7)
                            .setQuantity(3)
                            .setDate("2020-07-11")
-                           .setReceiptId(RECEIPT_ID)
                            .setExpiration("")
                            .build());
-    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 7.00, 3L, "2020-07-11", RECEIPT_ID));
+    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 7.00, 3L, "2020-07-11"));
     datastore.put(newEntity3);  
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, "corn", USER_ID, "vegetable",  8, 4, "2020-07-12", RECEIPT_ID);
+    setEntityProperties(newEntity4, "corn", USER_ID, "vegetable",  8, 4, "2020-07-12");
     itemProperties.add(Item.builder()
                            .setName("corn")
                            .setUserId(USER_ID)
@@ -220,10 +216,9 @@ public final class UserInsightsTest {
                            .setPrice(8)
                            .setQuantity(4)
                            .setDate("2020-07-12")
-                           .setReceiptId(RECEIPT_ID)
                            .setExpiration("")
                            .build());
-    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 8.00, 4L, "2020-07-12", RECEIPT_ID));
+    // itemProperties.add(new Item("corn", USER_ID, "vegetable", 8.00, 4L, "2020-07-12"));
     datastore.put(newEntity4);    
 
     List<WeekInfo> expected = new ArrayList<>();
@@ -296,14 +291,13 @@ public final class UserInsightsTest {
    */
   private void setEntityProperties(Entity entity, String name, String userId,
                                    String category, double price, int quantity,
-                                   String date, String receiptId) {
+                                   String date) {
     entity.setProperty("name", name);
     entity.setProperty("userId", userId);
     entity.setProperty("category", category);
     entity.setProperty("price", price);
     entity.setProperty("quantity", quantity);
     entity.setProperty("date", date);
-    entity.setProperty("receiptId", receiptId);
   }
 
   private boolean compareOrderedLists(List<WeekInfo> expected, List<WeekInfo> actual) {

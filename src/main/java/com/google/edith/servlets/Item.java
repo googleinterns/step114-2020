@@ -11,7 +11,6 @@ public abstract class Item {
   public abstract double price(); 
   public abstract long quantity();  
   public abstract String date(); 
-  public abstract String receiptId();
   public abstract String expiration();
   
   /**
@@ -33,7 +32,6 @@ public abstract class Item {
     public abstract Builder setPrice(double value); 
     public abstract Builder setQuantity(long value);  
     public abstract Builder setDate(String value); 
-    public abstract Builder setReceiptId(String value);
     public abstract Builder setExpiration(String value);
     public abstract Item build();
   }

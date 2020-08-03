@@ -2,7 +2,6 @@ import {enableFetchMocks} from 'jest-fetch-mock'
 enableFetchMocks();
 import {mount} from 'enzyme';
 import React from 'react';
-import ReceiptInput from './ReceiptInput';
 import './setupTests.js';
 import App from './App';
 import LineChart, {retrieveWeekData, BarGraph, inSameWeek,
@@ -10,27 +9,25 @@ import LineChart, {retrieveWeekData, BarGraph, inSameWeek,
 
 const component = mount(<App />);
 const showItemChart = jest.spyOn(App.prototype, 'showItemChart');
-console.log(showItemChart);
-
 
 it('Should parse the correct week data in retrieveWeekData', () => {
-  const obj = { weeklyAggregate: '[{"date":"2020-07-19","total":"25.0"}]' };
+  const obj = {weeklyAggregate: '[{"date":"2020-07-19","total":"25.0"}]'};
   const response = JSON.stringify(obj);
   fetch.mockResponse(response);
 
-  return retrieveWeekData().then(fetchData => {
+  return retrieveWeekData().then((fetchData) => {
     expect(fetchData[0]).toStrictEqual(["2020-07-19"]);
     expect(fetchData[1]).toStrictEqual(["25.0"]);
   });
 });
 
-it('Should parse the correct week data wit multiple weeks in retrieveWeekData', () => {
-  const obj = { weeklyAggregate: '[{"date":"2020-07-19","total":"25.0"},'
-                                  + '{"date":"2020-07-26","total":"5.0"}]' };
+it('Should parse the correct week data with multiple weeks in retrieveWeekData', () => {
+  const obj = {weeklyAggregate: '[{"date":"2020-07-19","total":"25.0"},'
+                                + '{"date":"2020-07-26","total":"5.0"}]'};
   const response = JSON.stringify(obj);
   fetch.mockResponse(response);
 
-  return retrieveWeekData().then(fetchData => {
+  return retrieveWeekData().then((fetchData) => {
     expect(fetchData[0]).toStrictEqual(["2020-07-19", "2020-07-26"]);
     expect(fetchData[1]).toStrictEqual(["25.0", "5.0"]);
   });
@@ -53,16 +50,16 @@ it('Should mount LineChart to App', () => {
 });
 
 it('Should mount BarGraph to App when selected', () => {
-  component.find("#bar").simulate('click', { target: { checked: true } })
+  component.find("#bar").simulate('click', {target: {checked: true}})
   return expect(component.find(<BarGraph />)).toBeTruthy();
 });
 
 it('Should mount LineChart to App when selected', () => {
-  component.find("#line").simulate('click', { target: { checked: true } })
+  component.find("#line").simulate('click', {target: {checked: true}})
   return expect(component.find(<LineChart />)).toBeTruthy();
 });
 
 it('Should mount CategoryDoughnutChart to App when selected', () => {
-  component.find("#doughnut").simulate('click', { target: { checked: true } })
+  component.find("#doughnut").simulate('click', {target: {checked: true}})
   return expect(component.find(<CategoryDoughnutChart />)).toBeTruthy();
 });

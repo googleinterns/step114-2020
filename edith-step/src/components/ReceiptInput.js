@@ -22,7 +22,11 @@ export default class ReceiptInput extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
+  
+  /**
+   * Calculates the current date in yyyy-mm-dd format
+   * @return {string} The current date
+   */
   getDate() {
       const date = new Date(Date.now());
       let month = date.getMonth() + 1;

@@ -1,5 +1,7 @@
 package com.google.edith;
 
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -79,16 +81,16 @@ public final class UserStatsServletTest {
 
 
     String json = gson.toJson(testJson);
-    Mockito.when(request.getReader()).thenReturn(
+    when(request.getReader()).thenReturn(
         new BufferedReader(new StringReader(json)));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
+    when(response.getWriter()).thenReturn(writer);
 
     new UserStatsServlet().doPost(request, response);
 
-    Mockito.verify(request, Mockito.atLeast(1)).getReader();
+    verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("Item posted"));
   }
@@ -101,11 +103,11 @@ public final class UserStatsServletTest {
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
-    Mockito.when(userInsights.createJson(USER_ID)).thenReturn("");
+    when(response.getWriter()).thenReturn(writer);
+    when(userInsights.createJson(USER_ID)).thenReturn("");
 
     new UserStatsServlet(datastore, userInsights).doGet(request, response);
-    Mockito.verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
+    verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
   }
 
 }

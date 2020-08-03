@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 export default class ReceiptInput extends React.Component {
   constructor(props) {
@@ -16,6 +17,22 @@ export default class ReceiptInput extends React.Component {
     if (this.state.itemName.length === 0) {
       return;
     }
+  
+    axios({
+      method: 'post',
+      url: '/user-stats-servlet',
+      data: {
+        itemName: this.state.itemName,
+        itemCategory: this.state.itemCategory,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity,
+        itemDate: this.getDate(),
+        itemReceiptId: this.state.itemReceiptId
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
@@ -29,23 +46,6 @@ export default class ReceiptInput extends React.Component {
       itemPrice: 0.0,
       itemQuantity: 1
     }));
-
-    const axios = require('axios')
-    axios({
-      method: 'post',
-      url: '/user-stats-servlet',
-      data: {
-        itemName: this.state.itemName,
-        itemCategory: this.state.itemCategory,
-        itemPrice: this.state.itemPrice,
-        itemQuantity: this.state.itemQuantity,
-        itemDate: this.getDate(),
-        itemReceiptId: this.state.itemReceiptId
-      }
-    }).then((response) => {
-      console.log(response);
-    });
-
   }
 
   handleChange(e) {
