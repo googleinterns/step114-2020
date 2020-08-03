@@ -1,6 +1,8 @@
 package com.google.edith;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +35,7 @@ public final class DealItem {
   private String comment;
   private double unitPrice;
   private String expirationTime;
+  private static final String EXPIRATION_TEMPLATE = "%s %s";
 
   public void setStore(Store store) {
     this.storeName = store.toString();
@@ -110,10 +113,9 @@ public final class DealItem {
       this.expirationTime = expirationTime;
       return;
     }
-    List<String> expirationPieces =
-        Splitter.on(" ").splitToList(expirationTime);
+    List<String> expirationPieces = Splitter.on(" ").splitToList(expirationTime);
 
-    List<Double> expirationTimeRange = new ArrayList<Double>();
+    ImmutableList.Builder<Double> expirationTimeRange = ImmutableList.builder();
     String timeMeasurement = "";
 
     for (String expirationPiece : expirationPieces) {
@@ -124,8 +126,8 @@ public final class DealItem {
       }
     }
 
-    Double min = Collections.min(expirationTimeRange);
-    this.expirationTime = min + " " + timeMeasurement;
+    Double min = Collections.min(expirationTimeRange.build());
+    this.expirationTime = String.format(EXPIRATION_TEMPLATE, min, timeMeasurement);
   }
 
   /**
@@ -159,6 +161,11 @@ public final class DealItem {
     return comment;
   }
 
+  /** 
+   * Returns time until item expires.
+   *
+   * <p>ex: '6.0 Days', '2.0 Weeks', '3.0 Months'
+   */
   public String getExpirationTime() {
     return expirationTime;
   }
