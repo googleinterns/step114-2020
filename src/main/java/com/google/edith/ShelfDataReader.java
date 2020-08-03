@@ -76,7 +76,8 @@ public class ShelfDataReader {
       try {
         productTimeElement = product.get(i).getAsJsonObject();
         String json = gson.toJson(productTimeElement);
-        List<String> jsonKeyValuePair = Splitter.on(":").splitToList(gson.toJson(productTimeElement));
+        List<String> jsonKeyValuePair =
+            Splitter.on(":").splitToList(gson.toJson(productTimeElement));
         if (jsonKeyValuePair.size() == 2) {
           expireData = jsonKeyValuePair.get(1);
           expireData = expireData.substring(0, expireData.length() - 1);
