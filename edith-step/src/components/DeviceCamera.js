@@ -11,7 +11,7 @@ class DeviceCamera extends React.Component {
    * @constructor
    * @param {Object}  props for React component.
    */
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       uploadUrl: '',
