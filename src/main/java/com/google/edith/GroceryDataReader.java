@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,13 +15,8 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-
-  private static final String NO_EXPIRATION = "NO_EXPIRATION";
-  private static final Store NO_STORE = Store.NO_STORE;
-  private static final List<Store> stores =
-      new ArrayList<>(
-          Arrays.asList(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART));
-  private static final ImmutableList<Store> STORES = ImmutableList.copyOf(stores);
+  private static final ImmutableList<Store> STORES =
+      ImmutableList.of(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART);
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -60,7 +54,7 @@ public final class GroceryDataReader {
           if (!expirationTime.isEmpty()) {
             item.setExpiration(expirationTime);
           } else {
-            item.setExpiration(NO_EXPIRATION);
+            item.setExpiration("NO_EXPIRATION");
           }
           dealItems.add(item);
         }
@@ -71,11 +65,11 @@ public final class GroceryDataReader {
     reader.close();
     if (cheapestItem == null) {
       cheapestItem = new DealItem();
-      cheapestItem.setStore(NO_STORE);
+      cheapestItem.setStore(Store.NO_STORE);
       if (!expirationTime.isEmpty()) {
         cheapestItem.setExpiration(expirationTime);
       } else {
-        cheapestItem.setExpiration(NO_EXPIRATION);
+        cheapestItem.setExpiration("NO_EXPIRATION");
       }
     }
     return cheapestItem;

@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -26,6 +27,8 @@ public class ShelfDataReader {
     try (FileReader reader = new FileReader(shelfLifeData)) {
       JsonObject data = (JsonObject) jsonParser.parseReader(reader).getAsJsonObject();
       JsonArray sheets = data.getAsJsonArray("sheets");
+      // Get(2) is used because the product data starts at that index, previous data is all
+      // header data on the file.
       JsonObject productList = sheets.get(2).getAsJsonObject();
       JsonArray productListData = productList.getAsJsonArray("data");
 
@@ -33,7 +36,7 @@ public class ShelfDataReader {
         JsonArray product = productListData.get(i).getAsJsonArray();
         JsonObject nameObject = product.get(2).getAsJsonObject();
         String productName = nameObject.get("Name").getAsString();
-        if (productName.equals(itemName)) {
+        if (productName.toLowerCase().contains(itemName.toLowerCase())) {
           potentialMatches.add(product);
         }
       }
@@ -58,7 +61,7 @@ public class ShelfDataReader {
    */
   private static String findTime(JsonArray product) {
     Gson gson = new Gson();
-    String result = "";
+    StringBuilder result = new StringBuilder();
 
     /**
      * The bounds 6 and 27 correspond to the array indices in the JsonArray that contain shelf life
@@ -73,24 +76,26 @@ public class ShelfDataReader {
       try {
         productTimeElement = product.get(i).getAsJsonObject();
         String json = gson.toJson(productTimeElement);
-        String[] jsonKeyValuePair = json.split(":");
-        if (jsonKeyValuePair.length == 2) {
-          expireData = jsonKeyValuePair[1];
+        List<String> jsonKeyValuePair = Splitter.on(":").splitToList(gson.toJson(productTimeElement));
+        if (jsonKeyValuePair.size() == 2) {
+          expireData = jsonKeyValuePair.get(1);
           expireData = expireData.substring(0, expireData.length() - 1);
           Double.parseDouble(expireData);
-          result += expireData + " ";
+          result.append(expireData);
+          result.append(" ");
         }
       } catch (IndexOutOfBoundsException e) {
         break;
       } catch (NumberFormatException e) {
         String timeUnit = expireData.substring(1, expireData.length() - 1);
         if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
-          result += timeUnit + " ";
+          result.append(timeUnit);
+          result.append(" ");
         }
       }
     }
 
-    result = result.substring(0, result.length() - 1);
-    return result;
+    result.deleteCharAt(result.length() - 1);
+    return result.toString();
   }
 }

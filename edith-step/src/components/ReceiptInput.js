@@ -24,7 +24,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Sends item info to the receipt-data servlet and
-   * responds with the cheapest store for that item.
+   * responds with the cheapest store for where to buy that item.
    *
    * @param {String} name item name
    * @param {double} price item price
