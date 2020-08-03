@@ -1,49 +1,64 @@
 import React from 'react';
 
 class DeviceCamera extends React.Component {
-  
+  canvas;
+  player;
+  constructor() {
+    super();
+  }
+
   componentDidMount() {
-    this.updateCanvas();
+    this.showVideo();
   }
   
   componentDidUpdate() {
-    this.updateCanvas();
+    this.showVideo();
   }
 
-  capturePhoto() {
-    const canvas = this.refs.canvas;
-    const ctx = this.refs.canvas.getContext('2d');
-    const player = this.refs.player;
-    ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
-    player.srcObject.getVideoTracks().forEach(track => track.stop());
+  capturePhoto = () => {
+    console.log('i am here');
+    this.canvas = this.refs.canvas;
+    let ctx = this.refs.canvas.getContext('2d');
+    this.player = this.refs.player;
+    ctx.drawImage(this.player, 0, 0, this.canvas.width, this.canvas.height);
+    const imageUrl = this.canvas.toDataURL('image/png');
+    console.log(imageUrl);
+    // canvas.toBlob() = (blob) => {
+    //   const img = new Image();
+    //   img.src = window.URL.createObjectUrl(blob);
+    // };
+    this.player.srcObject.getVideoTracks().forEach(track => track.stop());
   }
 
-  updateCanvas() {
+  showVideo() {
     const constraints = {
       video: true,
+      audio: false,
     };
-    const player = this.refs.player;
+    this.player = this.refs.player;
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
-          player.srcObject = stream;
+          this.player.srcObject = stream;
+          this.player.play();
         });
   }
 
   render() {
     return (
     <>
-      <canvas
-        ref='canvas'
-        width={300}
-        height={300}
-      />
       <video
         ref='player'
         controls
         autoplay>
       </video>
+      <canvas
+        ref='canvas'
+        width={300}
+        height={300}
+      />
+      
       <button
-        onClick={() => this.capturePhoto}>
+        onClick={this.capturePhoto}>
         Capture
       </button>
     </>
