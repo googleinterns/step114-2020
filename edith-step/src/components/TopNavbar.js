@@ -20,7 +20,6 @@ class TopNavbar extends React.Component {
       user: null,
       modalShow: false,
     };
-    this.handleModalClose = this.handleModalClose.bind(this);
   }
 
   /**
@@ -31,9 +30,9 @@ class TopNavbar extends React.Component {
   }
 
   /**
-   * Call back function to close the file upload modal box.
+   * Callback function to close the file upload modal box.
    */
-  handleModalClose() {
+  handleModalClose = () => {
     this.setState({modalShow: false});
   }
 

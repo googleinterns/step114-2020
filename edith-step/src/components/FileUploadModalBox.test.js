@@ -1,7 +1,8 @@
 import React from 'react';
-
-import FileUploadModalBox from './FileUploadModalBox';
 import {enableFetchMocks} from 'jest-fetch-mock';
+enableFetchMocks();
+import FileUploadModalBox from './FileUploadModalBox';
+
 import {shallow} from 'enzyme';
 
 import '../setupTests.js';
@@ -9,24 +10,30 @@ import '../setupTests.js';
 let component;
 
 describe('FileUploadModalBox calls', () => {
+  
   test('getFileUploadUrl method when mounted', () => {
     const getFileUploadUrl =
             jest.spyOn(FileUploadModalBox.prototype, 'getFileUploadUrl');
-    enableFetchMocks();
     component = shallow(<FileUploadModalBox />);
     expect(getFileUploadUrl).toBeCalled();
     component.unmount();
   });
 });
-
+const url = 'aUrl';
 describe('FileUploadModalBox must', () => {
   beforeEach(() => {
-    enableFetchMocks();
+    
+    fetch.resetMocks();
+    fetch.mockResponse(JSON.stringify(url));
     component = shallow(<FileUploadModalBox />);
   });
 
   afterEach(() => {
     component.unmount();
+  });
+
+  it('changes the state of the url', () => {
+    expect(component.state('uploadUrl')).toBe('\"aUrl\"');
   });
 
   it('have input type file to upload file', () => {
