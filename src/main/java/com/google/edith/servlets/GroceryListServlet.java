@@ -2,6 +2,7 @@ package com.google.edith;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
@@ -13,10 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/grocery-list-query")
 public class GroceryListServlet extends HttpServlet {
+  private UserService userService;
+
+  public GroceryListServlet(UserService userService) {
+    this.userService = UserServiceFactory.getUserService();
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     QueryItems queryItems = new QueryItems(DatastoreServiceFactory.getDatastoreService(),
-        UserServiceFactory.getUserService());
+        userService);
     String expiredItems = queryItems.findExpiredItems();
     response.setContentType("application/json");
     response.getWriter().println(expiredItems);
