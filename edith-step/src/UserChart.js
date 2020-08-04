@@ -53,7 +53,7 @@ async function setChart(setChartData) {
       data: fetchData[1],
       backgroundColor: ['rgb(0, 191, 255, 0.6)', 
                         'rgb(100, 191, 255, 0.6)',
-                        'rgb(500, 191, 255, 0.6)',
+                        'rgb(300, 191, 255, 0.6)',
                         'rgb(0, 0, 255, 0.6)' ],
       borderWidth: 4
     }
@@ -82,8 +82,8 @@ const LineChart = (props) => {
   return (
       <Line
         data={chartData}
-        width={500}
-        height={500}
+        width={300}
+        height={300}
         options={{
           onClick: (event, element) => {
             const dateFilter = element[0]._chart.config.data.labels[element[0]._index];
@@ -143,8 +143,8 @@ const BarGraph = (props) => {
   return (
       <Bar
         data={chartData}
-        width={500}
-        height={500}
+        width={300}
+        height={300}
         options={{
           onClick: (event, element) => {
             const dateFilter = element[0]._chart.config.data.labels[element[0]._index];
@@ -249,8 +249,8 @@ const CategoryDoughnutChart = (props) => {
   return (
       <Doughnut
         data={chartData}
-        width={500}
-        height={500}
+        width={300}
+        height={300}
         options={{
           onClick: (event, element) => {
             const categoryFilter = element[0]._chart.config.data.labels[element[0]._index];
@@ -324,8 +324,8 @@ const [chartData, setChartData] = useState({});
   return (
       <Doughnut
         data={chartData}
-        width={500}
-        height={500}
+        width={300}
+        height={300}
         options={{
           maintainAspectRatio: false,
           title:{

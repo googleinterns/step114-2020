@@ -19,6 +19,7 @@ class App extends Component {
     this.state = {'chartType': LineChart, 'dateFilter': '', 'categoryFilter': ''}; 
     this.updateChartType = this.updateChartType.bind(this); 
     this.showItemChart = this.showItemChart.bind(this);  
+    this.revertCharts = this.revertCharts.bind(this);
   } 
 
   /**
@@ -61,6 +62,11 @@ class App extends Component {
     }
   }
 
+  revertCharts() {
+    this.setState({'chartType': LineChart, 
+                   'dateFilter': '', 'categoryFilter': ''});
+  }
+
   /**
    * Renders TopNavbar, ReceiptInput component.
    * @return { React.ReactNode } React virtual DOM.
@@ -83,13 +89,14 @@ class App extends Component {
           </div>
         </div>
         <div>
+          <button onClick={this.revertCharts}>Revert Charts</button>
           <div id='chart-selector' onChange={this.updateChartType}>
-            <input defaultChecked type='radio' value={chart.LINE} name='chart-selector' id='line' /> Line
-            <input type='radio' value={chart.BAR} name='chart-selector' id='bar' /> Bar
-            <input type='radio' value={chart.DOUGHNUT} name='chart-selector' id='doughnut' /> Doughnut
+            <input defaultChecked type='radio' value={chart.LINE} name='chart-selector' id='line' /> Line-chart
+            <input type='radio' value={chart.BAR} name='chart-selector' id='bar' /> Bar-graph
+            <input type='radio' value={chart.DOUGHNUT} name='chart-selector' id='doughnut' /> Doughnut-chart
           </div>
-          <Chart action={this.showItemChart} dateFilter={this.state.dateFilter}
-               categoryFilter={this.state.categoryFilter} />
+          <Chart action={this.showItemChart} 
+                 dateFilter={this.state.dateFilter} categoryFilter={this.state.categoryFilter} />
         </div>
         <ReceiptInput />
       </div>
