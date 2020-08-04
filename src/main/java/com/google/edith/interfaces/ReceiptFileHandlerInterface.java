@@ -23,9 +23,15 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Operations for handling blobs. */
 public interface ReceiptFileHandlerInterface {
+  /** Redirects the page to a new tab and serves the blob. */
   void serveBlob(HttpServletResponse response, List<FileInfo> fileKeys) throws IOException;
 
+  /**
+   * Returns a List of BlobKey that points to the uploaded files in the HTML form or null if the
+   * user didn't upload a file.
+   */
   List<FileInfo> getUploadedFileUrl(HttpServletRequest request, String formInputElementName);
 
+  /** Returns a BlobKey that points to the uploaded file. */
   BlobKey getBlobKey(List<FileInfo> fileKeys);
 }
