@@ -16,7 +16,7 @@ import './App.css';
 class App extends Component {
   constructor() {
     super();
-    this.state = {'chartType': LineChart, 'dateSelection': '', 'categoryType': ''}; 
+    this.state = {'chartType': LineChart, 'dateFilter': '', 'categoryFilter': ''}; 
     this.updateChartType = this.updateChartType.bind(this); 
     this.showItemChart = this.showItemChart.bind(this);  
   } 
@@ -45,19 +45,19 @@ class App extends Component {
    * Displays either a {@code CategoryDoughnutChart} or
    * {@code ItemDoughnutChart} based on the value of {@code doughnutType}
    * @param doughnutType can be eiter 'category' or 'item'
-   * @param dateSelection if this value is not empty, only items/categories 
+   * @param dateFilter if this value is not empty, only items/categories 
    *                      bought in the same week will be displayed
-   * @param categoryType if this value is not empty, only items of this
+   * @param categoryFilter if this value is not empty, only items of this
    *                          category will be displayed in a 
    *                          {@code ItemDoughnut} chart
    */
-  showItemChart(doughnutType, dateSelection, categoryType) {
+  showItemChart(doughnutType, dateFilter, categoryFilter) {
     if (doughnutType === 'category') { 
       this.setState({'chartType':  CategoryDoughnutChart, 
-                     'dateSelection': dateSelection, 'categoryType': categoryType});
+                     'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
     } else if (doughnutType === 'item') {
       this.setState({'chartType':  ItemDoughnutChart, 
-                     'dateSelection': dateSelection, 'categoryType': categoryType});
+                     'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
     }
   }
 
@@ -88,8 +88,8 @@ class App extends Component {
             <input type='radio' value={chart.BAR} name='chart-selector' id='bar' /> Bar
             <input type='radio' value={chart.DOUGHNUT} name='chart-selector' id='doughnut' /> Doughnut
           </div>
-          <Chart action={this.showItemChart} dateSelection={this.state.dateSelection}
-               categoryType={this.state.categoryType} />
+          <Chart action={this.showItemChart} dateFilter={this.state.dateFilter}
+               categoryFilter={this.state.categoryFilter} />
         </div>
         <ReceiptInput />
       </div>

@@ -37,6 +37,14 @@ it('Should return true when inSameWeek("2020-07-25", "2020-07-26") is called', (
   return expect(inSameWeek('2020-07-25', '2020-07-26')).toBe(true);
 });
 
+it('Should return true when inSameWeek("2020-07-26", "2020-07-26") is called', () => {
+  return expect(inSameWeek('2020-07-26', '2020-07-26')).toBe(true);
+});
+
+it('Should return false when inSameWeek("2020-07-19", "2020-07-26") is called', () => {
+  return expect(inSameWeek('2020-07-19', '2020-07-26')).toBe(false);
+});
+
 it('Should return false when inSameWeek("2020-07-27", "2020-07-26") is called', () => {
   return expect(inSameWeek('2020-07-27', '2020-07-26')).toBe(false);
 });

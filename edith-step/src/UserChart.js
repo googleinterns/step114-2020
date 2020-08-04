@@ -14,8 +14,7 @@ async function retrieveWeekData() {
   const response = await fetch('/user-stats-servlet');
   const responseJson = await response.json();
   let weekDates = [];
-  let values = []; 
-  console.log(responseJson);
+  let values = [];
   const weeklyAggregate = JSON.parse(responseJson.weeklyAggregate);
   weeklyAggregate.forEach((week) => {
       weekDates.push(week.date);
@@ -37,7 +36,7 @@ const inSameWeek = (itemDate, dateFilter) => {
   const diffTime = dateFilter - itemDate;
   // Then length of a day is 1000ms * 60 seconds * 60 minutues * 24 hours
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
-  return diffDays < 6 && diffDays > 0;
+  return diffDays < 7 && diffDays >= 0;
 }
 
 /**
@@ -149,7 +148,7 @@ const BarGraph = (props) => {
         options={{
           onClick: (event, element) => {
             const dateFilter = element[0]._chart.config.data.labels[element[0]._index];
-            props.action('category', dateFilter, '');      
+            props.action('category', dateFilter, '');     
           },  
           maintainAspectRatio: false,
           title:{
@@ -199,7 +198,7 @@ const CategoryDoughnutChart = (props) => {
       .then((response) => response.json())
       .then((responseJson) => {
         let itemNames = [];
-        let itemValues = [];  
+        let itemValues = [];
         const itemsJson = JSON.parse(responseJson.items);
         let items = {};
         if (props.dateFilter.length > 0) {
@@ -254,8 +253,8 @@ const CategoryDoughnutChart = (props) => {
         height={500}
         options={{
           onClick: (event, element) => {
-            const categorySelection = element[0]._chart.config.data.labels[element[0]._index];
-            props.action('item', props.dateFilter, categorySelection);      
+            const categoryFilter = element[0]._chart.config.data.labels[element[0]._index];
+            props.action('item', props.dateFilter, categoryFilter);     
           },
           maintainAspectRatio: false,
           title:{
@@ -278,21 +277,28 @@ const [chartData, setChartData] = useState({});
     fetch('/user-stats-servlet')
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log(responseJson);
         let itemNames = [];
-        let itemValues = [];  
+        let itemValues = []; 
         const itemsJson = JSON.parse(responseJson.items);
         let items = {};
         itemsJson.forEach((item) => {
           console.log(item);
+          console.log(props.dateFilter);
+          console.log(props.categoryFilter);
           if((props.dateFilter === '' || inSameWeek(item.date, props.dateFilter))
-              && (props.categorySelection === '' || item.category === props.categorySelection)) {
-            if (!(item.name in itemNames)) {
-                itemNames.push(item.name);
-                itemValues.push(item.quantity);
-              }
+              && (props.categoryFilter === '' || item.category === props.categoryFilter)) {
+            if (items[item.name]) {
+              items[item.name] = items[item.name] + item.quantity;
+            } else {
+              items[item.name] = item.quantity;
+            }
           }
         });
-        console.log(itemNames, itemValues);
+        Object.keys(items).forEach((item) => {
+          itemNames.push(item);
+          itemValues.push(items[item]);
+        });
         setChartData({
           labels: itemNames,
           datasets: [
@@ -318,8 +324,8 @@ const [chartData, setChartData] = useState({});
   return (
       <Doughnut
         data={chartData}
-        width={100}
-        height={100}
+        width={500}
+        height={500}
         options={{
           maintainAspectRatio: false,
           title:{
