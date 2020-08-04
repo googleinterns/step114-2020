@@ -277,15 +277,11 @@ const [chartData, setChartData] = useState({});
     fetch('/user-stats-servlet')
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson);
         let itemNames = [];
         let itemValues = []; 
         const itemsJson = JSON.parse(responseJson.items);
         let items = {};
         itemsJson.forEach((item) => {
-          console.log(item);
-          console.log(props.dateFilter);
-          console.log(props.categoryFilter);
           if((props.dateFilter === '' || inSameWeek(item.date, props.dateFilter))
               && (props.categoryFilter === '' || item.category === props.categoryFilter)) {
             if (items[item.name]) {
