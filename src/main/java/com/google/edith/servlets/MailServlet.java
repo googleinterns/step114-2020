@@ -30,6 +30,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
@@ -45,9 +48,12 @@ import javax.servlet.annotation.WebServlet;
 
 @WebServlet("/notifications")
 public class MailServlet extends HttpServlet {
+  private final UserService userService;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    userService = UserServiceFactory.getUserService();
+    String to = userService.getCurrentUser().getEmail();
     String type = request.getParameter("type");
     StringBuilder body = new StringBuilder();
     String subject;
@@ -74,9 +80,9 @@ public class MailServlet extends HttpServlet {
 
     try {
       Message msg = new MimeMessage(session);
-      msg.setFrom(new InternetAddress("livseibert@google.com", "Example.com Admin"));
+      msg.setFrom(new InternetAddress("livseibert@google.com", "EDITH Admin"));
       msg.addRecipient(Message.RecipientType.TO,
-                       new InternetAddress("livseibert@google.com", "Mr. User"));
+                       new InternetAddress("to", "User"));
       msg.setSubject(subject);
       msg.setText(message);
       Transport.send(msg);
