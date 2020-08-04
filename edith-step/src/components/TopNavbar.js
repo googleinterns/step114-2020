@@ -1,5 +1,6 @@
 import React from 'react';
 
+import FileUploadModalBox from './FileUploadModalBox';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -17,6 +18,14 @@ class TopNavbar extends React.Component {
     super(props);
     this.state = {
       user: null,
+      modalShow: false,
+    };
+
+    /**
+     * Callback function to close the file upload modal box.
+     */
+    this.handleModalClose = () => {
+      this.setState({modalShow: false});
     };
   }
 
@@ -73,9 +82,14 @@ class TopNavbar extends React.Component {
                 <Dropdown.Menu
                   className='dropdown-menu'>
                   <Dropdown.Item
+                    onClick={() => this.setState({modalShow: true})}
                     className='upload-receipt'>
                     Upload Receipt
                   </Dropdown.Item>
+                  <FileUploadModalBox
+                    show={this.state.modalShow}
+                    handleModalClose={this.handleModalClose}
+                  />
                   <Dropdown.Item
                     className='set-nickname'>
                     Set Nickname
