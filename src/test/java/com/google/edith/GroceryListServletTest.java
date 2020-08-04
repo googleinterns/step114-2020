@@ -30,7 +30,7 @@ public class GroceryListServletTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     groceryListServlet = new GroceryListServlet(userService);
-    queryItems = new QueryItems(datastoreService, userService);
+    queryItems = Mockito.mock(QueryItems.class);
   }
 
   @Test

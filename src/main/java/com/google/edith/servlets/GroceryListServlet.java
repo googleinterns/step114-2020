@@ -15,15 +15,17 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/grocery-list-query")
 public class GroceryListServlet extends HttpServlet {
   private UserService userService;
+  private DatastoreService datastoreService;
+  private QueryItems queryItems;
 
-  public GroceryListServlet(UserService userService) {
+  public GroceryListServlet(UserService userService, DatastoreService datastoreService) {
     this.userService = UserServiceFactory.getUserService();
+    this.datastoreService = DatastoreServiceFactory.getDatastoreService();
+    this.queryItems = new QueryItems(datastoreService, userService);
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    QueryItems queryItems = new QueryItems(DatastoreServiceFactory.getDatastoreService(),
-        userService);
     String expiredItems = queryItems.findExpiredItems();
     response.setContentType("application/json");
     response.getWriter().println(expiredItems);
