@@ -47,12 +47,15 @@ class DeviceCamera extends React.Component {
   }
   
   /**
-   * Blob is like a file with two properties missing: date and filename.
+   * Creates File from Blob.
+   *
+   * @param {Blob}  blob blob obtained from canvas.
+   * @param {String}  fileName the name of the file.
    */
   blobToFile(blob, fileName){
-    blob.lastModifiedDate = new Date();
-    blob.name = fileName;
-    return blob;
+    const lastModifiedInSeconds = new Date().getTime();
+    const file = new File([blob], fileName, {lastModified: lastModifiedInSeconds});
+    return file;
   }
 
   /**
@@ -73,16 +76,6 @@ class DeviceCamera extends React.Component {
     const player = this.refs.player;
     // Stop capturing the video.
     player.srcObject.getVideoTracks().forEach(track => track.stop());
-    // const imageUrl = canvas.toDataURL('image/jpeg');
-    // const formData = new FormData();
-    // formData.append('receipt-file', imageUrl);
-    // fetch(this.state.uploadUrl, {
-    //   method: 'POST',
-    //   headers: {
-    //   'Content-Type': 'application/upload',
-    //   },
-    //   body: formData
-    // });
     canvas.toBlob(
       blob => {
         const imageFile = this.blobToFile(blob, 'receipt-file')
