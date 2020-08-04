@@ -12,13 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith.servlets;
+package com.google.edith.services;
 
 import com.google.auto.value.AutoValue;
 
 /** Encapsulate User info and logout url. */
 @AutoValue
 abstract class UserInfo {
+
+  abstract String firstName();
+
+  abstract String lastName();
+
+  abstract String userName();
+
+  abstract String favoriteStore();
+
   abstract String email();
 
   abstract String userId();
@@ -31,6 +40,14 @@ abstract class UserInfo {
 
   @AutoValue.Builder
   abstract static class Builder {
+    abstract Builder setFirstName(String value);
+
+    abstract Builder setLastName(String value);
+
+    abstract Builder setUserName(String value);
+
+    abstract Builder setFavoriteStore(String value);
+
     abstract Builder setEmail(String value);
 
     abstract Builder setUserId(String value);
