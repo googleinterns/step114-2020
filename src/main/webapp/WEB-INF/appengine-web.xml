@@ -7,4 +7,5 @@
  <sessions-enabled>true</sessions-enabled>
  <runtime>java8</runtime>
  <resource-files><include path="/**.csv" /></resource-files>
+ <resource-files><include path="/**.json" /></resource-files>
 </appengine-web-app>

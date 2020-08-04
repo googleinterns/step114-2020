@@ -23,7 +23,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Sends item info to the receipt-data servlet and
-   * responds with the cheapest store for that item.
+   * responds with the cheapest store for where to buy that item.
    *
    * @param {String} name item name
    * @param {double} price item price
@@ -40,9 +40,8 @@ export default class ReceiptInput extends React.Component {
         itemQuantity: quantity,
       },
     });
-    // TODO: Implement enum.
+
     const dealItem = response.data;
-    console.log(dealItem);
 
     const newDeal = dealItem === 'NO_STORE' ?
       {storeName: 'No deal found.', storePrice: 0} :
@@ -81,7 +80,7 @@ export default class ReceiptInput extends React.Component {
     };
 
     this.setState((state) => ({
-      items: state.items.concat(newItem),
+      items: [...state.items, newItem],
       itemName: '',
       itemPrice: 0.0,
       itemQuantity: 1,
