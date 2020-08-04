@@ -33,8 +33,11 @@ public final class GroceryDataReader {
     record = reader.readNext();
     record = reader.readNext();
 
+    String expirationTime = ShelfDataReader.readFile(itemName);
+
     while ((record = reader.readNext()) != null) {
       if (record[0].equals(itemName)) {
+
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
         for (int i = 0; i < STORES.size(); i++) {
@@ -48,6 +51,11 @@ public final class GroceryDataReader {
           item.setPrice(record[storeDataStartColumn + 1]);
           item.setWeight(record[storeDataStartColumn + 2]);
           item.setComment(record[storeDataStartColumn + 3]);
+          if (expirationTime.isEmpty()) {
+            item.setExpirationTime("NO_EXPIRATION");
+          } else {
+            item.setExpirationTime(expirationTime);
+          }
           dealItems.add(item);
         }
 
@@ -58,6 +66,11 @@ public final class GroceryDataReader {
     if (cheapestItem == null) {
       cheapestItem = new DealItem();
       cheapestItem.setStore(Store.NO_STORE);
+      if (expirationTime.isEmpty()) {
+        cheapestItem.setExpirationTime("NO_EXPIRATION");
+      } else {
+        cheapestItem.setExpirationTime(expirationTime);
+      }
     }
     return cheapestItem;
   }

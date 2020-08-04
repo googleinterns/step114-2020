@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Processes data file of product expiration information to populate future user grocery lists. */
-public final class ShelfDataReader {
+public class ShelfDataReader {
   private static final String NO_EXPIRATION = "NO_EXPIRATION";
 
   /** Finds the specified product in the file. */
-  public String readFile(String itemName) {
-    URL jsonResource = getClass().getClassLoader().getResource("foodkeeper.json");
+  public static String readFile(String itemName) {
+    URL jsonResource = ShelfDataReader.class.getClassLoader().getResource("foodkeeper.json");
     File shelfLifeData = new File(jsonResource.getFile());
 
     JsonParser jsonParser = new JsonParser();
@@ -39,6 +39,8 @@ public final class ShelfDataReader {
         JsonArray product = productListData.get(i).getAsJsonArray();
         JsonObject nameObject = product.get(2).getAsJsonObject();
         String productName = nameObject.get("Name").getAsString();
+
+        // TODO: currently has some false positives, fixed with nlp algorithm in later PR.
         if (productName.toLowerCase().contains(itemName.toLowerCase())) {
           potentialMatches.add(product);
         }
@@ -62,7 +64,7 @@ public final class ShelfDataReader {
    * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
    * one set of expiration data.
    */
-  private String findTime(JsonArray product) {
+  private static String findTime(JsonArray product) {
     Gson gson = new Gson();
     StringBuilder result = new StringBuilder();
 
@@ -75,27 +77,26 @@ public final class ShelfDataReader {
      */
     for (int i = 6; i < 27; i++) {
       JsonObject productTimeElement;
+      String expireData = "";
       try {
         productTimeElement = product.get(i).getAsJsonObject();
-      } catch (IndexOutOfBoundsException e) {
-        break;
-      }
-      String json = gson.toJson(productTimeElement);
-      List<String> jsonKeyValuePair = Splitter.on(":").splitToList(gson.toJson(productTimeElement));
-
-      if (jsonKeyValuePair.size() == 2) {
-        String expireData = jsonKeyValuePair.get(1);
-        expireData = expireData.substring(0, expireData.length() - 1);
-        try {
+        String json = gson.toJson(productTimeElement);
+        List<String> jsonKeyValuePair =
+            Splitter.on(":").splitToList(gson.toJson(productTimeElement));
+        if (jsonKeyValuePair.size() == 2) {
+          expireData = jsonKeyValuePair.get(1);
+          expireData = expireData.substring(0, expireData.length() - 1);
           Double.parseDouble(expireData);
           result.append(expireData);
           result.append(" ");
-        } catch (NumberFormatException e) {
-          String timeUnit = expireData.substring(1, expireData.length() - 1);
-          if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
-            result.append(timeUnit);
-            result.append(" ");
-          }
+        }
+      } catch (IndexOutOfBoundsException e) {
+        break;
+      } catch (NumberFormatException e) {
+        String timeUnit = expireData.substring(1, expireData.length() - 1);
+        if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
+          result.append(timeUnit);
+          result.append(" ");
         }
       }
     }

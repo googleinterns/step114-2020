@@ -1,5 +1,10 @@
 package com.google.edith;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import java.util.Collections;
+import java.util.List;
+
 /** Represents items of the same type from different stores in order to compare them. */
 public final class DealItem {
   enum Store {
@@ -27,6 +32,8 @@ public final class DealItem {
   private double weight;
   private String comment;
   private double unitPrice;
+  private String expirationTime;
+  private static final String EXPIRATION_TEMPLATE = "%s %s";
 
   public void setStore(Store store) {
     this.storeName = store.toString();
@@ -92,6 +99,36 @@ public final class DealItem {
   }
 
   /**
+   * Input string expiration is expected to have the minimum expiration time, the maximum expiration
+   * time, and the unit of time, in no particular order. It parses the string to find the minimum
+   * expiration time and the unit, as that is the data needed to generate new grocery lists based
+   * off of. The expiration unit can be Days, Weeks, or Months.
+   *
+   * <p>ex: '1.0 2.0 Weeks' -> this.expirationTime = '1.0 Weeks'
+   */
+  public void setExpirationTime(String expirationTime) {
+    if (expirationTime.equals("NO_EXPIRATION")) {
+      this.expirationTime = expirationTime;
+      return;
+    }
+    List<String> expirationPieces = Splitter.on(" ").splitToList(expirationTime);
+
+    ImmutableList.Builder<Double> expirationTimeRange = ImmutableList.builder();
+    String timeMeasurement = "";
+
+    for (String expirationPiece : expirationPieces) {
+      try {
+        expirationTimeRange.add(Double.parseDouble(expirationPiece));
+      } catch (NumberFormatException e) {
+        timeMeasurement = expirationPiece;
+      }
+    }
+
+    Double min = Collections.min(expirationTimeRange.build());
+    this.expirationTime = String.format(EXPIRATION_TEMPLATE, min, timeMeasurement);
+  }
+
+  /**
    * Grocery items are compared by determining unit value, which is price divided by weight. This is
    * because the items at each different store are the same type, but differ by weight and price.
    * Using the unit price allows us to compare them more equally. Since invalid input for weight
@@ -120,5 +157,14 @@ public final class DealItem {
 
   public String getComment() {
     return comment;
+  }
+
+  /**
+   * Returns time until item expires.
+   *
+   * <p>ex: '6.0 Days', '2.0 Weeks', '3.0 Months'
+   */
+  public String getExpirationTime() {
+    return expirationTime;
   }
 }
