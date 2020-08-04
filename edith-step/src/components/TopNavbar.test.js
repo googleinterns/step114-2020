@@ -1,5 +1,6 @@
 import React from 'react';
 import {enableFetchMocks} from 'jest-fetch-mock';
+enableFetchMocks();
 import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
 
@@ -19,7 +20,6 @@ describe('TopNavbar calls', () => {
 
 describe('When not logged in, Top Navigation Bar', () => {
   beforeEach(() => {
-    enableFetchMocks();
     component = mount(<TopNavbar />);
     component.setState({user: null});
   });
@@ -66,7 +66,6 @@ describe('When not logged in, Top Navigation Bar', () => {
 
 describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
-    enableFetchMocks();
     component = mount(<TopNavbar />);
     handleModalClose = jest.spyOn(component.instance(), 'handleModalClose');
     component.update();

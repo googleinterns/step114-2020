@@ -8,6 +8,7 @@ import {shallow} from 'enzyme';
 import '../setupTests.js';
 
 let component;
+const url = 'aUrl';
 
 describe('FileUploadModalBox calls', () => {
   
@@ -19,10 +20,9 @@ describe('FileUploadModalBox calls', () => {
     component.unmount();
   });
 });
-const url = 'aUrl';
+
 describe('FileUploadModalBox must', () => {
   beforeEach(() => {
-    
     fetch.resetMocks();
     fetch.mockResponse(JSON.stringify(url));
     component = shallow(<FileUploadModalBox />);
