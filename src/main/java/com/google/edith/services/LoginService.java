@@ -43,7 +43,7 @@ public final class LoginService implements LoginInterface {
    *
    * @return String - JSON string.
    */
-  public String createJsonOfUserInfo() {
+  public String createJsonFromUserInfo() {
     Gson gson = new Gson();
     UserInfo loggedInUser = createUserInfo();
     return gson.toJson(loggedInUser);
@@ -110,7 +110,6 @@ public final class LoginService implements LoginInterface {
    * @param id - id of the user who is logged in.
    */
   private Optional<Entity> getUserInfoEntity(String id) {
-
     Query query =
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));

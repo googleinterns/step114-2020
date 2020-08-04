@@ -40,12 +40,12 @@ public final class LoginServletTest {
 
   @Mock HttpServletResponse response;
 
-  @Mock LoginInterface loginImpl;
+  @Mock LoginInterface loginImplementation;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    loginServlet = new LoginServlet(loginImpl);
+    loginServlet = new LoginServlet(loginImplementation);
   }
 
   @Test
@@ -53,7 +53,7 @@ public final class LoginServletTest {
   public void doGet_whenUserLoggedIn_callsGetWriterMethod() throws IOException {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    when(loginImpl.checkUserLoggedIn()).thenReturn(true);
+    when(loginImplementation.checkUserLoggedIn()).thenReturn(true);
     when(response.getWriter()).thenReturn(writer);
 
     loginServlet.doGet(request, response);
@@ -62,28 +62,28 @@ public final class LoginServletTest {
   }
 
   @Test
-  // Check if the servlet calls checkUserLoggedIn() and createJsonOfUserInfo method of loginImpl.
+  // Check if the servlet calls checkUserLoggedIn() and createJsonFromUserInfo method of LoginInterface.
   public void doGet_whenUserLoggedIn_callsRequiredServiceMethods() throws IOException {
-    when(loginImpl.checkUserLoggedIn()).thenReturn(true);
+    when(loginImplementation.checkUserLoggedIn()).thenReturn(true);
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
     loginServlet.doGet(request, response);
 
-    verify(loginImpl, times(1)).checkUserLoggedIn();
-    verify(loginImpl, times(1)).createJsonOfUserInfo();
+    verify(loginImplementation, times(1)).checkUserLoggedIn();
+    verify(loginImplementation, times(1)).createJsonFromUserInfo();
   }
 
   @Test
-  // Check if the servlet calls createLogin() method of loginImpl.
+  // Check if the servlet calls createLogin() method of LoginInterface.
   public void doGet_whenUserLoggedOut_callsCreateLoginMethod() throws IOException {
-    when(loginImpl.checkUserLoggedIn()).thenReturn(false);
-    when(loginImpl.createLoginUrl("/")).thenReturn("/logIn");
+    when(loginImplementation.checkUserLoggedIn()).thenReturn(false);
+    when(loginImplementation.createLoginUrl("/")).thenReturn("/logIn");
 
     loginServlet.doGet(request, response);
 
-    verify(loginImpl, times(1)).createLoginUrl("/");
+    verify(loginImplementation, times(1)).createLoginUrl("/");
     verify(response, times(1)).sendRedirect("/logIn");
   }
 
@@ -91,11 +91,11 @@ public final class LoginServletTest {
   // Check if storeUserInfoEntityInDatastore method is called when the user is logged in.
   public void doPost_whenUserLoggedIn_callStoreUserInfoEntityInDatastore() throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    when(loginImpl.checkUserLoggedIn()).thenReturn(true);
+    when(loginImplementation.checkUserLoggedIn()).thenReturn(true);
 
     loginServlet.doPost(request, response);
 
-    verify(loginImpl, times(1)).storeUserInfoEntityInDatastore(request);
+    verify(loginImplementation, times(1)).storeUserInfoEntityInDatastore(request);
     verify(response).sendRedirect(captor.capture());
     assertEquals("/index.html", captor.getValue());
   }
@@ -105,11 +105,11 @@ public final class LoginServletTest {
   public void doPost_whenUserLoggedOut_doesNotCallStoreUserInfoEntityInDatastore()
       throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    when(loginImpl.checkUserLoggedIn()).thenReturn(false);
+    when(loginImplementation.checkUserLoggedIn()).thenReturn(false);
 
     loginServlet.doPost(request, response);
 
-    verify(loginImpl, times(0)).storeUserInfoEntityInDatastore(request);
+    verify(loginImplementation, times(0)).storeUserInfoEntityInDatastore(request);
     verify(response).sendRedirect(captor.capture());
     assertEquals("/index.html", captor.getValue());
   }

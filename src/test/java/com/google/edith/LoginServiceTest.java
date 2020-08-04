@@ -51,15 +51,14 @@ public final class LoginServiceTest {
           .setEnvIsAdmin(true)
           .setEnvEmail("user@gmail.com");
 
-  private LoginService loginService;
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private LoginService loginService = new LoginService(userService, datastore);
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    loginService = new LoginService(userService, datastore);
   }
 
   @After
@@ -79,7 +78,7 @@ public final class LoginServiceTest {
   // Checks if the entity is stored correctly in Datatstore.
   @Test
   public void storeUserInfoEntityInDatastore_addsOneUserInfoEntity() {
-    retrieveStubUserInfo(request);
+    mockUserInfoFromRequest(request);
     loginService.storeUserInfoEntityInDatastore(request);
     assertEquals(
         1,
@@ -89,7 +88,7 @@ public final class LoginServiceTest {
   // Checks that only one entity is created for a user.
   @Test
   public void storeUserInfoEntityInDatastore_ifSameEntityExists_doNotStore() {
-    retrieveStubUserInfo(request);
+    mockUserInfoFromRequest(request);
     // Call storeUserInfoEntityInDatastore() twice to
     // mimic storing UserInfo entity twice for same user.
     loginService.storeUserInfoEntityInDatastore(request);
@@ -101,10 +100,10 @@ public final class LoginServiceTest {
 
   // Checks if the JSON created has all the user info fields.
   @Test
-  public void createJsonOfUserInfo_containsAllFieldsOfUserInfo() {
-    retrieveStubUserInfo(request);
+  public void createJsonFromUserInfo_containsAllFieldsOfUserInfo() {
+    mockUserInfoFromRequest(request);
 
-    String userInfo = loginService.createJsonOfUserInfo();
+    String userInfo = loginService.createJsonFromUserInfo();
 
     assertTrue(userInfo.contains("firstName"));
     assertTrue(userInfo.contains("lastName"));
@@ -114,7 +113,7 @@ public final class LoginServiceTest {
   }
 
   // Creates a stub user info for testing.
-  private void retrieveStubUserInfo(HttpServletRequest request) {
+  private void mockUserInfoFromRequest(HttpServletRequest request) {
     when(request.getParameter("first-name")).thenReturn("testfirst");
     when(request.getParameter("last-name")).thenReturn("testlast");
     when(request.getParameter("username")).thenReturn("testuser");

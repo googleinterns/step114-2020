@@ -31,36 +31,36 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public final class LoginServlet extends HttpServlet {
 
-  private LoginInterface loginImpl;
+  private LoginInterface loginImplementation;
 
   public LoginServlet() {
-    this.loginImpl =
+    this.loginImplementation =
         new LoginService(
             UserServiceFactory.getUserService(), DatastoreServiceFactory.getDatastoreService());
   }
 
-  public LoginServlet(LoginInterface loginImpl) {
-    this.loginImpl = loginImpl;
+  public LoginServlet(LoginInterface loginImplementation) {
+    this.loginImplementation = loginImplementation;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    if (loginImpl.checkUserLoggedIn()) {
-      String json = loginImpl.createJsonOfUserInfo();
+    if (loginImplementation.checkUserLoggedIn()) {
+      String json = loginImplementation.createJsonFromUserInfo();
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
-      String loginUrl = loginImpl.createLoginUrl("/");
+      String loginUrl = loginImplementation.createLoginUrl("/");
       response.sendRedirect(loginUrl);
     }
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // User who are not logged in can not upload their info. This is handled in FE too.
-    if (loginImpl.checkUserLoggedIn()) {
-      loginImpl.storeUserInfoEntityInDatastore(request);
+    // Users who are not logged in can not upload their info. This is handled in FE too.
+    if (loginImplementation.checkUserLoggedIn()) {
+      loginImplementation.storeUserInfoEntityInDatastore(request);
     }
     response.sendRedirect("/index.html");
   }

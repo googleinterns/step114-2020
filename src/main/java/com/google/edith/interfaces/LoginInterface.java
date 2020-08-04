@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /** Operations for handling user authentication. */
 public interface LoginInterface {
-  String createJsonOfUserInfo();
+  String createJsonFromUserInfo();
 
   boolean checkUserLoggedIn();
 

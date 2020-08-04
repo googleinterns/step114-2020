@@ -22,22 +22,19 @@ class TopNavbar extends React.Component {
       uploadModalBoxShow: false,
       userInfoModalBoxShow: false,
     };
-    this.handleUploadModalClose = this.handleUploadModalClose.bind(this);
-    this.handleUserInfoModalBoxClose =
-        this.handleUserInfoModalBoxClose.bind(this);
   }
 
   /**
-   * Call back function to close the file upload modal box.
+   * Callback function to close the file upload modal box.
    */
-  handleUploadModalClose() {
+  handleUploadModalClose = () => {
     this.setState({uploadModalBoxShow: false});
   }
 
   /**
-   * Call back function to close the user upload modal box.
+   * Callback function to close the user upload modal box.
    */
-  handleUserInfoModalBoxClose() {
+  handleUserInfoModalBoxClose = () => {
     this.setState({userInfoModalBoxShow: false});
   }
 
@@ -56,7 +53,6 @@ class TopNavbar extends React.Component {
     const displayName = this.state.user.userName || this.state.user.email;
     return displayName;
   }
-
   /**
    * Checks the user log-in status and sets
    * user email in sessionstorage.

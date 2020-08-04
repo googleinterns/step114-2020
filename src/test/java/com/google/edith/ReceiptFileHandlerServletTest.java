@@ -22,10 +22,10 @@ import com.google.appengine.api.blobstore.FileInfo;
 import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import com.google.edith.servlets.ReceiptFileHandlerServlet;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -76,8 +76,7 @@ public final class ReceiptFileHandlerServletTest {
   public void doPost_ifNoFileUpload_redirectToDisplayFile() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
-    List<FileInfo> files = new ArrayList<FileInfo>();
-    files.add(uploadFile);
+    List<FileInfo> files = ImmutableList.of(uploadFile);
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
 
     receiptFileHandlerServlet.doPost(request, response);

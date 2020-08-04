@@ -67,11 +67,11 @@ describe('When not logged in, Top Navigation Bar', () => {
 
 describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
-    handleUploadModalClose = jest
-        .spyOn(TopNavbar.prototype, 'handleUploadModalClose');
-    handleUserInfoModalBoxClose = jest
-        .spyOn(TopNavbar.prototype, 'handleUserInfoModalBoxClose');
     component = mount(<TopNavbar />);
+    handleUploadModalClose = jest
+        .spyOn(component.instance(), 'handleUploadModalClose');
+    handleUserInfoModalBoxClose = jest
+        .spyOn(component.instance(), 'handleUserInfoModalBoxClose');
     component.setState({user: userObj});
   });
 

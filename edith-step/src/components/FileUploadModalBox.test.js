@@ -1,14 +1,13 @@
+import React from 'react';
 import {enableFetchMocks} from 'jest-fetch-mock';
 enableFetchMocks();
-
-import React from 'react';
-
 import FileUploadModalBox from './FileUploadModalBox';
 import {shallow} from 'enzyme';
 
 import '../setupTests.js';
 
 let component;
+const url = 'aUrl';
 
 describe('FileUploadModalBox calls', () => {
   test('getFileUploadUrl method when mounted', () => {
@@ -22,11 +21,17 @@ describe('FileUploadModalBox calls', () => {
 
 describe('FileUploadModalBox must', () => {
   beforeEach(() => {
+    fetch.resetMocks();
+    fetch.mockResponse(JSON.stringify(url));
     component = shallow(<FileUploadModalBox />);
   });
 
   afterEach(() => {
     component.unmount();
+  });
+
+  it('changes the state of the url', () => {
+    expect(component.state('uploadUrl')).toBe('\"aUrl\"');
   });
 
   it('have input type file to upload file', () => {
