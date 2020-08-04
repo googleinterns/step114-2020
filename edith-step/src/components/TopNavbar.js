@@ -28,14 +28,14 @@ class TopNavbar extends React.Component {
      */
     this.handleUploadModalClose = () => {
       this.setState({uploadModalBoxShow: false});
-    }
+    };
 
     /**
      * Callback function to close the user upload modal box.
      */
     this.handleUserInfoModalBoxClose = () => {
       this.setState({userInfoModalBoxShow: false});
-    }
+    };
   }
 
   /**
