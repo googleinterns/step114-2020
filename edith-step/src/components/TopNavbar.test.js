@@ -1,11 +1,13 @@
 import React from 'react';
 import {enableFetchMocks} from 'jest-fetch-mock';
+enableFetchMocks();
 import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
 
 import '../setupTests.js';
 
 let component;
+let handleModalClose;
 const userObj = {'email': 'email'};
 
 describe('TopNavbar calls', () => {
@@ -18,7 +20,6 @@ describe('TopNavbar calls', () => {
 
 describe('When not logged in, Top Navigation Bar', () => {
   beforeEach(() => {
-    enableFetchMocks();
     component = mount(<TopNavbar />);
     component.setState({user: null});
   });
@@ -66,7 +67,8 @@ describe('When not logged in, Top Navigation Bar', () => {
 describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
     component = mount(<TopNavbar />);
-    enableFetchMocks();
+    handleModalClose = jest.spyOn(component.instance(), 'handleModalClose');
+    component.update();
     component.setState({user: userObj});
   });
 
@@ -92,5 +94,21 @@ describe('When logged in, Top Navigation Bar', () => {
   // Checks if there is Dropdown menu.
   test('has Dropdown menu', () => {
     expect(component.find('.dropdowns').exists()).toBe(true);
+  });
+
+  // Checks if upload modal box opens when button is clicked from dropdown.
+  test('opens upload modal box when upload receipt button is clicked', () => {
+    expect(component.state('modalShow')).toBe(false);
+    component.find('.dropdown-toggle').at(0).simulate('click');
+    component.find('.upload-receipt').at(0).simulate('click');
+    expect(component.state('modalShow')).toBe(true);
+  });
+
+  // Checks if the modal box closes when close button is clicked.
+  test('closes upload modal box when close button is clicked', () => {
+    component.find('.dropdown-toggle').at(0).simulate('click');
+    component.find('.upload-receipt').at(0).simulate('click');
+    component.find('.close').at(0).simulate('click');
+    expect(handleModalClose).toBeCalled();
   });
 });

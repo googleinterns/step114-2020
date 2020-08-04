@@ -79,11 +79,11 @@ class App extends Component {
           <TopNavbar />
         </div>
         <div className='background-image-0'>
-          <div className='scroll-down border'>
+          <div className='scroll-down default-border'>
             Scroll Down
           </div>
           <div className='app-describe'>
-            <span className='border'>
+            <span className='default-border'>
               Welcome To Edith: Expenditure Analyzer.
             </span>
           </div>

@@ -4,7 +4,7 @@ module.exports = {
     "@babel/preset-react",
   ],
   plugins: [
-    "@babel/transform-runtime",
-    "@babel/plugin-proposal-class-properties",
+    ['@babel/transform-runtime'],
+    ['@babel/plugin-proposal-class-properties'],
   ],
 };
