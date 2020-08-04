@@ -1,6 +1,5 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 
 /**
  * Component that shows video from the device's camera
@@ -46,6 +45,15 @@ class DeviceCamera extends React.Component {
           console.error(error);
         });
   }
+  
+  /**
+   * Blob is like a file with two properties missing: date and filename.
+   */
+  blobToFile(blob, fileName){
+    blob.lastModifiedDate = new Date();
+    blob.name = fileName;
+    return blob;
+  }
 
   /**
    * Grabs a snapshot of the video being rendered.
@@ -65,32 +73,29 @@ class DeviceCamera extends React.Component {
     const player = this.refs.player;
     // Stop capturing the video.
     player.srcObject.getVideoTracks().forEach(track => track.stop());
-    const imageUrl = canvas.toDataURL('image/jpeg');
-    const formData = new FormData();
-    formData.append('receipt-file', imageUrl);
-    formData.append('kind', 'blob');
-    fetch(this.state.uploadUrl, {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/upload',
-      },
-      body: formData
-    });
-    // canvas.toBlob(
-    //   blob => {
-    //     const formData = new FormData();
-    //     formData.append('receipt-file', blob);
-    //     console.log(blob);
-    //     fetch(this.state.uploadUrl, {
-    //       method: 'POST',
-    //       body: formData
-    //     });
+    // const imageUrl = canvas.toDataURL('image/jpeg');
+    // const formData = new FormData();
+    // formData.append('receipt-file', imageUrl);
+    // fetch(this.state.uploadUrl, {
+    //   method: 'POST',
+    //   headers: {
+    //   'Content-Type': 'application/upload',
     //   },
-    //   'image/jpeg',
-    //   0.9,
-    // );
-    
-    // console.log(imageUrl);
+    //   body: formData
+    // });
+    canvas.toBlob(
+      blob => {
+        const imageFile = this.blobToFile(blob, 'receipt-file')
+        const formData = new FormData();
+        formData.append('receipt-file', imageFile);
+        fetch(this.state.uploadUrl, {
+          method: 'POST',
+          body: formData
+        });
+      },
+      'image/jpeg',
+      0.9,
+    );
   }
 
   /**
