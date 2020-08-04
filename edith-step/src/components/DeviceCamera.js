@@ -52,7 +52,7 @@ class DeviceCamera extends React.Component {
    * @param {Blob}  blob blob obtained from canvas.
    * @param {String}  fileName the name of the file.
    */
-  blobToFile(blob, fileName){
+  convertFromBlobToFile(blob, fileName){
     const lastModifiedInSeconds = new Date().getTime();
     const file = new File([blob], fileName, {lastModified: lastModifiedInSeconds});
     return file;
@@ -78,7 +78,7 @@ class DeviceCamera extends React.Component {
     player.srcObject.getVideoTracks().forEach(track => track.stop());
     canvas.toBlob(
       blob => {
-        const imageFile = this.blobToFile(blob, 'receipt-file')
+        const imageFile = this.convertFromBlobToFile(blob, 'receipt-file')
         const formData = new FormData();
         formData.append('receipt-file', imageFile);
         fetch(this.state.uploadUrl, {
@@ -103,7 +103,10 @@ class DeviceCamera extends React.Component {
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
           player.srcObject = stream;
-          player.play();
+          return player.play();
+        })
+        .catch(e => {
+          console.error(e);
         });
   }
 
