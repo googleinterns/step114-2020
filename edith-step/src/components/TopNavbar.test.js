@@ -68,7 +68,8 @@ describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
     enableFetchMocks();
     component = mount(<TopNavbar />);
-    handleModalClose = jest.spyOn(TopNavbar.prototype, 'handleModalClose');
+    handleModalClose = jest.spyOn(component.instance(), 'handleModalClose');
+    component.update();
     component.setState({user: userObj});
   });
 
