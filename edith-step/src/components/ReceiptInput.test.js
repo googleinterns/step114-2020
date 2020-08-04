@@ -140,3 +140,32 @@ it('never gives a deal more expensive than the product itself', async () => {
     expect(dealFieldAfter).toBe('no deal found');
   });
 });
+
+it('should display item expiration when good form data submitted', async () => {
+  const expirationFieldBefore = component.find('.item-expiration');
+  expect(expirationFieldBefore.exists()).toBe(false);
+
+  component.setState({itemName: 'Apple Juice',
+    itemPrice: 5.6, itemQuantity: 3});
+
+  const promise = new Promise(handleSubmit);
+  component.find('form').simulate('submit');
+  promise.then(() => {
+    const expirationFieldAfter = component.find('.item-expiration');
+    expect(expirationFieldAfter).toBe('6.0 Days');
+  });
+});
+
+it('displays no shelf life data found on bad form data submitted', async () => {
+  const expirationFieldBefore = component.find('.item-expiration');
+  expect(expirationFieldBefore.exists()).toBe(false);
+
+  component.setState({itemName: 'bread', itemPrice: 5.6, itemQuantity: 3});
+
+  const promise = new Promise(handleSubmit);
+  component.find('form').simulate('submit');
+  promise.then(() => {
+    const expirationFieldAfter = component.find('.item-expiration');
+    expect(expirationFieldAfter).toBe('data unavailable');
+  });
+});

@@ -16,8 +16,8 @@ export default class ReceiptInput extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {items: [], itemName: '', itemPrice: 0.0, itemQuantity: 1,
-                  itemCategory: 'category', itemReceiptId: 'receiptId'};
+    this.state = {items: [], itemName: '', itemPrice: 0.0,
+      itemQuantity: 1, itemDeal: '', itemExpiration: ''};
     this.getDate = this.getDate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,7 +39,7 @@ export default class ReceiptInput extends React.Component {
 
   /**
    * Sends item info to the receipt-data servlet and
-   * responds with the cheapest store for that item.
+   * responds with the cheapest store for where to buy that item.
    *
    * @param {String} name item name
    * @param {double} price item price
@@ -56,13 +56,14 @@ export default class ReceiptInput extends React.Component {
         itemQuantity: quantity,
       },
     });
-    // TODO: Implement enum.
-    const dealItem = response.data;
-    console.log(dealItem);
 
-    const newDeal = dealItem === 'NO_STORE' ?
-      {storeName: 'No deal found.', storePrice: 0} :
-      {storeName: dealItem.storeName, storePrice: dealItem.price};
+    const dealItem = response.data;
+
+    const newDeal = dealItem.storeName === 'NO_STORE' ?
+      {storeName: 'NO_STORE', storePrice: 0,
+        itemExpiration: dealItem.expiration} :
+      {storeName: dealItem.storeName, storePrice: dealItem.price,
+        itemExpiration: dealItem.expiration};
 
     return newDeal;
   }
@@ -83,16 +84,21 @@ export default class ReceiptInput extends React.Component {
     const newDeal = await this.getDeal(this.state.itemName,
         this.state.itemPrice, this.state.itemQuantity);
 
-    const dealMessage = newDeal.storeName == 'NO_STORE' ||
+    const dealMessage = newDeal.storeName === 'NO_STORE' ||
       newDeal.storePrice > this.state.itemPrice ?
       'No deal found.' :
       `Purchase at ${newDeal.storeName} for $${newDeal.storePrice}.`;
+
+    const expirationMessage = newDeal.itemExpiration === 'NO_EXPIRATION' ?
+      'No expiration found.' :
+      `${newDeal.itemExpiration}`;
 
     const newItem = {
       itemName: this.state.itemName,
       itemPrice: this.state.itemPrice,
       itemQuantity: this.state.itemQuantity,
       itemDeal: dealMessage,
+      itemExpiration: expirationMessage,
       id: Date.now(),
     };
 
@@ -113,10 +119,12 @@ export default class ReceiptInput extends React.Component {
     });
 
     this.setState((state) => ({
-      items: state.items.concat(newItem),
+      items: [...state.items, newItem],
       itemName: '',
       itemPrice: 0.0,
       itemQuantity: 1,
+      itemDeal: '',
+      itemExpiration: '',
     }));
 
     
@@ -214,8 +222,8 @@ const GroceryList = createReactClass({
   render() {
     const props = this.props;
     return (
-      <div id="grocery-list" className="list-group">
-        <ul className="list-group col-lg-3">
+      <div id="grocery-list" className="list-group col-lg-8">
+        <ul className="list-group">
           <li className={
             'h-50 list-group-item d-flex' +
             'justify-content-between align-items-center'}>
@@ -223,6 +231,7 @@ const GroceryList = createReactClass({
             <span className="badge badge-pill col-lg-2">Price</span>
             <span className="badge badge-pill col-lg-2">#</span>
             <span className="badge badge-pill col-lg-4">Deal</span>
+            <span className="badge badge-pill col-lg-2">Expiration</span>
           </li>
           {props.items.map((item) => (
             <li className={
@@ -240,6 +249,9 @@ const GroceryList = createReactClass({
               </span>
               <span className="item-deal badge badge-pill col-lg-4">
                 {item.itemDeal}
+              </span>
+              <span className="item-expiration badge badge-pill col-lg-2">
+                {item.itemExpiration}
               </span>
             </li>
           ))}
