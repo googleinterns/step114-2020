@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
  * Modal Box where user can select a file to upload.
  */
 class FileUploadModalBox extends React.Component {
-  isMounted = false;
   /**
    * @constructor
    * @param {Object}  props for React component.
@@ -25,7 +24,7 @@ class FileUploadModalBox extends React.Component {
    * to direct the file upload.
    */
   componentDidMount() {
-    this.isMounted = true;
+    this._isMounted = true;
     this.getFileUploadUrl();
   }
 
@@ -33,7 +32,7 @@ class FileUploadModalBox extends React.Component {
    * After the component unmounts, reset the state.
    */
   componentWillUnmount() {
-    this.isMounted = false;
+    this._isMounted = false;
   }
 
   /**
@@ -44,7 +43,7 @@ class FileUploadModalBox extends React.Component {
     fetch('/blobstore-upload-url')
         .then((response) => response.text())
         .then((uploadUrl) => {
-          if (this.isMounted) {
+          if (this._isMounted) {
             this.setState({uploadUrl: uploadUrl});
           }
         })

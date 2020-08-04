@@ -38,41 +38,24 @@ public final class LoginService implements LoginInterface {
     this.datastore = datastore;
   }
 
-  /**
-   * Converts UserInfo object to JSON string.
-   *
-   * @return String - JSON string.
-   */
+  @Override
   public String createJsonFromUserInfo() {
     Gson gson = new Gson();
     UserInfo loggedInUser = createUserInfo();
     return gson.toJson(loggedInUser);
   }
 
-  /**
-   * Checks if a user is logged in.
-   *
-   * @return boolean - true if a user is logged in.
-   */
+  @Override
   public boolean checkUserLoggedIn() {
     return userService.isUserLoggedIn();
   }
 
-  /**
-   * Creates a url of a user to log in.
-   *
-   * @param destinationUrl - url to return when after visiting login portal.
-   * @return String - url which redirects to login portal.
-   */
+  @Override
   public String createLoginUrl(String destinationUrl) {
     return userService.createLoginURL(destinationUrl);
   }
 
-  /**
-   * Stores the userInfo entity in the datastore.
-   *
-   * @param request - request from the UserInfoModalBox component.
-   */
+  @Override
   public void storeUserInfoEntityInDatastore(HttpServletRequest request) {
     String firstName = getParameter(request, "first-name").orElse("");
     String lastName = getParameter(request, "last-name").orElse("");

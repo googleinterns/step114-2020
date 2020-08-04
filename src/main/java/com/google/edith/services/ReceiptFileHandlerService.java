@@ -33,16 +33,13 @@ public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
     this.blobstoreService = blobstoreService;
   }
 
-  /** Redirects the page to a new tab and serves the blob. */
+  @Override
   public void serveBlob(HttpServletResponse response, List<FileInfo> fileKeys) throws IOException {
     BlobKey fileBlobKey = getBlobKey(fileKeys);
     blobstoreService.serve(fileBlobKey, response);
   }
 
-  /**
-   * Returns a List of BlobKey that points to the uploaded files in the HTML form or null if the
-   * user didn't upload a file.
-   */
+  @Override
   public List<FileInfo> getUploadedFileUrl(
       HttpServletRequest request, String formInputElementName) {
 
@@ -51,7 +48,7 @@ public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
     return uploadedFile == null ? Collections.emptyList() : uploadedFile;
   }
 
-  /** Returns a BlobKey that points to the uploaded file. */
+  @Override
   public BlobKey getBlobKey(List<FileInfo> fileKeys) {
     if (fileKeys.isEmpty()) {
       throw new IllegalStateException();

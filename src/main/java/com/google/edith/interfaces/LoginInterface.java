@@ -18,11 +18,32 @@ import javax.servlet.http.HttpServletRequest;
 
 /** Operations for handling user authentication. */
 public interface LoginInterface {
+  /**
+   * Converts UserInfo object to JSON string.
+   *
+   * @return String - JSON string.
+   */
   String createJsonFromUserInfo();
 
+  /**
+   * Checks if a user is logged in.
+   *
+   * @return boolean - true if a user is logged in.
+   */
   boolean checkUserLoggedIn();
 
+  /**
+   * Creates a url of a user to log in.
+   *
+   * @param destinationUrl - url to return when after visiting login portal.
+   * @return String - url which redirects to login portal.
+   */
   String createLoginUrl(String destinationUrl);
 
+  /**
+   * Stores the userInfo entity in the datastore.
+   *
+   * @param request - request from the UserInfoModalBox component.
+   */
   void storeUserInfoEntityInDatastore(HttpServletRequest request);
 }
