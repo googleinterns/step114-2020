@@ -111,7 +111,8 @@ export default class ReceiptInput extends React.Component {
         itemPrice: this.state.itemPrice,
         itemQuantity: this.state.itemQuantity,
         itemDate: this.getDate(),
-        itemReceiptId: this.state.itemReceiptId
+        itemReceiptId: this.state.itemReceiptId,
+        itemCategory: this.state.itemCategory
       }
     }).then((response) => {
       console.log(response);

@@ -16,9 +16,10 @@ import './App.css';
 class App extends Component {
   constructor() {
     super();
-    this.state = {'chartType': LineChart, 'dateSelection': '', 'categoryType': ''}; 
+    this.state = {'chartType': LineChart, 'dateFilter': '', 'categoryFilter': ''}; 
     this.updateChartType = this.updateChartType.bind(this); 
     this.showItemChart = this.showItemChart.bind(this);  
+    this.revertCharts = this.revertCharts.bind(this);
   } 
 
   /**
@@ -45,20 +46,25 @@ class App extends Component {
    * Displays either a {@code CategoryDoughnutChart} or
    * {@code ItemDoughnutChart} based on the value of {@code doughnutType}
    * @param doughnutType can be eiter 'category' or 'item'
-   * @param dateSelection if this value is not empty, only items/categories 
+   * @param dateFilter if this value is not empty, only items/categories 
    *                      bought in the same week will be displayed
-   * @param categoryType if this value is not empty, only items of this
+   * @param categoryFilter if this value is not empty, only items of this
    *                          category will be displayed in a 
    *                          {@code ItemDoughnut} chart
    */
-  showItemChart(doughnutType, dateSelection, categoryType) {
+  showItemChart(doughnutType, dateFilter, categoryFilter) {
     if (doughnutType === 'category') { 
       this.setState({'chartType':  CategoryDoughnutChart, 
-                     'dateSelection': dateSelection, 'categoryType': categoryType});
+                     'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
     } else if (doughnutType === 'item') {
       this.setState({'chartType':  ItemDoughnutChart, 
-                     'dateSelection': dateSelection, 'categoryType': categoryType});
+                     'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
     }
+  }
+
+  revertCharts() {
+    this.setState({'chartType': LineChart, 
+                   'dateFilter': '', 'categoryFilter': ''});
   }
 
   /**
@@ -83,13 +89,14 @@ class App extends Component {
           </div>
         </div>
         <div>
+          <button onClick={this.revertCharts}>Revert Charts</button>
           <div id='chart-selector' onChange={this.updateChartType}>
-            <input defaultChecked type='radio' value={chart.LINE} name='chart-selector' id='line' /> Line
-            <input type='radio' value={chart.BAR} name='chart-selector' id='bar' /> Bar
-            <input type='radio' value={chart.DOUGHNUT} name='chart-selector' id='doughnut' /> Doughnut
+            <input defaultChecked type='radio' value={chart.LINE} name='chart-selector' id='line' /> Line-chart
+            <input type='radio' value={chart.BAR} name='chart-selector' id='bar' /> Bar-graph
+            <input type='radio' value={chart.DOUGHNUT} name='chart-selector' id='doughnut' /> Doughnut-chart
           </div>
-          <Chart action={this.showItemChart} dateSelection={this.state.dateSelection}
-               categoryType={this.state.categoryType} />
+          <Chart action={this.showItemChart} 
+                 dateFilter={this.state.dateFilter} categoryFilter={this.state.categoryFilter} />
         </div>
         <ReceiptInput />
       </div>
