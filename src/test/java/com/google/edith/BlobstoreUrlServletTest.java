@@ -60,9 +60,9 @@ public final class BlobstoreUrlServletTest {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
-    
+
     blobstoreUrlServlet.doGet(request, response);
-    
+
     assertTrue(stringWriter.toString() != null);
   }
 }

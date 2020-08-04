@@ -62,7 +62,8 @@ public final class LoginServletTest {
   }
 
   @Test
-  // Check if the servlet calls checkUserLoggedIn() and createJsonFromUserInfo method of LoginInterface.
+  // Check if the servlet calls checkUserLoggedIn() and createJsonFromUserInfo method of
+  // LoginInterface.
   public void doGet_whenUserLoggedIn_callsRequiredServiceMethods() throws IOException {
     when(loginImplementation.checkUserLoggedIn()).thenReturn(true);
     StringWriter stringWriter = new StringWriter();
