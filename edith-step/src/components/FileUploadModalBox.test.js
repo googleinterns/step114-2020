@@ -11,7 +11,6 @@ let component;
 const url = 'aUrl';
 
 describe('FileUploadModalBox calls', () => {
-  
   test('getFileUploadUrl method when mounted', () => {
     const getFileUploadUrl =
             jest.spyOn(FileUploadModalBox.prototype, 'getFileUploadUrl');

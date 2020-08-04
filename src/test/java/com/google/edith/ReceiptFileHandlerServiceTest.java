@@ -14,8 +14,7 @@
 
 package com.google.edith;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,11 +26,11 @@ import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.ReceiptFileHandlerService;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -77,23 +76,23 @@ public final class ReceiptFileHandlerServiceTest {
     List<FileInfo> uploadedFileInfo =
         receiptFileHandlerService.getUploadedFileUrl(request, "example");
 
-    assertTrue(uploadedFileInfo.isEmpty());
+    assertThat(uploadedFileInfo.isEmpty()).isTrue();
   }
 
   /** Checks if a file uploaded successfully in Blobstore returns BlobInfo. */
   @Test
   public void getUploadedFileUrl_ifBlobUploaded_returnFileInfo() throws IOException {
     Date creationDate = new Date();
-    FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
-    List<FileInfo> files = ImmutableList.of(uploadFile);
-    Map<String, List<FileInfo>> fileInfos = new HashMap<>();
-    fileInfos.put("fileName", files);
+    Map<String, List<FileInfo>> fileInfos =
+        ImmutableMap.of(
+            "fileName",
+            ImmutableList.of(new FileInfo("blob", new Date(), "receipt", 0L, "hash", "edith")));
     when(blobstoreService.getFileInfos(request)).thenReturn(fileInfos);
 
     List<FileInfo> uploadedFileInfo =
         receiptFileHandlerService.getUploadedFileUrl(request, "fileName");
 
-    assertFalse(uploadedFileInfo.isEmpty());
+    assertThat(!uploadedFileInfo.isEmpty()).isTrue();
   }
 
   /** Checks if a file did not upload in Blobstore throws Exception. */
@@ -115,7 +114,7 @@ public final class ReceiptFileHandlerServiceTest {
 
     BlobKey returnedKey = receiptFileHandlerService.getBlobKey(files);
 
-    assertTrue(returnedKey.equals(receiptKey));
+    assertThat(returnedKey.equals(receiptKey)).isTrue();
   }
 
   /** Checks if the serve method of BlobstoreService is called with the right parameters. */
