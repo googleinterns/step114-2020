@@ -40,4 +40,8 @@ public final class Receipt {
     this.totalPrice = totalPrice;
     this.items = items;
   }
+
+  public Item[] getItems() {
+    return this.items;
+  }
 }

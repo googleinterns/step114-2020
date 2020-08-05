@@ -14,10 +14,11 @@
 
 package com.google.edith;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -67,19 +68,12 @@ public final class ReceiptDataTest {
 
   @Test
   public void extractReceiptData_createsReceipt() throws IOException {
-    // BlobKey returnBlobKey = new BlobKey("blob");
     Map<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
     Map<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
     List<Map<String, String>> itemsDescription = ImmutableList.of(item1, item2);
     when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
-    // when(extractReceiptImplementation.extractReceipt("projectId", "location", "inputGcsUri")).thenReturn("itemsDescription");
-    // Receipt extractedReceipt = receiptData.extractReceiptData("blobkey", "expense");
-    // try {
-    //   Receipt returnedReceipt = receiptData.extractReceiptData();
-    //   assertNotNull(returnedReceipt);
-    //   assertTrue(returnedReceipt instanceof Receipt);
-    // } catch (Exception e) {
-    //   fail("must return Receipt Object");
-    // }
+    Receipt extractedReceipt = receiptData.extractReceiptData("blobkey", "expense");
+    assertNotNull(extractedReceipt);
+    assertTrue(extractedReceipt instanceof Receipt);
   }
 }

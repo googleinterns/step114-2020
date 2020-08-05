@@ -25,6 +25,13 @@ public final class ReceiptData {
     this.extractReceiptImplementation = extractReceiptImplementation;
   }
 
+  /**
+   * Creates receipt object.
+   *
+   * @param blobKey - string representation of the blob in GCS bucket.
+   * @param expenditureName - name of the rceipt obtained from FE form.
+   * @return Receipt - receipt object created from the provided info.
+   */
   public Receipt extractReceiptData(String blobKey, String expenditureName)
       throws IOException {
 
