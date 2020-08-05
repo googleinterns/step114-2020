@@ -70,7 +70,9 @@ public class UserStatsServlet extends HttpServlet {
     datastore.put(itemEntity);
     Query itemQuery = new Query("Item");
     List<Key> itemKeys =
-        datastore.prepare(itemQuery).asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE))
+        datastore.prepare(itemQuery)
+            .asList(FetchOptions.Builder
+                .withLimit(Integer.MAX_VALUE))
             .stream()
             .map(entity -> entity.getKey())
             .collect(Collectors.toList());
