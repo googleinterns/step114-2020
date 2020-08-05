@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.edith.servlets.UserInsightsInterface;
@@ -31,6 +32,8 @@ public final class UserStatsServletTest {
     Mockito.mock(HttpServletResponse.class);
   private static final UserInsightsInterface USER_INSIGHTS = 
     Mockito.mock(UserInsightsInterface.class);
+  private static final UserService USER_SERVICE =
+    Mockito.mock(UserService.class);
   private static final LocalServiceTestHelper TEST_HELPER =
     new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static final Gson GSON = new Gson();
@@ -59,7 +62,7 @@ public final class UserStatsServletTest {
     PrintWriter writer = new PrintWriter(stringWriter);
     when(RESPONSE.getWriter()).thenReturn(writer);
 
-    new UserStatsServlet(DATASTORE, USER_INSIGHTS).doPost(REQUEST, RESPONSE);
+    new UserStatsServlet(DATASTORE, USER_INSIGHTS, USER_SERVICE).doPost(REQUEST, RESPONSE);
 
     verify(REQUEST, Mockito.atLeast(1)).getReader();
     writer.flush();
@@ -73,7 +76,7 @@ public final class UserStatsServletTest {
     when(RESPONSE.getWriter()).thenReturn(writer);
     when(USER_INSIGHTS.createJson(USER_ID)).thenReturn("");
 
-    new UserStatsServlet(DATASTORE, USER_INSIGHTS).doGet(REQUEST, RESPONSE);
+    new UserStatsServlet(DATASTORE, USER_INSIGHTS, USER_SERVICE).doGet(REQUEST, RESPONSE);
     verify(USER_INSIGHTS, Mockito.atLeast(1)).createJson(USER_ID);
   }
 }

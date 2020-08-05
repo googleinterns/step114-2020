@@ -29,17 +29,20 @@ public class UserStatsServlet extends HttpServlet {
 
   private final DatastoreService datastore;
   private final UserInsightsInterface userInsights;
+  private final UserService userService;
   private final String userId;
 
   public UserStatsServlet() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
     this.userInsights = new UserInsightsService();
-    this.userId = UserServiceFactory.getUserService().getCurrentUser().getUserId();   
+    this.userService = UserServiceFactory.getUserService(); 
+    this.userId = userService.getCurrentUser().getUserId();   
   }
 
-  public UserStatsServlet(DatastoreService datastore, UserInsightsInterface userInsights) {
+  public UserStatsServlet(DatastoreService datastore, UserInsightsInterface userInsights, UserService userService) {
     this.datastore = datastore;
     this.userInsights = userInsights;
+    this.userService = userService;
     this.userId = "userId";
   }
 
