@@ -3,6 +3,9 @@ package com.google.edith.servlets;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
+import com.google.edith.interfaces.ExtractReceiptInterface;
+import com.google.edith.services.ExtractReceiptService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +13,25 @@ import java.util.Map;
 /**
  * Converts parsed receipt file string to receipt and item objects.
  */
-public class ReceiptData {
+public final class ReceiptData {
 
-  public static Receipt extractReceiptData(String blobKey, String expenditureName)
+  private ExtractReceiptInterface extractReceiptImplementation;
+
+  public ReceiptData() throws IOException{
+    this.extractReceiptImplementation = new ExtractReceiptService(DocumentUnderstandingServiceClient.create());
+  }
+
+  public ReceiptData(ExtractReceiptInterface extractReceiptImplementation) {
+    this.extractReceiptImplementation = extractReceiptImplementation;
+  }
+
+  public Receipt extractReceiptData(String blobKey, String expenditureName)
       throws IOException {
 
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
 
-    List<Map<String, String>> items = ExtractReceipt.extractReceipt(blobKey);
+    List<Map<String, String>> items = extractReceiptImplementation.extractReceipt(blobKey);
     Item[] parsedItems = createReceiptItems(user, items);
     Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
@@ -33,7 +46,7 @@ public class ReceiptData {
    * @param expenditureName - name of the rceipt obtained from FE form.
    * @return Receipt - receipt object created from the provided info.
    */
-  private static Receipt createReceipt(
+  private Receipt createReceipt(
       String blobKey, User user, Item[] items, String expenditureName) {
     Receipt userReceipt =
         new Receipt(
@@ -54,7 +67,7 @@ public class ReceiptData {
    * @param extractedData - List of item description.
    * @return Item[] - array of item objects created from the list of item description.
    */
-  private static Item[] createReceiptItems(User user, List<Map<String, String>> extractedData) {
+  private Item[] createReceiptItems(User user, List<Map<String, String>> extractedData) {
     int index = 0;
     int totalItems = extractedData.size();
     Item[] items = new Item[totalItems];

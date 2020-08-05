@@ -24,7 +24,8 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.edith.servlets.ExtractReceipt;
+import com.google.edith.interfaces.ExtractReceiptInterface;
+import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,10 +49,7 @@ public final class ReceiptDataTest {
           .setEnvIsAdmin(true)
           .setEnvEmail("user@gmail.com");
 
-  private ReceiptData receiptData = new ReceiptData();
-  private final UserService userService = UserServiceFactory.getUserService();
-
-  @Mock ExtractReceipt extractReceiptImplementation;
+  @Mock ExtractReceiptInterface extractReceiptImplementation;
 
   @Before
   public void setUp() throws Exception {
@@ -63,6 +61,9 @@ public final class ReceiptDataTest {
   public void tearDown() {
     testHelper.tearDown();
   }
+  
+  private ReceiptData receiptData = new ReceiptData(extractReceiptImplementation);
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Test
   public void extractReceiptData_createsReceipt() throws IOException {
@@ -70,9 +71,9 @@ public final class ReceiptDataTest {
     Map<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
     Map<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
     List<Map<String, String>> itemsDescription = ImmutableList.of(item1, item2);
-    // when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
+    when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
     // when(extractReceiptImplementation.extractReceipt("projectId", "location", "inputGcsUri")).thenReturn("itemsDescription");
-    // receiptData.extractReceiptData("blobkey", "expense");
+    // Receipt extractedReceipt = receiptData.extractReceiptData("blobkey", "expense");
     // try {
     //   Receipt returnedReceipt = receiptData.extractReceiptData();
     //   assertNotNull(returnedReceipt);

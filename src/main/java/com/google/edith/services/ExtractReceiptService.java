@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith.servlets;
+package com.google.edith.services;
 
 import com.google.cloud.documentai.v1beta2.Document;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.cloud.documentai.v1beta2.GcsSource;
 import com.google.cloud.documentai.v1beta2.InputConfig;
 import com.google.cloud.documentai.v1beta2.ProcessDocumentRequest;
+import com.google.edith.interfaces.ExtractReceiptInterface;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +30,15 @@ import java.util.Map;
  * Uses Document AI API to parse pdf receipt file stored in Google Cloud Storage Bucket
  * named edith-step.
  */
-public class ExtractReceipt {
+public final class ExtractReceiptService implements ExtractReceiptInterface {
+  private final DocumentUnderstandingServiceClient client;
 
-  public static List<Map<String, String>> extractReceipt(String blobKey) throws IOException {
+  public ExtractReceiptService(DocumentUnderstandingServiceClient client) {
+    this.client = client;
+  }
+
+  @Override
+  public List<Map<String, String>> extractReceipt(String blobKey) throws IOException {
     String projectId = "edith-step";
     String location = "us";
     // For local testing. As blobstore API does not store in GCS in local environment.
@@ -46,7 +53,7 @@ public class ExtractReceipt {
    *
    * @return List<Map<String, String>> - a list of maps of item name as key and price as value
    */
-  private static List<Map<String, String>> createItems(String parsedText) {
+  private List<Map<String, String>> createItems(String parsedText) {
     List<Map<String, String>> items = new ArrayList<Map<String, String>>();
 
     for (String item : parsedText.split("\\r?\\n")) {
@@ -67,10 +74,9 @@ public class ExtractReceipt {
    *
    * @return String - string representation of the content of the receipt pdf file.
    */
-  private static String extractReceipt(String projectId, String location, String inputGcsUri)
+  private String extractReceipt(String projectId, String location, String inputGcsUri)
       throws IOException {
 
-    try (DocumentUnderstandingServiceClient client = DocumentUnderstandingServiceClient.create()) {
       String parent = String.format("projects/%s/locations/%s", projectId, location);
       GcsSource uri = GcsSource.newBuilder().setUri(inputGcsUri).build();
 
@@ -84,7 +90,6 @@ public class ExtractReceipt {
 
       // Return all of the document text as one big string
       return response.getText();
-    }
   }
   
   /**
@@ -92,7 +97,7 @@ public class ExtractReceipt {
    *
    * @return Map<String, String> - a map where item name as key and price as value
    */
-  private static Map<String, String> processItem(String[] itemText) {
+  private Map<String, String> processItem(String[] itemText) {
     int itemPriceIndex = itemText.length - 2;
     int index = 0;
     String itemName = "";
