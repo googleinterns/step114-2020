@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/receipt-data")
 public class DealsServlet extends HttpServlet {
+  private final GroceryDataReader groceryReader = new GroceryDataReader();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,7 +36,7 @@ public class DealsServlet extends HttpServlet {
     JsonArray items = inputjson.get("items").getAsJsonArray();
 
     DealItem cheapestItem = null;
-    List<DealItem> deals = new ArrayList<DealItem>();
+    ImmutableList.Builder<DealItem> deals = ImmutableList.builder();
     for (int i = 0; i < items.size(); i++) {
       cheapestItem = null;
       JsonObject item = items.get(i).getAsJsonObject();
@@ -46,7 +48,6 @@ public class DealsServlet extends HttpServlet {
         System.out.println("error");
       }
 
-      GroceryDataReader groceryReader = new GroceryDataReader();
       cheapestItem = groceryReader.readFile(itemName.toLowerCase());
 
       if (cheapestItem != null) {
@@ -54,7 +55,7 @@ public class DealsServlet extends HttpServlet {
       }
     }
     Gson gson = new Gson();
-    String dealItems = gson.toJson(deals);
+    String dealItems = gson.toJson(deals.build());
     response.setContentType("application/json");
     response.getWriter().println(dealItems);
   }
