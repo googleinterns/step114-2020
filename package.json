@@ -10,17 +10,23 @@
     "@types/whatwg-fetch": "0.0.33",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
+    "chart.js": "^2.9.3",
     "core-js": "^3.6.5",
     "create-react-class": "^15.6.3",
+    "eslint-config-google": "^0.14.0",
+    "htmllint-cli": "^0.0.7",
+    "missing": "^0.0.1",
     "node-fetch": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
+    "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.1",
     "react-fetch": "0.0.9",
     "react-scripts": "3.4.1",
     "regenerator-runtime": "^0.13.7",
-    "serve": "^11.3.2"
+    "serve": "^11.3.2",
+    "stylelint-config-standard": "^20.0.0"
   },
   "scripts": {
     "start": "serve -s build",
@@ -53,15 +59,14 @@
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
     "@babel/runtime": "^7.10.5",
+    "@testing-library/react-hooks": "^3.4.1",
     "babel-jest": "^24.9.0",
+    "canvas": "^2.6.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.5.0",
-    "eslint": "^7.4.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-react": "^7.20.3",
-    "htmllint-cli": "0.0.7",
-    "jest": "^24.9.0",
+    "jest": "^26.1.0",
+    "jest-canvas-mock": "^2.2.0",
     "jest-environment-enzyme": "^7.1.2",
     "jest-enzyme": "^7.1.2",
     "jest-fetch-mock": "^3.0.3",
@@ -69,13 +74,13 @@
     "parcel-bundler": "^1.12.4",
     "prop-types": "^15.7.2",
     "react-test-renderer": "^16.13.1",
-    "stylelint": "^13.6.1",
-    "stylelint-config-standard": "^20.0.0"
+    "typescript": "^3.9.7"
   },
   "jest": {
     "automock": false,
     "setupFiles": [
-      "./jest.config.js"
+      "./jest.config.js",
+      "jest-canvas-mock,"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

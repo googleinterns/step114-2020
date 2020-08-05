@@ -17,9 +17,25 @@ export default class ReceiptInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {items: [], itemName: '', itemPrice: 0.0,
-      itemQuantity: 1, itemDeal: '', itemExpiration: ''};
+      itemCategory: 'category', itemQuantity: 1,
+      itemDeal: '', itemExpiration: ''};
+    this.getDate = this.getDate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  /**
+   * Calculates the current date in yyyy-mm-dd format
+   * @return {string} The current date
+   */
+  getDate() {
+    const date = new Date(Date.now());
+    let month = date.getMonth() + 1;
+    month < 10 ? month = '0' + month.toString() : month = month.toString();
+    let day = date.getDate();
+    day < 10 ? day = '0' + day.toString() : day = day.toString();
+    const year = date.getFullYear();
+    return [year, month, day].join('-');
   }
 
   /**
@@ -86,6 +102,22 @@ export default class ReceiptInput extends React.Component {
       itemExpiration: expirationMessage,
       id: Date.now(),
     };
+
+    axios({
+      method: 'post',
+      url: '/user-stats-servlet',
+      data: {
+        itemName: this.state.itemName,
+        itemCategory: this.state.itemCategory,
+        itemPrice: this.state.itemPrice,
+        itemQuantity: this.state.itemQuantity,
+        itemDate: this.getDate(),
+        itemReceiptId: this.state.itemReceiptId,
+        itemCategory: this.state.itemCategory,
+      },
+    }).catch((err) => {
+      console.log(err);
+    });
 
     this.setState((state) => ({
       items: [...state.items, newItem],

@@ -11,6 +11,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -29,20 +30,17 @@ import java.util.stream.Collectors;
  * This class provides the functionality to parse specifc user data from datastore and send an
  * agreggate of that information in a JSON file.
  */
-public final class UserInsights {
-
-  private String userId;
+public final class UserInsightsService implements UserInsightsInterface {
   private DatastoreService datastore;
   private final Gson GSON = new Gson();
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-  public UserInsights(String userId) {
-    this.userId = userId;
+  public UserInsightsService() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
-  /** This should only be called each time a new user makes an accout. */
-  public void createUserStats() {
+  public void createUserStats(String userId) {
+
     List<Key> items = new ArrayList<>();
 
     Entity userStats = new Entity("UserStats");
@@ -52,13 +50,8 @@ public final class UserInsights {
     datastore.put(userStats);
   }
 
-  /**
-   * Updates the Items list in the UserStats Entity in datastore corresponding to this user.
-   *
-   * @param items - Non-null list of item Keys to be added to the current Item list.
-   */
-  public void updateUserStats(List<Key> newItems) {
-    Optional<Entity> userStatsContainer = retreiveUserStats();
+  public void updateUserStats(String userId, List<Key> newItems) {
+    Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
       return;
     }
@@ -67,35 +60,37 @@ public final class UserInsights {
     if (items == null) {
       items = newItems;
     } else {
-      items.addAll(newItems);
+      for (Key newItem : newItems) {
+        if (!items.contains(newItem)) {
+          items.add(newItem);
+        }
+      }
     }
     userStats.setProperty("Items", items);
     datastore.put(userStats);
   }
 
-  /**
-   * Copmiles the spending using the Item list found in this user's UserStats Entity in datastore.
-   * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
-   *
-   * @return A map relating a time period to the spending in that time period.
-   */
-  public ImmutableMap<String, String> aggregateUserData() {
-    Optional<Entity> userStatsContainer = retreiveUserStats();
+  public ImmutableList<WeekInfo> aggregateUserData(String userId) {
+    Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
-      return createDefaultMap();
+      return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
+
     Entity userStats = userStatsContainer.get();
     List<Key> items = (List<Key>) userStats.getProperty("Items");
     if (items == null) {
-      return createDefaultMap();
+      return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
 
     /** Assumes dates are in the form yyyy-mm-dd */
     Comparator<Key> SORT_BY_DATE =
         (Key item1, Key item2) -> {
           try {
-            return ((String) (datastore.get(item1).getProperty("date")))
-                .compareTo((String) (datastore.get(item2).getProperty("date")));
+            return (LocalDate.parse(
+                    (String) (datastore.get(item1).getProperty("date")), DATE_FORMATTER)
+                .compareTo(
+                    LocalDate.parse(
+                        (String) (datastore.get(item2).getProperty("date")), DATE_FORMATTER)));
           } catch (EntityNotFoundException | NullPointerException e) {
             return 0;
           }
@@ -104,22 +99,21 @@ public final class UserInsights {
     return calculateWeeklyTotal(items);
   }
 
-  /**
-   * Creates a Json string that contains the weekly aggregate for this user and the items this user
-   * purchased.
-   *
-   * @return a Json formatted String of items and an aggregate.
-   */
-  public String createJson() {
-    Map<String, String> aggregateValues = aggregateUserData();
+  public String createJson(String userId) {
+    List<WeekInfo> aggregateValues = aggregateUserData(userId);
     String aggregateJson = GSON.toJson(aggregateValues);
-    Optional<Entity> userStatsContainer = retreiveUserStats();
+    Optional<Entity> userStatsContainer = retreiveUserStats(userId);
 
     if (!userStatsContainer.isPresent()) {
       return GSON.toJson(createDefaultMap());
     }
 
-    List<Key> itemKeys = (List<Key>) retreiveUserStats().get().getProperty("Items");
+    List<Key> itemKeys = (List<Key>) userStatsContainer.get().getProperty("Items");
+
+    if (itemKeys == null) {
+      return GSON.toJson(createDefaultMap());
+    }
+
     // Each item is mapped to an Item object to make their
     // properties parseable by GSON.
     List<Item> items =
@@ -127,14 +121,25 @@ public final class UserInsights {
             .map(
                 key -> {
                   try {
-                    Entity item = datastore.get(key);
-                    return new Item(
-                        (Double) item.getProperty("price"),
-                        (long) item.getProperty("quantity"),
-                        (String) item.getProperty("date"));
+                    return Optional.of(datastore.get(key));
                   } catch (EntityNotFoundException e) {
-                    return null;
+                    return Optional.empty();
                   }
+                })
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(
+                object -> {
+                  Entity item = (Entity) object;
+                  return Item.builder()
+                      .setName((String) item.getProperty("name"))
+                      .setUserId((String) item.getProperty("userId"))
+                      .setCategory((String) item.getProperty("category"))
+                      .setPrice((double) item.getProperty("price"))
+                      .setQuantity((long) item.getProperty("quantity"))
+                      .setDate((String) item.getProperty("date"))
+                      .setExpiration("")
+                      .build();
                 })
             .collect(Collectors.toList());
     String itemsJson = GSON.toJson(items);
@@ -144,18 +149,13 @@ public final class UserInsights {
     return GSON.toJson(userJson);
   }
 
-  /**
-   * Finds the UserStats entity corresponding to {@code userId} in datastore and returns this entity
-   * contained inside an Optional.
-   *
-   * @return UserStats entity for this user
-   */
-  public Optional<Entity> retreiveUserStats() {
+  public Optional<Entity> retreiveUserStats(String userId) {
     if (userId == null) {
       return Optional.empty();
     }
     Filter idFilter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
     Query query = new Query("UserStats").setFilter(idFilter);
+
     PreparedQuery results = datastore.prepare(query);
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(10));
     return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
@@ -170,11 +170,11 @@ public final class UserInsights {
    *     spending during that period. TODO (malachibre) : Modify this method by using an enum to
    *     calculate time period totals using an enum.
    */
-  private ImmutableMap<String, String> calculateWeeklyTotal(List<Key> itemKeys) {
+  private ImmutableList<WeekInfo> calculateWeeklyTotal(List<Key> itemKeys) {
     if (itemKeys == null || itemKeys.isEmpty()) {
-      return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
+      return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
-    Map<String, String> weeklyTotals = new LinkedHashMap<String, String>();
+    List<WeekInfo> weeklyTotals = new ArrayList<WeekInfo>();
     LocalDate currentEndOfWeek;
     try {
       currentEndOfWeek =
@@ -183,21 +183,21 @@ public final class UserInsights {
                   (String) datastore.get(itemKeys.get(0)).getProperty("date"), DATE_FORMATTER));
     } catch (EntityNotFoundException e) {
       System.err.println("Error: Entity could not be located");
-      return ImmutableMap.copyOf(new LinkedHashMap<String, String>());
+      return ImmutableList.copyOf(new ArrayList<WeekInfo>());
     }
 
     double weeklyTotal = 0;
-    Entity itemEntity;
     for (Key itemKey : itemKeys) {
       try {
         Entity item = datastore.get(itemKey);
         LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"), DATE_FORMATTER);
+
         // If there is a positive amount of time between
         // {@code currentEndOfWeek} and {@code itemDate}
         // that means that itemDate is after currentEndOfWeek and
         // currentEndOfWeek needs to be updated.
         if (ChronoUnit.DAYS.between(currentEndOfWeek, itemDate) > 0) {
-          weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+          weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
           currentEndOfWeek = getEndOfWeek(itemDate);
           weeklyTotal = 0;
         }
@@ -209,9 +209,9 @@ public final class UserInsights {
       }
     }
 
-    weeklyTotals.put(currentEndOfWeek.toString(), Double.toString(weeklyTotal));
+    weeklyTotals.add(new WeekInfo(currentEndOfWeek.toString(), Double.toString(weeklyTotal)));
 
-    return ImmutableMap.copyOf(weeklyTotals);
+    return ImmutableList.copyOf(weeklyTotals);
   }
 
   /**
