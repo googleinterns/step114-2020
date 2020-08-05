@@ -6,6 +6,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -26,21 +28,27 @@ public class UserStatsServlet extends HttpServlet {
 
   private final DatastoreService datastore;
   private final UserInsightsInterface userInsights;
+  private final UserService userService;
+  private final String userId;
 
   public UserStatsServlet() {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
     this.userInsights = new UserInsightsService();
+    this.userService = UserServiceFactory.getUserService();
+    this.userId = userService.getCurrentUser().getUserId();
   }
 
-  public UserStatsServlet(DatastoreService datastore, UserInsightsInterface userInsights) {
+  public UserStatsServlet(
+      DatastoreService datastore, UserInsightsInterface userInsights, UserService userService) {
     this.datastore = datastore;
     this.userInsights = userInsights;
+    this.userService = userService;
+    this.userId = "userId";
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/json");
-    String userId = "userId";
     response.getWriter().println(userInsights.createJson(userId));
   }
 
@@ -58,7 +66,6 @@ public class UserStatsServlet extends HttpServlet {
 
     String receiptData = stringBuilder.toString();
     JsonObject json = (JsonObject) JsonParser.parseString(receiptData);
-    String userId = "userId";
 
     Entity itemEntity = new Entity("Item");
 
