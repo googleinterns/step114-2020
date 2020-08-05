@@ -20,7 +20,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. */
+/**
+ * Retrieves information from webpage and returns User information in JSON format or updates user
+ * information.
+ */
 @WebServlet("/user-stats-servlet")
 public class UserStatsServlet extends HttpServlet {
 
@@ -49,14 +52,13 @@ public class UserStatsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     StringBuilder stringBuilder = new StringBuilder();
-    BufferedReader reader = request.getReader();
-    try {
+    try (BufferedReader reader = request.getReader()) {
       String line;
       while ((line = reader.readLine()) != null) {
         stringBuilder.append(line).append("\n");
       }
-    } finally {
-      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace(System.out);
     }
 
     String receiptData = stringBuilder.toString();
@@ -78,7 +80,7 @@ public class UserStatsServlet extends HttpServlet {
             .prepare(itemQuery)
             .asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE))
             .stream()
-            .map(entity -> entity.getKey())
+            .map(Entity::getKey)
             .collect(Collectors.toList());
     if (!userInsights.retreiveUserStats(userId).isPresent()) {
       userInsights.createUserStats(userId);

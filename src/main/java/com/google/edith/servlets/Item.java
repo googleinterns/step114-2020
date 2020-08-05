@@ -2,7 +2,7 @@ package com.google.edith.servlets;
 
 import com.google.auto.value.AutoValue;
 
-/** Used to hold the properties of an item Entity in datastore. */
+/** An Item is anything that is purchased at a grocery store. */
 @AutoValue
 public abstract class Item {
   public abstract String name();
@@ -15,6 +15,7 @@ public abstract class Item {
 
   public abstract long quantity();
 
+  /** yyyy-mm-dd format. */
   public abstract String date();
 
   public abstract String expiration();
