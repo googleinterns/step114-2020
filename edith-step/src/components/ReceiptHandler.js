@@ -27,7 +27,7 @@ export default class ReceiptHandler extends React.Component {
       day < 10 ? day = '0' + day.toString() : day = day.toString();
       const year = date.getFullYear();
       return [year, month, day].join('-');
-    }
+    };
 
     /**
      * Handles changes to the grocery store of the trip.
