@@ -26,16 +26,13 @@ import org.mockito.Mockito;
 public final class UserStatsServletTest {
 
   private static DatastoreService DATASTORE;
-  private static final HttpServletRequest REQUEST = 
-    Mockito.mock(HttpServletRequest.class);
-  private static final HttpServletResponse RESPONSE = 
-    Mockito.mock(HttpServletResponse.class);
+  private static final HttpServletRequest REQUEST = Mockito.mock(HttpServletRequest.class);
+  private static final HttpServletResponse RESPONSE = Mockito.mock(HttpServletResponse.class);
   private static final UserInsightsInterface USER_INSIGHTS = 
-    Mockito.mock(UserInsightsInterface.class);
-  private static final UserService USER_SERVICE =
-    Mockito.mock(UserService.class);
+      Mockito.mock(UserInsightsInterface.class);
+  private static final UserService USER_SERVICE = Mockito.mock(UserService.class);
   private static final LocalServiceTestHelper TEST_HELPER =
-    new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static final Gson GSON = new Gson();
   private static final String USER_ID = "userId";
 
