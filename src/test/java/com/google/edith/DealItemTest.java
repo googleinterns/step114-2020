@@ -32,7 +32,7 @@ public class DealItemTest {
   public void setPrice_validStringInput_setsPriceToDecimalValue() {
     dealItem.setPrice("$25.5");
     Assert.assertEquals(25.5, dealItem.getPrice(), .01);
-  } 
+  }
 
   @Test
   public void setPrice_emptyStringInput_setsPriceToZero() {

@@ -2,6 +2,7 @@ package com.google.edith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -13,15 +14,13 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
 import com.google.edith.servlets.Item;
-import com.google.edith.servlets.UserInsightsService;
 import com.google.edith.servlets.UserInsightsInterface;
+import com.google.edith.servlets.UserInsightsService;
 import com.google.edith.servlets.WeekInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,7 +35,7 @@ public final class UserInsightsServiceTest {
 
   private static UserInsightsInterface userInsights;
   private final LocalServiceTestHelper testHelper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   @Before
   public void setUp() {
@@ -54,25 +53,35 @@ public final class UserInsightsServiceTest {
   @Test
   public void creatUserStats_addsToDatstore() {
     // A new UserStats Entity should be added to the datastore
-    assertEquals(1, datastore.prepare(new Query("UserStats"))
-                                    .countEntities(FetchOptions.Builder
-                                                    .withLimit(10)));
+    assertEquals(
+        1,
+        datastore
+            .prepare(new Query("UserStats"))
+            .countEntities(FetchOptions.Builder.withLimit(10)));
   }
 
   @Test
   public void createUserStats_addsCorrectUserId() {
-    // Checks to see if the right UserId was added to the datastore  
-    assertEquals(USER_ID, datastore.prepare(new Query("UserStats"))
-                                   .asList(FetchOptions.Builder.withLimit(10))
-                                   .get(0).getProperty("userId"));
+    // Checks to see if the right UserId was added to the datastore
+    assertEquals(
+        USER_ID,
+        datastore
+            .prepare(new Query("UserStats"))
+            .asList(FetchOptions.Builder.withLimit(10))
+            .get(0)
+            .getProperty("userId"));
   }
 
   @Test
   public void createUserStats_addsCorrectItems() {
-    // Checks to see if the right UserId was added to the datastore  
-    assertEquals(null, datastore.prepare(new Query("UserStats"))
-                                   .asList(FetchOptions.Builder.withLimit(10))
-                                   .get(0).getProperty("Items"));
+    // Checks to see if the right UserId was added to the datastore
+    assertEquals(
+        null,
+        datastore
+            .prepare(new Query("UserStats"))
+            .asList(FetchOptions.Builder.withLimit(10))
+            .get(0)
+            .getProperty("Items"));
   }
 
   @Test
@@ -81,9 +90,13 @@ public final class UserInsightsServiceTest {
     // {@code items}
     List<Key> items = createTestKeyList(0, 5);
     userInsights.updateUserStats(USER_ID, items);
-    assertEquals(items, datastore.prepare(new Query("UserStats"))
-                                   .asList(FetchOptions.Builder.withLimit(10))
-                                   .get(0).getProperty("Items"));
+    assertEquals(
+        items,
+        datastore
+            .prepare(new Query("UserStats"))
+            .asList(FetchOptions.Builder.withLimit(10))
+            .get(0)
+            .getProperty("Items"));
   }
 
   @Test
@@ -99,13 +112,16 @@ public final class UserInsightsServiceTest {
       if (i < 5) {
         allItems.add(items1.get(i));
       } else {
-        allItems.add(items2.get(i-5));
+        allItems.add(items2.get(i - 5));
       }
     }
-    assertEquals(allItems, datastore.prepare(new Query("UserStats"))
-                                   .asList(FetchOptions.Builder.withLimit(10))
-                                   .get(0).getProperty("Items"));
-
+    assertEquals(
+        allItems,
+        datastore
+            .prepare(new Query("UserStats"))
+            .asList(FetchOptions.Builder.withLimit(10))
+            .get(0)
+            .getProperty("Items"));
   }
 
   @Test
@@ -114,16 +130,16 @@ public final class UserInsightsServiceTest {
 
     Entity newEntity = new Entity(items.get(0));
     setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29");
-    datastore.put(newEntity); 
+    datastore.put(newEntity);
 
     Entity newEntity2 = new Entity(items.get(1));
 
     setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30");
-    datastore.put(newEntity2); 
-    
+    datastore.put(newEntity2);
+
     List<WeekInfo> expected = new ArrayList<WeekInfo>();
     expected.add(new WeekInfo("2020-07-05", "17.0"));
-   
+
     userInsights.updateUserStats(USER_ID, items);
 
     assertTrue(compareOrderedLists(expected, userInsights.aggregateUserData(USER_ID)));
@@ -136,26 +152,26 @@ public final class UserInsightsServiceTest {
 
     Entity newEntity = new Entity(items.get(0));
     setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29");
-    datastore.put(newEntity); 
+    datastore.put(newEntity);
 
     Entity newEntity2 = new Entity(items.get(1));
     setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30");
-    datastore.put(newEntity2); 
-    
+    datastore.put(newEntity2);
+
     Entity newEntity3 = new Entity(items.get(2));
     setEntityProperties(newEntity3, "corn", USER_ID, "vegetable", 7, 3, "2020-07-11");
-    datastore.put(newEntity3);  
+    datastore.put(newEntity3);
 
     Entity newEntity4 = new Entity(items.get(3));
     setEntityProperties(newEntity4, "corn", USER_ID, "vegetable", 8, 4, "2020-07-12");
-    datastore.put(newEntity4);  
+    datastore.put(newEntity4);
 
     List<WeekInfo> expected = new ArrayList<>();
     expected.add(new WeekInfo("2020-07-05", "17.0"));
     expected.add(new WeekInfo("2020-07-12", "53.0"));
-   
+
     userInsights.updateUserStats(USER_ID, items);
-   
+
     assertTrue(compareOrderedLists(expected, userInsights.aggregateUserData(USER_ID)));
   }
 
@@ -166,74 +182,77 @@ public final class UserInsightsServiceTest {
 
     Entity newEntity = new Entity(items.get(0));
     setEntityProperties(newEntity, "corn", USER_ID, "vegetable", 5, 1, "2020-06-29");
-    itemProperties.add(Item.builder()
-                           .setName("corn")
-                           .setUserId(USER_ID)
-                           .setCategory("vegetable")
-                           .setPrice(5)
-                           .setQuantity(1)
-                           .setDate("2020-06-29")
-                           .setExpiration("")
-                           .setExpiration("")
-                           .build());
+    itemProperties.add(
+        Item.builder()
+            .setName("corn")
+            .setUserId(USER_ID)
+            .setCategory("vegetable")
+            .setPrice(5)
+            .setQuantity(1)
+            .setDate("2020-06-29")
+            .setExpiration("")
+            .setExpiration("")
+            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 5.00, 1L, "2020-06-29"));
-    datastore.put(newEntity); 
+    datastore.put(newEntity);
 
     Entity newEntity2 = new Entity(items.get(1));
-    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable",  6, 2, "2020-06-30");
-    itemProperties.add(Item.builder()
-                           .setName("corn")
-                           .setUserId(USER_ID)
-                           .setCategory("vegetable")
-                           .setPrice(6)
-                           .setQuantity(2)
-                           .setDate("2020-06-30")
-                           .setExpiration("")
-                           .build());
+    setEntityProperties(newEntity2, "corn", USER_ID, "vegetable", 6, 2, "2020-06-30");
+    itemProperties.add(
+        Item.builder()
+            .setName("corn")
+            .setUserId(USER_ID)
+            .setCategory("vegetable")
+            .setPrice(6)
+            .setQuantity(2)
+            .setDate("2020-06-30")
+            .setExpiration("")
+            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 6.00, 2L, "2020-06-30"));
-    datastore.put(newEntity2); 
-    
+    datastore.put(newEntity2);
+
     Entity newEntity3 = new Entity(items.get(2));
-    setEntityProperties(newEntity3,"corn", USER_ID, "vegetable",  7, 3, "2020-07-11");
-    itemProperties.add(Item.builder()
-                           .setName("corn")
-                           .setUserId(USER_ID)
-                           .setCategory("vegetable")
-                           .setPrice(7)
-                           .setQuantity(3)
-                           .setDate("2020-07-11")
-                           .setExpiration("")
-                           .build());
+    setEntityProperties(newEntity3, "corn", USER_ID, "vegetable", 7, 3, "2020-07-11");
+    itemProperties.add(
+        Item.builder()
+            .setName("corn")
+            .setUserId(USER_ID)
+            .setCategory("vegetable")
+            .setPrice(7)
+            .setQuantity(3)
+            .setDate("2020-07-11")
+            .setExpiration("")
+            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 7.00, 3L, "2020-07-11"));
-    datastore.put(newEntity3);  
+    datastore.put(newEntity3);
 
     Entity newEntity4 = new Entity(items.get(3));
-    setEntityProperties(newEntity4, "corn", USER_ID, "vegetable",  8, 4, "2020-07-12");
-    itemProperties.add(Item.builder()
-                           .setName("corn")
-                           .setUserId(USER_ID)
-                           .setCategory("vegetable")
-                           .setPrice(8)
-                           .setQuantity(4)
-                           .setDate("2020-07-12")
-                           .setExpiration("")
-                           .build());
+    setEntityProperties(newEntity4, "corn", USER_ID, "vegetable", 8, 4, "2020-07-12");
+    itemProperties.add(
+        Item.builder()
+            .setName("corn")
+            .setUserId(USER_ID)
+            .setCategory("vegetable")
+            .setPrice(8)
+            .setQuantity(4)
+            .setDate("2020-07-12")
+            .setExpiration("")
+            .build());
     // itemProperties.add(new Item("corn", USER_ID, "vegetable", 8.00, 4L, "2020-07-12"));
-    datastore.put(newEntity4);    
+    datastore.put(newEntity4);
 
     List<WeekInfo> expected = new ArrayList<>();
     expected.add(new WeekInfo("2020-07-05", "17.0"));
     expected.add(new WeekInfo("2020-07-12", "53.0"));
-   
+
     userInsights.updateUserStats(USER_ID, items);
 
     JsonObject testJson = new JsonObject();
     testJson.addProperty("weeklyAggregate", new Gson().toJson(expected));
     testJson.addProperty("items", new Gson().toJson(itemProperties));
     String expectedJson = new Gson().toJson(testJson);
-   
-    assertEquals(expectedJson, userInsights.createJson(USER_ID));
 
+    assertEquals(expectedJson, userInsights.createJson(USER_ID));
   }
 
   @Test
@@ -289,9 +308,14 @@ public final class UserInsightsServiceTest {
    * @param quantity quantity
    * @param date date
    */
-  private void setEntityProperties(Entity entity, String name, String userId,
-                                   String category, double price, int quantity,
-                                   String date) {
+  private void setEntityProperties(
+      Entity entity,
+      String name,
+      String userId,
+      String category,
+      double price,
+      int quantity,
+      String date) {
     entity.setProperty("name", name);
     entity.setProperty("userId", userId);
     entity.setProperty("category", category);
@@ -303,12 +327,12 @@ public final class UserInsightsServiceTest {
   private boolean compareOrderedLists(List<WeekInfo> expected, List<WeekInfo> actual) {
     if (expected.size() != actual.size()) {
       return false;
-    } 
+    }
     for (int i = 0; i < expected.size(); i++) {
       if (!expected.get(i).equals(actual.get(i))) {
-          return false;
-      } 
+        return false;
+      }
     }
-    return true; 
+    return true;
   }
 }

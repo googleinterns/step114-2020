@@ -19,13 +19,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator; 
-import java.util.List;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 /**
  * This class provides the functionality to parse specifc user data from datastore and send an
@@ -41,7 +40,7 @@ public final class UserInsightsService implements UserInsightsInterface {
   }
 
   /** This should only be called each time a new user makes an accout. */
-  public void createUserStats(String userId) { 
+  public void createUserStats(String userId) {
 
     List<Key> items = new ArrayList<>();
 
@@ -80,9 +79,11 @@ public final class UserInsightsService implements UserInsightsInterface {
   /**
    * Copmiles the spending using the Item list found in this user's UserStats Entity in datastore.
    * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
-   * @return A list of {@code WeekInfo} objects relating a time period to the spending in that time period.
+   *
+   * @return A list of {@code WeekInfo} objects relating a time period to the spending in that time
+   *     period.
    */
-  public ImmutableList<WeekInfo> aggregateUserData(String userId) { 
+  public ImmutableList<WeekInfo> aggregateUserData(String userId) {
     Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
       return ImmutableList.copyOf(new ArrayList<WeekInfo>());
@@ -98,12 +99,11 @@ public final class UserInsightsService implements UserInsightsInterface {
     Comparator<Key> SORT_BY_DATE =
         (Key item1, Key item2) -> {
           try {
-            return (LocalDate.parse((String) (datastore.get(item1)
-                                                  .getProperty("date")), 
-                                                  DATE_FORMATTER)
-                .compareTo(LocalDate.parse((String) (datastore.get(item2)
-                                                        .getProperty("date")), 
-                                                        DATE_FORMATTER)));
+            return (LocalDate.parse(
+                    (String) (datastore.get(item1).getProperty("date")), DATE_FORMATTER)
+                .compareTo(
+                    LocalDate.parse(
+                        (String) (datastore.get(item2).getProperty("date")), DATE_FORMATTER)));
           } catch (EntityNotFoundException | NullPointerException e) {
             return 0;
           }
@@ -127,38 +127,40 @@ public final class UserInsightsService implements UserInsightsInterface {
       return GSON.toJson(createDefaultMap());
     }
 
-    List<Key> itemKeys = (List<Key>) userStatsContainer.get()
-                                        .getProperty("Items");
+    List<Key> itemKeys = (List<Key>) userStatsContainer.get().getProperty("Items");
 
     if (itemKeys == null) {
       return GSON.toJson(createDefaultMap());
     }
 
-    // Each item is mapped to an Item object to make their 
+    // Each item is mapped to an Item object to make their
     // properties parseable by GSON.
-    List<Item> items = itemKeys.stream()
-                         .map(key -> {
-                                try {
-                                  return Optional.of(datastore.get(key));
-                                } catch (EntityNotFoundException e) {
-                                  return Optional.empty();
-                                }
-                         })
-                         .filter(Optional::isPresent)
-                         .map(Optional::get) 
-                         .map(object ->{
-                              Entity item = (Entity) object;
-                              return Item.builder()
-                                         .setName((String) item.getProperty("name"))
-                                         .setUserId((String) item.getProperty("userId"))
-                                         .setCategory((String) item.getProperty("category"))
-                                         .setPrice((double) item.getProperty("price"))
-                                         .setQuantity((long) item.getProperty("quantity"))
-                                         .setDate((String) item.getProperty("date"))
-                                         .setExpiration("")
-                                         .build();
-                          })
-                          .collect(Collectors.toList());
+    List<Item> items =
+        itemKeys.stream()
+            .map(
+                key -> {
+                  try {
+                    return Optional.of(datastore.get(key));
+                  } catch (EntityNotFoundException e) {
+                    return Optional.empty();
+                  }
+                })
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(
+                object -> {
+                  Entity item = (Entity) object;
+                  return Item.builder()
+                      .setName((String) item.getProperty("name"))
+                      .setUserId((String) item.getProperty("userId"))
+                      .setCategory((String) item.getProperty("category"))
+                      .setPrice((double) item.getProperty("price"))
+                      .setQuantity((long) item.getProperty("quantity"))
+                      .setDate((String) item.getProperty("date"))
+                      .setExpiration("")
+                      .build();
+                })
+            .collect(Collectors.toList());
     String itemsJson = GSON.toJson(items);
     JsonObject userJson = new JsonObject();
     userJson.addProperty("weeklyAggregate", aggregateJson);
@@ -213,8 +215,7 @@ public final class UserInsightsService implements UserInsightsInterface {
     for (Key itemKey : itemKeys) {
       try {
         Entity item = datastore.get(itemKey);
-        LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"),
-                                             DATE_FORMATTER);
+        LocalDate itemDate = LocalDate.parse((String) item.getProperty("date"), DATE_FORMATTER);
 
         // If there is a positive amount of time between
         // {@code currentEndOfWeek} and {@code itemDate}

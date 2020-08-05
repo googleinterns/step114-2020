@@ -3,25 +3,21 @@ package com.google.edith.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
-import com.google.edith.servlets.UserInsightsService;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.stream.Collectors;
-import java.util.List;
 
-/**
- * Servlet that returns some example content.
- */
+/** Servlet that returns some example content. */
 @WebServlet("/user-stats-servlet")
 public class UserStatsServlet extends HttpServlet {
 
@@ -36,11 +32,11 @@ public class UserStatsServlet extends HttpServlet {
   public UserStatsServlet(DatastoreService datastore, UserInsightsInterface userInsights) {
     this.datastore = datastore;
     this.userInsights = userInsights;
-  } 
+  }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/json");   
+    response.setContentType("text/json");
     String userId = "userId";
     response.getWriter().println(userInsights.createJson(userId));
   }
@@ -62,7 +58,6 @@ public class UserStatsServlet extends HttpServlet {
     JsonObject json = (JsonObject) JsonParser.parseString(receiptData);
     String userId = "userId";
 
-
     Entity itemEntity = new Entity("Item");
 
     itemEntity.setProperty("name", json.get("itemName").getAsString());
@@ -71,16 +66,14 @@ public class UserStatsServlet extends HttpServlet {
     itemEntity.setProperty("price", Double.parseDouble(json.get("itemPrice").getAsString()));
     itemEntity.setProperty("quantity", Long.parseLong(json.get("itemQuantity").getAsString()));
     itemEntity.setProperty("date", json.get("itemDate").getAsString());
-    itemEntity.setProperty("receiptId", json.get("itemReceiptId").getAsString());
-    
+
     datastore.put(itemEntity);
     Query itemQuery = new Query("Item");
-    List<Key> itemKeys = datastore.prepare(itemQuery)
-                            .asList(FetchOptions.Builder
-                                                .withLimit(Integer.MAX_VALUE))
-                            .stream()
-                            .map(entity -> entity.getKey())
-                            .collect(Collectors.toList());
+    List<Key> itemKeys =
+        datastore.prepare(itemQuery).asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE))
+            .stream()
+            .map(entity -> entity.getKey())
+            .collect(Collectors.toList());
     if (!userInsights.retreiveUserStats(userId).isPresent()) {
       userInsights.createUserStats(userId);
     }
