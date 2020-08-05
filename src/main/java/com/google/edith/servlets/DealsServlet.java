@@ -57,11 +57,5 @@ public class DealsServlet extends HttpServlet {
     String dealItems = gson.toJson(deals);
     response.setContentType("application/json");
     response.getWriter().println(dealItems);
-/**
-    Gson gson = new Gson();
-    String responseJson = gson.toJson(cheapestItem);
-    response.setContentType("application/json");
-    response.getWriter().println(responseJson);
-*/
   }
 }
