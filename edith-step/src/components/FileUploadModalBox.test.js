@@ -2,7 +2,6 @@ import React from 'react';
 import {enableFetchMocks} from 'jest-fetch-mock';
 enableFetchMocks();
 import FileUploadModalBox from './FileUploadModalBox';
-
 import {shallow} from 'enzyme';
 
 import '../setupTests.js';

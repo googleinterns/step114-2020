@@ -49,7 +49,7 @@ public final class ReceiptFileHandlerServlet extends HttpServlet {
 
     // fileKeys never should be empty as file field in the FE form is required.
     if (fileKeys.isEmpty()) {
-      throw new IllegalStateException();
+      throw new IllegalStateException("file must be uploaded in the form");
     }
     // Blob is being served right now. But it will change in future to store it in Receipt object.
     receiptFileHandler.serveBlob(response, fileKeys);
