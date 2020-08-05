@@ -13,16 +13,18 @@ let getReceiptData;
 let addItem;
 
 beforeEach(() => {
+  component = mount(<ReceiptHandler />);
   handleNameChange = jest.spyOn(ReceiptHandler.prototype, 'handleNameChange');
   handlePriceChange = jest.spyOn(ReceiptHandler.prototype, 'handlePriceChange');
   handleQuantityChange = jest.spyOn(ReceiptHandler.prototype,
       'handleQuantityChange');
-  handleStoreChange = jest.spyOn(ReceiptHandler.prototype, 'handleStoreChange');
-  handleExpirationChange = jest.spyOn(ReceiptHandler.prototype,
+  handleStoreChange = jest.spyOn(component.instance(), 'handleStoreChange');
+  handleExpirationChange = jest.spyOn(component.instance(),
       'handleExpirationChange');
-  getReceiptData = jest.spyOn(ReceiptHandler.prototype, 'getReceiptData');
-  addItem = jest.spyOn(ReceiptHandler.prototype, 'addItem');
-  component = mount(<ReceiptHandler />);
+  getReceiptData = jest.spyOn(component.instance(), 'getReceiptData');
+  addItem = jest.spyOn(component.instance(), 'addItem');
+  component.update();
+  component.instance().forceUpdate();
 });
 
 afterEach(() => {

@@ -14,37 +14,118 @@ export default class ReceiptHandler extends React.Component {
     super(props);
     this.state = {userId: '', storeName: '', date: '',
       name: '', fileUrl: '', totalPrice: 0.0, items: [], deals: []};
-    this.getReceiptData = this.getReceiptData.bind(this);
-    this.handleStoreChange = this.handleStoreChange.bind(this);
-    this.addItem = this.addItem.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.addExpirationAndSubmit = this.addExpirationAndSubmit.bind(this);
+
+    /** Fetches receipt data from receipt-file-handler servlet. */
+    this.getReceiptData = async () => {
+      const response = await axios({
+        method: 'get',
+        url: '/receipt-file-handler',
+        responseType: 'json',
+      });
+      const receipt = response.data;
+      const itemList = receipt.items;
+      this.setState((state) => ({
+        userId: receipt.userId,
+        storeName: receipt.storeName,
+        date: receipt.date,
+        name: receipt.name,
+        fileUrl: receipt.fileUrl,
+        totalPrice: receipt.totalPrice,
+        items: itemList,
+        deals: [],
+      }));
+    }
+
+    /**
+     * Handles changes to the grocery store of the trip.
+     * @param {Event} e change event
+     */
+    this.handleStoreChange = (e) => {
+      this.setState({storeName: e.target.value});
+    }
+
+    /**
+     * Adds a form row for the user to input additional grocery items
+     * that weren't included in the initial scan.
+     * @param {Event} e change event
+     */
+    this.addItem = (e) => {
+      const newItem = {
+        userId: this.state.userId,
+        name: '',
+        price: 0.0,
+        quantity: 0,
+        category: '',
+        expiration: '',
+      };
+      this.setState({items: this.state.items.concat(newItem)});
+    }
+    
+    /**
+     * Handles primary submission to the form. Sends the grocery
+     * data to the receipt-data servlet to find deals and expiration
+     * dates.
+     *
+     * @param {Event} e change event
+     */
+    this.handleSubmit = async (e) => {
+      e.preventDefault();
+      let price = 0;
+      this.state.items.forEach((item) => {
+        price += item.price * item.quantity;
+      });
+      this.setState({totalPrice: price});
+      const response = await axios({
+        method: 'post',
+        url: '/receipt-data',
+        data: {
+          userId: this.state.userId,
+          storeName: this.state.storeName,
+          date: this.state.date,
+          name: this.state.name,
+          fileUrl: this.state.fileUrl,
+          totalPrice: price,
+          items: this.state.items,
+        },
+      });
+      const data = response.data;
+      this.setState((state) => ({
+        deals: data,
+      }));
+    }
+
+    /**
+     * Handles secondary submission to the form. Sends the data
+     * to the store-receipt servlet to be stored in Datastore.
+     * @param {Event} e change event
+     */
+    this.addExpirationAndSubmit = async (e) => {
+      let price = 0;
+      this.state.items.forEach((item) => {
+        price += item.price * item.quantity;
+      });
+      this.setState({totalPrice: price});
+      await axios({
+        method: 'post',
+        url: '/store-receipt',
+        data: {
+          userId: this.state.userId,
+          storeName: this.state.storeName,
+          date: this.state.date,
+          name: this.state.name,
+          fileUrl: this.state.fileUrl,
+          totalPrice: price,
+          items: this.state.items,
+          deals: this.state.deals,
+        },
+      });
+      this.setState({});
+    }
   }
 
   /** Calls function to get receipt data on mount. */
   componentDidMount() {
-    this.getReceiptData();
-  }
-
-  /** Fetches receipt data from receipt-file-handler servlet. */
-  async getReceiptData() {
-    const response = await axios({
-      method: 'get',
-      url: '/receipt-file-handler',
-      responseType: 'json',
-    });
-    const receipt = response.data;
-    const itemList = receipt.items;
-    this.setState((state) => ({
-      userId: receipt.userId,
-      storeName: receipt.storeName,
-      date: receipt.date,
-      name: receipt.name,
-      fileUrl: receipt.fileUrl,
-      totalPrice: receipt.totalPrice,
-      items: itemList,
-      deals: [],
-    }));
+    this.getReceiptData;
   }
 
   /**
@@ -81,99 +162,14 @@ export default class ReceiptHandler extends React.Component {
   }
 
   /**
-   * Handles changes to the grocery store of the trip.
-   * @param {Event} e change event
-   */
-  handleStoreChange(e) {
-    this.setState({storeName: e.target.value});
-  }
-
-  /**
    * Handles changes to the expiration of a grocery item.
    * @param {number} i index of item
    * @param {Event} e change event
    */
   handleExpirationChange(i, e) {
     const dealsList = [...this.state.deals];
-    dealsList[i].expiration = e.target.value;
+    dealsList[i].expirationTime = e.target.value;
     this.setState({deals: dealList});
-  }
-
-  /**
-   * Adds a form row for the user to input additional grocery items
-   * that weren't included in the initial scan.
-   * @param {Event} e change event
-   */
-  addItem(e) {
-    const newItem = {
-      userId: this.state.userId,
-      name: '',
-      price: 0.0,
-      quantity: 0,
-      category: '',
-      expiration: '',
-    };
-    this.setState({items: this.state.items.concat(newItem)});
-  }
-
-  /**
-   * Handles primary submission to the form. Sends the grocery
-   * data to the receipt-data servlet to find deals and expiration
-   * dates.
-   * @param {Event} e change event
-   */
-  async handleSubmit(e) {
-    e.preventDefault();
-    let price = 0;
-    this.state.items.forEach((item) => {
-      price += item.price * item.quantity;
-    });
-    this.setState({totalPrice: price});
-    const response = await axios({
-      method: 'post',
-      url: '/receipt-data',
-      data: {
-        userId: this.state.userId,
-        storeName: this.state.storeName,
-        date: this.state.date,
-        name: this.state.name,
-        fileUrl: this.state.fileUrl,
-        totalPrice: price,
-        items: this.state.items,
-      },
-    });
-    const data = response.data;
-    this.setState((state) => ({
-      deals: data,
-    }));
-  }
-
-  /**
-   * Handles secondary submission to the form. Sends the data
-   * to the store-receipt servlet to be stored in Datastore.
-   * @param {Event} e change event
-   */
-  async addExpirationAndSubmit(e) {
-    let price = 0;
-    this.state.items.forEach((item) => {
-      price += item.price * item.quantity;
-    });
-    this.setState({totalPrice: price});
-    await axios({
-      method: 'post',
-      url: '/store-receipt',
-      data: {
-        userId: this.state.userId,
-        storeName: this.state.storeName,
-        date: this.state.date,
-        name: this.state.name,
-        fileUrl: this.state.fileUrl,
-        totalPrice: price,
-        items: this.state.items,
-        deals: this.state.deals,
-      },
-    });
-    this.setState({});
   }
 
   /**
