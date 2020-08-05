@@ -167,4 +167,9 @@ class DeviceCameraModalBox extends React.Component {
   }
 }
 
+DeviceCameraModalBox.propTypes = {
+  show: PropTypes.bool,
+  handleTakePictureModalBoxClose: PropTypes.func,
+};
+
 export default DeviceCameraModalBox;
