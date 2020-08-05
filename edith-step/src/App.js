@@ -19,56 +19,54 @@ class App extends Component {
     super();
     this.state = {'chartType': LineChart, 'dateFilter': '',
       'categoryFilter': ''};
-    this.updateChartType = this.updateChartType.bind(this);
-    this.showItemChart = this.showItemChart.bind(this);
-    this.revertCharts = this.revertCharts.bind(this);
-  }
 
-  /**
-   * Updates the value of chartType in state
-   * based on the value of {@code event}.
+    /**
+    * Updates the value of chartType in state
+    * based on the value of {@code event}.
 
-   * @param { Event } event HTML element that has been selected
-   */
-  updateChartType(event) {
-    switch (event.target.value) {
-      case chart.LINE:
-        this.setState({'chartType': LineChart});
-        break;
-      case chart.BAR:
-        this.setState({'chartType': BarGraph});
-        break;
-      case chart.DOUGHNUT:
-        this.setState({'chartType': CategoryDoughnutChart});
-        break;
-    }
-  }
+    * @param { Event } event HTML element that has been selected
+    */
+    this.updateChartType = (event) => {
+      switch (event.target.value) {
+        case chart.LINE:
+          this.setState({'chartType': LineChart});
+          break;
+        case chart.BAR:
+          this.setState({'chartType': BarGraph});
+          break;
+        case chart.DOUGHNUT:
+          this.setState({'chartType': CategoryDoughnutChart});
+          break;
+      }
+    };
 
-  /**
-   * Displays either a {@code CategoryDoughnutChart} or
-   * {@code ItemDoughnutChart} based on the value of {@code doughnutType}
-   * @param {String} doughnutType can be eiter 'category' or 'item'
-   * @param {String} dateFilter if this value is defined, only items/categories
-   *                      bought in the same week will be displayed
-   * @param {String} categoryFilter if this value is defined, only items of this
-   *                          category will be displayed in a
-   *                          {@code ItemDoughnut} chart
-   */
-  showItemChart(doughnutType, dateFilter, categoryFilter) {
-    if (doughnutType === 'category') {
-      this.setState({'chartType': CategoryDoughnutChart,
-        'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
-    } else if (doughnutType === 'item') {
-      this.setState({'chartType': ItemDoughnutChart,
-        'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
-    }
-  }
+    /**
+    * Displays either a {@code CategoryDoughnutChart} or
+    * {@code ItemDoughnutChart} based on the value of {@code doughnutType}
+    * @param {String} doughnutType can be eiter 'category' or 'item'
+    * @param {String} dateFilter if this value is defined, only items/categories
+    *                      bought in the same week will be displayed
+    * @param {String} categoryFilter if this value is defined, only items of
+    *                          this category will be displayed in a
+    *                          {@code ItemDoughnut} chart
+    */
+    this.showItemChart = (doughnutType, dateFilter, categoryFilter) => {
+      if (doughnutType === 'category') {
+        this.setState({'chartType': CategoryDoughnutChart,
+          'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
+      } else if (doughnutType === 'item') {
+        this.setState({'chartType': ItemDoughnutChart,
+          'dateFilter': dateFilter, 'categoryFilter': categoryFilter});
+      }
+    };
 
-  /** Stes the state back to its default values. */
-  revertCharts() {
-    this.setState({'chartType': LineChart,
-      'dateFilter': '', 'categoryFilter': ''});
-  }
+    /** Sets the state back to its default values. */
+    this.revertCharts = () => {
+      this.setState({'chartType': LineChart,
+        'dateFilter': '', 'categoryFilter': ''});
+    };
+  };
+
 
   /**
    * Renders TopNavbar, ReceiptInput component.
