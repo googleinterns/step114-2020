@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Uses Document AI API to parse pdf receipt file stored in Google Cloud Storage Bucket
- * named edith-step.
+ * Uses Document AI API to parse pdf receipt file stored in Google Cloud Storage Bucket named
+ * edith-step.
  */
 public final class ExtractReceiptService implements ExtractReceiptInterface {
   private final DocumentUnderstandingServiceClient client;
@@ -47,7 +47,7 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
     String parsedText = extractReceipt(projectId, location, inputGcsUri);
     return createItems(parsedText);
   }
-  
+
   /**
    * Parses returned string from Document AI API.
    *
@@ -77,21 +77,21 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
   private String extractReceipt(String projectId, String location, String inputGcsUri)
       throws IOException {
 
-      String parent = String.format("projects/%s/locations/%s", projectId, location);
-      GcsSource uri = GcsSource.newBuilder().setUri(inputGcsUri).build();
+    String parent = String.format("projects/%s/locations/%s", projectId, location);
+    GcsSource uri = GcsSource.newBuilder().setUri(inputGcsUri).build();
 
-      InputConfig config =
-          InputConfig.newBuilder().setGcsSource(uri).setMimeType("application/pdf").build();
+    InputConfig config =
+        InputConfig.newBuilder().setGcsSource(uri).setMimeType("application/pdf").build();
 
-      ProcessDocumentRequest request =
-          ProcessDocumentRequest.newBuilder().setParent(parent).setInputConfig(config).build();
+    ProcessDocumentRequest request =
+        ProcessDocumentRequest.newBuilder().setParent(parent).setInputConfig(config).build();
 
-      Document response = client.processDocument(request);
+    Document response = client.processDocument(request);
 
-      // Return all of the document text as one big string
-      return response.getText();
+    // Return all of the document text as one big string
+    return response.getText();
   }
-  
+
   /**
    * Given a item description string, creates a map where item name is key and price is value
    *

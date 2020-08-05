@@ -18,13 +18,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/** Operations for handling parsing receipt using Document AI API. **/
+/** Operations for handling parsing receipt using Document AI API. * */
 public interface ExtractReceiptInterface {
-  
+
   /**
    * Creates a list of maps of item descriptions.
    *
-   * @return Lis<Map<String, String>> - a list of maps where item name is key and item price is value
+   * @return Lis<Map<String, String>> - a list of maps where item name is key and item price is
+   *     value
    */
   public List<Map<String, String>> extractReceipt(String blobKey) throws IOException;
 }

@@ -16,9 +16,8 @@ package com.google.edith;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -29,7 +28,6 @@ import com.google.edith.interfaces.ExtractReceiptInterface;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
@@ -62,7 +60,7 @@ public final class ReceiptDataTest {
   public void tearDown() {
     testHelper.tearDown();
   }
-  
+
   private ReceiptData receiptData = new ReceiptData(extractReceiptImplementation);
   private final UserService userService = UserServiceFactory.getUserService();
 

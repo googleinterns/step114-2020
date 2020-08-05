@@ -10,15 +10,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Converts parsed receipt file string to receipt and item objects.
- */
+/** Converts parsed receipt file string to receipt and item objects. */
 public final class ReceiptData {
 
   private ExtractReceiptInterface extractReceiptImplementation;
 
-  public ReceiptData() throws IOException{
-    this.extractReceiptImplementation = new ExtractReceiptService(DocumentUnderstandingServiceClient.create());
+  public ReceiptData() throws IOException {
+    this.extractReceiptImplementation =
+        new ExtractReceiptService(DocumentUnderstandingServiceClient.create());
   }
 
   public ReceiptData(ExtractReceiptInterface extractReceiptImplementation) {
@@ -32,8 +31,7 @@ public final class ReceiptData {
    * @param expenditureName - name of the rceipt obtained from FE form.
    * @return Receipt - receipt object created from the provided info.
    */
-  public Receipt extractReceiptData(String blobKey, String expenditureName)
-      throws IOException {
+  public Receipt extractReceiptData(String blobKey, String expenditureName) throws IOException {
 
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
@@ -43,7 +41,7 @@ public final class ReceiptData {
     Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
   }
-  
+
   /**
    * Creates receipt object.
    *
@@ -53,8 +51,7 @@ public final class ReceiptData {
    * @param expenditureName - name of the rceipt obtained from FE form.
    * @return Receipt - receipt object created from the provided info.
    */
-  private Receipt createReceipt(
-      String blobKey, User user, Item[] items, String expenditureName) {
+  private Receipt createReceipt(String blobKey, User user, Item[] items, String expenditureName) {
     Receipt userReceipt =
         new Receipt(
             user.getUserId(),
