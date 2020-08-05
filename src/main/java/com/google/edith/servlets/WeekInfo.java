@@ -16,6 +16,7 @@ public final class WeekInfo {
   /**
    * Evaluates if two {@code WeekInfo} objects are equal based on their (@code date} and {@code
    * total} values.
+   *
    * @param other another {@code WeekInfo} object
    * @return true if both, their string and total fields are equal
    */

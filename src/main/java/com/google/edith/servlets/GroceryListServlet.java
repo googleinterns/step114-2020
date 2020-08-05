@@ -4,8 +4,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.edith.servlets.Item;
-import com.google.edith.servlets.Receipt;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,11 +16,11 @@ public class GroceryListServlet extends HttpServlet {
   private DatastoreService datastoreService;
   private QueryItems queryItems;
 
-  public GroceryListServlet(UserService userService,
-      DatastoreService datastoreService, QueryItems queryItems) {
+  public GroceryListServlet(
+      UserService userService, DatastoreService datastoreService, QueryItems queryItems) {
     this.userService = userService;
     this.datastoreService = datastoreService;
-    this.queryItems = queryItems;  
+    this.queryItems = queryItems;
   }
 
   public GroceryListServlet() {
