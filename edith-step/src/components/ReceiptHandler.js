@@ -34,7 +34,7 @@ export default class ReceiptHandler extends React.Component {
         items: itemList,
         deals: [],
       }));
-    }
+    };
 
     /**
      * Handles changes to the grocery store of the trip.
@@ -42,7 +42,7 @@ export default class ReceiptHandler extends React.Component {
      */
     this.handleStoreChange = (e) => {
       this.setState({storeName: e.target.value});
-    }
+    };
 
     /**
      * Adds a form row for the user to input additional grocery items
@@ -59,7 +59,7 @@ export default class ReceiptHandler extends React.Component {
         expiration: '',
       };
       this.setState({items: this.state.items.concat(newItem)});
-    }
+    };
     
     /**
      * Handles primary submission to the form. Sends the grocery
@@ -92,7 +92,7 @@ export default class ReceiptHandler extends React.Component {
       this.setState((state) => ({
         deals: data,
       }));
-    }
+    };
 
     /**
      * Handles secondary submission to the form. Sends the data
@@ -120,7 +120,7 @@ export default class ReceiptHandler extends React.Component {
         },
       });
       this.setState({});
-    }
+    };
   }
 
   /** Calls function to get receipt data on mount. */
