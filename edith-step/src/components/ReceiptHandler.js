@@ -60,7 +60,7 @@ export default class ReceiptHandler extends React.Component {
       };
       this.setState({items: this.state.items.concat(newItem)});
     };
-    
+
     /**
      * Handles primary submission to the form. Sends the grocery
      * data to the receipt-data servlet to find deals and expiration
