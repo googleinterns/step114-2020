@@ -1,6 +1,5 @@
 package com.google.edith.servlets;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.cloud.documentai.v1beta2.Document;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.cloud.documentai.v1beta2.GcsSource;
@@ -8,17 +7,18 @@ import com.google.cloud.documentai.v1beta2.InputConfig;
 import com.google.cloud.documentai.v1beta2.ProcessDocumentRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ExtractReceipt {
 
-  public static List<Map<String, String>> extractReceipt( String blobKey) throws IOException {
+  public static List<Map<String, String>> extractReceipt(String blobKey) throws IOException {
     String projectId = "edith-step";
     String location = "us";
     // For local testing. As blobstore API does not store in GCS in local environment.
-    String inputGcsUri = "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
+    String inputGcsUri =
+        "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
     String parsedText = extractReceipt(projectId, location, inputGcsUri);
     return createItems(parsedText);
   }
@@ -26,10 +26,12 @@ public class ExtractReceipt {
   private static List<Map<String, String>> createItems(String parsedText) {
     List<Map<String, String>> items = new ArrayList<Map<String, String>>();
 
-    for (String item: parsedText.split("\\r?\\n")) {
+    for (String item : parsedText.split("\\r?\\n")) {
       if (item.endsWith(" B")) {
         String[] itemText = item.split("\\s+");
-        if (itemText.length > 1 && itemText[itemText.length - 2].matches("[-+]?[0-9]*\\.?[0-9]+") && !itemText[0].matches("[-+]?[0-9]*\\.?[0-9]+")) {
+        if (itemText.length > 1
+            && itemText[itemText.length - 2].matches("[-+]?[0-9]*\\.?[0-9]+")
+            && !itemText[0].matches("[-+]?[0-9]*\\.?[0-9]+")) {
           items.add(processItem(itemText));
         }
       }
@@ -60,14 +62,14 @@ public class ExtractReceipt {
     }
   }
 
-  private static Map<String, String> processItem (String[] itemText) {
+  private static Map<String, String> processItem(String[] itemText) {
     int itemPriceIndex = itemText.length - 2;
     int index = 0;
     String itemName = "";
     while (index < itemPriceIndex) {
       itemName = itemName + " " + itemText[index++];
     }
-    Map<String, String> itemFields= new HashMap<String, String>();
+    Map<String, String> itemFields = new HashMap<String, String>();
     itemFields.put("itemPrice", itemText[itemPriceIndex]);
     itemFields.put("itemName", itemName.trim());
     return itemFields;

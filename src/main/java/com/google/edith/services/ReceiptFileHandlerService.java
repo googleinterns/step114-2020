@@ -18,8 +18,8 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.FileInfo;
 import com.google.edith.interfaces.ReceiptFileHandlerInterface;
-import com.google.edith.servlets.ReceiptData;
 import com.google.edith.servlets.Receipt;
+import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +59,7 @@ public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
     FileInfo fileInfo = fileKeys.get(0);
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
   }
-  
+
   @Override
   public Receipt createParsedReceipt(String blobKey, String expenditureName) throws IOException {
     return ReceiptData.extractReceiptData(blobKey, expenditureName);

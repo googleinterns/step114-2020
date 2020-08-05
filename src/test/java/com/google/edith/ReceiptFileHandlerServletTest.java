@@ -82,10 +82,12 @@ public final class ReceiptFileHandlerServletTest {
     List<FileInfo> files = ImmutableList.of(uploadFile);
     BlobKey returnBlobKey = new BlobKey("blob");
     Item[] items = new Item[1];
-    Receipt receiptData = new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
+    Receipt receiptData =
+        new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
     when(receiptFileHandler.getBlobKey(files)).thenReturn(returnBlobKey);
-    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "expense")).thenReturn(receiptData);
+    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "expense"))
+        .thenReturn(receiptData);
 
     receiptFileHandlerServlet.doPost(request, response);
 

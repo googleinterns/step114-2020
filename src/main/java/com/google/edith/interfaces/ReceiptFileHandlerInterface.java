@@ -31,19 +31,20 @@ public interface ReceiptFileHandlerInterface {
    * Returns a List of BlobKey that points to the uploaded files in the HTML form or null if the
    * user didn't upload a file.
    *
-   *  @return List<FileInfo> - list of uploaded files from the FE form.
+   * @return List<FileInfo> - list of uploaded files from the FE form.
    */
   List<FileInfo> getUploadedFileUrl(HttpServletRequest request, String formInputElementName);
 
   /**
    * Returns a BlobKey that points to the uploaded file.
-   * 
+   *
    * @return BlobKey - blobkey of the file uploaded in Blobstore.
    */
   BlobKey getBlobKey(List<FileInfo> fileKeys);
-  
+
   /**
    * Returns a Parsed Receipt.
+   *
    * @return Receipt - a receipt parsed from the uploaded file.
    */
   Receipt createParsedReceipt(String blobKey, String expenditureName) throws IOException;
