@@ -23,6 +23,7 @@ class App extends Component {
     /**
     * Updates the value of chartType in state
     * based on the value of {@code event}.
+    *
     * @param { Event } event HTML element that has been selected
     */
     this.updateChartType = (event) => {

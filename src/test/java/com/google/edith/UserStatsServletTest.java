@@ -24,20 +24,20 @@ import org.mockito.Mockito;
 
 public final class UserStatsServletTest {
 
-  private DatastoreService datastore;
-  private final LocalServiceTestHelper testHelper =
+  private static DatastoreService DATASTORE;
+  private static final LocalServiceTestHelper TEST_HELPER =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-  private final Gson gson = new Gson();
-  private final String USER_ID = "userId";
+  private static final Gson GSON = new Gson();
+  private static final String USER_ID = "userId";
 
   @Before
   public void setUp() {
-    testHelper.setUp();
-    datastore = DatastoreServiceFactory.getDatastoreService();
+    TEST_HELPER.setUp();
+    DATASTORE = DatastoreServiceFactory.getDatastoreService();
   }
 
   @Test
-  public void testServletGoodInput() throws Exception {
+  public void testServlet_doPost_runsCorrectly() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
@@ -50,7 +50,7 @@ public final class UserStatsServletTest {
     testJson.addProperty("itemDate", "2020-07-14");
     testJson.addProperty("itemReceiptId", "receiptId");
 
-    String json = gson.toJson(testJson);
+    String json = GSON.toJson(testJson);
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
 
     StringWriter stringWriter = new StringWriter();
@@ -65,7 +65,7 @@ public final class UserStatsServletTest {
   }
 
   @Test
-  public void testServlet() throws Exception {
+  public void testServlet_doGet_runsCorrectly() throws Exception {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
     UserInsightsInterface userInsights = Mockito.mock(UserInsightsInterface.class);
@@ -75,7 +75,7 @@ public final class UserStatsServletTest {
     when(response.getWriter()).thenReturn(writer);
     when(userInsights.createJson(USER_ID)).thenReturn("");
 
-    new UserStatsServlet(datastore, userInsights).doGet(request, response);
+    new UserStatsServlet(DATASTORE, userInsights).doGet(request, response);
     verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
   }
 }

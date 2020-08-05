@@ -21,6 +21,9 @@ public final class WeekInfo {
    * @return true if both, their string and total fields are equal
    */
   public boolean equals(WeekInfo other) {
+    if (other == null) {
+      return false;
+    }
     return this.date.equals(other.date) && this.total.equals(other.total);
   }
 }

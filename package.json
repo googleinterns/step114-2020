@@ -17,6 +17,7 @@
     "htmllint": "^0.8.0",
     "htmllint-cli": "^0.0.7",
     "jest-fetch-mock": "^3.0.3",
+    "missing": "^0.0.1",
     "node-fetch": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

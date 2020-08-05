@@ -14,4 +14,8 @@
 .gitignore
 
 # Node.js dependencies:
+<<<<<<< HEAD
 node_modules/
+=======
+node_modules/
+>>>>>>> fcf4ae8975a5c332bd4e87a71858910900731524
