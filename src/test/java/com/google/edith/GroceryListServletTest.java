@@ -29,8 +29,8 @@ public class GroceryListServletTest {
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
-    groceryListServlet = new GroceryListServlet(userService);
     queryItems = Mockito.mock(QueryItems.class);
+    groceryListServlet = new GroceryListServlet(userService, datastoreService, queryItems);
   }
 
   @Test

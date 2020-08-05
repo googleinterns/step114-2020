@@ -18,7 +18,14 @@ public class GroceryListServlet extends HttpServlet {
   private DatastoreService datastoreService;
   private QueryItems queryItems;
 
-  public GroceryListServlet(UserService userService, DatastoreService datastoreService) {
+  public GroceryListServlet(UserService userService,
+      DatastoreService datastoreService, QueryItems queryItems) {
+    this.userService = userService;
+    this.datastoreService = datastoreService;
+    this.queryItems = queryItems;  
+  }
+
+  public GroceryListServlet() {
     this.userService = UserServiceFactory.getUserService();
     this.datastoreService = DatastoreServiceFactory.getDatastoreService();
     this.queryItems = new QueryItems(datastoreService, userService);

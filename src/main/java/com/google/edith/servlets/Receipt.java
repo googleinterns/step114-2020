@@ -14,8 +14,6 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.users.User;
-
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;
@@ -26,7 +24,14 @@ public final class Receipt {
   private final float totalPrice;
   private final Item[] items;
 
-  public Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice, Item[] items) {
+  public Receipt(
+      String userId,
+      String storeName,
+      String date,
+      String name,
+      String fileUrl,
+      float totalPrice,
+      Item[] items) {
     this.userId = userId;
     this.storeName = storeName;
     this.date = date;
@@ -35,36 +40,16 @@ public final class Receipt {
     this.totalPrice = totalPrice;
     this.items = items;
   }
-  
-  public String toString() {
-    return(this.userId + " " + this.storeName + " " + this.date + " " + this.name + " " + this.fileUrl + " " + this.totalPrice);
-  }
-
-  public String getUserId() {
-    return this.userId;
-  }
-
-  public String getStoreName() {
-    return this.storeName;
-  }
-
-  public String getDate() {
-    return this.date;
-  }
 
   public String getName() {
     return this.name;
   }
 
-  public String getFileUrl() {
-    return this.fileUrl;
-  }
-
-  public float getTotalPrice() {
-    return this.totalPrice;
-  }
-
   public Item[] getItems() {
     return this.items;
+  }
+
+  public String getDate() {
+    return this.date;
   }
 }

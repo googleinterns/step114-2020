@@ -12,31 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.edith.servlets;
+package com.google.edith.interfaces;
 
-import com.google.auto.value.AutoValue;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-/** Encapsulate User info and logout url. */
-@AutoValue
-abstract class UserInfo {
-  abstract String email();
+/** Operations for handling parsing receipt using Document AI API. * */
+public interface ExtractReceiptInterface {
 
-  abstract String userId();
-
-  abstract String logOutUrl();
-
-  static Builder builder() {
-    return new AutoValue_UserInfo.Builder();
-  }
-
-  @AutoValue.Builder
-  abstract static class Builder {
-    abstract Builder setEmail(String value);
-
-    abstract Builder setUserId(String value);
-
-    abstract Builder setLogOutUrl(String value);
-
-    abstract UserInfo build();
-  }
+  /**
+   * Creates a list of maps of item descriptions.
+   *
+   * @return Lis<Map<String, String>> - a list of maps where item name is key and item price is
+   *     value
+   */
+  public List<Map<String, String>> extractReceipt(String blobKey) throws IOException;
 }

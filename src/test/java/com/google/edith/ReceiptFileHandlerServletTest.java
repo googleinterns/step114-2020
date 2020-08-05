@@ -14,47 +14,36 @@
 
 package com.google.edith;
 
-import com.google.edith.servlets.ReceiptFileHandlerServlet;
-import com.google.edith.servlets.Receipt;
-import com.google.edith.servlets.Item;
-import com.google.edith.services.ReceiptFileHandlerService;
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.blobstore.FileInfo;
-import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.mockito.MockitoAnnotations;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Spy;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ReceiptFileHandlerServletTest {
-    private final LocalServiceTestHelper testHelper = 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.FileInfo;
+import com.google.appengine.tools.development.testing.LocalBlobstoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableList;
+import com.google.edith.interfaces.ReceiptFileHandlerInterface;
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
+import com.google.edith.servlets.ReceiptFileHandlerServlet;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+public final class ReceiptFileHandlerServletTest {
+  private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
-        new LocalBlobstoreServiceTestConfig(),
-        new LocalDatastoreServiceTestConfig());
+          new LocalBlobstoreServiceTestConfig(), new LocalDatastoreServiceTestConfig());
 
   private ReceiptFileHandlerServlet receiptFileHandlerServlet;
 
@@ -62,44 +51,47 @@ public class ReceiptFileHandlerServletTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    receiptFileHandlerServlet = new ReceiptFileHandlerServlet(receiptFileHandlerService);
+    receiptFileHandlerServlet = new ReceiptFileHandlerServlet(receiptFileHandler);
   }
 
   @After
   public void tearDown() {
     testHelper.tearDown();
   }
-  
-  @Mock
-  HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
-  
-  @Mock
-  ReceiptFileHandlerService receiptFileHandlerService;
+  @Mock HttpServletRequest request;
 
+  @Mock HttpServletResponse response;
+
+  @Mock ReceiptFileHandlerInterface receiptFileHandler;
+
+  // If no file is uploaded, Blob is not stored and Exception is thrown.
   @Test(expected = IllegalStateException.class)
-  public void throwIllegalStateException() throws IOException {
+  public void doPost_ifNoFileUpload_throwException() throws IOException {
     List<FileInfo> files = Collections.emptyList();
-    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file")).thenReturn(Optional.of(files));
+    when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
+
     receiptFileHandlerServlet.doPost(request, response);
   }
 
+  // Serve the blob if file has been stored successfully in Blobstore.
   @Test
-  public void testRedirect() throws IOException {
+  public void doPost_ifNoFileUpload_redirectToDisplayFile() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
-    List<FileInfo> files = new ArrayList<FileInfo>();
+    List<FileInfo> files = ImmutableList.of(uploadFile);
     BlobKey returnBlobKey = new BlobKey("blob");
-    files.add(uploadFile);
     Item[] items = new Item[1];
-    Receipt receiptData = new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
-    when(receiptFileHandlerService.getUploadedFileUrl(request, "receipt-file")).thenReturn(Optional.of(files));
-    when(receiptFileHandlerService.getBlobKey(files)).thenReturn(returnBlobKey);
-    when(receiptFileHandlerService.createParsedReceipt()).thenReturn(receiptData);
+    Receipt receiptData =
+        new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
+    when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
+    when(receiptFileHandler.getBlobKey(files)).thenReturn(returnBlobKey);
+    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "expense"))
+        .thenReturn(receiptData);
+
     receiptFileHandlerServlet.doPost(request, response);
-    verify(receiptFileHandlerService, times(1)).getBlobKey(files);
+
+    verify(receiptFileHandler, times(1)).getBlobKey(files);
     verify(response, times(1)).sendRedirect("/");
   }
 }

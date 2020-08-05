@@ -7,7 +7,6 @@
   <artifactId>portfolio</artifactId>
   <version>1</version>
   <packaging>war</packaging>
-
   <properties>
     <!-- This project uses Java 8 -->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -15,7 +14,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -27,7 +25,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -41,13 +38,13 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-document-ai</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
       <version>2.8.6</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-document-ai</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -68,6 +65,11 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-language</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>4.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -103,24 +105,35 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>4.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>3.3.3</version>
       <scope>test</scope>
     </dependency>
     <!--
-    <dependency>
+    <dependency>      
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>29.0-jre</version>
     </dependency>-->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.value</groupId>
+      <artifactId>auto-value</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>1.0.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <!-- Provides `mvn package appengine:run` for local testing
@@ -130,7 +143,6 @@
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
         <configuration>
-          <!-- TODO: set project ID. -->
           <deploy.projectId>edith-step</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>

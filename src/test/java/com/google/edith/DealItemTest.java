@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.edith.DealItem.Store;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class DealItemTest {
 
   @Test
   public void setStore_setsStoreValueToArgument() {
-    dealItem.setStore("Walmart");
+    dealItem.setStore(Store.WALMART);
     Assert.assertEquals("Walmart", dealItem.getStore());
   }
 
@@ -88,13 +89,13 @@ public class DealItemTest {
 
   @Test
   public void setExpiration_stringWithShelfLifeData_setsExpirationCorrectly() {
-    dealItem.setExpiration("1.0 2.0 Weeks ");
-    Assert.assertEquals("1.0 Weeks", dealItem.getExpiration());
+    dealItem.setExpirationTime("1.0 2.0 Weeks");
+    Assert.assertEquals("1.0 Weeks", dealItem.getExpirationTime());
   }
 
   @Test
   public void setExpiration_randomString_setsExpirationNotFound() {
-    dealItem.setExpiration("no shelf life data found");
-    Assert.assertEquals("no shelf life data found", dealItem.getExpiration());
+    dealItem.setExpirationTime("NO_EXPIRATION");
+    Assert.assertEquals("NO_EXPIRATION", dealItem.getExpirationTime());
   }
 }

@@ -54,9 +54,8 @@ public class QueryItems {
       Item[] items = receipt.getItems();
 
       for (Item item : items) {
-        String expiration = item.getExpireDate();
-
-        if (expiration.equals("no shelf life data found")) {
+        String expiration = item.expiration();
+        if (expiration.equals("NO_EXPIRATION")) {
           continue;
         }
 
@@ -148,7 +147,16 @@ public class QueryItems {
       String category = (String) entity.getProperty("category");
       String expireDate = (String) entity.getProperty("date");
 
-      Item receiptItem = new Item(userId, itemName, price, quantity, category, expireDate);
+      Item receiptItem =
+          Item.builder()
+              .setUserId(userId)
+              .setName(itemName)
+              .setPrice(price)
+              .setQuantity(quantity)
+              .setDate("date")
+              .setCategory(category)
+              .setExpiration(expireDate)
+              .build();
       itemsList.add(receiptItem);
     }
     return itemsList.toArray(new Item[0]);

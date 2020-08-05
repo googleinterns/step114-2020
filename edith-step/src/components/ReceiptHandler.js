@@ -264,13 +264,13 @@ export default class ReceiptHandler extends React.Component {
                 {this.state.deals.length > 0 &&
               <>
                 <div className="col-lg-2 item-deal">
-                  <span>{this.state.deals[i].store}</span>
+                  <span>{this.state.deals[i].storeName}</span>
                 </div>
                 <div className="col-lg-2">
                   <input type="text"
                     className="item-expiration form-control"
                     name="expiration"
-                    value={this.state.deals[i].expiration}
+                    value={this.state.deals[i].expirationTime}
                     onChange={this.handleExpirationChange.bind(this, i)}/>
                 </div>
               </>

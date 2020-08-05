@@ -16,6 +16,7 @@ package com.google.edith.servlets;
 
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.edith.interfaces.LoginInterface;
 import com.google.edith.services.LoginService;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -23,41 +24,44 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that checks if user is logged in.
- * if logged in then provides with user information along with logout url.
- * if not logged in then redirectes to a url to log in.
+/**
+ * Servlet that checks if user is logged in. If user is logged in then provide user related info,
+ * otherwise redirects to login url.
  */
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
-  
-  private LoginService loginService;
+public final class LoginServlet extends HttpServlet {
+
+  private LoginInterface loginImplementation;
 
   public LoginServlet() {
-    this.loginService = new LoginService(
-          UserServiceFactory.getUserService(),
-          DatastoreServiceFactory.getDatastoreService());
+    this.loginImplementation =
+        new LoginService(
+            UserServiceFactory.getUserService(), DatastoreServiceFactory.getDatastoreService());
   }
 
-  public LoginServlet(LoginService loginService) {
-    this.loginService = loginService;
+  public LoginServlet(LoginInterface loginImplementation) {
+    this.loginImplementation = loginImplementation;
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    if (loginService.checkUserLoggedIn()) {
-      String json = loginService.createJsonOfUserInfo();
+    if (loginImplementation.checkUserLoggedIn()) {
+      String json = loginImplementation.createJsonFromUserInfo();
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
-      String loginUrl = loginService.createLoginUrl("/");
+      String loginUrl = loginImplementation.createLoginUrl("/");
       response.sendRedirect(loginUrl);
     }
   }
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    loginService.storeUserInfoEntityInDatastore(request);
-    response.sendRedirect("/");
+    // Users who are not logged in can not upload their info. This is handled in FE too.
+    if (loginImplementation.checkUserLoggedIn()) {
+      loginImplementation.storeUserInfoEntityInDatastore(request);
+    }
+    response.sendRedirect("/index.html");
   }
 }
