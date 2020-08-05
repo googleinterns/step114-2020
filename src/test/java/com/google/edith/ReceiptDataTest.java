@@ -51,7 +51,7 @@ public final class ReceiptDataTest {
   private ReceiptData receiptData = new ReceiptData();
   private final UserService userService = UserServiceFactory.getUserService();
 
-  @Mock ExtractReceipt extractReceipt;
+  @Mock ExtractReceipt extractReceiptImplementation;
 
   @Before
   public void setUp() throws Exception {
@@ -70,7 +70,8 @@ public final class ReceiptDataTest {
     Map<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
     Map<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
     List<Map<String, String>> itemsDescription = ImmutableList.of(item1, item2);
-    // when(extractReceipt.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
+    // when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
+    // when(extractReceiptImplementation.extractReceipt("projectId", "location", "inputGcsUri")).thenReturn("itemsDescription");
     // receiptData.extractReceiptData("blobkey", "expense");
     // try {
     //   Receipt returnedReceipt = receiptData.extractReceiptData();
