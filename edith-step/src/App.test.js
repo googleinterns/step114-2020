@@ -28,9 +28,9 @@ describe('App component', () => {
   });
 
   // Checks ReceiptInput is in App.
-  test('contains ReceiptInput component', () => {
-    const ReceiptInput = component.find('ReceiptInput');
-    expect(ReceiptInput.exists()).toBe(true);
+  test('contains ReceiptHandler component', () => {
+    const ReceiptHandler = component.find('ReceiptHandler');
+    expect(ReceiptHandler.exists()).toBe(true);
   });
 
   // Checks Background image is in App.

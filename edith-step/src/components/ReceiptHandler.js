@@ -18,7 +18,7 @@ export default class ReceiptHandler extends React.Component {
     this.handleStoreChange = this.handleStoreChange.bind(this);
     this.addItem = this.addItem.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleExpirationSubmit = this.handleExpirationSubmit.bind(this);
+    this.addExpirationAndSubmit = this.addExpirationAndSubmit.bind(this);
   }
 
   /** Calls function to get receipt data on mount. */
