@@ -16,51 +16,51 @@ package com.google.edith.services;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
+import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import com.google.edith.servlets.ReceiptData;
 import com.google.edith.servlets.Receipt;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * 
- */
-public class ReceiptFileHandlerService {
+/** Service that stores file uploaded in Blobstore and serves that blob on succession. */
+public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
   private final BlobstoreService blobstoreService;
 
   public ReceiptFileHandlerService(BlobstoreService blobstoreService) {
     this.blobstoreService = blobstoreService;
   }
-  
-  /** Redirects the page to a new tab and serves the blob. */
+
+  @Override
   public void serveBlob(HttpServletResponse response, List<FileInfo> fileKeys) throws IOException {
     BlobKey fileBlobKey = getBlobKey(fileKeys);
     blobstoreService.serve(fileBlobKey, response);
   }
 
-  /**
-   * Returns a List of BlobKey that points to the uploaded files
-   * in the HTML form or null if the user didn't upload a file.
-   */
-  public Optional<List<FileInfo>> getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+  @Override
+  public List<FileInfo> getUploadedFileUrl(
+      HttpServletRequest request, String formInputElementName) {
+
     Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
-    return Optional.ofNullable(fileInfos.get(formInputElementName));
+    List<FileInfo> uploadedFile = fileInfos.get(formInputElementName);
+    return uploadedFile == null ? Collections.emptyList() : uploadedFile;
   }
 
-  /** Returns a  BlobKey that points to the uploaded file. */
+  @Override
   public BlobKey getBlobKey(List<FileInfo> fileKeys) {
-    if (fileKeys.isEmpty()) throw new IllegalStateException();
+    if (fileKeys.isEmpty()) {
+      throw new IllegalStateException();
+    }
 
     FileInfo fileInfo = fileKeys.get(0);
     return blobstoreService.createGsBlobKey(fileInfo.getGsObjectName());
   }
   
+  @Override
   public Receipt createParsedReceipt() throws IOException {
     ReceiptData receiptData = new ReceiptData();
     return receiptData.extractReceiptData();

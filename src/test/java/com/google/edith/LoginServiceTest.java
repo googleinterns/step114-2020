@@ -14,58 +14,51 @@
 
 package com.google.edith;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.LoginService;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.when;
+public final class LoginServiceTest {
 
-public class LoginServiceTest {
-
-  private Map<String, Object> myMap = new HashMap<String, Object>() {{
-        put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-    }};
+  private Map<String, Object> map =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private LocalServiceTestHelper testHelper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
-      .setEnvAttributes(myMap)
-      .setEnvIsLoggedIn(true)
-      .setEnvAuthDomain("gmail")
-      .setEnvIsAdmin(true)
-      .setEnvEmail("user@gmail.com");
+      new LocalServiceTestHelper(
+              new LocalDatastoreServiceTestConfig(), new LocalUserServiceTestConfig())
+          .setEnvAttributes(map)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail")
+          .setEnvIsAdmin(true)
+          .setEnvEmail("user@gmail.com");
 
-  private LoginService loginService;
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+  private LoginService loginService = new LoginService(userService, datastore);
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    loginService = new LoginService(userService, datastore);
   }
 
   @After
@@ -73,42 +66,54 @@ public class LoginServiceTest {
     testHelper.tearDown();
   }
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
+  // Checks the login status of the user.
   @Test
-  public void checkIfUserIsLoggedIn() {
+  public void checkUserLoggedIn_returnsUserLoggedInStatus() {
     assertTrue(loginService.checkUserLoggedIn());
+    assertTrue(userService.isUserLoggedIn());
   }
 
+  // Checks if the entity is stored correctly in Datatstore.
   @Test
-  public void storeUserInfoIfUnique() {
-    retrieveStubUserInfo(request);
+  public void storeUserInfoEntityInDatastore_addsOneUserInfoEntity() {
+    mockUserInfoFromRequest(request);
     loginService.storeUserInfoEntityInDatastore(request);
-    assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
+    assertEquals(
+        1,
+        datastore.prepare(new Query("UserInfo")).countEntities(FetchOptions.Builder.withLimit(10)));
   }
 
+  // Checks that only one entity is created for a user.
   @Test
-  public void doNotStoreMakeUserInfoForSameUser() {
-    retrieveStubUserInfo(request);
+  public void storeUserInfoEntityInDatastore_ifSameEntityExists_doNotStore() {
+    mockUserInfoFromRequest(request);
     // Call storeUserInfoEntityInDatastore() twice to
-    // mimick storing UserInfo entity twice for same user.
+    // mimic storing UserInfo entity twice for same user.
     loginService.storeUserInfoEntityInDatastore(request);
     loginService.storeUserInfoEntityInDatastore(request);
-    assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
+    assertEquals(
+        1,
+        datastore.prepare(new Query("UserInfo")).countEntities(FetchOptions.Builder.withLimit(10)));
   }
-  
+
+  // Checks if the JSON created has all the user info fields.
   @Test
-  public void testCreatedJson() {
-    retrieveStubUserInfo(request);
-    String userInfo = loginService.createJsonOfUserInfo();
+  public void createJsonFromUserInfo_containsAllFieldsOfUserInfo() {
+    mockUserInfoFromRequest(request);
+
+    String userInfo = loginService.createJsonFromUserInfo();
+
     assertTrue(userInfo.contains("firstName"));
     assertTrue(userInfo.contains("lastName"));
     assertTrue(userInfo.contains("favoriteStore"));
     assertTrue(userInfo.contains("email"));
     assertTrue(userInfo.contains("logOutUrl"));
   }
-  private void retrieveStubUserInfo(HttpServletRequest request) {
+
+  // Creates a stub user info for testing.
+  private void mockUserInfoFromRequest(HttpServletRequest request) {
     when(request.getParameter("first-name")).thenReturn("testfirst");
     when(request.getParameter("last-name")).thenReturn("testlast");
     when(request.getParameter("username")).thenReturn("testuser");
