@@ -68,7 +68,7 @@ public final class ReceiptFileHandlerServletTest {
   // If no file is uploaded, Blob is not stored and Exception is thrown.
   @Test(expected = IllegalStateException.class)
   public void doPost_ifNoFileUpload_throwException() throws IOException {
-    List<FileInfo> files = Collections.emptyList();
+    ImmutableList<FileInfo> files = ImmutableList.of();
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
 
     receiptFileHandlerServlet.doPost(request, response);
@@ -79,7 +79,7 @@ public final class ReceiptFileHandlerServletTest {
   public void doPost_ifFileUpload_createParsedReceipt() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
-    List<FileInfo> files = ImmutableList.of(uploadFile);
+    ImmutableList<FileInfo> files = ImmutableList.of(uploadFile);
     BlobKey returnBlobKey = new BlobKey("blob");
     Item[] items = new Item[1];
     Receipt receiptData =

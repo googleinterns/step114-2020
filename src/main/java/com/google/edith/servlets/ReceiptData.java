@@ -3,6 +3,8 @@ package com.google.edith.servlets;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.edith.interfaces.ExtractReceiptInterface;
 import com.google.edith.services.ExtractReceiptService;
@@ -36,7 +38,7 @@ public final class ReceiptData {
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
 
-    List<Map<String, String>> items = extractReceiptImplementation.extractReceipt(blobKey);
+    ImmutableList<ImmutableMap<String, String>> items = extractReceiptImplementation.extractReceipt(blobKey);
     Item[] parsedItems = createReceiptItems(user, items);
     Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
@@ -71,7 +73,7 @@ public final class ReceiptData {
    * @param extractedData - List of item description.
    * @return Item[] - array of item objects created from the list of item description.
    */
-  private Item[] createReceiptItems(User user, List<Map<String, String>> extractedData) {
+  private Item[] createReceiptItems(User user, ImmutableList<ImmutableMap<String, String>> extractedData) {
     int index = 0;
     int totalItems = extractedData.size();
     Item[] items = new Item[totalItems];

@@ -19,6 +19,8 @@ import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.cloud.documentai.v1beta2.GcsSource;
 import com.google.cloud.documentai.v1beta2.InputConfig;
 import com.google.cloud.documentai.v1beta2.ProcessDocumentRequest;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.interfaces.ExtractReceiptInterface;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,19 +34,18 @@ import java.util.Map;
  */
 public final class ExtractReceiptService implements ExtractReceiptInterface {
   private final DocumentUnderstandingServiceClient client;
-
+  private static final String INPUT_GCS_URI = 
+      "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
   public ExtractReceiptService(DocumentUnderstandingServiceClient client) {
     this.client = client;
   }
 
   @Override
-  public List<Map<String, String>> extractReceipt(String blobKey) throws IOException {
+  public ImmutableList<ImmutableMap<String, String>> extractReceipt(String blobKey) throws IOException {
     String projectId = "edith-step";
     String location = "us";
     // For local testing. As blobstore API does not store in GCS in local environment.
-    String inputGcsUri =
-        "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
-    String parsedText = extractReceipt(projectId, location, inputGcsUri);
+    String parsedText = extractReceipt(projectId, location, INPUT_GCS_URI);
     return createItems(parsedText);
   }
 
@@ -54,8 +55,8 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
    *
    * @return List<Map<String, String>> - a list of maps of item name as key and price as value
    */
-  private List<Map<String, String>> createItems(String parsedText) {
-    List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+  private ImmutableList<ImmutableMap<String, String>> createItems(String parsedText) {
+    List<ImmutableMap<String, String>> items = new ArrayList<ImmutableMap<String, String>>();
     // Split the string on new lines.
     for (String item : parsedText.split("\\r?\\n")) {
       // It is more specific to Kroger as the price ends with B.
@@ -70,7 +71,7 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
         }
       }
     }
-    return items;
+    return ImmutableList.copyOf(items);
   }
 
   /**
@@ -101,7 +102,7 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
    *
    * @return Map<String, String> - a map where item name as key and price as value
    */
-  private Map<String, String> processItem(String[] itemText) {
+  private ImmutableMap<String, String> processItem(String[] itemText) {
     int itemPriceIndex = itemText.length - 2;
     int index = 0;
     // Combines the splitted text into a single item description.
@@ -113,6 +114,6 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
     Map<String, String> itemFields = new HashMap<String, String>();
     itemFields.put("itemPrice", itemText[itemPriceIndex]);
     itemFields.put("itemName", itemName.toString().trim());
-    return itemFields;
+    return ImmutableMap.copyOf(itemFields);
   }
 }

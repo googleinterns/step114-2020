@@ -80,9 +80,9 @@ public final class ReceiptDataTest {
   }
 
   private void setUpItemDescription() throws IOException {
-    Map<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
-    Map<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
-    List<Map<String, String>> itemsDescription = ImmutableList.of(item1, item2);
+    ImmutableMap<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
+    ImmutableMap<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
+    ImmutableList<ImmutableMap<String, String>> itemsDescription = ImmutableList.of(item1, item2);
     when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
   }
 }
