@@ -85,7 +85,7 @@ public final class ReceiptFileHandlerServletTest {
     Receipt receiptData = new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
     when(receiptFileHandler.getBlobKey(files)).thenReturn(returnBlobKey);
-    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString())).thenReturn(receiptData);
+    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "expense")).thenReturn(receiptData);
 
     receiptFileHandlerServlet.doPost(request, response);
 

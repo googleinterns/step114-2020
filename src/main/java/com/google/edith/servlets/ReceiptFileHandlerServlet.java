@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-file-handler")
 public class ReceiptFileHandlerServlet extends HttpServlet {
   
-  private static BlobKey fileBlobKey;
-  private static String expenditureName;
+  private BlobKey fileBlobKey;
+  private String expenditureName;
 
   private Receipt parsedReceipt;
   private ReceiptFileHandlerInterface receiptFileHandler;
@@ -69,14 +69,10 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     }
 
     fileBlobKey = receiptFileHandler.getBlobKey(fileKeys);
-    parsedReceipt = receiptFileHandler.createParsedReceipt(fileBlobKey.getKeyString());
+    parsedReceipt = receiptFileHandler.createParsedReceipt(fileBlobKey.getKeyString(), expenditureName);
     Gson gson = new Gson();
     String json = gson.toJson(parsedReceipt);
     System.out.println(json);
     response.sendRedirect("/");
-  }
-
-  public static String getExpenditureName() {
-    return expenditureName;
   }
 }

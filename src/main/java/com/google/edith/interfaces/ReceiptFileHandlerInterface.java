@@ -46,5 +46,5 @@ public interface ReceiptFileHandlerInterface {
    * Returns a Parsed Receipt.
    * @return Receipt - a receipt parsed from the uploaded file.
    */
-  Receipt createParsedReceipt(String blobKey) throws IOException;
+  Receipt createParsedReceipt(String blobKey, String expenditureName) throws IOException;
 }

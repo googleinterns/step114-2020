@@ -17,20 +17,18 @@ import java.util.HashMap;
 
 public class ReceiptData {
 
-  public static Receipt extractReceiptData(String blobKey) throws IOException {
+  public static Receipt extractReceiptData(String blobKey, String expenditureName) throws IOException {
     
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
 
     List<Map<String, String>> items = ExtractReceipt.extractReceipt(blobKey);
     Item[] parsedItems = createReceiptItems(user, items);
-    Receipt parsedReceipt = createReceipt(user, parsedItems);
+    Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
   }
   
-  private static Receipt createReceipt(User user, Item[] items) {
-    String expenditureName = ReceiptFileHandlerServlet.getExpenditureName();
-    String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
+  private static Receipt createReceipt(String blobKey, User user, Item[] items, String expenditureName) {
     Receipt userReceipt = new Receipt(user.getUserId(), "unknown store name", "unknown date", expenditureName, blobKey, 0.0f, items);
     return userReceipt;
   }
