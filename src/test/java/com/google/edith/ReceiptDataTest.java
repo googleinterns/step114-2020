@@ -30,16 +30,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public final class ReceiptDataTest {
-  private Map<String, Object> myMap =
-      new HashMap<String, Object>() {
-        {
-          put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-        }
-      };
+  private Map<String, Object> map =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-          .setEnvAttributes(myMap)
+          .setEnvAttributes(map)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail")
           .setEnvIsAdmin(true)

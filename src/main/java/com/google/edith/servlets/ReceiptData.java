@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Converts parsed receipt file string to receipt and item objects.
+ */
 public class ReceiptData {
 
   public static Receipt extractReceiptData(String blobKey, String expenditureName)
@@ -20,7 +23,16 @@ public class ReceiptData {
     Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
   }
-
+  
+  /**
+   * Creates receipt object.
+   *
+   * @param blobKey - string representation of the blob in GCS bucket.
+   * @param user - user who is logged in.
+   * @param items - Array of items parsed from receipt pdf file.
+   * @param expenditureName - name of the rceipt obtained from FE form.
+   * @return Receipt - receipt object created from the provided info.
+   */
   private static Receipt createReceipt(
       String blobKey, User user, Item[] items, String expenditureName) {
     Receipt userReceipt =
@@ -35,6 +47,13 @@ public class ReceiptData {
     return userReceipt;
   }
 
+  /**
+   * Creates Array of Item objects from list of item description .
+   *
+   * @param user - user who is logged in.
+   * @param extractedData - List of item description.
+   * @return Item[] - array of item objects created from the list of item description.
+   */
   private static Item[] createReceiptItems(User user, List<Map<String, String>> extractedData) {
     int index = 0;
     int totalItems = extractedData.size();

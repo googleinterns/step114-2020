@@ -53,7 +53,7 @@ public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
   @Override
   public BlobKey getBlobKey(List<FileInfo> fileKeys) {
     if (fileKeys.isEmpty()) {
-      throw new IllegalStateException();
+      throw new IllegalStateException("File should never be empty in the FE form");
     }
 
     FileInfo fileInfo = fileKeys.get(0);

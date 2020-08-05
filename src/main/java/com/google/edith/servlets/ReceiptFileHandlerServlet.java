@@ -74,9 +74,7 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     fileBlobKey = receiptFileHandler.getBlobKey(fileKeys);
     parsedReceipt =
         receiptFileHandler.createParsedReceipt(fileBlobKey.getKeyString(), expenditureName);
-    Gson gson = new Gson();
-    String json = gson.toJson(parsedReceipt);
-    System.out.println(json);
+    
     response.sendRedirect("/");
   }
 }
