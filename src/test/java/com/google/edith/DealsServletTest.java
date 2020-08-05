@@ -96,10 +96,10 @@ public class DealsServletTest {
     String json = gson.toJson(receipt);
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
-    
+
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
-    
+
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);

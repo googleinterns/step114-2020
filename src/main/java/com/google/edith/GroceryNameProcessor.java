@@ -11,7 +11,7 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroceryNameProcessor {
+public final class GroceryNameProcessor {
   public String process(String text) throws Exception {
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       Document doc =

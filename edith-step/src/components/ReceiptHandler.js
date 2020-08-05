@@ -111,7 +111,7 @@ export default class ReceiptHandler extends React.Component {
       price: 0.0,
       quantity: 0,
       category: '',
-      expireDate: '',
+      expiration: '',
     };
     this.setState({items: this.state.items.concat(newItem)});
   }
@@ -153,7 +153,7 @@ export default class ReceiptHandler extends React.Component {
    * to the store-receipt servlet to be stored in Datastore.
    * @param {Event} e change event
    */
-  async handleExpirationSubmit(e) {
+  async addExpirationAndSubmit(e) {
     let price = 0;
     this.state.items.forEach((item) => {
       price += item.price * item.quantity;
@@ -274,7 +274,7 @@ export default class ReceiptHandler extends React.Component {
         </div>}
             {this.state.deals.length > 0 &&
           <button className="btn btn-primary expiration-submit"
-            onClick={this.handleExpirationSubmit}
+            onClick={this.addExpirationAndSubmit}
             value="Submit">Submit</button>
             }
           </form>
