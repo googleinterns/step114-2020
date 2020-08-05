@@ -83,7 +83,10 @@ class DeviceCamera extends React.Component {
         formData.append('receipt-file', imageFile);
         fetch(this.state.uploadUrl, {
           method: 'POST',
-          body: formData
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
         });
       },
       'image/jpeg',
