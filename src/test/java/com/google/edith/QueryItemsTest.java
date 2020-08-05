@@ -1,8 +1,8 @@
 package com.google.edith;
 
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -11,12 +11,12 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import java.util.Map;
 
 public class QueryItemsTest {
   private QueryItems query;
@@ -28,7 +28,7 @@ public class QueryItemsTest {
       ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private LocalServiceTestHelper testHelper =
-      new LocalServiceTestHelper(
+        new LocalServiceTestHelper(
             new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
           .setEnvAttributes(map)
           .setEnvIsLoggedIn(true)
@@ -88,7 +88,7 @@ public class QueryItemsTest {
 
   // Creates a Receipt Entity and stores it in Datastore.
   private Entity createReceiptEntity(
-        String userId, String storeName, String date, String name, String fileUrl, float price) {
+      String userId, String storeName, String date, String name, String fileUrl, float price) {
     Entity receiptEntity = new Entity("Receipt");
     receiptEntity.setProperty("userId", userId);
     receiptEntity.setProperty("storeName", storeName);
@@ -102,13 +102,13 @@ public class QueryItemsTest {
 
   // Creates an Item entity and stores it in Datastore.
   private void createItemEntity(
-        Entity receipt,
-        String userId,
-        String name,
-        int quantity,
-        float price,
-        String category,
-        String date) {
+      Entity receipt,
+      String userId,
+      String name,
+      int quantity,
+      float price,
+      String category,
+      String date) {
     Entity itemEntity = new Entity("Item", receipt.getKey());
     itemEntity.setProperty("userId", userId);
     itemEntity.setProperty("name", name);

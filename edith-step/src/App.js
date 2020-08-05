@@ -112,13 +112,13 @@ class App extends Component {
             <ReceiptHandler />
           </div>
           <button
-              onClick={this.handleGroceryListShow}
-              className='show-list'>Generate grocery list.
+            onClick={this.handleGroceryListShow}
+            className='show-list'>Generate grocery list.
           </button>
           <>
-          {this.state.showGroceryList==true &&
+            {this.state.showGroceryList==true &&
             <GroceryList />
-          }
+            }
           </>
         </div>
       </div>
