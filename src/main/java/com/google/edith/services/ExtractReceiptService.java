@@ -49,16 +49,20 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
   }
 
   /**
-   * Parses returned string from Document AI API.
+   * This method is because of the shortfall of Document AI API, Natural Language Processing and
+   * Cloud Vision API. All of these APIs were not optimal to parse the receipt
    *
    * @return List<Map<String, String>> - a list of maps of item name as key and price as value
    */
   private List<Map<String, String>> createItems(String parsedText) {
     List<Map<String, String>> items = new ArrayList<Map<String, String>>();
-
+    // Split the string on new lines.
     for (String item : parsedText.split("\\r?\\n")) {
+      // It is more specific to Kroger as the price ends with B.
+      // TODO(prashantneu@) make the algorithm more general considering receipts from other stores.
       if (item.endsWith(" B")) {
         String[] itemText = item.split("\\s+");
+        // Only consider the parsed text if it has item descriptions and price.
         if (itemText.length > 1
             && itemText[itemText.length - 2].matches("[-+]?[0-9]*\\.?[0-9]+")
             && !itemText[0].matches("[-+]?[0-9]*\\.?[0-9]+")) {
@@ -101,6 +105,7 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
     int itemPriceIndex = itemText.length - 2;
     int index = 0;
     String itemName = "";
+    // Combines the splitted text into a single item description.
     while (index < itemPriceIndex) {
       itemName = itemName + " " + itemText[index++];
     }

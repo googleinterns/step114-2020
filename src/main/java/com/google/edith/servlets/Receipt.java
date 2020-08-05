@@ -41,6 +41,10 @@ public final class Receipt {
     this.items = items;
   }
 
+  public String getName() {
+    return this.name;
+  }
+
   public Item[] getItems() {
     return this.items;
   }
