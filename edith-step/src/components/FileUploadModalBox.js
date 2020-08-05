@@ -60,11 +60,14 @@ class FileUploadModalBox extends React.Component {
     return (
       <Modal
         show={this.props.show}
-        onHide={this.props.handleModalClose}
+        onHide={this.props.handleUploadModalClose}
         centered
       >
-        <Modal.Header closeButton className='modal-header'>
-          <Modal.Title id="contained-modal-title-vcenter">
+        <Modal.Header
+          closeButton
+          className='modal-header'>
+          <Modal.Title
+            id="contained-modal-title-vcenter">
             Please Upload Your Receipt File
           </Modal.Title>
         </Modal.Header>
@@ -97,7 +100,7 @@ class FileUploadModalBox extends React.Component {
 
 FileUploadModalBox.propTypes = {
   show: PropTypes.bool,
-  handleModalClose: PropTypes.func,
+  handleUploadModalClose: PropTypes.func,
 };
 
 export default FileUploadModalBox;
