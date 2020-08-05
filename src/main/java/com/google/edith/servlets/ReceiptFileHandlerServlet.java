@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * stored in the Google Cloud Storage Bucket and redirects the request to ReceiptFileHandlerServlet.
  */
 @WebServlet("/receipt-file-handler")
-public class ReceiptFileHandlerServlet extends HttpServlet {
+public final class ReceiptFileHandlerServlet extends HttpServlet {
 
   private BlobKey fileBlobKey;
   private String expenditureName;

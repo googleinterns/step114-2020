@@ -14,14 +14,21 @@
 
 package com.google.edith;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.servlets.ExtractReceipt;
 import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
@@ -41,16 +48,15 @@ public final class ReceiptDataTest {
           .setEnvIsAdmin(true)
           .setEnvEmail("user@gmail.com");
 
-  private ReceiptData receiptData;
+  private ReceiptData receiptData = new ReceiptData();
   private final UserService userService = UserServiceFactory.getUserService();
 
-  @Mock ExtractReceipt extractReceipts;
+  @Mock ExtractReceipt extractReceipt;
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    receiptData = new ReceiptData();
   }
 
   @After
@@ -59,7 +65,13 @@ public final class ReceiptDataTest {
   }
 
   @Test
-  public void testExtractReceiptData() throws IOException {
+  public void extractReceiptData_createsReceipt() throws IOException {
+    // BlobKey returnBlobKey = new BlobKey("blob");
+    Map<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
+    Map<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
+    List<Map<String, String>> itemsDescription = ImmutableList.of(item1, item2);
+    // when(extractReceipt.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
+    // receiptData.extractReceiptData("blobkey", "expense");
     // try {
     //   Receipt returnedReceipt = receiptData.extractReceiptData();
     //   assertNotNull(returnedReceipt);

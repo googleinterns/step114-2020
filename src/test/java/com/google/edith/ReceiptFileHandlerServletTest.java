@@ -74,9 +74,9 @@ public final class ReceiptFileHandlerServletTest {
     receiptFileHandlerServlet.doPost(request, response);
   }
 
-  // Serve the blob if file has been stored successfully in Blobstore.
+  // Create receipt object file has been stored successfully in Blobstore.
   @Test
-  public void doPost_ifNoFileUpload_redirectToDisplayFile() throws IOException {
+  public void doPost_ifFileUpload_createParsedReceipt() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
     List<FileInfo> files = ImmutableList.of(uploadFile);
@@ -84,14 +84,14 @@ public final class ReceiptFileHandlerServletTest {
     Item[] items = new Item[1];
     Receipt receiptData =
         new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
+    when(request.getParameter("expense-name")).thenReturn("name");
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
     when(receiptFileHandler.getBlobKey(files)).thenReturn(returnBlobKey);
-    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "expense"))
+    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "name"))
         .thenReturn(receiptData);
 
     receiptFileHandlerServlet.doPost(request, response);
 
-    verify(receiptFileHandler, times(1)).getBlobKey(files);
-    verify(response, times(1)).sendRedirect("/");
+    verify(receiptFileHandler, times(1)).createParsedReceipt(returnBlobKey.getKeyString(), "name");
   }
 }
