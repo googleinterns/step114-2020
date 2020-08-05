@@ -104,14 +104,15 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
   private Map<String, String> processItem(String[] itemText) {
     int itemPriceIndex = itemText.length - 2;
     int index = 0;
-    String itemName = "";
     // Combines the splitted text into a single item description.
+    StringBuilder itemName = new StringBuilder();
     while (index < itemPriceIndex) {
-      itemName = itemName + " " + itemText[index++];
+      itemName.append(" ");
+      itemName.append(itemText[index++]);
     }
     Map<String, String> itemFields = new HashMap<String, String>();
     itemFields.put("itemPrice", itemText[itemPriceIndex]);
-    itemFields.put("itemName", itemName.trim());
+    itemFields.put("itemName", itemName.toString().trim());
     return itemFields;
   }
 }
