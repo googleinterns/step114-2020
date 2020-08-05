@@ -2,6 +2,7 @@ import React from 'react';
 
 import FileUploadModalBox from './FileUploadModalBox';
 import UserInfoModalBox from './UserInfoModalBox';
+import DeviceCameraModalBox from './DeviceCameraModalBox';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -21,6 +22,7 @@ class TopNavbar extends React.Component {
       user: null,
       uploadModalBoxShow: false,
       userInfoModalBoxShow: false,
+      takePictureModalBox: false,
     };
 
     /**
@@ -35,6 +37,13 @@ class TopNavbar extends React.Component {
      */
     this.handleUserInfoModalBoxClose = () => {
       this.setState({userInfoModalBoxShow: false});
+    };
+
+    /**
+     * Callback function to close the user upload modal box.
+     */
+    this.handleTakePictureModalBoxClose = () => {
+      this.setState({takePictureModalBox: false});
     };
   }
 
@@ -107,6 +116,16 @@ class TopNavbar extends React.Component {
                   <FileUploadModalBox
                     show={this.state.uploadModalBoxShow}
                     handleUploadModalClose={this.handleUploadModalClose}
+                  />
+                  <Dropdown.Item
+                    onClick={() => this.setState({takePictureModalBox: true})}
+                    className='take-receipt-picture'>
+                    Take Receipt Picture
+                  </Dropdown.Item>
+                  <DeviceCameraModalBox
+                    show={this.state.takePictureModalBox}
+                    handleTakePictureModalBoxClose=
+                        {this.handleTakePictureModalBoxClose}
                   />
                   <Dropdown.Item
                     onClick={() => this.setState({userInfoModalBoxShow: true})}

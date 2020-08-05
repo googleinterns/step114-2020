@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 import ReceiptInput from './components/ReceiptInput';
 import TopNavbar from './components/TopNavbar';
-import DeviceCamera from './components/DeviceCamera';
 
 import './App.css';
 
@@ -29,9 +28,6 @@ class App extends Component {
               Welcome To Edith: Expenditure Analyzer.
             </span>
           </div>
-        </div>
-        <div className='deviceCamera'>
-          <DeviceCamera />
         </div>
         <ReceiptInput />
       </div>
