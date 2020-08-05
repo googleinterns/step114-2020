@@ -14,7 +14,6 @@
 
 package com.google.edith.servlets;
 
-
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;
