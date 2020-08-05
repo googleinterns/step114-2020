@@ -61,8 +61,7 @@ public class ReceiptFileHandlerService implements ReceiptFileHandlerInterface {
   }
   
   @Override
-  public Receipt createParsedReceipt() throws IOException {
-    ReceiptData receiptData = new ReceiptData();
-    return receiptData.extractReceiptData();
+  public Receipt createParsedReceipt(String blobKey) throws IOException {
+    return ReceiptData.extractReceiptData(blobKey);
   }
 }

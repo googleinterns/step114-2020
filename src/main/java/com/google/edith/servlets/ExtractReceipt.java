@@ -1,5 +1,6 @@
 package com.google.edith.servlets;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.cloud.documentai.v1beta2.Document;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.cloud.documentai.v1beta2.GcsSource;
@@ -13,17 +14,16 @@ import java.util.Map;
 
 public class ExtractReceipt {
 
-  public List<Map<String, String>> extractReceipt() throws IOException {
+  public static List<Map<String, String>> extractReceipt( String blobKey) throws IOException {
     String projectId = "edith-step";
     String location = "us";
-    String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
     // For local testing. As blobstore API does not store in GCS in local environment.
     String inputGcsUri = "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
     String parsedText = extractReceipt(projectId, location, inputGcsUri);
     return createItems(parsedText);
   }
 
-  private List<Map<String, String>> createItems(String parsedText) {
+  private static List<Map<String, String>> createItems(String parsedText) {
     List<Map<String, String>> items = new ArrayList<Map<String, String>>();
 
     for (String item: parsedText.split("\\r?\\n")) {
@@ -37,7 +37,7 @@ public class ExtractReceipt {
     return items;
   }
 
-  private String extractReceipt(String projectId, String location, String inputGcsUri)
+  private static String extractReceipt(String projectId, String location, String inputGcsUri)
       throws IOException {
 
     try (DocumentUnderstandingServiceClient client = DocumentUnderstandingServiceClient.create()) {
@@ -60,7 +60,7 @@ public class ExtractReceipt {
     }
   }
 
-  private Map<String, String> processItem (String[] itemText) {
+  private static Map<String, String> processItem (String[] itemText) {
     int itemPriceIndex = itemText.length - 2;
     int index = 0;
     String itemName = "";

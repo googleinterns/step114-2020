@@ -69,13 +69,11 @@ public class ReceiptFileHandlerServlet extends HttpServlet {
     }
 
     fileBlobKey = receiptFileHandler.getBlobKey(fileKeys);
-    parsedReceipt = receiptFileHandler.createParsedReceipt();
-    
+    parsedReceipt = receiptFileHandler.createParsedReceipt(fileBlobKey.getKeyString());
+    Gson gson = new Gson();
+    String json = gson.toJson(parsedReceipt);
+    System.out.println(json);
     response.sendRedirect("/");
-  }
-
-  public static String getFileBlobKey() {
-    return fileBlobKey.getKeyString();
   }
 
   public static String getExpenditureName() {
