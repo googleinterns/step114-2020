@@ -21,6 +21,7 @@ import com.google.cloud.documentai.v1beta2.InputConfig;
 import com.google.cloud.documentai.v1beta2.ProcessDocumentRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.base.Splitter;
 import com.google.edith.interfaces.ExtractReceiptInterface;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,22 +52,23 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
 
   /**
    * This method is because of the shortfall of Document AI API, Natural Language Processing and
-   * Cloud Vision API. All of these APIs were not optimal to parse the receipt
+   * Cloud Vision API. All of these APIs were not optimal to parse the receipt as they could not
+   * scan purchased items correctly.
    *
    * @return List<Map<String, String>> - a list of maps of item name as key and price as value
    */
   private ImmutableList<ImmutableMap<String, String>> createItems(String parsedText) {
     List<ImmutableMap<String, String>> items = new ArrayList<ImmutableMap<String, String>>();
     // Split the string on new lines.
-    for (String item : parsedText.split("\\r?\\n")) {
+    for (String item : Splitter.onPattern("\\r?\\n").splitToList(parsedText)) {
       // It is more specific to Kroger as the price ends with B.
       // TODO(prashantneu@) make the algorithm more general considering receipts from other stores.
       if (item.endsWith(" B")) {
-        String[] itemText = item.split("\\s+");
+        List<String> itemText = Splitter.onPattern("\\s+").splitToList(item);
         // Only consider the parsed text if it has item descriptions and price.
-        if (itemText.length > 1
-            && itemText[itemText.length - 2].matches("[-+]?[0-9]*\\.?[0-9]+")
-            && !itemText[0].matches("[-+]?[0-9]*\\.?[0-9]+")) {
+        if (itemText.size() > 1
+            && itemText.get(itemText.size() - 2).matches("[-+]?[0-9]*\\.?[0-9]+")
+            && !itemText.get(0).matches("[-+]?[0-9]*\\.?[0-9]+")) {
           items.add(processItem(itemText));
         }
       }
@@ -102,17 +104,17 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
    *
    * @return Map<String, String> - a map where item name as key and price as value
    */
-  private ImmutableMap<String, String> processItem(String[] itemText) {
-    int itemPriceIndex = itemText.length - 2;
+  private ImmutableMap<String, String> processItem(List<String> itemText) {
+    int itemPriceIndex = itemText.size() - 2;
     int index = 0;
     // Combines the splitted text into a single item description.
     StringBuilder itemName = new StringBuilder();
     while (index < itemPriceIndex) {
       itemName.append(" ");
-      itemName.append(itemText[index++]);
+      itemName.append(itemText.get(index++));
     }
     Map<String, String> itemFields = new HashMap<String, String>();
-    itemFields.put("itemPrice", itemText[itemPriceIndex]);
+    itemFields.put("itemPrice", itemText.get(itemPriceIndex));
     itemFields.put("itemName", itemName.toString().trim());
     return ImmutableMap.copyOf(itemFields);
   }
