@@ -160,7 +160,6 @@ export default class ReceiptHandler extends React.Component {
       price += item.price * item.quantity;
     });
     this.setState({totalPrice: price});
-    console.log(price);
     // TODO: uncomment when store-receipt implemented
     /**
     await axios({
