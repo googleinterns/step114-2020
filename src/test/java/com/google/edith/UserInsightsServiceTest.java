@@ -333,7 +333,6 @@ public final class UserInsightsServiceTest {
    * @return an immutableList of keys with a number assigned to each of them "item0, item1... itemN"
    */
   private List<Key> createTestKeyList(int start, int count) {
-    // System.out.println(ImmutableList.class);
     List<Key> keys =
         IntStream.range(start, start + count)
             .mapToObj(i -> KeyFactory.createKey("Item", "Item" + i))
