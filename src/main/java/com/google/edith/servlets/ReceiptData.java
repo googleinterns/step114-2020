@@ -1,57 +1,92 @@
 package com.google.edith.servlets;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
+import com.google.edith.interfaces.ExtractReceiptInterface;
+import com.google.edith.services.ExtractReceiptService;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
-public class ReceiptData {
+/** Converts parsed receipt file string to receipt and item objects. */
+public final class ReceiptData {
 
-  public Receipt extractReceiptData() throws IOException {
-    
+  private ExtractReceiptInterface extractReceiptImplementation;
+
+  public ReceiptData() throws IOException {
+    this.extractReceiptImplementation =
+        new ExtractReceiptService(DocumentUnderstandingServiceClient.create());
+  }
+
+  public ReceiptData(ExtractReceiptInterface extractReceiptImplementation) {
+    this.extractReceiptImplementation = extractReceiptImplementation;
+  }
+
+  /**
+   * Creates receipt object.
+   *
+   * @param blobKey - string representation of the blob in GCS bucket.
+   * @param expenditureName - name of the rceipt obtained from FE form.
+   * @return Receipt - receipt object created from the provided info.
+   */
+  public Receipt extractReceiptData(String blobKey, String expenditureName) throws IOException {
+
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
 
-    ExtractReceipt extractReceipt = new ExtractReceipt();
-    List<Map<String, String>> items = extractReceipt.extractReceipt();
+    List<Map<String, String>> items = extractReceiptImplementation.extractReceipt(blobKey);
     Item[] parsedItems = createReceiptItems(user, items);
-    Receipt parsedReceipt = createReceipt(user, parsedItems);
+    Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
   }
-  
-  private Receipt createReceipt(User user, Item[] items) {
-    String expenditureName = ReceiptFileHandlerServlet.getExpenditureName();
-    String blobKey = ReceiptFileHandlerServlet.getFileBlobKey();
-    Receipt userReceipt = new Receipt(user.getUserId(), "unknown store name", "unknown date", expenditureName, blobKey, 0.0f, items);
+
+  /**
+   * Creates receipt object.
+   *
+   * @param blobKey - string representation of the blob in GCS bucket.
+   * @param user - user who is logged in.
+   * @param items - Array of items parsed from receipt pdf file.
+   * @param expenditureName - name of the rceipt obtained from FE form.
+   * @return Receipt - receipt object created from the provided info.
+   */
+  private Receipt createReceipt(String blobKey, User user, Item[] items, String expenditureName) {
+    Receipt userReceipt =
+        new Receipt(
+            user.getUserId(),
+            "unknown store name",
+            "unknown date",
+            expenditureName,
+            blobKey,
+            0.0f,
+            items);
     return userReceipt;
   }
 
+  /**
+   * Creates Array of Item objects from list of item description .
+   *
+   * @param user - user who is logged in.
+   * @param extractedData - List of item description.
+   * @return Item[] - array of item objects created from the list of item description.
+   */
   private Item[] createReceiptItems(User user, List<Map<String, String>> extractedData) {
     int index = 0;
     int totalItems = extractedData.size();
     Item[] items = new Item[totalItems];
     while (index < totalItems) {
       Map<String, String> itemFields = extractedData.get(index);
-      Item receiptItem = new Item(user.getUserId(), itemFields.get("itemName"), Float.parseFloat(itemFields.get("itemPrice")), 0, "unknown category", "unknown date");
-      /**
-      Item.builder()
-            .setUserId(user.getUserId())
-            .setName(itemFields.get("itemName"))
-            .setPrice(Float.parseFloat(itemFields.get("itemPrice")))
-            .setQuantity(0)
-            .setCategory("unknown category")
-            .setExpireDate("unknown date")
-            .build();*/
+      Item receiptItem =
+          Item.builder()
+              .setUserId(user.getUserId())
+              .setName(itemFields.get("itemName"))
+              .setPrice(Float.parseFloat(itemFields.get("itemPrice")))
+              .setQuantity(0)
+              .setCategory("unknown category")
+              .setExpiration("unknown date")
+              .setDate("unknown")
+              .build();
 
       items[index++] = receiptItem;
     }

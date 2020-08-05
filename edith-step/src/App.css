@@ -16,7 +16,7 @@
   width: 100%;
 }
 
-.border {
+.default-border {
   border: none !important;
   color: #fff;
   font-size: 30px;

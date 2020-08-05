@@ -1,11 +1,14 @@
-import React from 'react';
 import {enableFetchMocks} from 'jest-fetch-mock';
+enableFetchMocks();
+import React from 'react';
 import {mount} from 'enzyme';
 import TopNavbar from './TopNavbar';
 
 import '../setupTests.js';
 
 let component;
+let handleUploadModalClose;
+let handleUserInfoModalBoxClose;
 const userObj = {'email': 'email'};
 
 describe('TopNavbar calls', () => {
@@ -18,7 +21,6 @@ describe('TopNavbar calls', () => {
 
 describe('When not logged in, Top Navigation Bar', () => {
   beforeEach(() => {
-    enableFetchMocks();
     component = mount(<TopNavbar />);
     component.setState({user: null});
   });
@@ -66,10 +68,10 @@ describe('When not logged in, Top Navigation Bar', () => {
 describe('When logged in, Top Navigation Bar', () => {
   beforeEach(() => {
     component = mount(<TopNavbar />);
-    enableFetchMocks();
-    handleUploadModalClose = jest.spyOn(TopNavbar.prototype, 'handleUploadModalClose');
-    handleUserInfoModalBoxClose = jest.spyOn(TopNavbar.prototype, 'handleUserInfoModalBoxClose');
-
+    handleUploadModalClose = jest
+        .spyOn(component.instance(), 'handleUploadModalClose');
+    handleUserInfoModalBoxClose = jest
+        .spyOn(component.instance(), 'handleUserInfoModalBoxClose');
     component.setState({user: userObj});
   });
 
@@ -96,9 +98,10 @@ describe('When logged in, Top Navigation Bar', () => {
   test('has Dropdown menu', () => {
     expect(component.find('.dropdowns').exists()).toBe(true);
   });
-  
-  // Checks uploadModalBoxShow only opens when Upload Receipt button is clicked from Dropdown.
-  test('should open upload modal box when upload receipt button is clicked', () => {
+
+  // Checks uploadModalBoxShow only opens when Upload Receipt
+  // button is clicked from Dropdown.
+  test('opens upload modal box when upload receipt button is clicked', () => {
     expect(component.state('uploadModalBoxShow')).toBe(false);
     component.find('.dropdown-toggle').at(0).simulate('click');
     component.find('.upload-receipt').at(0).simulate('click');
@@ -112,14 +115,16 @@ describe('When logged in, Top Navigation Bar', () => {
     component.find('.close').at(0).simulate('click');
     expect(handleUploadModalClose).toBeCalled();
   });
-  
-  // Checks handleUserInfoModalBoxClose only opens when Upload Receipt button is clicked from Dropdown.
-  test('should open user info modal box when update information button is clicked', () => {
-    expect(component.state('userInfoModalBoxShow')).toBe(false);
-    component.find('.dropdown-toggle').at(0).simulate('click');
-    component.find('.update-info').at(0).simulate('click');
-    expect(component.state('userInfoModalBoxShow')).toBe(true);
-  });
+
+  // Checks handleUserInfoModalBoxClose only opens when Upload
+  // Receipt button is clicked from Dropdown.
+  test('opens user info modal box when update information button is clicked',
+      () => {
+        expect(component.state('userInfoModalBoxShow')).toBe(false);
+        component.find('.dropdown-toggle').at(0).simulate('click');
+        component.find('.update-info').at(0).simulate('click');
+        expect(component.state('userInfoModalBoxShow')).toBe(true);
+      });
 
   // Checks handleUserInfoModalBoxClose closes when close button is clicked.
   test('should close upload modal box when close button is clicked', () => {

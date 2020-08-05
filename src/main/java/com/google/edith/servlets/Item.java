@@ -1,85 +1,51 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 package com.google.edith.servlets;
 
 import com.google.auto.value.AutoValue;
 
-/** Encapsulate User info and logout url. */
+/** Used to hold the properties of an item Entity in datastore. */
+@AutoValue
+public abstract class Item {
+  public abstract String name();
 
-public class Item {
-  public String userId;
-  public String name;
-  public float price;
-  public int quantity;
-  public String category;
-  public String expireDate;
+  public abstract String userId();
 
-  public Item(String userId, String name, float price, int quantity, String category, String expireDate) {
-    this.userId = userId;
-    this.name = name;
-    this.price = price;
-    this.quantity = quantity;
-    this.category = category;
-    this.expireDate = expireDate;
+  public abstract String category();
+
+  public abstract double price();
+
+  public abstract long quantity();
+
+  public abstract String date();
+
+  public abstract String expiration();
+
+  /**
+   * Creates an AutoValue Builder for this class.
+   *
+   * @return AutoValue Builder
+   */
+  public static Builder builder() {
+    return new AutoValue_Item.Builder();
   }
 
-  @Override
-  public boolean equals(Object object) {
-    Item item = (Item) object;
-    if (this.price == item.getPrice() &&
-        this.name.equals(item.getName()) &&
-        this.expireDate.equals(item.getExpireDate())) {
-          return true;
-    }
-    return false;
-  }
-  
-  @Override
-  public int hashCode() {
-    int hashcode = 0;
-    hashcode = (int) price*20;
-    hashcode += this.name.hashCode();
-    return hashcode;
-  }
+  /** Builder used to set the fields of this class. */
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setName(String value);
 
-  public String getUserId() {
-    return this.userId;
-  }
+    public abstract Builder setUserId(String value);
 
-  public String getName() {
-    return this.name;
-  }
+    public abstract Builder setCategory(String value);
 
-  public float getPrice() {
-    return this.price;
-  }
+    public abstract Builder setPrice(double value);
 
-  public int getQuantity() {
-    return this.quantity;
-  }
+    public abstract Builder setQuantity(long value);
 
-  public String getCategory() {
-    return this.category;
-  }
+    public abstract Builder setDate(String value);
 
-  public String getExpireDate() {
-    return this.expireDate;
-  }
+    public abstract Builder setExpiration(String value);
 
-  public String toString() {
-    return (this.userId + " " + this.name + " " + this.price + " " + this.quantity + " " + this.category);
+    public abstract Item build();
   }
-
 }

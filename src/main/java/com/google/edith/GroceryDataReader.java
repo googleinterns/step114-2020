@@ -1,6 +1,7 @@
 package com.google.edith;
 
 import com.google.common.collect.ImmutableList;
+import com.google.edith.DealItem.Store;
 import com.opencsv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,14 +15,8 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-
-  private static final String ALDI = "Aldi";
-  private static final String KROGER = "Kroger";
-  private static final String TRADER_JOES = "Trader Joe's";
-  private static final String PUBLIX = "Publix";
-  private static final String WALMART = "Walmart";
-  private static final ImmutableList<String> STORES =
-      ImmutableList.of(ALDI, KROGER, TRADER_JOES, PUBLIX, WALMART);
+  private static final ImmutableList<Store> STORES =
+      ImmutableList.of(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART);
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -44,19 +39,26 @@ public final class GroceryDataReader {
       System.out.println("error");
     }
 
+    String expirationTime = ShelfDataReader.readFile(itemName);
+
     while ((record = reader.readNext()) != null) {
       if (record[0].equals(itemName)) {
-        ShelfDataReader shelfReader = new ShelfDataReader();
-        String expirationTime = shelfReader.readFile(item.toLowerCase());
 
         List<DealItem> dealItems = new ArrayList<DealItem>();
         for (int i = 0; i < STORES.size(); i++) {
+          // Each store has 3 columns of data, so if i is the store number, the starting index of
+          // the data is i*3.
+          int storeDataStartColumn = i * 3;
           DealItem dealItem = new DealItem();
           dealItem.setStore(STORES.get(i));
-          dealItem.setPrice(record[i * 3 + 1]);
-          dealItem.setWeight(record[i * 3 + 2]);
-          dealItem.setComment(record[i * 3 + 3]);
-          dealItem.setExpiration(expirationTime);
+          dealItem.setPrice(record[storeDataStartColumn + 1]);
+          dealItem.setWeight(record[storeDataStartColumn + 2]);
+          dealItem.setComment(record[storeDataStartColumn + 3]);
+          if (expirationTime.isEmpty()) {
+            dealItem.setExpirationTime("NO_EXPIRATION");
+          } else {
+            dealItem.setExpirationTime(expirationTime);
+          }
           dealItems.add(dealItem);
         }
 
@@ -65,10 +67,13 @@ public final class GroceryDataReader {
     }
     reader.close();
     if (cheapestItem == null) {
-      DealItem emptyDeal = new DealItem();
-      emptyDeal.setStore("no deal found");
-      emptyDeal.setExpiration("no shelf life data found");
-      return emptyDeal;
+      cheapestItem = new DealItem();
+      cheapestItem.setStore(Store.NO_STORE);
+      if (expirationTime.isEmpty()) {
+        cheapestItem.setExpirationTime("NO_EXPIRATION");
+      } else {
+        cheapestItem.setExpirationTime(expirationTime);
+      }
     }
     return cheapestItem;
   }

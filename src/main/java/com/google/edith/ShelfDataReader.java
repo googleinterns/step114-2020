@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,25 +11,27 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /** Processes data file of product expiration information to populate future user grocery lists. */
 public class ShelfDataReader {
+  private static final String NO_EXPIRATION = "NO_EXPIRATION";
 
   /** Finds the specified product in the file. */
-  public String readFile(String itemName) {
-    URL jsonresource = getClass().getClassLoader().getResource("foodkeeper.json");
-    File shelfLifeData = new File(jsonresource.getFile());
+  public static String readFile(String itemName) {
+    URL jsonResource = ShelfDataReader.class.getClassLoader().getResource("foodkeeper.json");
+    File shelfLifeData = new File(jsonResource.getFile());
 
     JsonParser jsonParser = new JsonParser();
     List<JsonArray> potentialMatches = new ArrayList<JsonArray>();
     try (FileReader reader = new FileReader(shelfLifeData)) {
-      Gson gson = new Gson();
+      JsonObject data = (JsonObject) jsonParser.parseReader(reader).getAsJsonObject();
 
-      JsonObject data = (JsonObject) jsonParser.parse(reader).getAsJsonObject();
+      // Sheets will never be empty using the foodkeeper.json file.
       JsonArray sheets = data.getAsJsonArray("sheets");
+
+      // Get(2) is used because the product data starts at that index, previous data is all
+      // header data on the file.
       JsonObject productList = sheets.get(2).getAsJsonObject();
       JsonArray productListData = productList.getAsJsonArray("data");
 
@@ -42,51 +45,62 @@ public class ShelfDataReader {
         }
       }
     } catch (FileNotFoundException e) {
-      System.out.println("file not found");
+      System.out.println(e.getMessage());
     } catch (IOException e) {
-      System.out.println("IOException");
+      System.out.println(e.getMessage());
     }
 
-    if (potentialMatches.size() == 0) {
-      return "no shelf life data found";
+    if (potentialMatches.isEmpty()) {
+      return NO_EXPIRATION;
     } else {
       return findTime(potentialMatches.get(0));
     }
   }
-  
-  /** 
-    * Retrieves the shelf life data of the specified product. Only looks through pantry and
-    * refrigeration data, as freezing tends to be longer term. Items also tend to have freezing and
-    * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
-    * one set of expiration data.
-    */
-  private String findTime(JsonArray product) {
+
+  /**
+   * Retrieves the shelf life data of the specified product. Only looks through pantry and
+   * refrigeration data, as freezing tends to be longer term. Items also tend to have freezing and
+   * fridge data or freezing and pantry data, so removing freezing makes it so that items have only
+   * one set of expiration data.
+   */
+  private static String findTime(JsonArray product) {
     Gson gson = new Gson();
-    Map<String, String> shelfLife = new HashMap<String, String>();
-    
-    for (int i = 5; i < 27; i++) {
-      JsonObject productTimeElement = product.get(i).getAsJsonObject();
-      String json = gson.toJson(productTimeElement);
-      String[] jsonKeyValuePair = json.split(":");
+    StringBuilder result = new StringBuilder();
 
-      if (jsonKeyValuePair.length == 2) {
-        String storageType = jsonKeyValuePair[0];
-        storageType = storageType.substring(2, storageType.length()-1);
-        String timeToExpiration = jsonKeyValuePair[1];
-        timeToExpiration = timeToExpiration.substring(0, timeToExpiration.length()-1);
-        shelfLife.put(storageType, timeToExpiration);
-      }
-    }
-
-    String result = "";
-    for (String item : shelfLife.keySet()) {
+    /**
+     * The bounds 6 and 27 correspond to the array indices in the JsonArray that contain shelf life
+     * data. More specifically, the lower bounds marks where data about the type of product stops
+     * and the data about expiration date begins, and the higher bound is where freezing data begins
+     * which, as previously mentioned, is being excluded to minimize duplicate data and very long
+     * term expiration dates.
+     */
+    for (int i = 6; i < 27; i++) {
+      JsonObject productTimeElement;
+      String expireData = "";
       try {
-        Double.parseDouble(shelfLife.get(item));
-        result += shelfLife.get(item) + " ";
+        productTimeElement = product.get(i).getAsJsonObject();
+        String json = gson.toJson(productTimeElement);
+        List<String> jsonKeyValuePair =
+            Splitter.on(":").splitToList(gson.toJson(productTimeElement));
+        if (jsonKeyValuePair.size() == 2) {
+          expireData = jsonKeyValuePair.get(1);
+          expireData = expireData.substring(0, expireData.length() - 1);
+          Double.parseDouble(expireData);
+          result.append(expireData);
+          result.append(" ");
+        }
+      } catch (IndexOutOfBoundsException e) {
+        break;
       } catch (NumberFormatException e) {
-        result += shelfLife.get(item).substring(1, shelfLife.get(item).length() - 1) + " ";
+        String timeUnit = expireData.substring(1, expireData.length() - 1);
+        if (timeUnit.equals("Days") || timeUnit.equals("Weeks") || timeUnit.equals("Months")) {
+          result.append(timeUnit);
+          result.append(" ");
+        }
       }
     }
-    return result;
+
+    result.deleteCharAt(result.length() - 1);
+    return result.toString();
   }
 }

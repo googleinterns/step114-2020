@@ -14,10 +14,10 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.gson.Gson;
+import com.google.edith.interfaces.LoginInterface;
+import com.google.edith.services.LoginService;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -31,44 +31,37 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public final class LoginServlet extends HttpServlet {
 
+  private LoginInterface loginImplementation;
+
+  public LoginServlet() {
+    this.loginImplementation =
+        new LoginService(
+            UserServiceFactory.getUserService(), DatastoreServiceFactory.getDatastoreService());
+  }
+
+  public LoginServlet(LoginInterface loginImplementation) {
+    this.loginImplementation = loginImplementation;
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
 
-    if (userService.isUserLoggedIn()) {
-      Gson gson = new Gson();
-      User loggedInUser = userService.getCurrentUser();
-      String logoutUrl = userService.createLogoutURL("/");
-
-      String json = gson.toJson(createUserInfo(loggedInUser, logoutUrl));
+    if (loginImplementation.checkUserLoggedIn()) {
+      String json = loginImplementation.createJsonFromUserInfo();
       response.setContentType("application/json");
       response.getWriter().println(json);
     } else {
-      String loginUrl = userService.createLoginURL("/");
+      String loginUrl = loginImplementation.createLoginUrl("/");
       response.sendRedirect(loginUrl);
     }
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Users who are not logged in can not upload their info. This is handled in FE too.
+    if (loginImplementation.checkUserLoggedIn()) {
+      loginImplementation.storeUserInfoEntityInDatastore(request);
+    }
     response.sendRedirect("/index.html");
-  }
-
-  /**
-   * Creates UserInfo object encapsulating user data.
-   *
-   * @param user - User object which represents currently logged in uyser.
-   * @param logoutUrl - url to logout from the app.
-   * @return UserInfo - wrapper object for user information and logout url.
-   */
-  private UserInfo createUserInfo(User user, String logoutUrl) {
-    UserInfo userInfo =
-        UserInfo.builder()
-            .setEmail(user.getEmail())
-            .setUserId(user.getUserId())
-            .setLogOutUrl(logoutUrl)
-            .build();
-
-    return userInfo;
   }
 }
