@@ -21,7 +21,6 @@ beforeEach(() => {
   handleStoreChange = jest.spyOn(component.instance(), 'handleStoreChange');
   handleExpirationChange = jest.spyOn(component.instance(),
       'handleExpirationChange');
-  getReceiptData = jest.spyOn(component.instance(), 'getReceiptData');
   addItem = jest.spyOn(component.instance(), 'addItem');
   component.update();
   component.instance().forceUpdate();
@@ -33,10 +32,6 @@ afterEach(() => {
 
 it('renders properly', () => {
   expect(component.exists()).toBe(true);
-});
-
-it('calls getReceiptData on mount', () => {
-  expect(getReceiptData).toBeCalled();
 });
 
 it('should call appropriate change function on form change', () => {

@@ -15,26 +15,19 @@ export default class ReceiptHandler extends React.Component {
     this.state = {userId: '', storeName: '', date: '',
       name: '', fileUrl: '', totalPrice: 0.0, items: [], deals: []};
 
-    /** Fetches receipt data from receipt-file-handler servlet. */
-    this.getReceiptData = async () => {
-      const response = await axios({
-        method: 'get',
-        url: '/receipt-file-handler',
-        responseType: 'json',
-      });
-      const receipt = response.data;
-      const itemList = receipt.items;
-      this.setState((state) => ({
-        userId: receipt.userId,
-        storeName: receipt.storeName,
-        date: receipt.date,
-        name: receipt.name,
-        fileUrl: receipt.fileUrl,
-        totalPrice: receipt.totalPrice,
-        items: itemList,
-        deals: [],
-      }));
-    };
+    /**
+     * Calculates the current date in yyyy-mm-dd format
+     * @return {string} The current date
+     */
+    this.getDate = () => {
+      const date = new Date(Date.now());
+      let month = date.getMonth() + 1;
+      month < 10 ? month = '0' + month.toString() : month = month.toString();
+      let day = date.getDate();
+      day < 10 ? day = '0' + day.toString() : day = day.toString();
+      const year = date.getFullYear();
+      return [year, month, day].join('-');
+    }
 
     /**
      * Handles changes to the grocery store of the trip.
@@ -88,6 +81,7 @@ export default class ReceiptHandler extends React.Component {
           items: this.state.items,
         },
       });
+
       const data = response.data;
       this.setState((state) => ({
         deals: data,
@@ -119,13 +113,44 @@ export default class ReceiptHandler extends React.Component {
           deals: this.state.deals,
         },
       });
+      axios({
+        method: 'post',
+        url: '/user-stats-servlet',
+        data: {
+          itemName: this.state.itemName,
+          itemCategory: this.state.itemCategory,
+          itemPrice: this.state.itemPrice,
+          itemQuantity: this.state.itemQuantity,
+          itemDate: this.getDate(),
+          itemReceiptId: this.state.itemReceiptId,
+          itemCategory: this.state.itemCategory,
+        },
+      }).catch((err) => {
+        console.log(err);
+      });
       this.setState({});
     };
   }
 
   /** Calls function to get receipt data on mount. */
-  componentDidMount() {
-    this.getReceiptData;
+  async componentDidMount() {
+    const response = await axios({
+      method: 'get',
+      url: '/receipt-file-handler',
+      responseType: 'json',
+    });
+    const receipt = response.data;
+    const itemList = receipt.items;
+    this.setState((state) => ({
+      userId: receipt.userId,
+      storeName: receipt.storeName,
+      date: receipt.date,
+      name: receipt.name,
+      fileUrl: receipt.fileUrl,
+      totalPrice: receipt.totalPrice,
+      items: itemList,
+      deals: [],
+    }));
   }
 
   /**
