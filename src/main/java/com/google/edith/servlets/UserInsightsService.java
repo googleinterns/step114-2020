@@ -39,7 +39,6 @@ public final class UserInsightsService implements UserInsightsInterface {
     this.datastore = DatastoreServiceFactory.getDatastoreService();
   }
 
-  /** This should only be called each time a new user makes an accout. */
   public void createUserStats(String userId) {
 
     List<Key> items = new ArrayList<>();
@@ -51,11 +50,6 @@ public final class UserInsightsService implements UserInsightsInterface {
     datastore.put(userStats);
   }
 
-  /**
-   * Updates the Items list in the UserStats Entity in datastore corresponding to this user.
-   *
-   * @param items - Non-null list of item Keys to be added to the current Item list.
-   */
   public void updateUserStats(String userId, List<Key> newItems) {
     Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
@@ -76,13 +70,6 @@ public final class UserInsightsService implements UserInsightsInterface {
     datastore.put(userStats);
   }
 
-  /**
-   * Copmiles the spending using the Item list found in this user's UserStats Entity in datastore.
-   * TODO (malachibre): Allow for various time periods (only calculates weekly aggregate now).
-   *
-   * @return A list of {@code WeekInfo} objects relating a time period to the spending in that time
-   *     period.
-   */
   public ImmutableList<WeekInfo> aggregateUserData(String userId) {
     Optional<Entity> userStatsContainer = retreiveUserStats(userId);
     if (!userStatsContainer.isPresent()) {
@@ -112,12 +99,6 @@ public final class UserInsightsService implements UserInsightsInterface {
     return calculateWeeklyTotal(items);
   }
 
-  /**
-   * Creates a Json string that contains the weekly aggregate for this user and the items this user
-   * purchased.
-   *
-   * @return a Json formatted String of items and an aggregate.
-   */
   public String createJson(String userId) {
     List<WeekInfo> aggregateValues = aggregateUserData(userId);
     String aggregateJson = GSON.toJson(aggregateValues);
@@ -168,12 +149,6 @@ public final class UserInsightsService implements UserInsightsInterface {
     return GSON.toJson(userJson);
   }
 
-  /**
-   * Finds the UserStats entity corresponding to {@code userId} in datastore and returns this entity
-   * contained inside an Optional.
-   *
-   * @return UserStats entity for this user
-   */
   public Optional<Entity> retreiveUserStats(String userId) {
     if (userId == null) {
       return Optional.empty();

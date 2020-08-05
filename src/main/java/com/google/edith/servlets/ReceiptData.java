@@ -13,7 +13,7 @@ import java.util.Map;
 /** Converts parsed receipt file string to receipt and item objects. */
 public final class ReceiptData {
 
-  private ExtractReceiptInterface extractReceiptImplementation;
+  private final ExtractReceiptInterface extractReceiptImplementation;
 
   public ReceiptData() throws IOException {
     this.extractReceiptImplementation =

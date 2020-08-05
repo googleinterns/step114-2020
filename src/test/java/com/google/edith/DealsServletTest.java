@@ -99,6 +99,7 @@ public class DealsServletTest {
 
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
+
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
