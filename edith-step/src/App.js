@@ -19,10 +19,11 @@ class App extends Component {
   constructor() {
     super();
     this.state = {'chartType': LineChart, 'dateFilter': '',
-      'categoryFilter': '', showGroceryList: true};
+      'categoryFilter': '', 'showGroceryList': false};
+
     this.handleGroceryListShow = () => {
-      this.setState({showGroceryList: true});
-    }
+      this.setState({'showGroceryList': true});
+    };
 
     /**
     * Updates the value of chartType in state
@@ -110,7 +111,10 @@ class App extends Component {
           <div id='receipt-input'>
             <ReceiptHandler />
           </div>
-          <button onClick={this.handleGroceryListShow} className='show-list'>Generate grocery list.</button>
+          <button
+              onClick={this.handleGroceryListShow}
+              className='show-list'>Generate grocery list.
+          </button>
           <>
           {this.state.showGroceryList==true &&
             <GroceryList />
