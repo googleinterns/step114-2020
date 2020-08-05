@@ -1,8 +1,8 @@
 package com.google.edith.servlets;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.google.edith.DealsServlet;
 import com.google.gson.Gson;
@@ -24,26 +24,27 @@ public class DealsServletTest {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    Item receiptItem = Item.builder()
-        .setUserId("185804764220139124118")
-        .setName("Apple Juice")
-        .setPrice((float) 5.99)
-        .setQuantity(1)
-        .setDate("date")
-        .setCategory("unknown category")
-        .setExpiration("unknown date")
-        .build();
+    Item receiptItem =
+        Item.builder()
+            .setUserId("185804764220139124118")
+            .setName("Apple Juice")
+            .setPrice((float) 5.99)
+            .setQuantity(1)
+            .setDate("date")
+            .setCategory("unknown category")
+            .setExpiration("unknown date")
+            .build();
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
-      new Receipt(
-        "185804764220139124118",
-        "whole Foods",
-        "unknown date",
-        "Receipt",
-        "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
-        0,
-        items);
+        new Receipt(
+            "185804764220139124118",
+            "whole Foods",
+            "unknown date",
+            "Receipt",
+            "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+            0,
+            items);
 
     Gson gson = new Gson();
     String json = gson.toJson(receipt);
@@ -51,7 +52,7 @@ public class DealsServletTest {
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
 
     when(request.getReader())
-      .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
+        .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -69,26 +70,27 @@ public class DealsServletTest {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-    Item receiptItem = Item.builder()
-        .setUserId("185804764220139124118")
-        .setName("no deal")
-        .setPrice((float) 5.99)
-        .setQuantity(1)
-        .setDate("date")
-        .setCategory("unknown category")
-        .setExpiration("unknown date")
-        .build();
+    Item receiptItem =
+        Item.builder()
+            .setUserId("185804764220139124118")
+            .setName("no deal")
+            .setPrice((float) 5.99)
+            .setQuantity(1)
+            .setDate("date")
+            .setCategory("unknown category")
+            .setExpiration("unknown date")
+            .build();
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
-      new Receipt(
-        "185804764220139124118",
-        "whole Foods",
-        "unknown date",
-        "Receipt",
-        "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
-        0,
-        items);
+        new Receipt(
+            "185804764220139124118",
+            "whole Foods",
+            "unknown date",
+            "Receipt",
+            "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
+            0,
+            items);
 
     Gson gson = new Gson();
     String json = gson.toJson(receipt);
@@ -96,7 +98,7 @@ public class DealsServletTest {
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
     
     when(request.getReader())
-      .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
+        .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
     
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);

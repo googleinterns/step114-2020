@@ -1,4 +1,3 @@
-
 package com.google.edith.servlets;
 
 import com.google.auto.value.AutoValue;
