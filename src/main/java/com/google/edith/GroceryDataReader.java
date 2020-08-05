@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,11 +15,8 @@ import java.util.List;
  * item.
  */
 public final class GroceryDataReader {
-  private static final Store NO_STORE = Store.NO_STORE;
-  private static final List<Store> stores =
-      new ArrayList<>(
-          Arrays.asList(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART));
-  private static final ImmutableList<Store> STORES = ImmutableList.copyOf(stores);
+  private static final ImmutableList<Store> STORES =
+      ImmutableList.of(Store.ALDI, Store.KROGER, Store.TRADER_JOES, Store.PUBLIX, Store.WALMART);
 
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
@@ -37,8 +33,11 @@ public final class GroceryDataReader {
     record = reader.readNext();
     record = reader.readNext();
 
+    String expirationTime = ShelfDataReader.readFile(itemName);
+
     while ((record = reader.readNext()) != null) {
       if (record[0].equals(itemName)) {
+
         List<DealItem> dealItems = new ArrayList<DealItem>();
 
         for (int i = 0; i < STORES.size(); i++) {
@@ -52,6 +51,11 @@ public final class GroceryDataReader {
           item.setPrice(record[storeDataStartColumn + 1]);
           item.setWeight(record[storeDataStartColumn + 2]);
           item.setComment(record[storeDataStartColumn + 3]);
+          if (expirationTime.isEmpty()) {
+            item.setExpirationTime("NO_EXPIRATION");
+          } else {
+            item.setExpirationTime(expirationTime);
+          }
           dealItems.add(item);
         }
 
@@ -61,7 +65,12 @@ public final class GroceryDataReader {
     reader.close();
     if (cheapestItem == null) {
       cheapestItem = new DealItem();
-      cheapestItem.setStore(NO_STORE);
+      cheapestItem.setStore(Store.NO_STORE);
+      if (expirationTime.isEmpty()) {
+        cheapestItem.setExpirationTime("NO_EXPIRATION");
+      } else {
+        cheapestItem.setExpirationTime(expirationTime);
+      }
     }
     return cheapestItem;
   }

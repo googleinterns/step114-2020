@@ -1,6 +1,7 @@
 import React from 'react';
 
 import FileUploadModalBox from './FileUploadModalBox';
+import UserInfoModalBox from './UserInfoModalBox';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -18,9 +19,23 @@ class TopNavbar extends React.Component {
     super(props);
     this.state = {
       user: null,
-      modalShow: false,
+      uploadModalBoxShow: false,
+      userInfoModalBoxShow: false,
     };
-    this.handleModalClose = this.handleModalClose.bind(this);
+
+    /**
+     * Callback function to close the file upload modal box.
+     */
+    this.handleUploadModalClose = () => {
+      this.setState({uploadModalBoxShow: false});
+    };
+
+    /**
+     * Callback function to close the user upload modal box.
+     */
+    this.handleUserInfoModalBoxClose = () => {
+      this.setState({userInfoModalBoxShow: false});
+    };
   }
 
   /**
@@ -31,10 +46,12 @@ class TopNavbar extends React.Component {
   }
 
   /**
-   * Call back function to close the file upload modal box.
+   * Returns display name as username if set other wise email.
+   * @return {String}  displayName name to display for the user
    */
-  handleModalClose() {
-    this.setState({modalShow: false});
+  displayName() {
+    const displayName = this.state.user.userName || this.state.user.email;
+    return displayName;
   }
 
   /**
@@ -78,23 +95,29 @@ class TopNavbar extends React.Component {
                   variant='dark'
                   id='dropdown-basic'
                   className='dropdown-toggle'>
-                  {this.state.user.email}
+                  {this.displayName().toUpperCase()}
                 </Dropdown.Toggle>
                 <Dropdown.Menu
                   className='dropdown-menu'>
                   <Dropdown.Item
-                    onClick={() => this.setState({modalShow: true})}
+                    onClick={() => this.setState({uploadModalBoxShow: true})}
                     className='upload-receipt'>
                     Upload Receipt
                   </Dropdown.Item>
                   <FileUploadModalBox
-                    show={this.state.modalShow}
-                    handleModalClose={this.handleModalClose}
+                    show={this.state.uploadModalBoxShow}
+                    handleUploadModalClose={this.handleUploadModalClose}
                   />
                   <Dropdown.Item
-                    className='set-nickname'>
-                    Set Nickname
+                    onClick={() => this.setState({userInfoModalBoxShow: true})}
+                    className='update-info'>
+                    Update Information
                   </Dropdown.Item>
+                  <UserInfoModalBox
+                    show={this.state.userInfoModalBoxShow}
+                    handleUserInfoModalBoxClose=
+                      {this.handleUserInfoModalBoxClose}
+                  />
                   <Dropdown.Item
                     className='invite-friends'>
                     Invite Friends

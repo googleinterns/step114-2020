@@ -24,6 +24,7 @@ class FileUploadModalBox extends React.Component {
    * to direct the file upload.
    */
   componentDidMount() {
+    this._isMounted = true;
     this.getFileUploadUrl();
   }
 
@@ -31,9 +32,7 @@ class FileUploadModalBox extends React.Component {
    * After the component unmounts, reset the state.
    */
   componentWillUnmount() {
-    this.setState = () => {
-      return;
-    };
+    this._isMounted = false;
   }
 
   /**
@@ -44,7 +43,9 @@ class FileUploadModalBox extends React.Component {
     fetch('/blobstore-upload-url')
         .then((response) => response.text())
         .then((uploadUrl) => {
-          this.setState({uploadUrl: uploadUrl});
+          if (this._isMounted) {
+            this.setState({uploadUrl: uploadUrl});
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -59,11 +60,14 @@ class FileUploadModalBox extends React.Component {
     return (
       <Modal
         show={this.props.show}
-        onHide={this.props.handleModalClose}
+        onHide={this.props.handleUploadModalClose}
         centered
       >
-        <Modal.Header closeButton className='modal-header'>
-          <Modal.Title id="contained-modal-title-vcenter">
+        <Modal.Header
+          closeButton
+          className='modal-header'>
+          <Modal.Title
+            id="contained-modal-title-vcenter">
             Please Upload Your Receipt File
           </Modal.Title>
         </Modal.Header>
@@ -96,7 +100,7 @@ class FileUploadModalBox extends React.Component {
 
 FileUploadModalBox.propTypes = {
   show: PropTypes.bool,
-  handleModalClose: PropTypes.func,
+  handleUploadModalClose: PropTypes.func,
 };
 
 export default FileUploadModalBox;
