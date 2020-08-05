@@ -25,6 +25,12 @@ import org.mockito.Mockito;
 public final class UserStatsServletTest {
 
   private DatastoreService datastore;
+  private final HttpServletRequest request = 
+    Mockito.mock(HttpServletRequest.class);
+  private final HttpServletResponse response = 
+    Mockito.mock(HttpServletResponse.class);
+  private final UserInsightsInterface userInsights = 
+    Mockito.mock(UserInsightsInterface.class);
   private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private final Gson gson = new Gson();
@@ -38,9 +44,7 @@ public final class UserStatsServletTest {
 
   @Test
   public void testServletGoodInput() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-
+        
     JsonObject testJson = new JsonObject();
     testJson.addProperty("itemName", "Corn");
     testJson.addProperty("itemUserId", "userId");
@@ -57,7 +61,7 @@ public final class UserStatsServletTest {
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    new UserStatsServlet().doPost(request, response);
+    new UserStatsServlet(datastore, userInsights).doPost(request, response);
 
     verify(request, Mockito.atLeast(1)).getReader();
     writer.flush();
@@ -66,10 +70,7 @@ public final class UserStatsServletTest {
 
   @Test
   public void testServlet() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-    UserInsightsInterface userInsights = Mockito.mock(UserInsightsInterface.class);
-
+    
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
