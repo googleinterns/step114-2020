@@ -84,9 +84,6 @@ class DeviceCamera extends React.Component {
         fetch(this.state.uploadUrl, {
           method: 'POST',
           body: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
         });
       },
       'image/jpeg',
