@@ -8,12 +8,14 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.UserService;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +26,9 @@ import java.util.Set;
  */
 public class QueryItems {
 
+  private static final String SPLIT = " ";
+  private static final String WEEKS = "weeks";
+  private static final String MONTHS = "months";
   private final DatastoreService datastore;
   private UserService userService;
 
@@ -37,8 +42,9 @@ public class QueryItems {
     Set<Item> itemsToBuy = new HashSet<Item>();
 
     for (Receipt receipt : receipts) {
-      double daysPassedSinceReceipt = findTimePassed(receipt.getDate());
-      Item[] items = receipt.getItems();
+      double daysPassedSinceReceiptStored =
+          findTimePassedSinceReceiptStored(receipt.getDate());
+      List<Item> items = Arrays.asList(receipt.getItems());
 
       for (Item item : items) {
         String expiration = item.expiration();
@@ -46,7 +52,7 @@ public class QueryItems {
           continue;
         }
 
-        List<String> expirationNumberAndUnit = Splitter.on(" ").splitToList(expiration);
+        List<String> expirationNumberAndUnit = Splitter.on(SPLIT).splitToList(expiration);
         double number = 0;
         String unit = "";
 
@@ -57,13 +63,13 @@ public class QueryItems {
             unit = expirationPiece;
           }
         }
-        if (unit.toLowerCase().equals("weeks")) {
+        if (unit.toLowerCase().equals(WEEKS)) {
           number = number * 7;
-        } else if (unit.toLowerCase().equals("months")) {
+        } else if (unit.toLowerCase().equals(MONTHS)) {
           number = number * 30;
         }
 
-        if (number < daysPassedSinceReceipt) {
+        if (number < daysPassedSinceReceiptStored) {
           itemsToBuy.add(item);
         }
       }
@@ -77,7 +83,7 @@ public class QueryItems {
    * Determines the number of days between when the receipt was stored in datastore and the current
    * time.
    */
-  private double findTimePassed(String receiptDateString) {
+  private int findTimePassedSinceReceiptStored(String receiptDateString) {
     Date currentDate = new Date();
     Date receiptDate;
     try {
@@ -86,11 +92,11 @@ public class QueryItems {
       receiptDate = new Date();
     }
     long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
-    double daysPassedSinceReceipt = (timePassedSinceReceipt / (1000 * 60 * 60 * 24)) / 24;
+    int daysPassedSinceReceipt = (int) (timePassedSinceReceipt / (1000 * 60 * 60 * 24)) / 24;
     return daysPassedSinceReceipt;
   }
 
-  private List<Receipt> queryReceipts() {
+  private ImmutableList<Receipt> queryReceipts() {
     String id = userService.getCurrentUser().getUserId();
     Query query =
         new Query("Receipt")
@@ -104,17 +110,17 @@ public class QueryItems {
       Query itemQuery = new Query("Item", entityKey);
       PreparedQuery results = datastore.prepare(itemQuery);
       List<Entity> itemEntities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
-      Item[] items = createItemObjects(itemEntities);
+      ImmutableList<Item> items = createItemObjects(itemEntities);
       String userId = (String) receiptEntity.getProperty("userId");
       String storeName = (String) receiptEntity.getProperty("storeName");
       String date = (String) receiptEntity.getProperty("date");
       String name = (String) receiptEntity.getProperty("name");
       String fileUrl = (String) receiptEntity.getProperty("fileUrl");
       float totalPrice = (float) ((double) receiptEntity.getProperty("price"));
-      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items);
+      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items.toArray(new Item[0]));
       receipts.add(receipt);
     }
-    return receipts;
+    return ImmutableList.copyOf(receipts);
   }
 
   /**
@@ -123,7 +129,7 @@ public class QueryItems {
    * @param entities - entities of kind Item found in datastore.
    * @return Item[] - array of Item objects.
    */
-  public Item[] createItemObjects(List<Entity> entities) {
+  public ImmutableList<Item> createItemObjects(List<Entity> entities) {
     List<Item> itemsList = new ArrayList<>();
 
     for (Entity entity : entities) {
@@ -146,6 +152,7 @@ public class QueryItems {
               .build();
       itemsList.add(receiptItem);
     }
-    return itemsList.toArray(new Item[0]);
+    return ImmutableList.copyOf(itemsList);
+    //return itemsList.toArray(new Item[0]);
   }
 }
