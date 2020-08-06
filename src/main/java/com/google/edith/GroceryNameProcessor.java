@@ -16,7 +16,7 @@ public class GroceryNameProcessor {
 
   private final LanguageServiceClient client;
 
-  GroceryNameProcessor() throws IOException { 
+  GroceryNameProcessor() throws IOException {
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       this.client = language;
     }
