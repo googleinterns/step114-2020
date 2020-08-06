@@ -98,6 +98,7 @@ public final class StoreReceiptServiceTest {
   @Test
   // Check the JSON string is transformed into Receipt object.
   public void parseReceiptFromForm_CreatesReceiptObjects() throws IOException {
+    // TODO(prashantneu@) add better test with correct testJson string.
     String testJson =
         "{\"data\":\"{\\\"userId\\\":\\\"23\\\",\\\"storeName\\\":\\\"kro\\\",\\\"date\\\":\\\"date\\\",\\\"name\\\":\\\"exp\\\",\\\"fileUrl\\\":\\\"url\\\",\\\"totalPrice\\\":0.5,\\\"items\\\":[{\\\"userId\\\":\\\"23\\\",\\\"name\\\":\\\"kro\\\",\\\"price\\\":0.5,\\\"quantity\\\":2,\\\"category\\\":\\\"cat\\\",\\\"expireDate\\\":\\\"date\\\"}]}\"}";
     Reader inputString = new StringReader(testJson);
