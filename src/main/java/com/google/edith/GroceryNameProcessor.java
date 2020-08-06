@@ -16,7 +16,7 @@ public class GroceryNameProcessor {
 
   private final LanguageServiceClient client;
 
-  GroceryNameProcessor() throws IOException{ 
+  GroceryNameProcessor() throws IOException { 
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
       this.client = language;
     }
@@ -52,8 +52,8 @@ public class GroceryNameProcessor {
     }
 
     if (commonEntities.size() >= 1) {
-        return commonEntities.get(0).getName();
-      }
+      return commonEntities.get(0).getName();
+    }
     return "";
   }
 }

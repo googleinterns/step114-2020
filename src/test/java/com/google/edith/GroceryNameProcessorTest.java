@@ -1,15 +1,16 @@
 package com.google.edith;
 
-import com.google.cloud.language.v1.LanguageServiceClient;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+
+import com.google.cloud.language.v1.LanguageServiceClient;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(JUnit4.class)
 public class GroceryNameProcessorTest {
