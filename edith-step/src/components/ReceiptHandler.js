@@ -235,7 +235,7 @@ export default class ReceiptHandler extends React.Component {
                     name="name"
                     value={item.name}
                     onChange=
-                        {(element) => this.handleNameChange(index, element)}/>
+                      {(element) => this.handleNameChange(index, element)}/>
                 </div>
                 <div className="col-lg-2">
                   <input type="number"
@@ -243,7 +243,7 @@ export default class ReceiptHandler extends React.Component {
                     name="price"
                     value={item.price}
                     onChange=
-                        {(element) => this.handlePriceChange(index, element)}/>
+                      {(element) => this.handlePriceChange(index, element)}/>
                 </div>
                 <div className="col-lg-2">
                   <input type="number"
@@ -251,7 +251,9 @@ export default class ReceiptHandler extends React.Component {
                     name="quantity"
                     value={item.quantity}
                     onChange=
-                        {(element) => this.handleQuantityChange(index, element)}/>
+                      {(element) => {
+                        this.handleQuantityChange(index, element)
+                      }}/>
                 </div>
                 {i==0 && this.state.deals.length == 0 &&
                 <div className="col-lg-2">
@@ -273,7 +275,9 @@ export default class ReceiptHandler extends React.Component {
                     name="expiration"
                     value={this.state.deals[index].expirationTime}
                     onChange=
-                        {(element) => this.handleExpirationChange(index, element)}/>
+                      {(element) => {
+                        this.handleExpirationChange(index, element)
+                      }}/>
                 </div>
               </>
                 }
