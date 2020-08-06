@@ -18,8 +18,6 @@ import com.google.appengine.api.users.User;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /** Operations for handling parsing receipt using Document AI API. * */
 public interface ExtractReceiptInterface {
@@ -30,8 +28,9 @@ public interface ExtractReceiptInterface {
    * @return Lis<Map<String, String>> - a list of maps where item name is key and item price is
    *     value
    */
-  public ImmutableList<ImmutableMap<String, String>> extractReceipt(String blobKey) throws IOException;
-  
+  public ImmutableList<ImmutableMap<String, String>> extractReceipt(String blobKey)
+      throws IOException;
+
   /**
    * Gets the user who is currently logged in.
    *

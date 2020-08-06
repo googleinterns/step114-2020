@@ -21,9 +21,9 @@ import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.cloud.documentai.v1beta2.GcsSource;
 import com.google.cloud.documentai.v1beta2.InputConfig;
 import com.google.cloud.documentai.v1beta2.ProcessDocumentRequest;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.base.Splitter;
 import com.google.edith.interfaces.ExtractReceiptInterface;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,15 +39,17 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
   private final DocumentUnderstandingServiceClient client;
   private final UserService userService;
 
-  private static final String INPUT_GCS_URI = 
+  private static final String INPUT_GCS_URI =
       "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
+
   public ExtractReceiptService(UserService userService, DocumentUnderstandingServiceClient client) {
     this.userService = userService;
     this.client = client;
   }
 
   @Override
-  public ImmutableList<ImmutableMap<String, String>> extractReceipt(String blobKey) throws IOException {
+  public ImmutableList<ImmutableMap<String, String>> extractReceipt(String blobKey)
+      throws IOException {
     String projectId = "edith-step";
     String location = "us";
     // For local testing. As blobstore API does not store in GCS in local environment.

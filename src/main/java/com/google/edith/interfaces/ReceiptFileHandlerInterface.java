@@ -34,7 +34,8 @@ public interface ReceiptFileHandlerInterface {
    *
    * @return ImmutableList<FileInfo> - immutable list of uploaded files from the FE form.
    */
-  ImmutableList<FileInfo> getUploadedFileUrl(HttpServletRequest request, String formInputElementName);
+  ImmutableList<FileInfo> getUploadedFileUrl(
+      HttpServletRequest request, String formInputElementName);
 
   /**
    * Returns a BlobKey that points to the uploaded file.

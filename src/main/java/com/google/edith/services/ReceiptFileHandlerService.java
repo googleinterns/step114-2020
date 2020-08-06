@@ -22,7 +22,6 @@ import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -43,14 +42,12 @@ public final class ReceiptFileHandlerService implements ReceiptFileHandlerInterf
   }
 
   @Override
-  public  ImmutableList<FileInfo> getUploadedFileUrl(
+  public ImmutableList<FileInfo> getUploadedFileUrl(
       HttpServletRequest request, String formInputElementName) {
 
     Map<String, List<FileInfo>> fileInfos = blobstoreService.getFileInfos(request);
     List<FileInfo> uploadedFile = fileInfos.get(formInputElementName);
-    return uploadedFile == null
-        ? ImmutableList.of()
-        : ImmutableList.copyOf(uploadedFile);
+    return uploadedFile == null ? ImmutableList.of() : ImmutableList.copyOf(uploadedFile);
   }
 
   @Override

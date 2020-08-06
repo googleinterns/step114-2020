@@ -28,7 +28,6 @@ import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
@@ -68,7 +67,8 @@ public final class ReceiptDataTest {
 
   @Test
   public void extractReceiptData_hasRightNumberOfItems() throws IOException {
-    when(extractReceiptImplementation.getCurrentLoggedInUser()).thenReturn(userService.getCurrentUser());
+    when(extractReceiptImplementation.getCurrentLoggedInUser())
+        .thenReturn(userService.getCurrentUser());
     Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
     Item[] items = extractedReceipt.getItems();
     assertEquals(2, items.length);
@@ -76,7 +76,8 @@ public final class ReceiptDataTest {
 
   @Test
   public void extractReceiptData_hasRightCorrectExpenseName() throws IOException {
-    when(extractReceiptImplementation.getCurrentLoggedInUser()).thenReturn(userService.getCurrentUser());
+    when(extractReceiptImplementation.getCurrentLoggedInUser())
+        .thenReturn(userService.getCurrentUser());
     Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
     assertEquals("expense", extractedReceipt.getName());
   }
