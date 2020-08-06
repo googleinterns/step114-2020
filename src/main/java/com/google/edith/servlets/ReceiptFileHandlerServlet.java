@@ -76,6 +76,7 @@ public final class ReceiptFileHandlerServlet extends HttpServlet {
 
     Gson gson = new Gson();
     String json = gson.toJson(parsedReceipt);
+    System.out.println(json);
     response.sendRedirect("/");
   }
 }

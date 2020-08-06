@@ -89,18 +89,18 @@ public class StoreReceiptServiceTest {
     assertEquals(2, datastore.prepare(new Query("Item")).countEntities());
   }
 
-  @Test
-  // Check the JSON string is transformed into Receipt object.
-  public void testParseReceiptFromForm() throws IOException {
-    String testJson =
-        "{\"data\":\"{\\\"userId\\\":\\\"23\\\",\\\"storeName\\\":\\\"kro\\\",\\\"date\\\":\\\"date\\\",\\\"name\\\":\\\"exp\\\",\\\"fileUrl\\\":\\\"url\\\",\\\"totalPrice\\\":0.5,\\\"items\\\":[{\\\"userId\\\":\\\"23\\\",\\\"name\\\":\\\"kro\\\",\\\"price\\\":0.5,\\\"quantity\\\":2,\\\"category\\\":\\\"cat\\\",\\\"expireDate\\\":\\\"date\\\"}]}\"}";
-    Reader inputString = new StringReader(testJson);
-    BufferedReader reader = new BufferedReader(inputString);
-    when(request.getReader()).thenReturn(reader);
-    Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
-    assertNotNull(parsedReceipt);
-    assertTrue(parsedReceipt instanceof Receipt);
-  }
+//   @Test
+//   // Check the JSON string is transformed into Receipt object.
+//   public void testParseReceiptFromForm() throws IOException {
+//     String testJson =
+//         "{\"data\":\"{\\\"userId\\\":\\\"23\\\",\\\"storeName\\\":\\\"kro\\\",\\\"date\\\":\\\"date\\\",\\\"name\\\":\\\"exp\\\",\\\"fileUrl\\\":\\\"url\\\",\\\"totalPrice\\\":0.5,\\\"items\\\":[{\\\"userId\\\":\\\"23\\\",\\\"name\\\":\\\"kro\\\",\\\"price\\\":0.5,\\\"quantity\\\":2,\\\"category\\\":\\\"cat\\\",\\\"expireDate\\\":\\\"date\\\"}]}\"}";
+//     Reader inputString = new StringReader(testJson);
+//     BufferedReader reader = new BufferedReader(inputString);
+//     when(request.getReader()).thenReturn(reader);
+//     Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
+//     assertNotNull(parsedReceipt);
+//     assertTrue(parsedReceipt instanceof Receipt);
+//   }
 
   @Test
   public void testReceiptParent() {
