@@ -16,12 +16,13 @@ import java.util.Map;
 public final class ReceiptData {
 
   private ExtractReceiptInterface extractReceiptImplementation;
+
   private static final String UNKNOWN_STORE = "UNKNOWN_STORE";
   private static final String UNKNOWN_DATE = "UNKNOWN_DATE";
 
   public ReceiptData() throws IOException {
     this.extractReceiptImplementation =
-        new ExtractReceiptService(DocumentUnderstandingServiceClient.create());
+        new ExtractReceiptService(UserServiceFactory.getUserService(), DocumentUnderstandingServiceClient.create());
   }
 
   public ReceiptData(ExtractReceiptInterface extractReceiptImplementation) {
@@ -37,8 +38,7 @@ public final class ReceiptData {
    */
   public Receipt extractReceiptData(String blobKey, String expenditureName) throws IOException {
 
-    UserService userService = UserServiceFactory.getUserService();
-    User user = userService.getCurrentUser();
+    User user = extractReceiptImplementation.getCurrentLoggedInUser();
 
     ImmutableList<ImmutableMap<String, String>> items = extractReceiptImplementation.extractReceipt(blobKey);
     Item[] parsedItems = createReceiptItems(user, items);

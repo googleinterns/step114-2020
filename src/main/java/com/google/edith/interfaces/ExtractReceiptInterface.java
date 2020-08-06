@@ -14,6 +14,7 @@
 
 package com.google.edith.interfaces;
 
+import com.google.appengine.api.users.User;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
@@ -30,4 +31,11 @@ public interface ExtractReceiptInterface {
    *     value
    */
   public ImmutableList<ImmutableMap<String, String>> extractReceipt(String blobKey) throws IOException;
+  
+  /**
+   * Gets the user who is currently logged in.
+   *
+   * @return User - user object which contains the information of logged in user.
+   */
+  public User getCurrentLoggedInUser();
 }

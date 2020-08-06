@@ -14,6 +14,8 @@
 
 package com.google.edith.services;
 
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
 import com.google.cloud.documentai.v1beta2.Document;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
 import com.google.cloud.documentai.v1beta2.GcsSource;
@@ -35,9 +37,12 @@ import java.util.Map;
  */
 public final class ExtractReceiptService implements ExtractReceiptInterface {
   private final DocumentUnderstandingServiceClient client;
+  private final UserService userService;
+
   private static final String INPUT_GCS_URI = 
       "gs://edith-receipts/AAANsUmjLAOYQp4Rn9XphEflkVYntq1WQX4m9oczEGqXTn4m7vce4b3d02B0Qe1jYgF2IGJRHTSN6E3u4FSREZrQgbI.SvrR-Q83SYV-TNgy";
-  public ExtractReceiptService(DocumentUnderstandingServiceClient client) {
+  public ExtractReceiptService(UserService userService, DocumentUnderstandingServiceClient client) {
+    this.userService = userService;
     this.client = client;
   }
 
@@ -48,6 +53,11 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
     // For local testing. As blobstore API does not store in GCS in local environment.
     String parsedText = extractReceipt(projectId, location, INPUT_GCS_URI);
     return createItems(parsedText);
+  }
+
+  @Override
+  public User getCurrentLoggedInUser() {
+    return userService.getCurrentUser();
   }
 
   /**

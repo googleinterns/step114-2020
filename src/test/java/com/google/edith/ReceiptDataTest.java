@@ -49,6 +49,7 @@ public final class ReceiptDataTest {
           .setEnvEmail("user@gmail.com");
 
   @Mock ExtractReceiptInterface extractReceiptImplementation;
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Before
   public void setUp() throws Exception {
@@ -64,10 +65,10 @@ public final class ReceiptDataTest {
   }
 
   private ReceiptData receiptData;
-  private final UserService userService = UserServiceFactory.getUserService();
 
   @Test
   public void extractReceiptData_hasRightNumberOfItems() throws IOException {
+    when(extractReceiptImplementation.getCurrentLoggedInUser()).thenReturn(userService.getCurrentUser());
     Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
     Item[] items = extractedReceipt.getItems();
     assertEquals(2, items.length);
@@ -75,6 +76,7 @@ public final class ReceiptDataTest {
 
   @Test
   public void extractReceiptData_hasRightCorrectExpenseName() throws IOException {
+    when(extractReceiptImplementation.getCurrentLoggedInUser()).thenReturn(userService.getCurrentUser());
     Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
     assertEquals("expense", extractedReceipt.getName());
   }
