@@ -77,50 +77,61 @@ public class StoreReceiptServiceTest {
   }
 
   @Test
-  // Tests if Receipt entity and Item entities are stored.
-  public void testStoreEntities() {
+  // Tests if helper function is working correctly.
+  public void createUserInfoEntity_CreatesEntity() {
     assertEquals(0, datastore.prepare(new Query("UserInfo")).countEntities());
     Entity userInfoEntity = createUserInfoEntity();
     assertEquals(1, datastore.prepare(new Query("UserInfo")).countEntities());
+  }
+
+  @Test
+  // Tests if Receipt entity and Item entities are stored.
+  public void storeEntites_EntitiesAreStoredInDatastore() {
+    Entity userInfoEntity = createUserInfoEntity();
     Receipt testingReceipt = createEntities();
-    assertEquals(0, datastore.prepare(new Query("Receipt")).countEntities());
+    
     storeReceiptService.storeEntites(testingReceipt);
+    
     assertEquals(1, datastore.prepare(new Query("Receipt")).countEntities());
     assertEquals(2, datastore.prepare(new Query("Item")).countEntities());
   }
 
   @Test
   // Check the JSON string is transformed into Receipt object.
-  public void testParseReceiptFromForm() throws IOException {
+  public void parseReceiptFromForm_CreatesReceiptObjects() throws IOException {
     String testJson =
         "{\"data\":\"{\\\"userId\\\":\\\"23\\\",\\\"storeName\\\":\\\"kro\\\",\\\"date\\\":\\\"date\\\",\\\"name\\\":\\\"exp\\\",\\\"fileUrl\\\":\\\"url\\\",\\\"totalPrice\\\":0.5,\\\"items\\\":[{\\\"userId\\\":\\\"23\\\",\\\"name\\\":\\\"kro\\\",\\\"price\\\":0.5,\\\"quantity\\\":2,\\\"category\\\":\\\"cat\\\",\\\"expireDate\\\":\\\"date\\\"}]}\"}";
     Reader inputString = new StringReader(testJson);
     BufferedReader reader = new BufferedReader(inputString);
     when(request.getReader()).thenReturn(reader);
+    
     Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
+    
     assertNotNull(parsedReceipt);
     assertTrue(parsedReceipt instanceof Receipt);
   }
 
   @Test
-  public void testReceiptParent() {
+  public void storeEntites_storesEntitesWithCorrectAncestorForReceipt() {
     Entity userInfoEntity = createUserInfoEntity();
-    assertEquals(0, datastore.prepare(new Query("Receipt")).countEntities());
     Receipt testingReceipt = createEntities();
+
     storeReceiptService.storeEntites(testingReceipt);
+
     Entity receiptEntity = datastore.prepare(new Query("Receipt")).asSingleEntity();
     assertTrue(receiptEntity.getKey().toString().contains("UserInfo"));
   }
 
   @Test
-  public void testItemParent() {
+  public void storeEntites_storesEntitesWithCorrectAncestorForItem() {
     Entity userInfoEntity = createUserInfoEntity();
-    assertEquals(0, datastore.prepare(new Query("Receipt")).countEntities());
     Receipt testingReceipt = createEntities();
-    storeReceiptService.storeEntites(testingReceipt);
     Query query =
         new Query("Item")
             .setFilter(new Query.FilterPredicate("name", Query.FilterOperator.EQUAL, "apple"));
+    
+    storeReceiptService.storeEntites(testingReceipt);
+    
     Entity item1 = datastore.prepare(query).asSingleEntity();
     // Item entity must contain UserInfo and Receipt both in the key.
     assertTrue(item1.getKey().toString().contains("UserInfo"));
