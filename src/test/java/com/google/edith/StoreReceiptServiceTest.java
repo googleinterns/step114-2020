@@ -15,6 +15,7 @@
 package com.google.edith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +68,6 @@ public final class StoreReceiptServiceTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    // storeReceiptService = new StoreReceiptService(datastore);
   }
 
   @After
@@ -105,16 +105,7 @@ public final class StoreReceiptServiceTest {
     when(request.getReader()).thenReturn(reader);
 
     Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
-    
-    String userId = parsedReceipt.getUserId();
-    String storeName = parsedReceipt.getUserId();
-    String date = parsedReceipt.getDate();
-    String name = parsedReceipt.getName();
-
-    // assertEquals("23", userId);
-    // assertEquals("kro", storeName);
-    // assertEquals("date", date);
-    // assertEquals("exp", name);
+    assertNotNull(parsedReceipt);
   }
 
   @Test
