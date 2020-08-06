@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -87,12 +88,12 @@ public class QueryItems {
     Date currentDate = new Date();
     Date receiptDate;
     try {
-      receiptDate = new SimpleDateFormat("yyyy-mm-dd").parse(receiptDateString);
+      receiptDate = new SimpleDateFormat("yyyy-MM-dd").parse(receiptDateString);
     } catch (ParseException e) {
       receiptDate = new Date();
     }
     long timePassedSinceReceipt = currentDate.getTime() - receiptDate.getTime();
-    int daysPassedSinceReceipt = (int) (timePassedSinceReceipt / (1000 * 60 * 60 * 24)) / 24;
+    int daysPassedSinceReceipt = (int) TimeUnit.MILLISECONDS.toDays(timePassedSinceReceipt);
     return daysPassedSinceReceipt;
   }
 
