@@ -82,9 +82,8 @@ export default class ReceiptHandler extends React.Component {
         },
       });
 
-      const data = response.data;
       this.setState((state) => ({
-        deals: data,
+        deals: response.data,
       }));
     };
 

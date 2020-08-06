@@ -29,9 +29,7 @@ import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptFileHandlerServlet;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -68,30 +66,30 @@ public final class ReceiptFileHandlerServletTest {
   // If no file is uploaded, Blob is not stored and Exception is thrown.
   @Test(expected = IllegalStateException.class)
   public void doPost_ifNoFileUpload_throwException() throws IOException {
-    List<FileInfo> files = Collections.emptyList();
+    ImmutableList<FileInfo> files = ImmutableList.of();
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
 
     receiptFileHandlerServlet.doPost(request, response);
   }
 
-  // Serve the blob if file has been stored successfully in Blobstore.
+  // Create receipt object file has been stored successfully in Blobstore.
   @Test
-  public void doPost_ifNoFileUpload_redirectToDisplayFile() throws IOException {
+  public void doPost_ifFileUpload_createParsedReceipt() throws IOException {
     Date creationDate = new Date();
     FileInfo uploadFile = new FileInfo("blob", creationDate, "receipt", 0L, "hash", "edith");
-    List<FileInfo> files = ImmutableList.of(uploadFile);
+    ImmutableList<FileInfo> files = ImmutableList.of(uploadFile);
     BlobKey returnBlobKey = new BlobKey("blob");
     Item[] items = new Item[1];
     Receipt receiptData =
         new Receipt("userId", "storeName", "date", "name", "fileUrl", 0.5f, items);
+    when(request.getParameter("expense-name")).thenReturn("name");
     when(receiptFileHandler.getUploadedFileUrl(request, "receipt-file")).thenReturn(files);
     when(receiptFileHandler.getBlobKey(files)).thenReturn(returnBlobKey);
-    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "expense"))
+    when(receiptFileHandler.createParsedReceipt(returnBlobKey.getKeyString(), "name"))
         .thenReturn(receiptData);
 
     receiptFileHandlerServlet.doPost(request, response);
 
-    verify(receiptFileHandler, times(1)).getBlobKey(files);
-    verify(response, times(1)).sendRedirect("/");
+    verify(receiptFileHandler, times(1)).createParsedReceipt(returnBlobKey.getKeyString(), "name");
   }
 }

@@ -1,23 +1,26 @@
 package com.google.edith.servlets;
 
 import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.documentai.v1beta2.DocumentUnderstandingServiceClient;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.interfaces.ExtractReceiptInterface;
 import com.google.edith.services.ExtractReceiptService;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /** Converts parsed receipt file string to receipt and item objects. */
 public final class ReceiptData {
+  private ExtractReceiptInterface extractReceiptImplementation;
 
-  private final ExtractReceiptInterface extractReceiptImplementation;
+  private static final String UNKNOWN_STORE = "UNKNOWN_STORE";
+  private static final String UNKNOWN_DATE = "UNKNOWN_DATE";
 
   public ReceiptData() throws IOException {
     this.extractReceiptImplementation =
-        new ExtractReceiptService(DocumentUnderstandingServiceClient.create());
+        new ExtractReceiptService(
+            UserServiceFactory.getUserService(), DocumentUnderstandingServiceClient.create());
   }
 
   public ReceiptData(ExtractReceiptInterface extractReceiptImplementation) {
@@ -33,10 +36,10 @@ public final class ReceiptData {
    */
   public Receipt extractReceiptData(String blobKey, String expenditureName) throws IOException {
 
-    UserService userService = UserServiceFactory.getUserService();
-    User user = userService.getCurrentUser();
+    User user = extractReceiptImplementation.getCurrentLoggedInUser();
 
-    List<Map<String, String>> items = extractReceiptImplementation.extractReceipt(blobKey);
+    ImmutableList<ImmutableMap<String, String>> items =
+        extractReceiptImplementation.extractReceipt(blobKey);
     Item[] parsedItems = createReceiptItems(user, items);
     Receipt parsedReceipt = createReceipt(blobKey, user, parsedItems, expenditureName);
     return parsedReceipt;
@@ -54,13 +57,7 @@ public final class ReceiptData {
   private Receipt createReceipt(String blobKey, User user, Item[] items, String expenditureName) {
     Receipt userReceipt =
         new Receipt(
-            user.getUserId(),
-            "unknown store name",
-            "unknown date",
-            expenditureName,
-            blobKey,
-            0.0f,
-            items);
+            user.getUserId(), UNKNOWN_STORE, UNKNOWN_DATE, expenditureName, blobKey, 0.0f, items);
     return userReceipt;
   }
 
@@ -71,7 +68,8 @@ public final class ReceiptData {
    * @param extractedData - List of item description.
    * @return Item[] - array of item objects created from the list of item description.
    */
-  private Item[] createReceiptItems(User user, List<Map<String, String>> extractedData) {
+  private Item[] createReceiptItems(
+      User user, ImmutableList<ImmutableMap<String, String>> extractedData) {
     int index = 0;
     int totalItems = extractedData.size();
     Item[] items = new Item[totalItems];

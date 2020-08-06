@@ -78,8 +78,14 @@ class FileUploadModalBox extends React.Component {
             encType="multipart/form-data"
           >
             <Form.Group>
+              <Form.Control
+                type="text"
+                name="expense-name"
+                placeholder="Expense Name"
+              />
               <Form.File
                 required
+                id="receipt-file"
                 className="receipt-file"
                 label="Receipt file input"
                 name="receipt-file"

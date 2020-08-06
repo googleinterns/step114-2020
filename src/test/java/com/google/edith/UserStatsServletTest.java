@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.edith.servlets.UserInsightsInterface;
@@ -25,6 +26,11 @@ import org.mockito.Mockito;
 public final class UserStatsServletTest {
 
   private static DatastoreService DATASTORE;
+  private static final HttpServletRequest REQUEST = Mockito.mock(HttpServletRequest.class);
+  private static final HttpServletResponse RESPONSE = Mockito.mock(HttpServletResponse.class);
+  private static final UserInsightsInterface USER_INSIGHTS =
+      Mockito.mock(UserInsightsInterface.class);
+  private static final UserService USER_SERVICE = Mockito.mock(UserService.class);
   private static final LocalServiceTestHelper TEST_HELPER =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
   private static final Gson GSON = new Gson();
@@ -38,9 +44,6 @@ public final class UserStatsServletTest {
 
   @Test
   public void testServlet_doPost_runsCorrectly() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-
     JsonObject testJson = new JsonObject();
     testJson.addProperty("itemName", "Corn");
     testJson.addProperty("itemUserId", "userId");
@@ -48,34 +51,29 @@ public final class UserStatsServletTest {
     testJson.addProperty("itemPrice", "5.00");
     testJson.addProperty("itemQuantity", "4");
     testJson.addProperty("itemDate", "2020-07-14");
-    testJson.addProperty("itemReceiptId", "receiptId");
 
     String json = GSON.toJson(testJson);
-    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
+    when(REQUEST.getReader()).thenReturn(new BufferedReader(new StringReader(json)));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    when(response.getWriter()).thenReturn(writer);
+    when(RESPONSE.getWriter()).thenReturn(writer);
 
-    new UserStatsServlet().doPost(request, response);
+    new UserStatsServlet(DATASTORE, USER_INSIGHTS, USER_SERVICE).doPost(REQUEST, RESPONSE);
 
-    verify(request, Mockito.atLeast(1)).getReader();
+    verify(REQUEST, Mockito.atLeast(1)).getReader();
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("Item posted"));
   }
 
   @Test
   public void testServlet_doGet_runsCorrectly() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-    UserInsightsInterface userInsights = Mockito.mock(UserInsightsInterface.class);
-
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    when(response.getWriter()).thenReturn(writer);
-    when(userInsights.createJson(USER_ID)).thenReturn("");
+    when(RESPONSE.getWriter()).thenReturn(writer);
+    when(USER_INSIGHTS.createJson(USER_ID)).thenReturn("");
 
-    new UserStatsServlet(DATASTORE, userInsights).doGet(request, response);
-    verify(userInsights, Mockito.atLeast(1)).createJson(USER_ID);
+    new UserStatsServlet(DATASTORE, USER_INSIGHTS, USER_SERVICE).doGet(REQUEST, RESPONSE);
+    verify(USER_INSIGHTS, Mockito.atLeast(1)).createJson(USER_ID);
   }
 }

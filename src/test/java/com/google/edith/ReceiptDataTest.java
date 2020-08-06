@@ -28,7 +28,6 @@ import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptData;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
@@ -49,6 +48,7 @@ public final class ReceiptDataTest {
           .setEnvEmail("user@gmail.com");
 
   @Mock ExtractReceiptInterface extractReceiptImplementation;
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Before
   public void setUp() throws Exception {
@@ -64,10 +64,11 @@ public final class ReceiptDataTest {
   }
 
   private ReceiptData receiptData;
-  private final UserService userService = UserServiceFactory.getUserService();
 
   @Test
   public void extractReceiptData_hasRightNumberOfItems() throws IOException {
+    when(extractReceiptImplementation.getCurrentLoggedInUser())
+        .thenReturn(userService.getCurrentUser());
     Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
     Item[] items = extractedReceipt.getItems();
     assertEquals(2, items.length);
@@ -75,14 +76,16 @@ public final class ReceiptDataTest {
 
   @Test
   public void extractReceiptData_hasRightCorrectExpenseName() throws IOException {
+    when(extractReceiptImplementation.getCurrentLoggedInUser())
+        .thenReturn(userService.getCurrentUser());
     Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
     assertEquals("expense", extractedReceipt.getName());
   }
 
   private void setUpItemDescription() throws IOException {
-    Map<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
-    Map<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
-    List<Map<String, String>> itemsDescription = ImmutableList.of(item1, item2);
+    ImmutableMap<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
+    ImmutableMap<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
+    ImmutableList<ImmutableMap<String, String>> itemsDescription = ImmutableList.of(item1, item2);
     when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
   }
 }
