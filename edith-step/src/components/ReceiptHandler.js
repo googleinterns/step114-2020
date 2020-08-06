@@ -105,7 +105,6 @@ export default class ReceiptHandler extends React.Component {
           fileUrl: this.state.fileUrl,
           totalPrice: price,
           items: this.state.items,
-          deals: this.state.deals,
         },
       });
       await axios({
@@ -255,7 +254,7 @@ export default class ReceiptHandler extends React.Component {
                         this.handleQuantityChange(index, element);
                       }}/>
                 </div>
-                {i==0 && this.state.deals.length == 0 &&
+                {index==0 && this.state.deals.length == 0 &&
                 <div className="col-lg-2">
                   <input type="text"
                     className="store-name form-control"
