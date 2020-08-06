@@ -8,10 +8,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.edith.DealsServlet;
-<<<<<<< HEAD
-=======
 import com.google.edith.GroceryNameProcessor;
->>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,22 +24,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-<<<<<<< HEAD
-@RunWith(JUnit4.class)
-public class DealsServletTest {
-  @Test
-  public void doPost_itemNameInCsv_respondsWithCheapestStore() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-
-    Item receiptItem =
-        new Item("185804764220139124118",
-            "Apple Juice",
-            (float) 5.99,
-            1,
-            "unknown category",
-            "unknown date");
-=======
 public class DealsServletTest {
   private GroceryNameProcessor reader;
   @Mock LanguageServiceClient languageServiceClient;
@@ -68,7 +49,6 @@ public class DealsServletTest {
             .setCategory("unknown category")
             .setExpiration("unknown date")
             .build();
->>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
@@ -86,12 +66,8 @@ public class DealsServletTest {
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
 
-<<<<<<< HEAD
-    Mockito.when(request.getReader())
-=======
     when(reader.process(anyString())).thenReturn("apple juice");
     when(request.getReader())
->>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
 
     StringWriter stringWriter = new StringWriter();

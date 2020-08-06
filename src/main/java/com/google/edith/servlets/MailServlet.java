@@ -50,16 +50,17 @@ public class MailServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String type = request.getParameter("type");
     StringBuilder body = new StringBuilder();
-    String subject;
+    String subject = "";
 
     if (type.equals("expirationQuery")) {
       String json = request.getParameter("body");
+      JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+      JsonArray groceryItems = jsonObject.getAsJsonArray("body");
       subject = "Restock Alert";
-      JsonArray groceryItems = json.getAsJsonArray();
       body.append("Hello! You're running low on a few items. You might want to restock:");
       body.append("/n");
-      for (int i = 0; i < groceryItems.length; i++) {
-        body.append(groceryItems[i]);
+      for (int i = 0; i < groceryItems.size(); i++) {
+        body.append(groceryItems.get(i));
         body.append("/n");
       }
     }

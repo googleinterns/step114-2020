@@ -46,7 +46,7 @@ public class DealsServlet extends HttpServlet {
       } catch (Exception e) {
         System.out.println("error");
       }
-      cheapestItem = groceryReader.readFile(itemName.toLowerCase());
+      cheapestItem = groceryReader.readFile(itemName.toLowerCase(), itemPrice);
 
       if (cheapestItem != null) {
         deals.add(cheapestItem);
