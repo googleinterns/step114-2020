@@ -1,12 +1,9 @@
 package com.google.edith;
 
 import com.google.edith.servlets.Item;
-import com.google.edith.DealItem.Store;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 public class ItemTest {
   private Item item1;

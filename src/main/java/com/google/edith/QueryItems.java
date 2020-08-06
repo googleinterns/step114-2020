@@ -16,11 +16,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Finds the items on past receipts that have expired by the time of the user's next shopping trip.
@@ -43,8 +43,7 @@ public class QueryItems {
     Set<Item> itemsToBuy = new HashSet<Item>();
 
     for (Receipt receipt : receipts) {
-      double daysPassedSinceReceiptStored =
-          findTimePassedSinceReceiptStored(receipt.getDate());
+      double daysPassedSinceReceiptStored = findTimePassedSinceReceiptStored(receipt.getDate());
       List<Item> items = Arrays.asList(receipt.getItems());
 
       for (Item item : items) {
@@ -118,7 +117,9 @@ public class QueryItems {
       String name = (String) receiptEntity.getProperty("name");
       String fileUrl = (String) receiptEntity.getProperty("fileUrl");
       float totalPrice = (float) ((double) receiptEntity.getProperty("price"));
-      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items.toArray(new Item[0]));
+      Receipt receipt =
+          new Receipt(
+              userId, storeName, date, name, fileUrl, totalPrice, items.toArray(new Item[0]));
       receipts.add(receipt);
     }
     return ImmutableList.copyOf(receipts);
@@ -154,6 +155,5 @@ public class QueryItems {
       itemsList.add(receiptItem);
     }
     return ImmutableList.copyOf(itemsList);
-    //return itemsList.toArray(new Item[0]);
   }
 }
