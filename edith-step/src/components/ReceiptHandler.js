@@ -252,7 +252,7 @@ export default class ReceiptHandler extends React.Component {
                     value={item.quantity}
                     onChange=
                       {(element) => {
-                        this.handleQuantityChange(index, element)
+                        this.handleQuantityChange(index, element);
                       }}/>
                 </div>
                 {i==0 && this.state.deals.length == 0 &&
@@ -276,7 +276,7 @@ export default class ReceiptHandler extends React.Component {
                     value={this.state.deals[index].expirationTime}
                     onChange=
                       {(element) => {
-                        this.handleExpirationChange(index, element)
+                        this.handleExpirationChange(index, element);
                       }}/>
                 </div>
               </>
