@@ -29,7 +29,7 @@ public class QueryItemsTest {
 
   private LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
-          new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
+              new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
           .setEnvAttributes(map)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail")
