@@ -14,6 +14,7 @@
 
 package com.google.edith.servlets;
 
+// TODO(@prashantneu) Use Auto_Value for this class and change Item[] to list<Item>.
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;

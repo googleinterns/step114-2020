@@ -44,7 +44,7 @@ public class DealsServlet extends HttpServlet {
         GroceryNameProcessor processor = new GroceryNameProcessor();
         itemName = processor.process(itemName);
       } catch (Exception e) {
-        System.out.println("error");
+        System.out.println(e.getMessage());
       }
 
       cheapestItem = groceryReader.readFile(itemName.toLowerCase(), itemPrice);

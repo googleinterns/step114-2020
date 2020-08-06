@@ -1,10 +1,14 @@
 package com.google.edith.servlets;
 
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.edith.DealsServlet;
+import com.google.edith.GroceryNameProcessor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,14 +19,25 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class DealsServletTest {
+  private GroceryNameProcessor reader;
+  @Mock LanguageServiceClient languageServiceClient;
+
+  @Before
+  public void setUp() {
+    MockitoAnnotations.initMocks(this);
+    reader = mock(GroceryNameProcessor.class);
+  }
+
   @Test
   public void doPost_itemNameInCsv_respondsWithCheapestStore() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
 
     Item receiptItem =
         Item.builder()
@@ -51,6 +66,7 @@ public class DealsServletTest {
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
 
+    when(reader.process(anyString())).thenReturn("apple juice");
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
 
@@ -67,8 +83,8 @@ public class DealsServletTest {
 
   @Test
   public void doPost_randomStringInput_respondsWithNoDealFound() throws Exception {
-    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
 
     Item receiptItem =
         Item.builder()
@@ -97,6 +113,7 @@ public class DealsServletTest {
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
 
+    when(reader.process(anyString())).thenReturn("");
     when(request.getReader())
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
 

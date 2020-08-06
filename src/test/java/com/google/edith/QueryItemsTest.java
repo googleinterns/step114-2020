@@ -69,7 +69,10 @@ public class QueryItemsTest {
     String json = query.findExpiredItems();
     JsonParser parser = new JsonParser();
     JsonArray inputJson = parser.parse(json).getAsJsonArray();
-    Assert.assertTrue(inputJson.size() == 2);
+    String jsonString = inputJson.toString();
+    int index = jsonString.indexOf("Peanut Butter");
+    jsonString = jsonString.substring(index + 13, jsonString.length());
+    Assert.assertTrue(jsonString.indexOf("Peanut Butter") == -1);
   }
 
   // Creates and Stores Receipt and Item entities in Datastore.
