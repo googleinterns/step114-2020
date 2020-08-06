@@ -26,21 +26,21 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet to store different entities in Datastore. */
 @WebServlet("/store-receipt")
 public final class StoreReceipt extends HttpServlet {
-  private StoreReceiptInterface storeReceiptImplementation;
+  private StoreReceiptInterface storeReceiptService;
 
   public StoreReceipt() {
-    this.storeReceiptImplementation =
+    this.storeReceiptService =
         new StoreReceiptService(DatastoreServiceFactory.getDatastoreService());
   }
 
-  public StoreReceipt(StoreReceiptInterface storeReceiptImplementation) {
-    this.storeReceiptImplementation = storeReceiptImplementation;
+  public StoreReceipt(StoreReceiptInterface storeReceiptService) {
+    this.storeReceiptService = storeReceiptService;
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Receipt receipt = storeReceiptImplementation.parseReceiptFromForm(request);
-    storeReceiptImplementation.storeEntites(receipt);
+    Receipt receipt = storeReceiptService.parseReceiptFromForm(request);
+    storeReceiptService.storeEntites(receipt);
     response.sendRedirect("/");
   }
 }

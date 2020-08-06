@@ -128,8 +128,6 @@ public final class StoreReceiptService implements StoreReceiptInterface {
 
   /**
    * Custom Deserializer to deserialize Item class as it is an abstract class.
-   *
-   * @param id - id of the user who is logged in.
    */
   private class ItemDeserializer implements JsonDeserializer<Item> {
     @Override
