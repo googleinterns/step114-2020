@@ -16,42 +16,40 @@ package com.google.edith.services;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.edith.servlets.Receipt;
-import com.google.edith.servlets.Item;
-import java.io.IOException;
 import java.io.BufferedReader;
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 public class StoreReceiptService {
-    
+
   private final DatastoreService datastore;
 
   public StoreReceiptService(DatastoreService datastore) {
     this.datastore = datastore;
   }
-  
-  /**
-  * Stores Receipt and Item entities in datastore
-  * @param receipt - object which holds info of parsed file.
-  */
-  public void storeEntites(Receipt receipt) {
-    storeReceiptEntity(receipt);
-  } 
 
   /**
-  * Receives Receipt object and creates entity
-  * of type Receipt and stores it in Datastore.
-  * @param receipt - object which holds info of parsed file.
-  */
+   * Stores Receipt and Item entities in datastore
+   *
+   * @param receipt - object which holds info of parsed file.
+   */
+  public void storeEntites(Receipt receipt) {
+    storeReceiptEntity(receipt);
+  }
+
+  /**
+   * Receives Receipt object and creates entity of type Receipt and stores it in Datastore.
+   *
+   * @param receipt - object which holds info of parsed file.
+   */
   private void storeReceiptEntity(Receipt receipt) {
     String userId = receipt.getUserId();
     String storeName = receipt.getStoreName();
@@ -59,7 +57,7 @@ public class StoreReceiptService {
     String name = receipt.getName();
     String fileUrl = receipt.getFileUrl();
     float totalPrice = receipt.getTotalPrice();
-    
+
     Optional<Entity> optEntity = getUserInfoEntity(userId);
     Entity userInfoEntity = optEntity.get();
     Entity receiptEntity = new Entity("Receipt", userInfoEntity.getKey());
@@ -74,11 +72,12 @@ public class StoreReceiptService {
   }
 
   /**
-  * Parses the form submitted by user which contains information of
-  * the parsed receipt and creates a Receipt object from the JSON string.
-  * @param request - request which contains the form body.
-  * @return Receipt - Receipt object created from the JSON string.
-  */
+   * Parses the form submitted by user which contains information of the parsed receipt and creates
+   * a Receipt object from the JSON string.
+   *
+   * @param request - request which contains the form body.
+   * @return Receipt - Receipt object created from the JSON string.
+   */
   public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
     BufferedReader bufferedReader = request.getReader();
     Gson gson = new Gson();
@@ -91,21 +90,21 @@ public class StoreReceiptService {
   }
 
   /**
-  * Stores parsed item from the form with
-  * receiptEntity as a parent in the datastore.
-  * @param items - request which contains the form body.
-  * @param receiptEntity - request which contains the form body.
-  */
+   * Stores parsed item from the form with receiptEntity as a parent in the datastore.
+   *
+   * @param items - request which contains the form body.
+   * @param receiptEntity - request which contains the form body.
+   */
   private void storeReceiptItemsEntity(Receipt receipt, Entity receiptEntity) {
     Item[] items = receipt.getItems();
-    for (Item item: items) {
-      String userId = item.getUserId();
-      String itemName = item.getName();
-      float price = item.getPrice();
-      int quantity = item.getQuantity();
-      String category = item.getCategory();
-      String expireDate = item.getExpireDate();
-  
+    for (Item item : items) {
+      String userId = item.userId();
+      String itemName = item.name();
+      double price = item.price();
+      long quantity = item.quantity();
+      String category = item.category();
+      String expireDate = item.expiration();
+
       Entity itemEntity = new Entity("Item", receiptEntity.getKey());
       itemEntity.setProperty("userId", userId);
       itemEntity.setProperty("name", itemName);
@@ -118,12 +117,13 @@ public class StoreReceiptService {
   }
 
   /**
-   * Returns the UserInfo entity with user id.
-   * Given id is not of UserInfo kind but a field of that kind.
+   * Returns the UserInfo entity with user id. Given id is not of UserInfo kind but a field of that
+   * kind.
+   *
    * @param id - id of the user who is logged in.
    */
   private Optional<Entity> getUserInfoEntity(String id) {
-    
+
     Query query =
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));

@@ -14,59 +14,55 @@
 
 package com.google.edith;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.edith.servlets.Receipt;
-import com.google.edith.servlets.Item;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.edith.services.StoreReceiptService;
-import com.google.edith.services.UserInfo;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
 
 public class StoreReceiptServiceTest {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private Map<String, Object> map = new HashMap<String, Object>() {{
-        put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-    }};
-    
-  private LocalServiceTestHelper testHelper = 
-          new LocalServiceTestHelper(
-                new LocalUserServiceTestConfig(),
-                new LocalDatastoreServiceTestConfig())
+  private Map<String, Object> map =
+      new HashMap<String, Object>() {
+        {
+          put("com.google.appengine.api.users.UserService.user_id_key", "12345");
+        }
+      };
+
+  private LocalServiceTestHelper testHelper =
+      new LocalServiceTestHelper(
+              new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
           .setEnvAttributes(map)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail")
           .setEnvIsAdmin(true)
           .setEnvEmail("user@gmail.com");
-  
+
   private StoreReceiptService storeReceiptService;
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
   @Before
   public void setUp() {
@@ -96,7 +92,8 @@ public class StoreReceiptServiceTest {
   @Test
   // Check the JSON string is transformed into Receipt object.
   public void testParseReceiptFromForm() throws IOException {
-    String testJson = "{\"data\":\"{\\\"userId\\\":\\\"23\\\",\\\"storeName\\\":\\\"kro\\\",\\\"date\\\":\\\"date\\\",\\\"name\\\":\\\"exp\\\",\\\"fileUrl\\\":\\\"url\\\",\\\"totalPrice\\\":0.5,\\\"items\\\":[{\\\"userId\\\":\\\"23\\\",\\\"name\\\":\\\"kro\\\",\\\"price\\\":0.5,\\\"quantity\\\":2,\\\"category\\\":\\\"cat\\\",\\\"expireDate\\\":\\\"date\\\"}]}\"}";
+    String testJson =
+        "{\"data\":\"{\\\"userId\\\":\\\"23\\\",\\\"storeName\\\":\\\"kro\\\",\\\"date\\\":\\\"date\\\",\\\"name\\\":\\\"exp\\\",\\\"fileUrl\\\":\\\"url\\\",\\\"totalPrice\\\":0.5,\\\"items\\\":[{\\\"userId\\\":\\\"23\\\",\\\"name\\\":\\\"kro\\\",\\\"price\\\":0.5,\\\"quantity\\\":2,\\\"category\\\":\\\"cat\\\",\\\"expireDate\\\":\\\"date\\\"}]}\"}";
     Reader inputString = new StringReader(testJson);
     BufferedReader reader = new BufferedReader(inputString);
     when(request.getReader()).thenReturn(reader);
@@ -104,7 +101,7 @@ public class StoreReceiptServiceTest {
     assertNotNull(parsedReceipt);
     assertTrue(parsedReceipt instanceof Receipt);
   }
-  
+
   @Test
   public void testReceiptParent() {
     Entity userInfoEntity = createUserInfoEntity();
@@ -121,7 +118,8 @@ public class StoreReceiptServiceTest {
     assertEquals(0, datastore.prepare(new Query("Receipt")).countEntities());
     Receipt testingReceipt = createEntities();
     storeReceiptService.storeEntites(testingReceipt);
-    Query query = new Query("Item")
+    Query query =
+        new Query("Item")
             .setFilter(new Query.FilterPredicate("name", Query.FilterOperator.EQUAL, "apple"));
     Entity item1 = datastore.prepare(query).asSingleEntity();
     // Item entity must contain UserInfo and Receipt both in the key.
@@ -144,10 +142,29 @@ public class StoreReceiptServiceTest {
   // Helper method to create Receipt entity with items having two
   // Item objects.
   private Receipt createEntities() {
-    Item item1 = new Item("23", "apple", 1.5f, 2, "fruit", "date");
-    Item item2 = new Item("23", "ball", 2.5f, 1, "notfruit", "date");
+    Item item1 =
+        Item.builder()
+            .setUserId("23")
+            .setName("apple")
+            .setPrice((float) 1.5)
+            .setQuantity(2)
+            .setDate("yy")
+            .setCategory("fruit")
+            .setExpiration("date")
+            .build();
+
+    Item item2 =
+        Item.builder()
+            .setUserId("23")
+            .setName("ball")
+            .setPrice((float) 2.5)
+            .setQuantity(1)
+            .setDate("mm")
+            .setCategory("notfruit")
+            .setExpiration("date")
+            .build();
     Item[] items = {item1, item2};
-    Receipt testingReceipt = new Receipt("23","kro", "date", "exp", "url", 0.5f, items);
+    Receipt testingReceipt = new Receipt("23", "kro", "date", "exp", "url", 0.5f, items);
     return testingReceipt;
   }
 }
