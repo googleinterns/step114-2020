@@ -94,10 +94,7 @@ export default class ReceiptHandler extends React.Component {
      * @param {Event} e change event
      */
     this.addExpirationAndSubmit = async (e) => {
-      let price = 0;
-      this.state.items.forEach((item) => {
-        price += item.price * item.quantity;
-      });
+      const price = this.state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
       this.setState({totalPrice: price});
       await axios({
         method: 'post',
@@ -113,7 +110,7 @@ export default class ReceiptHandler extends React.Component {
           deals: this.state.deals,
         },
       });
-      axios({
+      await axios({
         method: 'post',
         url: '/user-stats-servlet',
         data: {

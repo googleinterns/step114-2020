@@ -1,5 +1,6 @@
 package com.google.edith;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -17,13 +18,11 @@ public class GroceryNameProcessorTest {
   private GroceryNameProcessor processor;
   private String result;
 
-  @Mock LanguageServiceClient languageServiceClient;
-
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     result = "";
-    processor = Mockito.mock(GroceryNameProcessor.class);
+    processor = mock(GroceryNameProcessor.class);
   }
 
   @Test

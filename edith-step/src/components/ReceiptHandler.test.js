@@ -9,7 +9,7 @@ let handlePriceChange;
 let handleQuantityChange;
 let handleStoreChange;
 let handleExpirationChange;
-let getReceiptData;
+let onMount;
 let addItem;
 
 beforeEach(() => {
@@ -18,6 +18,7 @@ beforeEach(() => {
   handlePriceChange = jest.spyOn(ReceiptHandler.prototype, 'handlePriceChange');
   handleQuantityChange = jest.spyOn(ReceiptHandler.prototype,
       'handleQuantityChange');
+  onMount = jest.spyOn(ReceiptHandler.prototype, 'componentDidMount');
   handleStoreChange = jest.spyOn(component.instance(), 'handleStoreChange');
   handleExpirationChange = jest.spyOn(component.instance(),
       'handleExpirationChange');
@@ -31,7 +32,10 @@ afterEach(() => {
 });
 
 it('renders properly', () => {
-  expect(component.exists()).toBe(true);
+  const promise = new Promise(onMount);
+  promise.then(() => {
+    expect(component.exists()).toBe(true);
+  });
 });
 
 it('should call appropriate change function on form change', () => {
@@ -43,7 +47,7 @@ it('should call appropriate change function on form change', () => {
   component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
-  const promise = new Promise(getReceiptData);
+  const promise = new Promise(onMount);
   promise.then(() => {
     component.find('.name').simulate('change');
     expect(handleNameChange).toBeCalled();
@@ -79,7 +83,7 @@ it('should change state when on change functions are called', () => {
     price: 5.6,
     quantity: 3,
   };
-  const promise = new Promise(getReceiptData);
+  const promise = new Promise(onMount);
   promise.then(() => {
     component.find('.name').simulate('change', textEvent);
     component.find('.price').simulate('change', priceEvent);
@@ -97,7 +101,7 @@ it('should create a new form field when addItem is called', () => {
   expect(component.find('.price').exists()).toBe(false);
   expect(component.find('.quantity').exists()).toBe(false);
 
-  const promise = new Promise(getReceiptData);
+  const promise = new Promise(onMount);
   promise.then(() => {
     component.find('#add').simulate('click');
     expect(addItem).toBeCalled();
@@ -122,7 +126,7 @@ it('should hide Add Item and Next when deals are returned', () => {
   component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
-  const promise = new Promise(getReceiptData);
+  const promise = new Promise(onMount);
   promise.then(() => {
     component.find('#submit').simulate('click');
     expect(component.find('#add').exists()).toBe(false);
