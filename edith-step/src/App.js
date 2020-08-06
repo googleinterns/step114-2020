@@ -103,9 +103,7 @@ class App extends Component {
             dateFilter={this.state.dateFilter}
             categoryFilter={this.state.categoryFilter} />
         </div>
-        <div className="receipt-info">
-          <ReceiptHandler />
-        </div>
+        <ReceiptHandler />
       </div>
     );
   }
