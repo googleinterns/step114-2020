@@ -52,8 +52,7 @@ public abstract class Item {
   @Override
   public boolean equals(Object item) {
     Item itemObject = (Item) item;
-    if (itemObject.name().equals(this.name()) &&
-        itemObject.userId().equals(this.userId())) {
+    if (itemObject.name().equals(this.name()) && itemObject.userId().equals(this.userId())) {
       return true;
     }
     return false;

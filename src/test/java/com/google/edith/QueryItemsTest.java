@@ -28,7 +28,7 @@ public class QueryItemsTest {
       ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private LocalServiceTestHelper testHelper =
-        new LocalServiceTestHelper(
+      new LocalServiceTestHelper(
             new LocalDatastoreServiceTestConfig(),new LocalUserServiceTestConfig())
           .setEnvAttributes(map)
           .setEnvIsLoggedIn(true)
