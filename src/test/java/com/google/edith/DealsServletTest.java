@@ -1,6 +1,17 @@
 package com.google.edith.servlets;
 
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.edith.DealsServlet;
+<<<<<<< HEAD
+=======
+import com.google.edith.GroceryNameProcessor;
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,11 +22,12 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+<<<<<<< HEAD
 @RunWith(JUnit4.class)
 public class DealsServletTest {
   @Test
@@ -30,6 +42,33 @@ public class DealsServletTest {
             1,
             "unknown category",
             "unknown date");
+=======
+public class DealsServletTest {
+  private GroceryNameProcessor reader;
+  @Mock LanguageServiceClient languageServiceClient;
+
+  @Before
+  public void setUp() {
+    MockitoAnnotations.initMocks(this);
+    reader = mock(GroceryNameProcessor.class);
+  }
+
+  @Test
+  public void doPost_itemNameInCsv_respondsWithCheapestStore() throws Exception {
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    Item receiptItem =
+        Item.builder()
+            .setUserId("185804764220139124118")
+            .setName("Apple Juice")
+            .setPrice((float) 5.99)
+            .setQuantity(1)
+            .setDate("date")
+            .setCategory("unknown category")
+            .setExpiration("unknown date")
+            .build();
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
@@ -47,22 +86,28 @@ public class DealsServletTest {
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
 
+<<<<<<< HEAD
     Mockito.when(request.getReader())
+=======
+    when(reader.process(anyString())).thenReturn("apple juice");
+    when(request.getReader())
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
+    when(response.getWriter()).thenReturn(writer);
 
     new DealsServlet().doPost(request, response);
 
-    Mockito.verify(request, Mockito.atLeast(1)).getReader();
+    verify(request, atLeast(1)).getReader();
     writer.flush();
     Assert.assertTrue(stringWriter.toString().contains("Kroger"));
   }
 
   @Test
   public void doPost_randomStringInput_respondsWithNoDealFound() throws Exception {
+<<<<<<< HEAD
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
@@ -73,6 +118,21 @@ public class DealsServletTest {
             0,
             "unknown category",
             "unknown date");
+=======
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    Item receiptItem =
+        Item.builder()
+            .setUserId("185804764220139124118")
+            .setName("no deal")
+            .setPrice((float) 5.99)
+            .setQuantity(1)
+            .setDate("date")
+            .setCategory("unknown category")
+            .setExpiration("unknown date")
+            .build();
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
     Item[] items = new Item[1];
     items[0] = receiptItem;
     Receipt receipt =
@@ -90,17 +150,26 @@ public class DealsServletTest {
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(json).getAsJsonObject();
 
+<<<<<<< HEAD
     Mockito.when(request.getReader())
+=======
+    when(reader.process(anyString())).thenReturn("");
+    when(request.getReader())
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
         .thenReturn(new BufferedReader(new StringReader(inputJson.toString())));
 
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
-    Mockito.when(response.getWriter()).thenReturn(writer);
+    when(response.getWriter()).thenReturn(writer);
 
     new DealsServlet().doPost(request, response);
 
-    Mockito.verify(request, Mockito.atLeast(1)).getReader();
+    verify(request, atLeast(1)).getReader();
     writer.flush();
+<<<<<<< HEAD
     Assert.assertTrue(stringWriter.toString().contains("no deal found"));
+=======
+    Assert.assertTrue(stringWriter.toString().contains("NO_STORE"));
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
   }
 }

@@ -1,21 +1,8 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package com.google.edith.servlets;
 
 import com.google.auto.value.AutoValue;
 
+<<<<<<< HEAD
 /** Encapsulate User info and logout url. */
 
 public class Item {
@@ -64,6 +51,53 @@ public class Item {
 
   public float getPrice() {
     return this.price;
+=======
+/** An Item is anything that is purchased at a grocery store. */
+@AutoValue
+public abstract class Item {
+  public abstract String name();
+
+  public abstract String userId();
+
+  public abstract String category();
+
+  public abstract double price();
+
+  public abstract long quantity();
+
+  /** yyyy-mm-dd format. */
+  public abstract String date();
+
+  public abstract String expiration();
+
+  /**
+   * Creates an AutoValue Builder for this class.
+   *
+   * @return AutoValue Builder
+   */
+  public static Builder builder() {
+    return new AutoValue_Item.Builder();
+  }
+
+  /** Builder used to set the fields of this class. */
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder setName(String value);
+
+    public abstract Builder setUserId(String value);
+
+    public abstract Builder setCategory(String value);
+
+    public abstract Builder setPrice(double value);
+
+    public abstract Builder setQuantity(long value);
+
+    public abstract Builder setDate(String value);
+
+    public abstract Builder setExpiration(String value);
+
+    public abstract Item build();
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
   }
 
   public int getQuantity() {

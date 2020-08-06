@@ -1,20 +1,42 @@
 package com.google.edith;
 
-import java.util.ArrayList;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import java.util.Collections;
 import java.util.List;
 
 /** Represents items of the same type from different stores in order to compare them. */
 public final class DealItem {
-  private String store;
+  enum Store {
+    ALDI("Aldi"),
+    KROGER("Kroger"),
+    TRADER_JOES("Trader Joe's"),
+    PUBLIX("Publix"),
+    WALMART("Walmart"),
+    NO_STORE("NO_STORE");
+
+    private final String storeName;
+
+    private Store(String store) {
+      this.storeName = store;
+    }
+
+    @Override
+    public String toString() {
+      return storeName;
+    }
+  }
+
+  private String storeName;
   private double price;
   private double weight;
   private String comment;
   private double unitPrice;
-  private String expiration;
+  private String expirationTime;
+  private static final String EXPIRATION_TEMPLATE = "%s %s";
 
-  /** Store name is 'no deal found' if no deal avaliable. */
-  public void setStore(String store) {
-    this.store = store;
+  public void setStore(Store store) {
+    this.storeName = store.toString();
   }
 
   /**
@@ -47,12 +69,11 @@ public final class DealItem {
    * this.weight = 1.0 ex: Input weight '64 fl oz' -> this.weight = 64.0
    */
   public void setWeight(String weight) {
-    if (weight.isEmpty()) {
+    // Checks for length of two or less so that the substring check isn't out of bounds.
+    if (weight.length() <= 2) {
       this.weight = 0.0;
     } else if (weight.equals("dozen")) {
       this.weight = 12.0;
-    } else if (weight.length() == 2) {
-      this.weight = 0.0;
     } else if (weight.substring(0, 3).equals("per")) {
       this.weight = 1.0;
     } else if (weight.equals("head")) {
@@ -78,6 +99,7 @@ public final class DealItem {
   }
 
   /**
+<<<<<<< HEAD
     * Input string expiration is expected to have the minimum expiration time, the maximum expiration
     * time, and the unit of time, in no particular order. It parses the string to find the minimum
     * expiration time and the unit, as that is the data needed to generate new grocery lists based
@@ -88,21 +110,34 @@ public final class DealItem {
   public void setExpiration(String expiration) {
     if (expiration.equals("no shelf life data found")) {
       this.expiration = expiration;
+=======
+   * Input string expiration is expected to have the minimum expiration time, the maximum expiration
+   * time, and the unit of time, in no particular order. It parses the string to find the minimum
+   * expiration time and the unit, as that is the data needed to generate new grocery lists based
+   * off of. The expiration unit can be Days, Weeks, or Months.
+   *
+   * <p>ex: '1.0 2.0 Weeks' -> this.expirationTime = '1.0 Weeks'
+   */
+  public void setExpirationTime(String expirationTime) {
+    if (expirationTime.equals("NO_EXPIRATION")) {
+      this.expirationTime = expirationTime;
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
       return;
     }
+    List<String> expirationPieces = Splitter.on(" ").splitToList(expirationTime);
 
-    String[] expirationPieces = expiration.split(" ");
-    List<Double> range = new ArrayList<Double>();
+    ImmutableList.Builder<Double> expirationTimeRange = ImmutableList.builder();
     String timeMeasurement = "";
 
     for (String expirationPiece : expirationPieces) {
       try {
-        range.add(Double.parseDouble(expirationPiece));
+        expirationTimeRange.add(Double.parseDouble(expirationPiece));
       } catch (NumberFormatException e) {
         timeMeasurement = expirationPiece;
       }
     }
 
+<<<<<<< HEAD
     Double min = new Double(0);
     if (range.size() >= 1) {
       min = range.get(0);
@@ -113,6 +148,10 @@ public final class DealItem {
       }
     }
     this.expiration = min + " " + timeMeasurement;
+=======
+    Double min = Collections.min(expirationTimeRange.build());
+    this.expirationTime = String.format(EXPIRATION_TEMPLATE, min, timeMeasurement);
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
   }
 
   /**
@@ -131,7 +170,7 @@ public final class DealItem {
   }
 
   public String getStore() {
-    return store;
+    return storeName;
   }
 
   public Double getPrice() {
@@ -146,7 +185,12 @@ public final class DealItem {
     return comment;
   }
 
-  public String getExpiration() {
-    return expiration;
+  /**
+   * Returns time until item expires.
+   *
+   * <p>ex: '6.0 Days', '2.0 Weeks', '3.0 Months'
+   */
+  public String getExpirationTime() {
+    return expirationTime;
   }
 }

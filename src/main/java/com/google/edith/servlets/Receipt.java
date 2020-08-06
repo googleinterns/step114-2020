@@ -14,8 +14,7 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.users.User;
-
+// TODO(@prashantneu) Use Auto_Value for this class and change Item[] to list<Item>.
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;
@@ -26,7 +25,14 @@ public final class Receipt {
   private final float totalPrice;
   private final Item[] items;
 
-  public Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice, Item[] items) {
+  public Receipt(
+      String userId,
+      String storeName,
+      String date,
+      String name,
+      String fileUrl,
+      float totalPrice,
+      Item[] items) {
     this.userId = userId;
     this.storeName = storeName;
     this.date = date;
@@ -35,6 +41,7 @@ public final class Receipt {
     this.totalPrice = totalPrice;
     this.items = items;
   }
+<<<<<<< HEAD
   
   public String toString() {
     return(this.userId + " " + this.storeName + " " + this.date + " " + this.name + " " + this.fileUrl + " " + this.totalPrice);
@@ -51,11 +58,14 @@ public final class Receipt {
   public String getDate() {
     return this.date;
   }
+=======
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
 
   public String getName() {
     return this.name;
   }
 
+<<<<<<< HEAD
   public String getFileUrl() {
     return this.fileUrl;
   }
@@ -64,6 +74,8 @@ public final class Receipt {
     return this.totalPrice;
   }
 
+=======
+>>>>>>> edc7eeb167e91ef7647bcc8fd9533ef56c3a615f
   public Item[] getItems() {
     return this.items;
   }

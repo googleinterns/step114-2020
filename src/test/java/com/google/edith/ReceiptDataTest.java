@@ -14,73 +14,78 @@
 
 package com.google.edith;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.edith.interfaces.ExtractReceiptInterface;
+import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.ReceiptData;
-import com.google.edith.servlets.ExtractReceipt;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
+import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-
 public final class ReceiptDataTest {
-  private Map<String, Object> myMap = new HashMap<String, Object>() {{
-        put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-    }};
+  private Map<String, Object> map =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private final LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig())
-      .setEnvAttributes(myMap)
-      .setEnvIsLoggedIn(true)
-      .setEnvAuthDomain("gmail")
-      .setEnvIsAdmin(true)
-      .setEnvEmail("user@gmail.com");
-     
-  
-  private ReceiptData receiptData;
-  private final UserService userService = UserServiceFactory.getUserService();
+          .setEnvAttributes(map)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail")
+          .setEnvIsAdmin(true)
+          .setEnvEmail("user@gmail.com");
 
-  @Mock
-  ExtractReceipt extractReceipts;
+  @Mock ExtractReceiptInterface extractReceiptImplementation;
+  private final UserService userService = UserServiceFactory.getUserService();
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
+    receiptData = new ReceiptData(extractReceiptImplementation);
     testHelper.setUp();
-    receiptData = new ReceiptData();
+    setUpItemDescription();
   }
 
   @After
   public void tearDown() {
     testHelper.tearDown();
   }
-/**
+
+  private ReceiptData receiptData;
+
   @Test
-  public void testExtractReceiptData() throws IOException {
-    try {
-      Receipt returnedReceipt = receiptData.extractReceiptData();
-      assertNotNull(returnedReceipt);
-      assertTrue(returnedReceipt instanceof Receipt);
-    } catch (Exception e) {
-      fail("must return Receipt Object");
-    }
-  }*/
+  public void extractReceiptData_hasRightNumberOfItems() throws IOException {
+    when(extractReceiptImplementation.getCurrentLoggedInUser())
+        .thenReturn(userService.getCurrentUser());
+    Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
+    Item[] items = extractedReceipt.getItems();
+    assertEquals(2, items.length);
+  }
+
+  @Test
+  public void extractReceiptData_hasRightCorrectExpenseName() throws IOException {
+    when(extractReceiptImplementation.getCurrentLoggedInUser())
+        .thenReturn(userService.getCurrentUser());
+    Receipt extractedReceipt = receiptData.extractReceiptData("someBlobKey", "expense");
+    assertEquals("expense", extractedReceipt.getName());
+  }
+
+  private void setUpItemDescription() throws IOException {
+    ImmutableMap<String, String> item1 = ImmutableMap.of("itemName", "apple", "itemPrice", "2.5");
+    ImmutableMap<String, String> item2 = ImmutableMap.of("itemName", "ball", "itemPrice", "4.5");
+    ImmutableList<ImmutableMap<String, String>> itemsDescription = ImmutableList.of(item1, item2);
+    when(extractReceiptImplementation.extractReceipt("someBlobKey")).thenReturn(itemsDescription);
+  }
 }
