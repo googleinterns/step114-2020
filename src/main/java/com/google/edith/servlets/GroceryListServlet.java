@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/grocery-list-query")
 public class GroceryListServlet extends HttpServlet {
-  private UserService userService;
-  private DatastoreService datastoreService;
-  private QueryItems queryItems;
+
+  private final UserService userService;
+  private final DatastoreService datastoreService;
+  private final QueryItems queryItems;
 
   public GroceryListServlet(
       UserService userService, DatastoreService datastoreService, QueryItems queryItems) {

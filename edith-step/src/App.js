@@ -19,7 +19,11 @@ class App extends Component {
   constructor() {
     super();
     this.state = {'chartType': LineChart, 'dateFilter': '',
-      'categoryFilter': ''};
+      'categoryFilter': '', 'showGroceryList': false};
+
+    this.handleGroceryListShow = () => {
+      this.setState({'showGroceryList': true});
+    };
 
     /**
     * Updates the value of chartType in state
@@ -67,7 +71,6 @@ class App extends Component {
         'dateFilter': '', 'categoryFilter': ''});
     };
   };
-
 
   /**
    * Renders TopNavbar, ReceiptInput component.

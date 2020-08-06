@@ -19,10 +19,10 @@ import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
 public class QueryItemsTest {
-  private QueryItems query;
 
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private final QueryItems query = new QueryItems(datastore, userService);
 
   private Map<String, Object> map =
       ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
@@ -40,7 +40,6 @@ public class QueryItemsTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    query = new QueryItems(datastore, userService);
     createAndStoreEntites();
   }
 

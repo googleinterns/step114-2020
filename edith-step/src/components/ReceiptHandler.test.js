@@ -16,6 +16,7 @@ beforeEach(() => {
   component = mount(<ReceiptHandler />);
   handleNameChange = jest.spyOn(ReceiptHandler.prototype, 'handleNameChange');
   handlePriceChange = jest.spyOn(ReceiptHandler.prototype, 'handlePriceChange');
+  onMount = jest.spyOn(ReceiptHandler.prototype, 'componentDidMount');
   handleQuantityChange = jest.spyOn(ReceiptHandler.prototype,
       'handleQuantityChange');
   onMount = jest.spyOn(ReceiptHandler.prototype, 'componentDidMount');

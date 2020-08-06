@@ -60,6 +60,6 @@ public abstract class Item {
 
   @Override
   public int hashCode() {
-    return this.userId().hashCode() * 11;
+    return this.userId().hashCode() * this.name().hashCode();
   }
 }
