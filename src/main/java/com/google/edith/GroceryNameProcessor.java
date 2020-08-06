@@ -8,12 +8,27 @@ import com.google.cloud.language.v1.EncodingType;
 import com.google.cloud.language.v1.Entity;
 import com.google.cloud.language.v1.EntityMention;
 import com.google.cloud.language.v1.LanguageServiceClient;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GroceryNameProcessor {
-  public String process(String text) throws Exception {
+
+  private final LanguageServiceClient client;
+
+  GroceryNameProcessor() throws IOException {
     try (LanguageServiceClient language = LanguageServiceClient.create()) {
+      this.client = language;
+    }
+  }
+
+  GroceryNameProcessor(LanguageServiceClient client) {
+    this.client = client;
+  }
+
+  public String process(String text) {
+    List<Entity> commonEntities = new ArrayList<Entity>();
+    try {
       Document doc =
           Document.newBuilder().setContent(text.toLowerCase()).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =
@@ -22,8 +37,7 @@ public class GroceryNameProcessor {
               .setEncodingType(EncodingType.UTF16)
               .build();
 
-      AnalyzeEntitiesResponse response = language.analyzeEntities(request);
-      List<Entity> commonEntities = new ArrayList<Entity>();
+      AnalyzeEntitiesResponse response = client.analyzeEntities(request);
 
       for (Entity entity : response.getEntitiesList()) {
         for (EntityMention mention : entity.getMentionsList()) {
@@ -33,10 +47,13 @@ public class GroceryNameProcessor {
           }
         }
       }
-      if (commonEntities.size() >= 1) {
-        return commonEntities.get(0).getName();
-      }
-      return "";
+    } finally {
+      client.close();
     }
+
+    if (commonEntities.size() >= 1) {
+      return commonEntities.get(0).getName();
+    }
+    return "";
   }
 }

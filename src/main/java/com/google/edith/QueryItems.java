@@ -1,36 +1,23 @@
 package com.google.edith;
 
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.edith.servlets.Item;
-import com.google.edith.servlets.Receipt;
-import com.google.gson.Gson;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
+import com.google.common.base.Splitter;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
-import java.io.IOException;
-import java.util.Arrays;
+import com.google.gson.Gson;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Finds the items on past receipts that have expired by the time of the user's next shopping trip.
@@ -54,13 +41,12 @@ public class QueryItems {
       Item[] items = receipt.getItems();
 
       for (Item item : items) {
-        String expiration = item.getExpireDate();
-
-        if (expiration.equals("no shelf life data found")) {
+        String expiration = item.expiration();
+        if (expiration.equals("NO_EXPIRATION")) {
           continue;
         }
 
-        String[] expirationNumberAndUnit = expiration.split(" ");
+        List<String> expirationNumberAndUnit = Splitter.on(" ").splitToList(expiration);
         double number = 0;
         String unit = "";
 
@@ -88,8 +74,8 @@ public class QueryItems {
   }
 
   /**
-   * Determines the number of days between when the receipt was stored in datastore
-   * and the current time.
+   * Determines the number of days between when the receipt was stored in datastore and the current
+   * time.
    */
   private double findTimePassed(String receiptDateString) {
     Date currentDate = new Date();
@@ -113,7 +99,7 @@ public class QueryItems {
     List<Entity> receiptEntities = receiptResults.asList(FetchOptions.Builder.withLimit(3));
     List<Receipt> receipts = new ArrayList<>();
 
-    for (Entity receiptEntity: receiptEntities) {
+    for (Entity receiptEntity : receiptEntities) {
       Key entityKey = receiptEntity.getKey();
       Query itemQuery = new Query("Item", entityKey);
       PreparedQuery results = datastore.prepare(itemQuery);
@@ -132,23 +118,32 @@ public class QueryItems {
   }
 
   /**
-   * Creates an array of Item objects from entites of
-   * kind Item found in the datastore.
+   * Creates an array of Item objects from entites of kind Item found in the datastore.
+   *
    * @param entities - entities of kind Item found in datastore.
    * @return Item[] - array of Item objects.
    */
   public Item[] createItemObjects(List<Entity> entities) {
     List<Item> itemsList = new ArrayList<>();
 
-    for (Entity entity: entities) {
+    for (Entity entity : entities) {
       String userId = (String) entity.getProperty("userId");
       String itemName = (String) entity.getProperty("name");
       float price = (float) ((double) entity.getProperty("price"));
-      int quantity = (int ) ((long) entity.getProperty("quantity"));
+      int quantity = (int) ((long) entity.getProperty("quantity"));
       String category = (String) entity.getProperty("category");
       String expireDate = (String) entity.getProperty("date");
 
-      Item receiptItem = new Item(userId, itemName, price, quantity, category, expireDate);
+      Item receiptItem =
+          Item.builder()
+              .setUserId(userId)
+              .setName(itemName)
+              .setPrice(price)
+              .setQuantity(quantity)
+              .setDate("date")
+              .setCategory(category)
+              .setExpiration(expireDate)
+              .build();
       itemsList.add(receiptItem);
     }
     return itemsList.toArray(new Item[0]);

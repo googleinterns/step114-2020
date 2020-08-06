@@ -32,8 +32,8 @@ public class GroceryDataReaderTest {
 
   @Test
   public void readFile_itemNotInCsv_returnsNull() throws IOException {
-    cheapestItem = groceryReader.readFile("no deal", "4.3");
-    Assert.assertEquals("no deal found", cheapestItem.getStore());
+    cheapestItem = groceryReader.readFile("no deal");
+    Assert.assertEquals("NO_STORE", cheapestItem.getStore());
   }
 
   @Test

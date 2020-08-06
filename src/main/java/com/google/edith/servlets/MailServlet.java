@@ -16,6 +16,7 @@
 
 package com.example.appengine.mail;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -51,7 +52,7 @@ public class MailServlet extends HttpServlet {
     StringBuilder body = new StringBuilder();
     String subject;
 
-    if (type.equals(expirationQuery)) {
+    if (type.equals("expirationQuery")) {
       String json = request.getParameter("body");
       subject = "Restock Alert";
       JsonArray groceryItems = json.getAsJsonArray();
