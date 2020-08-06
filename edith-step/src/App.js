@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import LineChart, {BarGraph, CategoryDoughnutChart,
   ItemDoughnutChart} from './UserChart';
-import ReceiptInput from './components/ReceiptInput';
+import ReceiptHandler from './components/ReceiptHandler';
 import TopNavbar from './components/TopNavbar';
 import './App.css';
 
@@ -23,7 +23,7 @@ class App extends Component {
     /**
     * Updates the value of chartType in state
     * based on the value of {@code event}.
-
+    *
     * @param { Event } event HTML element that has been selected
     */
     this.updateChartType = (event) => {
@@ -103,7 +103,7 @@ class App extends Component {
             dateFilter={this.state.dateFilter}
             categoryFilter={this.state.categoryFilter} />
         </div>
-        <ReceiptInput />
+        <ReceiptHandler />
       </div>
     );
   }

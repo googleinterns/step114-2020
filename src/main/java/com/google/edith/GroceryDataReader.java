@@ -30,8 +30,14 @@ public final class GroceryDataReader {
 
     // Should never be null with file grocerydatareader.csv.
     String[] record = null;
-    record = reader.readNext();
-    record = reader.readNext();
+
+    String item = "";
+    try {
+      GroceryNameProcessor processor = new GroceryNameProcessor();
+      item = processor.process(itemName);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
 
     String expirationTime = ShelfDataReader.readFile(itemName);
 
@@ -39,24 +45,21 @@ public final class GroceryDataReader {
       if (record[0].equals(itemName)) {
 
         List<DealItem> dealItems = new ArrayList<DealItem>();
-
         for (int i = 0; i < STORES.size(); i++) {
-          /**
-           * Each store has 3 columns of data, so if i is the store number, the starting index of
-           * the data is i*3.
-           */
+          // Each store has 3 columns of data, so if i is the store number, the starting index of
+          // the data is i*3.
           int storeDataStartColumn = i * 3;
-          DealItem item = new DealItem();
-          item.setStore(STORES.get(i));
-          item.setPrice(record[storeDataStartColumn + 1]);
-          item.setWeight(record[storeDataStartColumn + 2]);
-          item.setComment(record[storeDataStartColumn + 3]);
+          DealItem dealItem = new DealItem();
+          dealItem.setStore(STORES.get(i));
+          dealItem.setPrice(record[storeDataStartColumn + 1]);
+          dealItem.setWeight(record[storeDataStartColumn + 2]);
+          dealItem.setComment(record[storeDataStartColumn + 3]);
           if (expirationTime.isEmpty()) {
-            item.setExpirationTime("NO_EXPIRATION");
+            dealItem.setExpirationTime("NO_EXPIRATION");
           } else {
-            item.setExpirationTime(expirationTime);
+            dealItem.setExpirationTime(expirationTime);
           }
-          dealItems.add(item);
+          dealItems.add(dealItem);
         }
 
         cheapestItem = getCheapestItemPerUnit(dealItems);

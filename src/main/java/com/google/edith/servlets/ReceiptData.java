@@ -12,7 +12,6 @@ import java.util.Map;
 
 /** Converts parsed receipt file string to receipt and item objects. */
 public final class ReceiptData {
-
   private ExtractReceiptInterface extractReceiptImplementation;
 
   private static final String UNKNOWN_STORE = "UNKNOWN_STORE";

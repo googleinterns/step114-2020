@@ -7,7 +7,6 @@ import java.util.Optional;
 
 /** This interface defines the methods that all implmenting classes should have. */
 public interface UserInsightsInterface {
-
   /**
    * This should only be called each time a new user makes an accout.
    *
