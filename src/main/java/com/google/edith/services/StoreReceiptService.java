@@ -21,11 +21,17 @@ import com.google.appengine.api.datastore.Query;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Optional;
+import java.lang.reflect.Type;
 import javax.servlet.http.HttpServletRequest;
 
 public class StoreReceiptService {
@@ -80,14 +86,14 @@ public class StoreReceiptService {
    */
   public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
     BufferedReader bufferedReader = request.getReader();
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemDeserializer()).create();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(bufferedReader);
-    System.out.println(json.toString());
-    String receiptJsonString = json.getAsString();
-    // String receiptJsonString = json.get("data").getAsString();
-    System.out.println(receiptJsonString);
-    return gson.fromJson(receiptJsonString, Receipt.class);
+    // System.out.println(json.toString());
+    // String receiptJsonString = json.getAsString();
+    // // String receiptJsonString = json.get("data").getAsString();
+    // System.out.println(receiptJsonString);
+    return gson.fromJson(json, Receipt.class);
   }
 
   /**
@@ -130,5 +136,32 @@ public class StoreReceiptService {
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     return Optional.ofNullable(results.asSingleEntity());
+  }
+
+  private class ItemDeserializer implements JsonDeserializer<Item> {
+    @Override
+    public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+      
+      JsonObject jsonObj = json.getAsJsonObject();
+      String userId = jsonObj.get("userId").getAsString();
+      String category = jsonObj.get("category").getAsString();
+      String name = jsonObj.get("name").getAsString();
+      double price = jsonObj.get("price").getAsDouble();
+      long quantity = jsonObj.get("quantity").getAsLong();
+      String date = jsonObj.get("date").getAsString();
+      String expiration = jsonObj.get("expiration").getAsString();
+      Item item =
+        Item.builder()
+            .setUserId(userId)
+            .setName(name)
+            .setPrice(price)
+            .setQuantity(quantity)
+            .setDate(date)
+            .setCategory(category)
+            .setExpiration(expiration)
+            .build();
+      return item;
+    }
   }
 }
