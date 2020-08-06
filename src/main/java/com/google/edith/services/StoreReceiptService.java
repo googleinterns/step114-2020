@@ -89,10 +89,6 @@ public class StoreReceiptService {
     Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemDeserializer()).create();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(bufferedReader);
-    // System.out.println(json.toString());
-    // String receiptJsonString = json.getAsString();
-    // // String receiptJsonString = json.get("data").getAsString();
-    // System.out.println(receiptJsonString);
     return gson.fromJson(json, Receipt.class);
   }
 
