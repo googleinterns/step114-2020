@@ -60,7 +60,7 @@ public class StoreReceiptServiceTest {
           .setEnvIsAdmin(true)
           .setEnvEmail("user@gmail.com");
 
-  private StoreReceiptService storeReceiptService;
+  private StoreReceiptService storeReceiptService = new StoreReceiptService(datastore);
 
   @Mock HttpServletRequest request;
 
@@ -68,7 +68,7 @@ public class StoreReceiptServiceTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    storeReceiptService = new StoreReceiptService(datastore);
+    // storeReceiptService = new StoreReceiptService(datastore);
   }
 
   @After
