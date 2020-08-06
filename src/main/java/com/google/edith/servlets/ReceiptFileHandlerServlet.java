@@ -14,10 +14,12 @@
 
 package com.google.edith.servlets;
 
+import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.blobstore.FileInfo;
 import com.google.edith.interfaces.ReceiptFileHandlerInterface;
 import com.google.edith.services.ReceiptFileHandlerService;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -32,6 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-file-handler")
 public final class ReceiptFileHandlerServlet extends HttpServlet {
 
+  private BlobKey fileBlobKey;
+  private String expenditureName;
+
+  private Receipt parsedReceipt;
   private ReceiptFileHandlerInterface receiptFileHandler;
 
   public ReceiptFileHandlerServlet() {
@@ -44,14 +50,33 @@ public final class ReceiptFileHandlerServlet extends HttpServlet {
   }
 
   @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Gson gson = new Gson();
+    String json = gson.toJson(parsedReceipt);
+
+    response.setContentType("application/json");
+    response.getWriter().println(json);
+  }
+
+  @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    expenditureName =
+        request.getParameter("expense-name") == null
+            ? "unknown"
+            : request.getParameter("expense-name");
     List<FileInfo> fileKeys = receiptFileHandler.getUploadedFileUrl(request, "receipt-file");
 
     // fileKeys never should be empty as file field in the FE form is required.
     if (fileKeys.isEmpty()) {
       throw new IllegalStateException("file must be uploaded in the form");
     }
-    // Blob is being served right now. But it will change in future to store it in Receipt object.
-    receiptFileHandler.serveBlob(response, fileKeys);
+
+    fileBlobKey = receiptFileHandler.getBlobKey(fileKeys);
+    parsedReceipt =
+        receiptFileHandler.createParsedReceipt(fileBlobKey.getKeyString(), expenditureName);
+    Gson gson = new Gson();
+    String json = gson.toJson(parsedReceipt);
+    System.out.println(json);
+    response.sendRedirect("/");
   }
 }

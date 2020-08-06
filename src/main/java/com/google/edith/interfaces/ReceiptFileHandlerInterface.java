@@ -16,6 +16,8 @@ package com.google.edith.interfaces;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.FileInfo;
+import com.google.common.collect.ImmutableList;
+import com.google.edith.servlets.Receipt;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -29,9 +31,23 @@ public interface ReceiptFileHandlerInterface {
   /**
    * Returns a List of BlobKey that points to the uploaded files in the HTML form or null if the
    * user didn't upload a file.
+   *
+   * @return ImmutableList<FileInfo> - immutable list of uploaded files from the FE form.
    */
-  List<FileInfo> getUploadedFileUrl(HttpServletRequest request, String formInputElementName);
+  ImmutableList<FileInfo> getUploadedFileUrl(
+      HttpServletRequest request, String formInputElementName);
 
-  /** Returns a BlobKey that points to the uploaded file. */
+  /**
+   * Returns a BlobKey that points to the uploaded file.
+   *
+   * @return BlobKey - blobkey of the file uploaded in Blobstore.
+   */
   BlobKey getBlobKey(List<FileInfo> fileKeys);
+
+  /**
+   * Returns a Parsed Receipt.
+   *
+   * @return Receipt - a receipt parsed from the uploaded file.
+   */
+  Receipt createParsedReceipt(String blobKey, String expenditureName) throws IOException;
 }
