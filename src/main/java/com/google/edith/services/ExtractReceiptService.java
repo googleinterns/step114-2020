@@ -77,7 +77,7 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
   }
 
   /**
-   * Calls Document AI API and parses the pdf file as a long string.
+   * Calls Document AI API and parses the pdf file as a string.
    *
    * @return String - string representation of the content of the receipt pdf file.
    */
@@ -95,7 +95,6 @@ public final class ExtractReceiptService implements ExtractReceiptInterface {
 
     Document response = client.processDocument(request);
 
-    // Return all of the document text as one big string
     return response.getText();
   }
 

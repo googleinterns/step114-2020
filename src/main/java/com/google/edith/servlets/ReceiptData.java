@@ -16,6 +16,8 @@ import java.util.Map;
 public final class ReceiptData {
 
   private ExtractReceiptInterface extractReceiptImplementation;
+  private static final String UNKNOWN_STORE = "UNKNOWN_STORE";
+  private static final String UNKNOWN_DATE = "UNKNOWN_DATE";
 
   public ReceiptData() throws IOException {
     this.extractReceiptImplementation =
@@ -57,8 +59,8 @@ public final class ReceiptData {
     Receipt userReceipt =
         new Receipt(
             user.getUserId(),
-            "unknown store name",
-            "unknown date",
+            UNKNOWN_STORE,
+            UNKNOWN_DATE,
             expenditureName,
             blobKey,
             0.0f,

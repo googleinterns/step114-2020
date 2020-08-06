@@ -13,7 +13,7 @@
 // limitations under the License.
 
 package com.google.edith.servlets;
-
+// TODO(@prashantneu) Use Auto_Value for this class.
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;
