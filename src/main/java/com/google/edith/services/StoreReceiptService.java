@@ -23,16 +23,16 @@ import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Optional;
 import java.lang.reflect.Type;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 public final class StoreReceiptService implements StoreReceiptInterface {
@@ -134,7 +134,7 @@ public final class StoreReceiptService implements StoreReceiptInterface {
     @Override
     public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
-      
+
       JsonObject jsonObj = json.getAsJsonObject();
       String userId = jsonObj.get("userId").getAsString();
       String category = jsonObj.get("category").getAsString();
@@ -144,15 +144,15 @@ public final class StoreReceiptService implements StoreReceiptInterface {
       String date = jsonObj.get("date").getAsString();
       String expiration = jsonObj.get("expiration").getAsString();
       Item item =
-        Item.builder()
-            .setUserId(userId)
-            .setName(name)
-            .setPrice(price)
-            .setQuantity(quantity)
-            .setDate(date)
-            .setCategory(category)
-            .setExpiration(expiration)
-            .build();
+          Item.builder()
+              .setUserId(userId)
+              .setName(name)
+              .setPrice(price)
+              .setQuantity(quantity)
+              .setDate(date)
+              .setCategory(category)
+              .setExpiration(expiration)
+              .build();
       return item;
     }
   }

@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.edith.servlets.StoreReceipt;
+import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
-import com.google.edith.interfaces.StoreReceiptInterface;
+import com.google.edith.servlets.StoreReceipt;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

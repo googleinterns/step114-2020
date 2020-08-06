@@ -15,7 +15,6 @@
 package com.google.edith;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -89,9 +88,9 @@ public final class StoreReceiptServiceTest {
   public void storeEntites_EntitiesAreStoredInDatastore() {
     Entity userInfoEntity = createUserInfoEntity();
     Receipt testingReceipt = createEntities();
-    
+
     storeReceiptService.storeEntites(testingReceipt);
-    
+
     assertEquals(1, datastore.prepare(new Query("Receipt")).countEntities());
     assertEquals(2, datastore.prepare(new Query("Item")).countEntities());
   }
@@ -104,7 +103,7 @@ public final class StoreReceiptServiceTest {
     Reader inputString = new StringReader(testJson);
     BufferedReader reader = new BufferedReader(inputString);
     when(request.getReader()).thenReturn(reader);
-    
+
     Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
     String userId = parsedReceipt.getUserId();
     String storeName = parsedReceipt.getUserId();
@@ -135,9 +134,9 @@ public final class StoreReceiptServiceTest {
     Query query =
         new Query("Item")
             .setFilter(new Query.FilterPredicate("name", Query.FilterOperator.EQUAL, "apple"));
-    
+
     storeReceiptService.storeEntites(testingReceipt);
-    
+
     Entity item1 = datastore.prepare(query).asSingleEntity();
     // Item entity must contain UserInfo and Receipt both in the key.
     assertTrue(item1.getKey().toString().contains("UserInfo"));

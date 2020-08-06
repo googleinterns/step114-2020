@@ -17,9 +17,10 @@ package com.google.edith.interfaces;
 import com.google.edith.servlets.Receipt;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+
 /** Operations for handling parsing receipts. */
 public interface StoreReceiptInterface {
-  
+
   /**
    * Stores Receipt and Item entities in datastore
    *
@@ -27,7 +28,7 @@ public interface StoreReceiptInterface {
    */
   public void storeEntites(Receipt receipt);
 
-   /**
+  /**
    * Parses the form submitted by user which contains information of the parsed receipt and creates
    * a Receipt object from the JSON string.
    *
