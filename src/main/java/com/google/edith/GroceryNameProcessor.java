@@ -13,22 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroceryNameProcessor {
+/**
+  interface LanguageServiceClientWrapper {
+    AnalyzeEntitiesResponse analyzeEntities(AnalyzeEntitiesRequest request);
+  }
 
-  private final LanguageServiceClient client;
+  private final LanguageServiceClientWrapper client;
 
   GroceryNameProcessor() throws IOException {
-    try (LanguageServiceClient language = LanguageServiceClient.create()) {
-      this.client = language;
-    }
+    this.client = LanguageServiceClient.create()::analyzeEntities;
   }
 
-  GroceryNameProcessor(LanguageServiceClient client) {
+  GroceryNameProcessor(LanguageServiceClientWrapper client) {
     this.client = client;
-  }
+  }*/
 
-  public String process(String text) {
+  public static String process(String text) throws Exception {
     List<Entity> commonEntities = new ArrayList<Entity>();
-    try {
+    try (LanguageServiceClient client = LanguageServiceClient.create()) {
       Document doc =
           Document.newBuilder().setContent(text.toLowerCase()).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =
@@ -47,8 +49,6 @@ public class GroceryNameProcessor {
           }
         }
       }
-    } finally {
-      client.close();
     }
 
     if (commonEntities.size() >= 1) {
