@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.StoreReceiptService;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
@@ -44,17 +45,13 @@ import org.mockito.MockitoAnnotations;
 
 public final class StoreReceiptServiceTest {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private Map<String, Object> map =
-      new HashMap<String, Object>() {
-        {
-          put("com.google.appengine.api.users.UserService.user_id_key", "12345");
-        }
-      };
+  private Map<String, Object> userIdMap =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private LocalServiceTestHelper testHelper =
       new LocalServiceTestHelper(
               new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
-          .setEnvAttributes(map)
+          .setEnvAttributes(userIdMap)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail")
           .setEnvIsAdmin(true)

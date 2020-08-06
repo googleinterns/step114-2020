@@ -32,6 +32,8 @@ import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
@@ -90,7 +92,7 @@ public final class StoreReceiptService implements StoreReceiptInterface {
    * @param receiptEntity - request which contains the form body.
    */
   private void storeReceiptItemsEntity(Receipt receipt, Entity receiptEntity) {
-    Item[] items = receipt.getItems();
+    List<Item> items = Arrays.asList(receipt.getItems());
     for (Item item : items) {
       String userId = item.userId();
       String itemName = item.name();
@@ -106,7 +108,6 @@ public final class StoreReceiptService implements StoreReceiptInterface {
       itemEntity.setProperty("category", category);
       itemEntity.setProperty("expireDate", expireDate);
       datastore.put(itemEntity);
-      System.out.println(itemEntity.getParent());
     }
   }
 

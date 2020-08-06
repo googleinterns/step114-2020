@@ -26,7 +26,7 @@ public interface StoreReceiptInterface {
    *
    * @param receipt - object which holds info of parsed file.
    */
-  public void storeEntites(Receipt receipt);
+  void storeEntites(Receipt receipt);
 
   /**
    * Parses the form submitted by user which contains information of the parsed receipt and creates
@@ -35,5 +35,5 @@ public interface StoreReceiptInterface {
    * @param request - request which contains the form body.
    * @return Receipt - Receipt object created from the JSON string.
    */
-  public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException;
+  Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException;
 }

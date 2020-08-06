@@ -39,7 +39,6 @@ public final class StoreReceipt extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     Receipt receipt = storeReceiptImplementation.parseReceiptFromForm(request);
     storeReceiptImplementation.storeEntites(receipt);
     response.sendRedirect("/");

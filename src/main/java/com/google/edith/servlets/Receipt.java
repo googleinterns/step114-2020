@@ -42,20 +42,6 @@ public final class Receipt {
     this.items = items;
   }
 
-  public String toString() {
-    return (this.userId
-        + " "
-        + this.storeName
-        + " "
-        + this.date
-        + " "
-        + this.name
-        + " "
-        + this.fileUrl
-        + " "
-        + this.totalPrice);
-  }
-
   public String getUserId() {
     return this.userId;
   }
