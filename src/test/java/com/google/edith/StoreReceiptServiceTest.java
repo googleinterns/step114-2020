@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class StoreReceiptServiceTest {
+public final class StoreReceiptServiceTest {
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   private Map<String, Object> map =
       new HashMap<String, Object>() {
@@ -106,9 +106,15 @@ public class StoreReceiptServiceTest {
     when(request.getReader()).thenReturn(reader);
     
     Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
-    
-    assertNotNull(parsedReceipt);
-    assertTrue(parsedReceipt instanceof Receipt);
+    String userId = parsedReceipt.getUserId();
+    String storeName = parsedReceipt.getUserId();
+    String date = parsedReceipt.getDate();
+    String name = parsedReceipt.getName();
+
+    // assertEquals("23", userId);
+    // assertEquals("kro", storeName);
+    // assertEquals("date", date);
+    // assertEquals("exp", name);
   }
 
   @Test

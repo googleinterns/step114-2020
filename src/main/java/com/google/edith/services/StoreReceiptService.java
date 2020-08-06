@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
@@ -34,7 +35,7 @@ import java.util.Optional;
 import java.lang.reflect.Type;
 import javax.servlet.http.HttpServletRequest;
 
-public class StoreReceiptService {
+public final class StoreReceiptService implements StoreReceiptInterface {
 
   private final DatastoreService datastore;
 
@@ -42,13 +43,18 @@ public class StoreReceiptService {
     this.datastore = datastore;
   }
 
-  /**
-   * Stores Receipt and Item entities in datastore
-   *
-   * @param receipt - object which holds info of parsed file.
-   */
+  @Override
   public void storeEntites(Receipt receipt) {
     storeReceiptEntity(receipt);
+  }
+
+  @Override
+  public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
+    BufferedReader bufferedReader = request.getReader();
+    Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemDeserializer()).create();
+    JsonParser parser = new JsonParser();
+    JsonObject json = (JsonObject) parser.parse(bufferedReader);
+    return gson.fromJson(json, Receipt.class);
   }
 
   /**
@@ -75,21 +81,6 @@ public class StoreReceiptService {
     receiptEntity.setProperty("totalPrice", totalPrice);
     datastore.put(receiptEntity);
     storeReceiptItemsEntity(receipt, receiptEntity);
-  }
-
-  /**
-   * Parses the form submitted by user which contains information of the parsed receipt and creates
-   * a Receipt object from the JSON string.
-   *
-   * @param request - request which contains the form body.
-   * @return Receipt - Receipt object created from the JSON string.
-   */
-  public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
-    BufferedReader bufferedReader = request.getReader();
-    Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemDeserializer()).create();
-    JsonParser parser = new JsonParser();
-    JsonObject json = (JsonObject) parser.parse(bufferedReader);
-    return gson.fromJson(json, Receipt.class);
   }
 
   /**

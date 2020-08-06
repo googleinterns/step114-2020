@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.edith.services.StoreReceiptService;
+import com.google.edith.servlets.StoreReceipt;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
-import com.google.edith.servlets.StoreReceipt;
+import com.google.edith.interfaces.StoreReceiptInterface;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +40,7 @@ public class StoreReceiptTest {
 
   private StoreReceipt storeReceipt;
 
-  @Mock StoreReceiptService storeReceiptService;
+  @Mock StoreReceiptInterface storeReceiptImplementation;
 
   @Mock HttpServletRequest request;
 
@@ -50,7 +50,7 @@ public class StoreReceiptTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    storeReceipt = new StoreReceipt(storeReceiptService);
+    storeReceipt = new StoreReceipt(storeReceiptImplementation);
   }
 
   @After
@@ -59,7 +59,7 @@ public class StoreReceiptTest {
   }
 
   @Test
-  public void testServiceMethodsAreCalled() throws IOException {
+  public void doPost_testServiceMethodsAreCalled() throws IOException {
     Item item1 =
         Item.builder()
             .setUserId("23")
@@ -72,11 +72,12 @@ public class StoreReceiptTest {
             .build();
     Item[] items = {item1};
     Receipt receipt = new Receipt("23", "kro", "date", "exp", "url", 0.5f, items);
-    when(storeReceiptService.parseReceiptFromForm(request)).thenReturn(receipt);
+    when(storeReceiptImplementation.parseReceiptFromForm(request)).thenReturn(receipt);
 
     storeReceipt.doPost(request, response);
-    verify(storeReceiptService, times(1)).parseReceiptFromForm(request);
-    verify(storeReceiptService, times(1)).storeEntites(receipt);
+
+    verify(storeReceiptImplementation, times(1)).parseReceiptFromForm(request);
+    verify(storeReceiptImplementation, times(1)).storeEntites(receipt);
     verify(response, times(1)).sendRedirect("/");
   }
 }

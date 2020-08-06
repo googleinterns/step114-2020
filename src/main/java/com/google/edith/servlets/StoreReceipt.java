@@ -15,6 +15,7 @@
 package com.google.edith.servlets;
 
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.services.StoreReceiptService;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -24,23 +25,23 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet to store different entities in Datastore. */
 @WebServlet("/store-receipt")
-public class StoreReceipt extends HttpServlet {
-  private StoreReceiptService storeReceiptService;
+public final class StoreReceipt extends HttpServlet {
+  private StoreReceiptInterface storeReceiptImplementation;
 
   public StoreReceipt() {
-    this.storeReceiptService =
+    this.storeReceiptImplementation =
         new StoreReceiptService(DatastoreServiceFactory.getDatastoreService());
   }
 
-  public StoreReceipt(StoreReceiptService storeReceiptService) {
-    this.storeReceiptService = storeReceiptService;
+  public StoreReceipt(StoreReceiptInterface storeReceiptImplementation) {
+    this.storeReceiptImplementation = storeReceiptImplementation;
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    Receipt receipt = storeReceiptService.parseReceiptFromForm(request);
-    storeReceiptService.storeEntites(receipt);
+    Receipt receipt = storeReceiptImplementation.parseReceiptFromForm(request);
+    storeReceiptImplementation.storeEntites(receipt);
     response.sendRedirect("/");
   }
 }
