@@ -36,7 +36,7 @@ public final class GroceryDataReader {
       GroceryNameProcessor processor = new GroceryNameProcessor();
       item = processor.process(itemName);
     } catch (Exception e) {
-      System.out.println("error");
+      System.out.println(e.getMessage());
     }
 
     String expirationTime = ShelfDataReader.readFile(itemName);
