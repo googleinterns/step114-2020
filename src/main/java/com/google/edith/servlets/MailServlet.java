@@ -1,7 +1,7 @@
 /**
  * Copyright 2016 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
  *
  * <p>http://www.apache.org/licenses/LICENSE-2.0
@@ -11,13 +11,11 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.example.appengine.mail;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -28,11 +26,10 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.annotation.WebServlet;
 
 @WebServlet("/notifications")
 public class MailServlet extends HttpServlet {
