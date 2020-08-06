@@ -82,9 +82,7 @@ export default class ReceiptHandler extends React.Component {
         },
       });
 
-      this.setState((state) => ({
-        deals: response.data,
-      }));
+      this.setState((state) => ({deals: response.data}));
     };
 
     /**
@@ -93,7 +91,8 @@ export default class ReceiptHandler extends React.Component {
      * @param {Event} e change event
      */
     this.addExpirationAndSubmit = async (e) => {
-      const price = this.state.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const price = this.state.items.reduce(
+          (sum, item) => sum + item.price * item.quantity, 0);
       this.setState({totalPrice: price});
       await axios({
         method: 'post',
@@ -124,7 +123,6 @@ export default class ReceiptHandler extends React.Component {
       }).catch((err) => {
         console.log(err);
       });
-      this.setState({});
     };
   }
 
@@ -151,45 +149,45 @@ export default class ReceiptHandler extends React.Component {
 
   /**
    * Handles changes to the name of a grocery item.
-   * @param {number} i index of item
+   * @param {number} index index of item
    * @param {Event} e change event
    */
-  handleNameChange(i, e) {
+  handleNameChange(index, e) {
     const itemsList = [...this.state.items];
-    itemsList[i].name = e.target.value;
+    itemsList[index].name = e.target.value;
     this.setState({items: itemsList});
   }
 
   /**
    * Handles changes to the price of a grocery item.
-   * @param {number} i index of item
+   * @param {number} index index of item
    * @param {Event} e change event
    */
-  handlePriceChange(i, e) {
+  handlePriceChange(index, e) {
     const itemsList = [...this.state.items];
-    itemsList[i].price = e.target.value;
+    itemsList[index].price = e.target.value;
     this.setState({items: itemsList});
   }
 
   /**
    * Handles changes to the quantity of a grocery item.
-   * @param {number} i index of item
+   * @param {number} index index of item
    * @param {Event} e change event
    */
-  handleQuantityChange(i, e) {
+  handleQuantityChange(index, e) {
     const itemsList = [...this.state.items];
-    itemsList[i].quantity = e.target.value;
+    itemsList[index].quantity = e.target.value;
     this.setState({items: itemsList});
   }
 
   /**
    * Handles changes to the expiration of a grocery item.
-   * @param {number} i index of item
+   * @param {number} index index of item
    * @param {Event} e change event
    */
-  handleExpirationChange(i, e) {
+  handleExpirationChange(index, e) {
     const dealsList = [...this.state.deals];
-    dealsList[i].expirationTime = e.target.value;
+    dealsList[index].expirationTime = e.target.value;
     this.setState({deals: dealList});
   }
 
@@ -229,28 +227,28 @@ export default class ReceiptHandler extends React.Component {
             </>
               }
             </div>
-            {this.state.items.map((item, i) => (
-              <div className="form-row" key={i}>
+            {this.state.items.map((item, index) => (
+              <div className="form-row" key={index}>
                 <div className="col-lg-2">
                   <input type="text"
                     className="name form-control"
                     name="name"
                     value={item.name}
-                    onChange={this.handleNameChange.bind(this, i)}/>
+                    onChange={element => this.handleNameChange(index, element)}/>
                 </div>
                 <div className="col-lg-2">
                   <input type="number"
                     className="price form-control"
                     name="price"
                     value={item.price}
-                    onChange={this.handlePriceChange.bind(this, i)}/>
+                    onChange={element => this.handlePriceChange(index, element)}/>
                 </div>
                 <div className="col-lg-2">
                   <input type="number"
                     className="quantity form-control"
                     name="quantity"
                     value={item.quantity}
-                    onChange={this.handleQuantityChange.bind(this, i)}/>
+                    onChange={element => this.handleQuantityChange(index, element)}/>
                 </div>
                 {i==0 && this.state.deals.length == 0 &&
                 <div className="col-lg-2">
@@ -264,14 +262,14 @@ export default class ReceiptHandler extends React.Component {
                 {this.state.deals.length > 0 &&
               <>
                 <div className="col-lg-2 item-deal">
-                  <span>{this.state.deals[i].storeName}</span>
+                  <span>{this.state.deals[index].storeName}</span>
                 </div>
                 <div className="col-lg-2">
                   <input type="text"
                     className="item-expiration form-control"
                     name="expiration"
-                    value={this.state.deals[i].expirationTime}
-                    onChange={this.handleExpirationChange.bind(this, i)}/>
+                    value={this.state.deals[index].expirationTime}
+                    onChange={element => this.handleExpirationChange(index, element)}/>
                 </div>
               </>
                 }
