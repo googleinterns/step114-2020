@@ -105,6 +105,7 @@ public final class StoreReceiptServiceTest {
     when(request.getReader()).thenReturn(reader);
 
     Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
+    
     String userId = parsedReceipt.getUserId();
     String storeName = parsedReceipt.getUserId();
     String date = parsedReceipt.getDate();

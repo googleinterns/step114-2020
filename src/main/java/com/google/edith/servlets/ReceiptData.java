@@ -90,12 +90,4 @@ public final class ReceiptData {
     }
     return items;
   }
-
-  private float calculateTotalPrice(Item[] items) {
-    float totalPrice = 0;
-    for (Item item : items) {
-      totalPrice += item.price();
-    }
-    return totalPrice;
-  }
 }
