@@ -74,6 +74,9 @@ class TopNavbar extends React.Component {
         .then((response) => response.json())
         .then ((json) => {
           queryResponse = json;
+          if (queryResponse === '[]') {
+            render = false;
+          }
         })
         .catch(() => {
           render = false;
