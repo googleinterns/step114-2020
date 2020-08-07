@@ -38,7 +38,7 @@ import java.util.List;
 public final class SearchServiceImpl implements SearchService {
 
   private final DatastoreService datastore;
-  private UserService userService;
+  private final UserService userService;
 
   public SearchServiceImpl(DatastoreService datastore, UserService userService) {
     this.datastore = datastore;
