@@ -26,15 +26,13 @@ it('calls getItemData on mount', () => {
 it('displays items', () => {
   expect(component.find('.item-name').exists()).toBe(false);
   const newItem = {
-    name: '',
+    name: 'new item',
     price: 0.0,
     quantity: 1,
   };
   component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
-
-  const promise = new Promise(getItemData);
-  promise.then(() => {
+  setTimeout(() => {
     expect(component.find('.item-name').exists()).toBe(true);
-  });
+  }, 5000);
 });

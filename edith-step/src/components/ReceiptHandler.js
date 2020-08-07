@@ -200,7 +200,7 @@ export default class ReceiptHandler extends React.Component {
       category: '',
       expireDate: '',
     };
-    this.setState({items: this.state.items.concat(newItem)});
+    this.setState({...this.state.items, newItem});
   }
 
   /**
@@ -209,12 +209,12 @@ export default class ReceiptHandler extends React.Component {
    */
   getDate() {
     const date = new Date(Date.now());
-    let month = date.getMonth() + 1;
-    month < 10 ? month = '0' + month.toString() : month = month.toString();
-    let day = date.getDate();
-    day < 10 ? day = '0' + day.toString() : day = day.toString();
+    const month = date.getMonth() + 1;
+    const monthFormatted = month < 10 ? `0${month}` : month.toString();
+    const day = date.getDate();
+    const dayFormatted = day < 10 ? `0${day}` : day.toString();
     const year = date.getFullYear();
-    return [year, month, day].join('-');
+    return [year, monthFormatted, dayFormatted].join('-');
   }
 
   /**

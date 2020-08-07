@@ -8,9 +8,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
-import com.google.cloud.language.v1.LanguageServiceClient;
-import com.google.edith.DealsServlet;
-import com.google.edith.GroceryNameProcessor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,12 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class DealsServletTest {
   private GroceryNameProcessor reader;
-  @Mock LanguageServiceClient languageServiceClient;
 
   @Before
   public void setUp() {
