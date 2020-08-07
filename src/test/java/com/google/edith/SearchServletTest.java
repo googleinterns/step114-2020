@@ -205,7 +205,6 @@ public final class SearchServletTest {
             .setCategory("fruit")
             .setExpiration("expireDate")
             .build();
-    // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
     Item[] items = {item};
     Receipt receipt1 = new Receipt("12345", "kro", "unknown", "weekend", "url1", 2.5f, items);
     ImmutableList<Receipt> receipts = ImmutableList.of(receipt1);
@@ -232,7 +231,6 @@ public final class SearchServletTest {
             .setCategory("fruit")
             .setExpiration("expire1")
             .build();
-    // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
     ImmutableList<Item> items = ImmutableList.of(item);
     when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
