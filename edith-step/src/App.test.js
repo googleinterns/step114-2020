@@ -27,7 +27,6 @@ describe('App component', () => {
 
   test('has showSearchResults state true when button is clicked', () => {
     const showSearchResultButton = component.find('Button');
-    console.log(showSearchResultButton.debug());
     showSearchResultButton.simulate('click');
     expect(component.state('showSearchResults')).toBe(true);
   });
