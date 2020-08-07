@@ -151,7 +151,7 @@ public final class SearchServletTest {
     assertTrue(servletResponse.contains("date"));
     assertTrue(servletResponse.contains("name"));
     assertTrue(servletResponse.contains("fileUrl"));
-    assertTrue(servletResponse.contains("totalPrice"));
+    assertTrue(servletResponse.contains("price"));
     assertTrue(servletResponse.contains("items"));
   }
 
@@ -190,8 +190,18 @@ public final class SearchServletTest {
     when(request.getParameter("kind")).thenReturn("Receipt");
     when(request.getParameter("name")).thenReturn("weekend");
     List<Entity> entities = Collections.emptyList();
-    Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
-    Item[] items = {item1};
+    Item item =
+          Item.builder()
+              .setUserId("12345")
+              .setName("apple")
+              .setPrice(1.5)
+              .setQuantity(2)
+              .setDate("date")
+              .setCategory("fruit")
+              .setExpiration("expireDate")
+              .build();
+    // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
+    Item[] items = {item};
     Receipt receipt1 = new Receipt("12345","kro", "unknown", "weekend", "url1", 2.5f, items);
     Receipt[] receipts = {receipt1};
 
@@ -206,8 +216,18 @@ public final class SearchServletTest {
     when(request.getParameter("kind")).thenReturn("Item");
     when(request.getParameter("name")).thenReturn("weekend");
     List<Entity> entities = Collections.emptyList();
-    Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
-    Item[] items = {item1};
+    Item item =
+          Item.builder()
+              .setUserId("12345")
+              .setName("apple")
+              .setPrice(1.5)
+              .setQuantity(2)
+              .setDate("date")
+              .setCategory("fruit")
+              .setExpiration("expireDate")
+              .build();
+    // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
+    Item[] items = {item};
     when(searchService.findEntityFromDatastore("apple", "", "Item", "", ""))
           .thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);

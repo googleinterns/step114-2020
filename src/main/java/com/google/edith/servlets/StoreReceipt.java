@@ -14,42 +14,34 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
+import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.services.StoreReceiptService;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.NoSuchElementException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Servlet to store different entities in Datastore.
- */
+/** Servlet to store different entities in Datastore. */
 @WebServlet("/store-receipt")
-public class StoreReceipt extends HttpServlet {
-  private StoreReceiptService storeReceiptService;
+public final class StoreReceipt extends HttpServlet {
+  private StoreReceiptInterface storeReceiptService;
 
   public StoreReceipt() {
-    this.storeReceiptService = new StoreReceiptService
-          (DatastoreServiceFactory.getDatastoreService());
+    this.storeReceiptService =
+        new StoreReceiptService(DatastoreServiceFactory.getDatastoreService());
   }
 
-  public StoreReceipt(StoreReceiptService storeReceiptService) {
+  public StoreReceipt(StoreReceiptInterface storeReceiptService) {
     this.storeReceiptService = storeReceiptService;
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    Receipt receipt = storeReceiptService.parseReceiptFromForm(request);
+    BufferedReader bufferedReader = request.getReader();
+    Receipt receipt = storeReceiptService.parseReceiptFromForm(bufferedReader);
     storeReceiptService.storeEntites(receipt);
     response.sendRedirect("/");
   }

@@ -5,13 +5,25 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
+import PropTypes from 'prop-types';
 
+/**
+ * A react-bootstrap modal component with first name, last name, user name
+ * and favorite store field.
+ */
 class UserInfoModalBox extends React.Component {
-  
+  /**
+  * @constructor
+  * @param {Object}  props for React component.
+  */
   constructor(props) {
     super(props);
   }
-  
+
+  /**
+   * Renders a modal box.
+   *  @return { React.ReactNode } React virtual DOM.
+   */
   render() {
     return (
       <Modal
@@ -29,24 +41,46 @@ class UserInfoModalBox extends React.Component {
             <Row>
               <Form.Group as={Col}>
                 <Form.Label>First Name</Form.Label>
-                <Form.Control placeholder='First Name' className='first-name' name='first-name' required />
+                <Form.Control
+                  placeholder='First Name'
+                  className='first-name'
+                  name='first-name'
+                  required
+                />
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Last Name</Form.Label>
-                <Form.Control placeholder='Last Name' className='last-name' name='last-name' required />
+                <Form.Control
+                  placeholder='Last Name'
+                  className='last-name'
+                  name='last-name'
+                  required
+                />
               </Form.Group>
             </Row>
             <Row>
               <Form.Group as={Col}>
                 <Form.Label>Username</Form.Label>
-                <Form.Control placeholder='Username' className='username' name='username' required />
+                <Form.Control
+                  placeholder='Username'
+                  className='username'
+                  name='username'
+                  required
+                />
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Favorite Store</Form.Label>
-                <Form.Control placeholder='Favorite Store' className='favorite-store' name='favorite-store' required />
+                <Form.Control
+                  placeholder='Favorite Store'
+                  className='favorite-store'
+                  name='favorite-store'
+                  required
+                />
               </Form.Group>
             </Row>
-            <Button variant='primary' type='submit' >
+            <Button
+              variant='primary'
+              type='submit'>
               Submit
             </Button>
           </Form>
@@ -55,5 +89,10 @@ class UserInfoModalBox extends React.Component {
     );
   }
 }
+
+UserInfoModalBox.propTypes = {
+  show: PropTypes.bool,
+  handleUserInfoModalBoxClose: PropTypes.func,
+};
 
 export default UserInfoModalBox;

@@ -16,117 +16,120 @@ package com.google.edith.services;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.edith.servlets.Receipt;
+import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.servlets.Item;
-import java.io.IOException;
+import com.google.edith.servlets.Receipt;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 
-public class StoreReceiptService {
-    
+public final class StoreReceiptService implements StoreReceiptInterface {
+
   private final DatastoreService datastore;
 
   public StoreReceiptService(DatastoreService datastore) {
     this.datastore = datastore;
   }
-  
-  /**
-  * Stores Receipt and Item entities in datastore
-  * @param receipt - object which holds info of parsed file.
-  */
+
+  @Override
   public void storeEntites(Receipt receipt) {
     storeReceiptEntity(receipt);
-  } 
+  }
+
+  @Override
+  public Receipt parseReceiptFromForm(BufferedReader bufferedReader) throws IOException {
+    Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemDeserializer()).create();
+    JsonParser parser = new JsonParser();
+    JsonObject json = (JsonObject) parser.parse(bufferedReader);
+    return gson.fromJson(json, Receipt.class);
+  }
 
   /**
-  * Receives Receipt object and creates entity
-  * of type Receipt and stores it in Datastore.
-  * @param receipt - object which holds info of parsed file.
-  */
+   * Receives Receipt object and creates entity of type Receipt and stores it in Datastore.
+   *
+   * @param receipt - object which holds info of parsed file.
+   */
   private void storeReceiptEntity(Receipt receipt) {
-    String userId = receipt.getUserId();
-    String storeName = receipt.getStoreName();
-    String date = receipt.getDate();
-    String name = receipt.getName();
-    String fileUrl = receipt.getFileUrl();
-    float totalPrice = receipt.getTotalPrice();
-    
-    Optional<Entity> optEntity = getUserInfoEntity(userId);
+
+    Optional<Entity> optEntity = getUserInfoEntity(receipt.getUserId());
     Entity userInfoEntity = optEntity.get();
     Entity receiptEntity = new Entity("Receipt", userInfoEntity.getKey());
-    receiptEntity.setProperty("userId", userId);
-    receiptEntity.setProperty("storeName", storeName);
-    receiptEntity.setProperty("date", date);
-    receiptEntity.setProperty("name", name);
-    receiptEntity.setProperty("fileUrl", fileUrl);
-    receiptEntity.setProperty("price", totalPrice);
+    receiptEntity.setProperty("userId", receipt.getUserId());
+    receiptEntity.setProperty("storeName", receipt.getStoreName());
+    receiptEntity.setProperty("date", receipt.getDate());
+    receiptEntity.setProperty("name", receipt.getName());
+    receiptEntity.setProperty("fileUrl", receipt.getFileUrl());
+    receiptEntity.setProperty("price", receipt.getTotalPrice());
     datastore.put(receiptEntity);
     storeReceiptItemsEntity(receipt, receiptEntity);
   }
 
-  /**
-  * Parses the form submitted by user which contains information of
-  * the parsed receipt and creates a Receipt object from the JSON string.
-  * @param request - request which contains the form body.
-  * @return Receipt - Receipt object created from the JSON string.
-  */
-  public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
-    BufferedReader bufferedReader = request.getReader();
-    Gson gson = new Gson();
-    JsonParser parser = new JsonParser();
-    JsonObject json = (JsonObject) parser.parse(bufferedReader);
-    String receiptJsonString = json.get("data").getAsString();
-    System.out.println(receiptJsonString);
-    return gson.fromJson(receiptJsonString, Receipt.class);
-  }
 
   /**
-  * Stores parsed item from the form with
-  * receiptEntity as a parent in the datastore.
-  * @param items - request which contains the form body.
-  * @param receiptEntity - request which contains the form body.
-  */
+   * Stores parsed item from the form with receiptEntity as a parent in the datastore.
+   *
+   * @param items - request which contains the form body.
+   * @param receiptEntity - request which contains the form body.
+   */
   private void storeReceiptItemsEntity(Receipt receipt, Entity receiptEntity) {
-    Item[] items = receipt.getItems();
-    for (Item item: items) {
-      String userId = item.getUserId();
-      String itemName = item.getName();
-      float price = item.getPrice();
-      int quantity = item.getQuantity();
-      String category = item.getCategory();
-      String expireDate = item.getExpireDate();
-  
+    List<Item> items = Arrays.asList(receipt.getItems());
+    for (Item item : items) {
       Entity itemEntity = new Entity("Item", receiptEntity.getKey());
-      itemEntity.setProperty("userId", userId);
-      itemEntity.setProperty("name", itemName);
-      itemEntity.setProperty("quantity", quantity);
-      itemEntity.setProperty("price", price);
-      itemEntity.setProperty("category", category);
-      itemEntity.setProperty("date", expireDate);
+      itemEntity.setProperty("userId", item.userId());
+      itemEntity.setProperty("name", item.name());
+      itemEntity.setProperty("quantity", item.quantity());
+      itemEntity.setProperty("price", item.price());
+      itemEntity.setProperty("category", item.category());
+      itemEntity.setProperty("expireDate", item.expiration());
+      itemEntity.setProperty("date", item.date());
       datastore.put(itemEntity);
     }
   }
 
   /**
-   * Returns the UserInfo entity with user id.
-   * Given id is not of UserInfo kind but a field of that kind.
-   * @param id - id of the user who is logged in.
+   * Returns the UserInfo entity with user id. Given id is not of UserInfo kind but a field of that
+   * kind.
    */
   private Optional<Entity> getUserInfoEntity(String id) {
-    
+
     Query query =
         new Query("UserInfo")
             .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
     return Optional.ofNullable(results.asSingleEntity());
+  }
+
+  /** Custom Deserializer to deserialize Item class as it is an abstract class. */
+  private class ItemDeserializer implements JsonDeserializer<Item> {
+    @Override
+    public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+
+      JsonObject jsonObj = json.getAsJsonObject();
+      Item item =
+          Item.builder()
+              .setUserId(jsonObj.get("userId").getAsString())
+              .setName(jsonObj.get("name").getAsString())
+              .setPrice(jsonObj.get("price").getAsDouble())
+              .setQuantity(jsonObj.get("quantity").getAsLong())
+              .setDate(jsonObj.get("date").getAsString())
+              .setCategory(jsonObj.get("category").getAsString())
+              .setExpiration(jsonObj.get("expiration").getAsString())
+              .build();
+      return item;
+    }
   }
 }

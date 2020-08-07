@@ -14,8 +14,7 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.users.User;
-
+// TODO(@prashantneu) Use Auto_Value for this class and change Item[] to list<Item>.
 /** Encapsulate User info and logout url. */
 public final class Receipt {
   private final String userId;
@@ -26,7 +25,14 @@ public final class Receipt {
   private final float totalPrice;
   private final Item[] items;
 
-  public Receipt(String userId, String storeName, String date, String name, String fileUrl, float totalPrice, Item[] items) {
+  public Receipt(
+      String userId,
+      String storeName,
+      String date,
+      String name,
+      String fileUrl,
+      float totalPrice,
+      Item[] items) {
     this.userId = userId;
     this.storeName = storeName;
     this.date = date;
@@ -36,10 +42,6 @@ public final class Receipt {
     this.items = items;
   }
 
-  public String toString() {
-    return(this.userId + " " + this.storeName + " " + this.date + " " + this.name + " " + this.fileUrl + " " + this.totalPrice);
-  }
-  
   public String getUserId() {
     return this.userId;
   }

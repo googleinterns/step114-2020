@@ -14,52 +14,46 @@
 
 package com.google.edith;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.edith.services.StoreReceiptService;
-import com.google.edith.servlets.StoreReceipt;
-import com.google.edith.servlets.Receipt;
-import com.google.edith.servlets.Item;
-import org.mockito.MockitoAnnotations;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.edith.interfaces.StoreReceiptInterface;
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
+import com.google.edith.servlets.StoreReceipt;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 public class StoreReceiptTest {
 
-  private final LocalServiceTestHelper testHelper = 
-      new LocalServiceTestHelper(
-        new LocalDatastoreServiceTestConfig());
+  private final LocalServiceTestHelper testHelper =
+      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   private StoreReceipt storeReceipt;
 
-  @Mock
-  StoreReceiptService storeReceiptService;
+  @Mock StoreReceiptInterface storeReceiptImplementation;
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
+  @Mock HttpServletResponse response;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    storeReceipt = new StoreReceipt(storeReceiptService);
+    storeReceipt = new StoreReceipt(storeReceiptImplementation);
   }
 
   @After
@@ -68,15 +62,28 @@ public class StoreReceiptTest {
   }
 
   @Test
-  public void testServiceMethodsAreCalled() throws IOException {
-    Item item1 = new Item("23", "apple", 1.5f, 2, "fruit", "date");
+  public void doPost_testServiceMethodsAreCalled() throws IOException {
+    Reader inputString = new StringReader("testJson");
+    BufferedReader reader = new BufferedReader(inputString);
+    Item item1 =
+        Item.builder()
+            .setUserId("23")
+            .setName("apple")
+            .setPrice((float) 1.5)
+            .setQuantity(2)
+            .setDate("yy")
+            .setCategory("fruit")
+            .setExpiration("date")
+            .build();
     Item[] items = {item1};
-    Receipt receipt = new Receipt("23","kro", "date", "exp", "url", 0.5f, items);
-    when(storeReceiptService.parseReceiptFromForm(request)).thenReturn(receipt);
+    Receipt receipt = new Receipt("23", "kro", "date", "exp", "url", 0.5f, items);
+    when(request.getReader()).thenReturn(reader);
+    when(storeReceiptImplementation.parseReceiptFromForm(reader)).thenReturn(receipt);
 
     storeReceipt.doPost(request, response);
-    verify(storeReceiptService, times(1)).parseReceiptFromForm(request);
-    verify(storeReceiptService, times(1)).storeEntites(receipt);
+
+    verify(storeReceiptImplementation, times(1)).parseReceiptFromForm(reader);
+    verify(storeReceiptImplementation, times(1)).storeEntites(receipt);
     verify(response, times(1)).sendRedirect("/");
   }
 }

@@ -113,10 +113,10 @@ public final class SearchServiceTest {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Only filter by Date.
     List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("", "expire1", "Item", "", "");
+            .findEntityFromDatastore("", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
     foundEntities = searchService
-            .findEntityFromDatastore("", "expire4", "Item", "", "");
+            .findEntityFromDatastore("", "date4", "Item", "", "");
     assertEquals(1, foundEntities.size());
   }
 
@@ -126,10 +126,10 @@ public final class SearchServiceTest {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Filter by Name and Date.
     List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("apple", "expire1", "Item", "", "");
+            .findEntityFromDatastore("apple", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
     foundEntities = searchService
-            .findEntityFromDatastore("apple", "expire2", "Item", "", "");
+            .findEntityFromDatastore("apple", "date2", "Item", "", "");
     assertEquals(1, foundEntities.size());
   }
   
@@ -167,12 +167,12 @@ public final class SearchServiceTest {
     Entity receipt2 = createReceiptEntity("12345", "wal", "known", "sunday", "url2", 3.5f);
     Entity receipt3 = createReceiptEntity("6789", "wal", "known", "sunday", "url2", 3.5f);
     Entity receipt4 = createReceiptEntity("12345", "whole", "unknown", "monday", "url3", 4.5f);
-    createItemEntity(receipt1, "12345", "apple", 5, 2.5f, "fruit", "expire1");
-    createItemEntity(receipt1, "12345", "apple", 6, 4.8f, "fruit", "expire1");
-    createItemEntity(receipt1, "12345", "apple", 6, 4.8f, "fruit", "expire2");
-    createItemEntity(receipt1, "12345", "berry", 10, 8.8f, "fruit", "expire4");
-    createItemEntity(receipt2, "6789", "apple", 5, 2.5f, "fruit", "expire1");
-    createItemEntity(receipt3, "6789", "banana", 3, 4.6f, "fruit", "expire4");
+    createItemEntity(receipt1, "12345", "apple", 5, 2.5f, "fruit", "expire1", "date1");
+    createItemEntity(receipt1, "12345", "apple", 6, 4.8f, "fruit", "expire1", "date1");
+    createItemEntity(receipt1, "12345", "apple", 6, 4.8f, "fruit", "expire2", "date2");
+    createItemEntity(receipt1, "12345", "berry", 10, 8.8f, "fruit", "expire4", "date4");
+    createItemEntity(receipt2, "6789", "apple", 5, 2.5f, "fruit", "expire1", "date1");
+    createItemEntity(receipt3, "6789", "banana", 3, 4.6f, "fruit", "expire4", "date4");
   }
 
   // Creates a Receipt Entity and stores it in Datastore.
@@ -189,13 +189,14 @@ public final class SearchServiceTest {
   }
 
   // Creates an Item entity and stores it in Datastore.
-  private void createItemEntity(Entity receipt, String userId, String name, int quantity, float price, String category, String date) {
+  private void createItemEntity(Entity receipt, String userId, String name, int quantity, float price, String category, String expireDate, String date) {
     Entity itemEntity = new Entity("Item", receipt.getKey());
     itemEntity.setProperty("userId", userId);
     itemEntity.setProperty("name", name);
     itemEntity.setProperty("quantity", quantity);
     itemEntity.setProperty("price", price);
     itemEntity.setProperty("category", category);
+    itemEntity.setProperty("expireDate", expireDate);
     itemEntity.setProperty("date", date);
     datastore.put(itemEntity);
   }

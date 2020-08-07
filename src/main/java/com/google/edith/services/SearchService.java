@@ -91,13 +91,24 @@ public class SearchService extends HttpServlet {
     for (Entity entity: entities) {
       String userId = (String) entity.getProperty("userId");
       String itemName = (String) entity.getProperty("name");
-      float price = (float) ((double) entity.getProperty("price"));
-      int quantity = (int ) ((long) entity.getProperty("quantity"));
+      double price = (double) entity.getProperty("price");
+      long quantity = (long) entity.getProperty("quantity");
       String category = (String) entity.getProperty("category");
-      String expireDate = (String) entity.getProperty("date");
+      String expireDate = (String) entity.getProperty("expireDate");
+      String date = (String) entity.getProperty("date");
 
-      Item receiptItem = new Item(userId, itemName, price, quantity, category, expireDate);
-      itemsList.add(receiptItem);
+      Item item =
+          Item.builder()
+              .setUserId(userId)
+              .setName(itemName)
+              .setPrice(price)
+              .setQuantity(quantity)
+              .setDate(date)
+              .setCategory(category)
+              .setExpiration(expireDate)
+              .build();
+
+      itemsList.add(item);
     }
     return itemsList.toArray(new Item[0]);
   }
