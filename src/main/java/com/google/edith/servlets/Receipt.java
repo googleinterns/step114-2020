@@ -69,8 +69,4 @@ public final class Receipt {
   public Item[] getItems() {
     return this.items;
   }
-
-  public String getDate() {
-    return this.date;
-  }
 }
