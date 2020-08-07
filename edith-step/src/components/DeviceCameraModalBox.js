@@ -37,7 +37,7 @@ class DeviceCameraModalBox extends React.Component {
           });
         },
         'image/jpeg',
-        0.9,
+        1,
       );
       this.props.handleTakePictureModalBoxClose();
     }
