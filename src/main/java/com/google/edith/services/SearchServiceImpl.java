@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Service to create query and handle searching on entities. */
-public class SearchServiceImpl implements SearchService {
+public final class SearchServiceImpl implements SearchService {
 
   private final DatastoreService datastore;
   private UserService userService;
