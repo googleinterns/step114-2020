@@ -15,7 +15,6 @@
 package com.google.edith;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -26,21 +25,20 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableList;
-import com.google.edith.services.SearchService;
+import com.google.common.collect.ImmutableMap;
+import com.google.edith.services.SearchServiceImpl;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
-import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-public final class SearchServiceTest {
+public final class SearchServiceImplTest {
 
-  private SearchService searchService;
+  private SearchServiceImpl searchService;
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -60,7 +58,7 @@ public final class SearchServiceTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    searchService = new SearchService(datastore, userService);
+    searchService = new SearchServiceImpl(datastore, userService);
     createAndStoreEntites();
   }
 
@@ -73,10 +71,10 @@ public final class SearchServiceTest {
   @Test
   public void findEntityFromDatastore_getsReceiptWithGivenNameOnly() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    
+
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("weekend", "", "Receipt", "", "");
-    
+
     assertEquals(1, foundEntities.size());
   }
 
@@ -84,10 +82,10 @@ public final class SearchServiceTest {
   @Test
   public void findEntityFromDatastore_getsReceiptWithGivenDateOnly() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    
+
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
-    
+
     assertEquals(2, foundEntities.size());
   }
 
@@ -95,10 +93,10 @@ public final class SearchServiceTest {
   @Test
   public void findEntityFromDatastore_getsReceiptWithGivenNameAndDate() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    
+
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("weekend", "unknown", "Receipt", "", "");
-    
+
     assertEquals(1, foundEntities.size());
   }
 
@@ -106,9 +104,10 @@ public final class SearchServiceTest {
   @Test
   public void findEntityFromDatastore_getsItemWithGivenNameOnly() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
-    
-    ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
-    
+
+    ImmutableList<Entity> foundEntities =
+        searchService.findEntityFromDatastore("apple", "", "Item", "", "");
+
     assertEquals(3, foundEntities.size());
   }
 
@@ -116,12 +115,13 @@ public final class SearchServiceTest {
   @Test
   public void findEntityFromDatastore_getsItemWithGivenDateOnly() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
-    
-    ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("", "date1", "Item", "", "");
+
+    ImmutableList<Entity> foundEntities =
+        searchService.findEntityFromDatastore("", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
-    
+
     foundEntities = searchService.findEntityFromDatastore("", "date4", "Item", "", "");
-    
+
     assertEquals(1, foundEntities.size());
   }
 
@@ -129,14 +129,14 @@ public final class SearchServiceTest {
   @Test
   public void findEntityFromDatastore_getsItemWithGivenNameAndDate() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
-    
+
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("apple", "date1", "Item", "", "");
-    
+
     assertEquals(2, foundEntities.size());
-    
+
     foundEntities = searchService.findEntityFromDatastore("apple", "date2", "Item", "", "");
-    
+
     assertEquals(1, foundEntities.size());
   }
 
@@ -149,7 +149,7 @@ public final class SearchServiceTest {
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
     ImmutableList<Receipt> receipts = searchService.createReceiptObjects(foundEntities);
-    
+
     assertEquals(2, receipts.size());
   }
 
@@ -159,7 +159,8 @@ public final class SearchServiceTest {
    */
   @Test
   public void createItemObjects_returnsReceiptListWithRightSize() {
-    ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
+    ImmutableList<Entity> foundEntities =
+        searchService.findEntityFromDatastore("apple", "", "Item", "", "");
     ImmutableList<Item> items = searchService.createItemObjects(foundEntities);
     assertEquals(3, items.size());
   }

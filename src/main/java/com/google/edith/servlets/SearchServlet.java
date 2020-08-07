@@ -18,10 +18,10 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.ImmutableList;
-import com.google.edith.services.SearchService;
+import com.google.edith.interfaces.SearchService;
+import com.google.edith.services.SearchServiceImpl;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -41,7 +41,7 @@ public final class SearchServlet extends HttpServlet {
 
   public SearchServlet() {
     this.searchService =
-        new SearchService(
+        new SearchServiceImpl(
             DatastoreServiceFactory.getDatastoreService(), UserServiceFactory.getUserService());
   }
 
@@ -53,9 +53,7 @@ public final class SearchServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
 
-    String json = kind.equals("Receipt")
-            ? gson.toJson(receipts)
-            : gson.toJson(items);
+    String json = kind.equals("Receipt") ? gson.toJson(receipts) : gson.toJson(items);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }

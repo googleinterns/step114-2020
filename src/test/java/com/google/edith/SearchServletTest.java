@@ -28,17 +28,15 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableList;
-import com.google.edith.services.SearchService;
+import com.google.common.collect.ImmutableMap;
+import com.google.edith.interfaces.SearchService;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.SearchServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,9 +91,9 @@ public final class SearchServletTest {
     when(searchService.findEntityFromDatastore("weekend", "", "Receipt", "", ""))
         .thenReturn(entities);
     when(searchService.createReceiptObjects(entities)).thenReturn(receipts);
-    
+
     searchServlet.doPost(request, response);
-    
+
     verify(searchService, times(1)).createReceiptObjects(entities);
     verify(searchService, times(0)).createItemObjects(entities);
   }
@@ -109,9 +107,9 @@ public final class SearchServletTest {
     ImmutableList<Item> items = ImmutableList.of();
     when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
-    
+
     searchServlet.doPost(request, response);
-    
+
     verify(searchService, times(1)).createItemObjects(entities);
     verify(searchService, times(0)).createReceiptObjects(entities);
   }
@@ -121,9 +119,9 @@ public final class SearchServletTest {
   public void doPost_redirectAfterFormSubmission_redirects() throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
     setUpPostForReceipt();
-    
+
     verify(response).sendRedirect(captor.capture());
-    
+
     assertEquals("/#search-results", captor.getValue());
   }
 
@@ -134,9 +132,9 @@ public final class SearchServletTest {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
-    
+
     searchServlet.doGet(request, response);
-    
+
     verify(response, times(1)).getWriter();
   }
 
@@ -147,9 +145,9 @@ public final class SearchServletTest {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
-    
+
     searchServlet.doGet(request, response);
-    
+
     String servletResponse = stringWriter.toString();
     assertTrue(servletResponse.contains("userId"));
     assertTrue(servletResponse.contains("storeName"));
@@ -178,7 +176,7 @@ public final class SearchServletTest {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
-    
+
     searchServlet.doGet(request, response);
 
     String servletResponse = stringWriter.toString();

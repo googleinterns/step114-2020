@@ -28,29 +28,24 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.common.collect.ImmutableList;
+import com.google.edith.interfaces.SearchService;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServlet;
 
 /** Service to create query and handle searching on entities. */
-public class SearchService extends HttpServlet {
+public class SearchServiceImpl implements SearchService {
 
   private final DatastoreService datastore;
   private UserService userService;
 
-  public SearchService(DatastoreService datastore, UserService userService) {
+  public SearchServiceImpl(DatastoreService datastore, UserService userService) {
     this.datastore = datastore;
     this.userService = userService;
   }
 
-  /**
-   * Creates an immutable list of Receipt objects from entites of kind Receipt found in the datastore.
-   *
-   * @param entities - entities of kind Receipt found in datastore.
-   * @return ImmutableList<Receipt> - immutable list of Receipt objects
-   */
+  @Override
   public ImmutableList<Receipt> createReceiptObjects(ImmutableList<Entity> entities) {
     List<Receipt> receipts = new ArrayList<>();
 
@@ -61,27 +56,23 @@ public class SearchService extends HttpServlet {
       List<Entity> itemEntities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
       ImmutableList<Item> items = createItemObjects(ImmutableList.copyOf(itemEntities));
       // Datastore returns as double even when uploaded as float.
-      Receipt receipt = new Receipt(
-          (String) entity.getProperty("userId"),
-          (String) entity.getProperty("storeName"),
-          (String) entity.getProperty("date"),
-          (String) entity.getProperty("name"),
-          (String) entity.getProperty("fileUrl"),
-          // Datastore returns as double even when uploaded as float
-          (float) ((double) entity.getProperty("price")),
-          items.toArray(new Item[items.size()]));
-      
+      Receipt receipt =
+          new Receipt(
+              (String) entity.getProperty("userId"),
+              (String) entity.getProperty("storeName"),
+              (String) entity.getProperty("date"),
+              (String) entity.getProperty("name"),
+              (String) entity.getProperty("fileUrl"),
+              // Datastore returns as double even when uploaded as float
+              (float) ((double) entity.getProperty("price")),
+              items.toArray(new Item[items.size()]));
+
       receipts.add(receipt);
     }
     return ImmutableList.copyOf(receipts);
   }
 
-  /**
-   * Creates an immutable list of Item objects from entites of kind Item found in the datastore.
-   *
-   * @param entities - entities of kind Item found in datastore.
-   * @return ImmutableList<Item> - immutable list of Item objects.
-   */
+  @Override
   public ImmutableList<Item> createItemObjects(ImmutableList<Entity> entities) {
     List<Item> itemsList = new ArrayList<>();
 
@@ -102,17 +93,7 @@ public class SearchService extends HttpServlet {
     return ImmutableList.copyOf(itemsList);
   }
 
-  /**
-   * Creates an immutable list of entites found from given name, date kind and sorts on given order on given
-   * property.
-   *
-   * @param name -name property of the entity.
-   * @param date - date property of the entity.
-   * @param kind - kind of the entity stored in datastore.
-   * @param sortOrder - order to sort the entities.
-   * @param sortOnProperty - property on which to sort the order.
-   * @return ImmutableList<Entity> - immutable list of entites found from the query.
-   */
+  @Override
   public ImmutableList<Entity> findEntityFromDatastore(
       String name, String date, String kind, String sortOrder, String sortOnProperty) {
     Query query = prepareQuery(name, date, kind, sortOrder, sortOnProperty);
