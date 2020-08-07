@@ -11,7 +11,6 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.AutoCloseable;
 
 public class GroceryNameProcessor {
 
