@@ -13,15 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.MockitoAnnotations;
-import com.google.common.collect.ImmutableList;
-import com.google.cloud.language.v1.AnalyzeEntitiesRequest;
-import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
-import com.google.cloud.language.v1.Entity;
-import com.google.cloud.language.v1.EntityMention;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import com.google.cloud.language.v1.AnalyzeEntitiesResponse.Builder;
 
 @RunWith(JUnit4.class)
 public class GroceryNameProcessorTest {
