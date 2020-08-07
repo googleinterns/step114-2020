@@ -114,8 +114,6 @@ public final class StoreReceiptService implements StoreReceiptInterface {
   /**
    * Returns the UserInfo entity with user id. Given id is not of UserInfo kind but a field of that
    * kind.
-   *
-   * @param id - id of the user who is logged in.
    */
   private Optional<Entity> getUserInfoEntity(String id) {
 
@@ -135,22 +133,15 @@ public final class StoreReceiptService implements StoreReceiptInterface {
         throws JsonParseException {
 
       JsonObject jsonObj = json.getAsJsonObject();
-      String userId = jsonObj.get("userId").getAsString();
-      String category = jsonObj.get("category").getAsString();
-      String name = jsonObj.get("name").getAsString();
-      double price = jsonObj.get("price").getAsDouble();
-      long quantity = jsonObj.get("quantity").getAsLong();
-      String date = jsonObj.get("date").getAsString();
-      String expiration = jsonObj.get("expiration").getAsString();
       Item item =
           Item.builder()
-              .setUserId(userId)
-              .setName(name)
-              .setPrice(price)
-              .setQuantity(quantity)
-              .setDate(date)
-              .setCategory(category)
-              .setExpiration(expiration)
+              .setUserId(jsonObj.get("userId").getAsString())
+              .setName(jsonObj.get("name").getAsString())
+              .setPrice(jsonObj.get("price").getAsDouble())
+              .setQuantity(jsonObj.get("quantity").getAsLong())
+              .setDate(jsonObj.get("date").getAsString())
+              .setCategory(jsonObj.get("category").getAsString())
+              .setExpiration(jsonObj.get("expiration").getAsString())
               .build();
       return item;
     }
