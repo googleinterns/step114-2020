@@ -11,26 +11,47 @@ import com.google.cloud.language.v1.LanguageServiceClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.AutoCloseable;
 
 public class GroceryNameProcessor {
-/**
-  interface LanguageServiceClientWrapper {
+
+  interface LanguageServiceClientProvider {
+    LanguageServiceClientWrapper get() throws IOException;
+  }
+
+  interface LanguageServiceClientWrapper extends AutoCloseable {
     AnalyzeEntitiesResponse analyzeEntities(AnalyzeEntitiesRequest request);
-  }*/
-
-  private static LanguageServiceClient client;
-
-  GroceryNameProcessor() throws IOException {
-    this.client = LanguageServiceClient.create();
   }
 
-  GroceryNameProcessor(LanguageServiceClient client) {
-    this.client = client;
+  class LanguageServiceCloser implements LanguageServiceClientWrapper {
+    private LanguageServiceClient client;
+
+    LanguageServiceCloser() throws IOException {
+      client = LanguageServiceClient.create();
+    }
+
+    public AnalyzeEntitiesResponse analyzeEntities(AnalyzeEntitiesRequest request) {
+      return client.analyzeEntities(request);
+    }
+
+    public void close() {
+      client.close();
+    }
   }
 
-  public static String process(String text) throws Exception {
+  private static LanguageServiceClientProvider clientProvider;
+
+  GroceryNameProcessor() {
+    this.clientProvider = () -> new LanguageServiceCloser();
+  }
+
+  GroceryNameProcessor(LanguageServiceClientProvider client) {
+    this.clientProvider = client;
+  }
+
+  public String process(String text) throws Exception {
     List<Entity> commonEntities = new ArrayList<Entity>();
-
+    try (LanguageServiceClientWrapper client = clientProvider.get()) {
       Document doc =
           Document.newBuilder().setContent(text.toLowerCase()).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =
@@ -49,7 +70,7 @@ public class GroceryNameProcessor {
           }
         }
       }
-
+    }
     if (commonEntities.size() >= 1) {
       return commonEntities.get(0).getName();
     }

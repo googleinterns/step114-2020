@@ -1,4 +1,4 @@
-package com.google.edith.servlets;
+package com.google.edith;
 
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -6,6 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.edith.DealsServlet;
 import com.google.edith.GroceryNameProcessor;
@@ -74,7 +76,7 @@ public class DealsServletTest {
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
 
-    new DealsServlet().doPost(request, response);
+    new DealsServlet(reader).doPost(request, response);
 
     verify(request, atLeast(1)).getReader();
     writer.flush();

@@ -3,6 +3,7 @@ package com.google.edith;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.edith.GroceryNameProcessor.LanguageServiceClientWrapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,23 +23,41 @@ import com.google.cloud.language.v1.AnalyzeEntitiesResponse.Builder;
 
 @RunWith(JUnit4.class)
 public class GroceryNameProcessorTest {
-  private GroceryNameProcessor processor;
   private String result;
+
+  class FakeLanguageServiceCloser implements LanguageServiceClientWrapper {
+    private AnalyzeEntitiesResponse response;
+
+    FakeLanguageServiceCloser(AnalyzeEntitiesResponse response) {
+      this.response = response;
+    }
+
+    public AnalyzeEntitiesResponse analyzeEntities(AnalyzeEntitiesRequest request) {
+      return response;
+    }
+
+    public void close() {
+    }
+  }
 
   @Before
   public void setUp() throws IOException {
     MockitoAnnotations.initMocks(this);
-    GroceryNameProcessor processor = Mockito.mock(GroceryNameProcessor.class);
     result = "";
   }
 
   @Test
   public void canGetDealIfExists() throws Exception {
-    when(processor.process(Mockito.anyString())).thenReturn("chicken breast");
+    EntityMention mention1 = EntityMention.newBuilder().setType(EntityMention.Type.COMMON).build();
+    EntityMention mention2 = EntityMention.newBuilder().setType(EntityMention.Type.PROPER).build();
+    Entity entity1 = Entity.newBuilder().setName("chicken breast").addMentions(mention1).build();
+    Entity entity2 = Entity.newBuilder().setName("Coleman Farms").addMentions(mention2).build();
+    AnalyzeEntitiesResponse entityResponse = AnalyzeEntitiesResponse.newBuilder().addAllEntities(ImmutableList.of(entity1, entity2)).build();
+    GroceryNameProcessor processor = new GroceryNameProcessor(() -> new FakeLanguageServiceCloser(entityResponse));
     result = processor.process("Coleman Farms chicken breast");
     Assert.assertEquals(result, "chicken breast");
   }
-
+/**
   @Test
   public void confusingInput() throws Exception {
     when(processor.process(Mockito.anyString())).thenReturn("red pepper");
@@ -51,5 +70,5 @@ public class GroceryNameProcessorTest {
     when(processor.process(Mockito.anyString())).thenReturn("eggs");
     result = processor.process("Kirkland Farms pasture-raised eggs");
     Assert.assertEquals(result, "eggs");
-  }
+  }*/
 }
