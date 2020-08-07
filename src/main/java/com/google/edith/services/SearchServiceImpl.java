@@ -55,7 +55,6 @@ public final class SearchServiceImpl implements SearchService {
       PreparedQuery results = datastore.prepare(itemQuery);
       List<Entity> itemEntities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
       ImmutableList<Item> items = createItemObjects(ImmutableList.copyOf(itemEntities));
-      // Datastore returns as double even when uploaded as float.
       Receipt receipt =
           new Receipt(
               (String) entity.getProperty("userId"),
@@ -63,7 +62,7 @@ public final class SearchServiceImpl implements SearchService {
               (String) entity.getProperty("date"),
               (String) entity.getProperty("name"),
               (String) entity.getProperty("fileUrl"),
-              // Datastore returns as double even when uploaded as float
+              // Datastore returns as double even when uploaded as float.
               (float) ((double) entity.getProperty("price")),
               items.toArray(new Item[items.size()]));
 
