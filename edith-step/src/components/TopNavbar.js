@@ -86,7 +86,6 @@ class TopNavbar extends React.Component {
         method: 'post',
         url: '/notifications',
         data: {
-           type: 'expirationQuery',
            body: queryResponse,
         },
       });

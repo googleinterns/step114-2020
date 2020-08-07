@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.appengine.mail;
+package com.google.edith.servlets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -34,9 +34,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 @WebServlet("/notifications")
 public class MailServlet extends HttpServlet {
+
+  private final boolean mockSend;
+
+  MailServlet() {
+    this.mockSend = false;
+  }
+
+  public MailServlet(boolean mockSend) {
+    this.mockSend = mockSend;
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,22 +63,24 @@ public class MailServlet extends HttpServlet {
       }
     }
     String receiptData = stringBuilder.toString();
+    receiptData = receiptData.substring(1, receiptData.length()-2);
+    System.out.println(receiptData);
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(receiptData).getAsJsonObject();
-    String type = inputJson.get("type").getAsString();
 
-    if (type.equals("expirationQuery")) {
-      JsonArray items = inputJson.get("body").getAsJsonArray();
-      subject = "Restock Alert";
-      body.append("Hello! You're running low on a few items. You might want to restock:");
+    JsonArray items = inputJson.get("items").getAsJsonArray();
+    subject = "Restock Alert";
+    body.append("Hello! You're running low on a few items. You might want to restock:");
+    body.append("/n");
+    for (int i = 0; i < items.size(); i++) {
+      body.append(items.get(i));
       body.append("/n");
-      for (int i = 0; i < items.size(); i++) {
-        body.append(items.get(i));
-        body.append("/n");
-      }
     }
-
-    sendSimpleMail(subject, body.toString());
+    if (mockSend) {
+      response.getWriter().println(body.toString());
+    } else {
+      sendSimpleMail(subject, body.toString());
+    }
     response.sendRedirect("/");
   }
 
@@ -78,7 +92,8 @@ public class MailServlet extends HttpServlet {
       Message msg = new MimeMessage(session);
       msg.setFrom(new InternetAddress("livseibert@google.com", "Admin"));
       msg.addRecipient(
-          Message.RecipientType.TO, new InternetAddress("livseibert@google.com", "User"));
+          Message.RecipientType.TO, new InternetAddress(
+              UserServiceFactory.getUserService().getCurrentUser().getUserId(), "User"));
       msg.setSubject(subject);
       msg.setText(message);
       Transport.send(msg);
