@@ -21,9 +21,10 @@ public final class GroceryDataReader {
   /**
    * Finds the specified product in the file and puts the data into DealItem objects to be handled.
    */
-  public DealItem readFile(String itemName) throws IOException {
+  public DealItem readFile(String itemName, String itemPrice) throws IOException {
     URL csvResource = getClass().getClassLoader().getResource("grocerydata.csv");
     File groceryDataFile = new File(csvResource.getFile());
+    double price = (double) Double.parseDouble(itemPrice);
 
     CSVReader reader = new CSVReader(new FileReader(groceryDataFile), ',');
     DealItem cheapestItem = null;
@@ -36,14 +37,13 @@ public final class GroceryDataReader {
       GroceryNameProcessor processor = new GroceryNameProcessor();
       item = processor.process(itemName);
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      item = itemName;
     }
 
     String expirationTime = ShelfDataReader.readFile(itemName);
 
     while ((record = reader.readNext()) != null) {
-      if (record[0].equals(itemName)) {
-
+      if (record[0].equals(item.toLowerCase())) {
         List<DealItem> dealItems = new ArrayList<DealItem>();
         for (int i = 0; i < STORES.size(); i++) {
           // Each store has 3 columns of data, so if i is the store number, the starting index of
@@ -66,7 +66,7 @@ public final class GroceryDataReader {
       }
     }
     reader.close();
-    if (cheapestItem == null) {
+    if (cheapestItem == null || cheapestItem.getPrice() > price) {
       cheapestItem = new DealItem();
       cheapestItem.setStore(Store.NO_STORE);
       if (expirationTime.isEmpty()) {
