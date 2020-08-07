@@ -14,6 +14,10 @@
 package com.google.edith.servlets;
 
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -28,10 +32,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import java.io.BufferedReader;
 
 @WebServlet("/notifications")
 public class MailServlet extends HttpServlet {
@@ -60,7 +60,6 @@ public class MailServlet extends HttpServlet {
     }
     String receiptData = stringBuilder.toString();
     receiptData = receiptData.substring(1, receiptData.length() - 2);
-    System.out.println(receiptData);
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(receiptData).getAsJsonObject();
 

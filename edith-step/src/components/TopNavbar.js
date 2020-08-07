@@ -74,7 +74,6 @@ class TopNavbar extends React.Component {
         .then((response) => response.json())
         .then((json) => {
           queryResponse = json;
-          console.log(json);
           if (json.isEmpty()) {
             render = false;
           }
@@ -87,7 +86,7 @@ class TopNavbar extends React.Component {
         method: 'post',
         url: '/notifications',
         data: {
-           body: queryResponse,
+          body: queryResponse,
         },
       });
     }

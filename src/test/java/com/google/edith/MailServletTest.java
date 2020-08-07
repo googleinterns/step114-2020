@@ -1,28 +1,25 @@
 package com.google.edith;
 
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.edith.servlets.Item;
-import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.MailServlet;
+import com.google.edith.servlets.Receipt;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import java.util.Arrays;
 
 public class MailServletTest {
   @Test
@@ -55,8 +52,7 @@ public class MailServletTest {
     Gson gson = new Gson();
     String json = gson.toJson(Arrays.asList(receipt));
 
-    when(request.getReader())
-        .thenReturn(new BufferedReader(new StringReader(json.toString())));
+    when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json.toString())));
 
     StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -66,7 +62,8 @@ public class MailServletTest {
 
     verify(request, atLeast(1)).getReader();
     writer.flush();
-    Assert.assertTrue(stringWriter.toString().contains("Apple Juice")
-        && stringWriter.toString().contains("Hello!"));
+    Assert.assertTrue(
+        stringWriter.toString().contains("Apple Juice")
+            && stringWriter.toString().contains("Hello!"));
   }
 }
