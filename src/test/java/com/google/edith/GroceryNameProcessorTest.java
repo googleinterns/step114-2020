@@ -6,17 +6,13 @@ import com.google.cloud.language.v1.Entity;
 import com.google.cloud.language.v1.EntityMention;
 import com.google.common.collect.ImmutableList;
 import com.google.edith.GroceryNameProcessor.LanguageServiceClientWrapper;
+import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import com.google.cloud.language.v1.AnalyzeEntitiesResponse.Builder;
 
 @RunWith(JUnit4.class)
 public class GroceryNameProcessorTest {
