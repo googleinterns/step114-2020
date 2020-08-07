@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
@@ -39,18 +38,9 @@ public class MailServletTest {
             .build();
     Item[] items = new Item[1];
     items[0] = receiptItem;
-    Receipt receipt =
-        new Receipt(
-            "185804764220139124118",
-            "whole Foods",
-            "unknown date",
-            "Receipt",
-            "L2dzL2VkaXRoLXJlY2VpcHRzL1NMY1gwX1VZczduVlBJaFBPV3dkY2c",
-            0,
-            items);
 
     Gson gson = new Gson();
-    String json = gson.toJson(Arrays.asList(receipt));
+    String json = gson.toJson(items);
 
     when(request.getReader()).thenReturn(new BufferedReader(new StringReader(json.toString())));
 

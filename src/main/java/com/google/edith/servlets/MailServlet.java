@@ -59,16 +59,15 @@ public class MailServlet extends HttpServlet {
       }
     }
     String receiptData = stringBuilder.toString();
-    receiptData = receiptData.substring(1, receiptData.length() - 2);
     JsonParser parser = new JsonParser();
-    JsonObject inputJson = parser.parse(receiptData).getAsJsonObject();
+    JsonArray items = parser.parse(receiptData).getAsJsonArray();
 
-    JsonArray items = inputJson.get("items").getAsJsonArray();
     subject = "Restock Alert";
     body.append("Hello! You're running low on a few items. You might want to restock:");
     body.append("/n");
     for (int i = 0; i < items.size(); i++) {
-      body.append(items.get(i));
+      JsonObject item = items.get(i).getAsJsonObject();
+      body.append(item.get("name").getAsString());
       body.append("/n");
     }
     if (mockSend) {
