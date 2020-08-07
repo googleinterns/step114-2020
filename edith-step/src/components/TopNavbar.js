@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import FileUploadModalBox from './FileUploadModalBox';
 import UserInfoModalBox from './UserInfoModalBox';
@@ -67,8 +68,8 @@ class TopNavbar extends React.Component {
    * Checks the user log-in status and sets
    * user email in sessionstorage.
    */
-  login() {
-    fetch('/login')
+  async login() {
+    await fetch('/login')
         .then((response) => response.json())
         .then((userInfo) => {
           this.setState({user: userInfo});
@@ -76,6 +77,28 @@ class TopNavbar extends React.Component {
         .catch(() => {
           this.setState({user: null});
         });
+    let queryResponse = '';
+    let render = true;
+    await fetch('/grocery-list-query')
+        .then((response) => response.json())
+        .then((json) => {
+          queryResponse = json;
+          if (json.isEmpty()) {
+            render = false;
+          }
+        })
+        .catch(() => {
+          render = false;
+        });
+    if (render) {
+      await axios({
+        method: 'post',
+        url: '/notifications',
+        data: {
+          body: queryResponse,
+        },
+      });
+    }
   }
 
   /**
