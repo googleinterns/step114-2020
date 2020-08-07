@@ -15,8 +15,8 @@
 package com.google.edith.interfaces;
 
 import com.google.edith.servlets.Receipt;
+import java.io.BufferedReader;
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
 
 /** Operations for handling parsing receipts. */
 public interface StoreReceiptInterface {
@@ -35,5 +35,5 @@ public interface StoreReceiptInterface {
    * @param request - request which contains the form body.
    * @return Receipt - Receipt object created from the JSON string.
    */
-  Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException;
+  Receipt parseReceiptFromForm(BufferedReader bufferedReader) throws IOException;
 }

@@ -34,7 +34,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.After;
@@ -102,7 +101,7 @@ public final class StoreReceiptServiceTest {
     BufferedReader reader = new BufferedReader(inputString);
     when(request.getReader()).thenReturn(reader);
 
-    Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(request);
+    Receipt parsedReceipt = storeReceiptService.parseReceiptFromForm(reader);
     assertNotNull(parsedReceipt);
   }
 

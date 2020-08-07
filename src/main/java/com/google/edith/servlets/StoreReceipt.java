@@ -17,6 +17,7 @@ package com.google.edith.servlets;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.services.StoreReceiptService;
+import java.io.BufferedReader;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +40,8 @@ public final class StoreReceipt extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Receipt receipt = storeReceiptService.parseReceiptFromForm(request);
+    BufferedReader bufferedReader = request.getReader();
+    Receipt receipt = storeReceiptService.parseReceiptFromForm(bufferedReader);
     storeReceiptService.storeEntites(receipt);
     response.sendRedirect("/");
   }

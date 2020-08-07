@@ -35,7 +35,6 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
 
 public final class StoreReceiptService implements StoreReceiptInterface {
 
@@ -51,8 +50,7 @@ public final class StoreReceiptService implements StoreReceiptInterface {
   }
 
   @Override
-  public Receipt parseReceiptFromForm(HttpServletRequest request) throws IOException {
-    BufferedReader bufferedReader = request.getReader();
+  public Receipt parseReceiptFromForm(BufferedReader bufferedReader) throws IOException {
     Gson gson = new GsonBuilder().registerTypeAdapter(Item.class, new ItemDeserializer()).create();
     JsonParser parser = new JsonParser();
     JsonObject json = (JsonObject) parser.parse(bufferedReader);
@@ -111,9 +109,7 @@ public final class StoreReceiptService implements StoreReceiptInterface {
     return Optional.ofNullable(results.asSingleEntity());
   }
 
-  /**
-   * Custom Deserializer to deserialize Item class as it is an abstract class.
-   */
+  /** Custom Deserializer to deserialize Item class as it is an abstract class. */
   private class ItemDeserializer implements JsonDeserializer<Item> {
     @Override
     public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

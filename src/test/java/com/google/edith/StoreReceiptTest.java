@@ -24,7 +24,10 @@ import com.google.edith.interfaces.StoreReceiptInterface;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.StoreReceipt;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
@@ -60,6 +63,8 @@ public class StoreReceiptTest {
 
   @Test
   public void doPost_testServiceMethodsAreCalled() throws IOException {
+    Reader inputString = new StringReader("testJson");
+    BufferedReader reader = new BufferedReader(inputString);
     Item item1 =
         Item.builder()
             .setUserId("23")
@@ -72,11 +77,12 @@ public class StoreReceiptTest {
             .build();
     Item[] items = {item1};
     Receipt receipt = new Receipt("23", "kro", "date", "exp", "url", 0.5f, items);
-    when(storeReceiptImplementation.parseReceiptFromForm(request)).thenReturn(receipt);
+    when(request.getReader()).thenReturn(reader);
+    when(storeReceiptImplementation.parseReceiptFromForm(reader)).thenReturn(receipt);
 
     storeReceipt.doPost(request, response);
 
-    verify(storeReceiptImplementation, times(1)).parseReceiptFromForm(request);
+    verify(storeReceiptImplementation, times(1)).parseReceiptFromForm(reader);
     verify(storeReceiptImplementation, times(1)).storeEntites(receipt);
     verify(response, times(1)).sendRedirect("/");
   }
