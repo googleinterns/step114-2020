@@ -54,7 +54,7 @@ class DeviceCameraModalBox extends React.Component {
   }
 
   /**
-   * show video as soons as the component is mounted.
+   * Show video as soons as the component is mounted.
    */
   componentDidMount() {
     this._isMounted = true;
