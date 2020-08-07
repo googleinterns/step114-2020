@@ -125,7 +125,7 @@ class TopNavbar extends React.Component {
                   <DeviceCameraModalBox
                     show={this.state.takePictureModalBox}
                     handleTakePictureModalBoxClose=
-                        {this.handleTakePictureModalBoxClose}
+                      {this.handleTakePictureModalBoxClose}
                   />
                   <Dropdown.Item
                     onClick={() => this.setState({userInfoModalBoxShow: true})}

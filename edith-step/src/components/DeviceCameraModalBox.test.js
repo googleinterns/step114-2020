@@ -33,5 +33,4 @@ describe('DeviceCameraModalBox must', () => {
   it('changes the state of the url', () => {
     expect(component.state('uploadUrl')).toBe('\"aUrl\"');
   });
-
 });

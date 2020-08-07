@@ -1,6 +1,8 @@
 package com.google.edith;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet("/receipt-data")
 public class DealsServlet extends HttpServlet {
+  private final GroceryDataReader groceryReader = new GroceryDataReader();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -25,18 +28,33 @@ public class DealsServlet extends HttpServlet {
         stringBuilder.append(line).append('\n');
       }
     }
-
     String receiptData = stringBuilder.toString();
     JsonParser parser = new JsonParser();
-    JsonObject json = (JsonObject) parser.parse(receiptData);
-    String itemName = json.get("itemName").getAsString();
+    JsonObject inputjson = parser.parse(receiptData).getAsJsonObject();
+    JsonArray items = inputjson.get("items").getAsJsonArray();
 
-    GroceryDataReader groceryReader = new GroceryDataReader();
-    DealItem cheapestItem = groceryReader.readFile(itemName);
+    DealItem cheapestItem = null;
+    ImmutableList.Builder<DealItem> deals = ImmutableList.builder();
+    for (int i = 0; i < items.size(); i++) {
+      cheapestItem = null;
+      JsonObject item = items.get(i).getAsJsonObject();
+      String itemName = item.get("name").getAsString();
+      try {
+        GroceryNameProcessor processor = new GroceryNameProcessor();
+        itemName = processor.process(itemName);
+      } catch (Exception e) {
+        System.out.println("error");
+      }
 
+      cheapestItem = groceryReader.readFile(itemName.toLowerCase());
+
+      if (cheapestItem != null) {
+        deals.add(cheapestItem);
+      }
+    }
     Gson gson = new Gson();
-    String responseJson = gson.toJson(cheapestItem);
+    String dealItems = gson.toJson(deals.build());
     response.setContentType("application/json");
-    response.getWriter().println(responseJson);
+    response.getWriter().println(dealItems);
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 /**
  * Component that shows video from the device's camera
@@ -14,43 +14,45 @@ class DeviceCameraModalBox extends React.Component {
    */
   constructor(props) {
     super(props);
+    this.canvasRef;
+    this.playerRef;
     this.state = {
       uploadUrl: '',
     };
-  
+
     /**
      * Uploads the photo taken from the video.
      */
     this.uploadPhoto = () => {
-      const canvas = this.refs.canvas;
-      const player = this.refs.player;
+      const canvas = this.canvasRef;
+      const player = this.playerRef;
       // Stop capturing the video.
-      player.srcObject.getVideoTracks().forEach(track => track.stop());
+      player.srcObject.getVideoTracks().forEach((track) => track.stop());
       canvas.toBlob(
-        blob => {
-          const imageFile = this.convertFromBlobToFile(blob, 'receipt-file')
-          const formData = new FormData();
-          formData.append('receipt-file', imageFile);
-          fetch(this.state.uploadUrl, {
-            method: 'POST',
-            body: formData,
-          });
-        },
-        'image/jpeg',
-        1,
+          (blob) => {
+            const imageFile = this.convertFromBlobToFile(blob, 'receipt-file');
+            const formData = new FormData();
+            formData.append('receipt-file', imageFile);
+            fetch(this.state.uploadUrl, {
+              method: 'POST',
+              body: formData,
+            });
+          },
+          'image/jpeg',
+          1,
       );
       this.props.handleTakePictureModalBoxClose();
-    }
+    };
 
     /**
      * Grabs a snapshot of the video being rendered.
      */
     this.capturePhoto = () => {
-      const canvas = this.refs.canvas;
-      let ctx = this.refs.canvas.getContext('2d');
-      const player = this.refs.player;
+      const canvas = this.canvasRef;
+      const ctx = this.canvasRef.getContext('2d');
+      const player = this.playerRef;
       ctx.drawImage(player, 0, 0, canvas.width, canvas.height);
-    }
+    };
   }
 
   /**
@@ -86,16 +88,18 @@ class DeviceCameraModalBox extends React.Component {
           console.error(error);
         });
   }
-  
+
   /**
    * Creates File from Blob.
    *
    * @param {Blob}  blob blob obtained from canvas.
    * @param {String}  fileName the name of the file.
+   * @return {File}  file obtained from blob.
    */
-  convertFromBlobToFile(blob, fileName){
+  convertFromBlobToFile(blob, fileName) {
     const lastModifiedInSeconds = new Date().getTime();
-    const file = new File([blob], fileName, {lastModified: lastModifiedInSeconds});
+    const file = new File([blob], fileName,
+        {lastModified: lastModifiedInSeconds});
     return file;
   }
 
@@ -107,13 +111,13 @@ class DeviceCameraModalBox extends React.Component {
       video: true,
       audio: false,
     };
-    const player = this.refs.player;
+    const player = this.playerRef;
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
           player.srcObject = stream;
           return player.play();
         })
-        .catch(e => {
+        .catch((e) => {
           console.error(e);
         });
   }
@@ -140,13 +144,13 @@ class DeviceCameraModalBox extends React.Component {
         <Modal.Body>
           <video
             className='videoPlayer'
-            ref='player'
+            ref={(el) => this.playerRef = el}
             controls
-            autoplay>
+            autoPlay>
           </video>
           <canvas
             className='imageCanvas'
-            ref='canvas'
+            ref={(el) => this.canvasRef = el}
           />
           <Button
             onClick={this.capturePhoto}
@@ -162,8 +166,8 @@ class DeviceCameraModalBox extends React.Component {
             Use this picture
           </Button>
         </Modal.Body>
-    </Modal>
-    )
+      </Modal>
+    );
   }
 }
 

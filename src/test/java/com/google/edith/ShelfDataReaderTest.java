@@ -16,4 +16,9 @@ public class ShelfDataReaderTest {
   public void readFile_inputStringNotInFile_returnsNoShelfLifeData() {
     Assert.assertEquals("NO_EXPIRATION", ShelfDataReader.readFile("nothing"));
   }
+
+  @Test
+  public void handlesDifferentCapitalization() {
+    Assert.assertEquals("1.0 2.0 Weeks", ShelfDataReader.readFile("buttermilk"));
+  }
 }
