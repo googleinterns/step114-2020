@@ -13,9 +13,7 @@
  */
 package com.google.edith.servlets;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -34,8 +32,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 
 @WebServlet("/notifications")
 public class MailServlet extends HttpServlet {
@@ -63,7 +59,7 @@ public class MailServlet extends HttpServlet {
       }
     }
     String receiptData = stringBuilder.toString();
-    receiptData = receiptData.substring(1, receiptData.length()-2);
+    receiptData = receiptData.substring(1, receiptData.length() - 2);
     System.out.println(receiptData);
     JsonParser parser = new JsonParser();
     JsonObject inputJson = parser.parse(receiptData).getAsJsonObject();
@@ -92,7 +88,8 @@ public class MailServlet extends HttpServlet {
       Message msg = new MimeMessage(session);
       msg.setFrom(new InternetAddress("livseibert@google.com", "Admin"));
       msg.addRecipient(
-          Message.RecipientType.TO, new InternetAddress(
+          Message.RecipientType.TO,
+          new InternetAddress(
               UserServiceFactory.getUserService().getCurrentUser().getUserId(), "User"));
       msg.setSubject(subject);
       msg.setText(message);

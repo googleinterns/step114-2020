@@ -68,13 +68,14 @@ class TopNavbar extends React.Component {
         .catch(() => {
           this.setState({user: null});
         });
-    var queryResponse = "";
-    var render = true;
+    let queryResponse = '';
+    let render = true;
     await fetch('/grocery-list-query')
         .then((response) => response.json())
-        .then ((json) => {
+        .then((json) => {
           queryResponse = json;
-          if (queryResponse === '[]') {
+          console.log(json);
+          if (json.isEmpty()) {
             render = false;
           }
         })
