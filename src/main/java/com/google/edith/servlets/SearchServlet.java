@@ -14,25 +14,12 @@
 
 package com.google.edith.servlets;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.edith.services.SearchService;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
@@ -40,9 +27,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that searches the datastore for the 
- * entity which has all the properties submitted
- * in the form.
+/**
+ * Servlet that searches the datastore for the entity which has all the properties submitted in the
+ * form.
  */
 @WebServlet("/search-entity")
 public class SearchServlet extends HttpServlet {
@@ -50,11 +37,11 @@ public class SearchServlet extends HttpServlet {
   private Receipt[] receipts;
   private Item[] items;
   private String kind;
-  
+
   public SearchServlet() {
-    this.searchService = new SearchService(
-        DatastoreServiceFactory.getDatastoreService(),
-        UserServiceFactory.getUserService());
+    this.searchService =
+        new SearchService(
+            DatastoreServiceFactory.getDatastoreService(), UserServiceFactory.getUserService());
   }
 
   public SearchServlet(SearchService searchService) {
@@ -65,9 +52,7 @@ public class SearchServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
 
-    String json = kind.equals("Receipt") 
-            ? gson.toJson(receipts)
-            : gson.toJson(items);
+    String json = kind.equals("Receipt") ? gson.toJson(receipts) : gson.toJson(items);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
@@ -78,13 +63,12 @@ public class SearchServlet extends HttpServlet {
     String name = getParameter(request, "name").orElse("");
     String date = getParameter(request, "date").orElse("");
     String sortOrder = getParameter(request, "sort-order").orElse("");
-    String sortOnProperty = getParameter(request, "sort-on").orElse("")
-                              .toLowerCase();
+    String sortOnProperty = getParameter(request, "sort-on").orElse("").toLowerCase();
 
-    List<Entity> entities = searchService
-            .findEntityFromDatastore(name, date, kind, sortOrder, sortOnProperty);
+    List<Entity> entities =
+        searchService.findEntityFromDatastore(name, date, kind, sortOrder, sortOnProperty);
 
-    for (Entity entity: entities) {
+    for (Entity entity : entities) {
       System.out.println(entity);
     }
 
@@ -98,9 +82,10 @@ public class SearchServlet extends HttpServlet {
 
   /**
    * Returns Optional of String from form in FE.
+   *
    * @param request - id of the user who is logged in.
    * @param name - name of the field.
-   * @return Optional<String> - 
+   * @return Optional<String> -
    */
   private Optional<String> getParameter(HttpServletRequest request, String name) {
     return Optional.ofNullable(request.getParameter(name));

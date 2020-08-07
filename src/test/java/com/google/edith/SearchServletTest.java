@@ -14,6 +14,12 @@
 
 package com.google.edith;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,15 +30,13 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.SearchService;
-import com.google.edith.servlets.SearchServlet;
-import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.Item;
-import com.google.gson.Gson;
+import com.google.edith.servlets.Receipt;
+import com.google.edith.servlets.SearchServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -40,40 +44,31 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import org.mockito.ArgumentCaptor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 public final class SearchServletTest {
-  
+
   private SearchServlet searchServlet;
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  private Map<String, Object> map = ImmutableMap
-            .of("com.google.appengine.api.users.UserService.user_id_key", "12345");
-   private LocalServiceTestHelper testHelper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),
-        new LocalUserServiceTestConfig())
-        .setEnvAttributes(map)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("gmail")
-        .setEnvIsAdmin(true)
-        .setEnvEmail("user@gmail.com");
+  private Map<String, Object> map =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
+  private LocalServiceTestHelper testHelper =
+      new LocalServiceTestHelper(
+              new LocalDatastoreServiceTestConfig(), new LocalUserServiceTestConfig())
+          .setEnvAttributes(map)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail")
+          .setEnvIsAdmin(true)
+          .setEnvEmail("user@gmail.com");
 
-  @Mock
-  SearchService searchService;
+  @Mock SearchService searchService;
 
-  @Mock
-  HttpServletRequest request;
+  @Mock HttpServletRequest request;
 
-  @Mock
-  HttpServletResponse response;
+  @Mock HttpServletResponse response;
 
   @Before
   public void setUp() {
@@ -95,7 +90,7 @@ public final class SearchServletTest {
     List<Entity> entities = Collections.emptyList();
     Receipt[] receipts = new Receipt[1];
     when(searchService.findEntityFromDatastore("weekend", "", "Receipt", "", ""))
-          .thenReturn(entities);
+        .thenReturn(entities);
     when(searchService.createReceiptObjects(entities)).thenReturn(receipts);
     searchServlet.doPost(request, response);
     verify(searchService, times(1)).createReceiptObjects(entities);
@@ -109,8 +104,7 @@ public final class SearchServletTest {
     when(request.getParameter("name")).thenReturn("apple");
     List<Entity> entities = Collections.emptyList();
     Item[] items = new Item[1];
-    when(searchService.findEntityFromDatastore("apple", "", "Item", "", ""))
-          .thenReturn(entities);
+    when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
     searchServlet.doPost(request, response);
     verify(searchService, times(1)).createItemObjects(entities);
@@ -191,22 +185,22 @@ public final class SearchServletTest {
     when(request.getParameter("name")).thenReturn("weekend");
     List<Entity> entities = Collections.emptyList();
     Item item =
-          Item.builder()
-              .setUserId("12345")
-              .setName("apple")
-              .setPrice(1.5)
-              .setQuantity(2)
-              .setDate("date")
-              .setCategory("fruit")
-              .setExpiration("expireDate")
-              .build();
+        Item.builder()
+            .setUserId("12345")
+            .setName("apple")
+            .setPrice(1.5)
+            .setQuantity(2)
+            .setDate("date")
+            .setCategory("fruit")
+            .setExpiration("expireDate")
+            .build();
     // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
     Item[] items = {item};
-    Receipt receipt1 = new Receipt("12345","kro", "unknown", "weekend", "url1", 2.5f, items);
+    Receipt receipt1 = new Receipt("12345", "kro", "unknown", "weekend", "url1", 2.5f, items);
     Receipt[] receipts = {receipt1};
 
     when(searchService.findEntityFromDatastore("weekend", "", "Receipt", "", ""))
-          .thenReturn(entities);
+        .thenReturn(entities);
     when(searchService.createReceiptObjects(entities)).thenReturn(receipts);
     searchServlet.doPost(request, response);
   }
@@ -217,19 +211,18 @@ public final class SearchServletTest {
     when(request.getParameter("name")).thenReturn("weekend");
     List<Entity> entities = Collections.emptyList();
     Item item =
-          Item.builder()
-              .setUserId("12345")
-              .setName("apple")
-              .setPrice(1.5)
-              .setQuantity(2)
-              .setDate("date")
-              .setCategory("fruit")
-              .setExpiration("expireDate")
-              .build();
+        Item.builder()
+            .setUserId("12345")
+            .setName("apple")
+            .setPrice(1.5)
+            .setQuantity(2)
+            .setDate("date")
+            .setCategory("fruit")
+            .setExpiration("expireDate")
+            .build();
     // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
     Item[] items = {item};
-    when(searchService.findEntityFromDatastore("apple", "", "Item", "", ""))
-          .thenReturn(entities);
+    when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
     searchServlet.doPost(request, response);
   }

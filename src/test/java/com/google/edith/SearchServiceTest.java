@@ -14,29 +14,28 @@
 
 package com.google.edith;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.edith.services.SearchService;
-import com.google.edith.servlets.Receipt;
 import com.google.edith.servlets.Item;
+import com.google.edith.servlets.Receipt;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 public final class SearchServiceTest {
 
@@ -44,18 +43,18 @@ public final class SearchServiceTest {
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-  private Map<String, Object> map = ImmutableMap
-            .of("com.google.appengine.api.users.UserService.user_id_key", "12345");
+  private Map<String, Object> map =
+      ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
 
   private LocalServiceTestHelper testHelper =
-      new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),
-        new LocalUserServiceTestConfig())
-        .setEnvAttributes(map)
-        .setEnvIsLoggedIn(true)
-        .setEnvAuthDomain("gmail")
-        .setEnvIsAdmin(true)
-        .setEnvEmail("user@gmail.com");
-  
+      new LocalServiceTestHelper(
+              new LocalDatastoreServiceTestConfig(), new LocalUserServiceTestConfig())
+          .setEnvAttributes(map)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail")
+          .setEnvIsAdmin(true)
+          .setEnvEmail("user@gmail.com");
+
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
@@ -68,13 +67,13 @@ public final class SearchServiceTest {
   public void tearDown() {
     testHelper.tearDown();
   }
-  
+
   // Filters entities of kind Receipt by userId and Name.
   @Test
   public void find_ReceiptWithGivenNameOnly_countEntities() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("weekend", "", "Receipt", "", "");
+    List<Entity> foundEntities =
+        searchService.findEntityFromDatastore("weekend", "", "Receipt", "", "");
     assertEquals(1, foundEntities.size());
   }
 
@@ -82,8 +81,8 @@ public final class SearchServiceTest {
   @Test
   public void find_ReceiptWithGivenDateOnly_countEntities() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("", "unknown", "Receipt", "", "");
+    List<Entity> foundEntities =
+        searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
     assertEquals(2, foundEntities.size());
   }
 
@@ -92,8 +91,8 @@ public final class SearchServiceTest {
   public void find_ReceiptWithGivenNameAndDate_countEntities() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
     // Filter by Name and Date.
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("weekend", "unknown", "Receipt", "", "");
+    List<Entity> foundEntities =
+        searchService.findEntityFromDatastore("weekend", "unknown", "Receipt", "", "");
     assertEquals(1, foundEntities.size());
   }
 
@@ -102,8 +101,7 @@ public final class SearchServiceTest {
   public void find_ItemWithGivenNameOnly_countEntities() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Only filter by name.
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("apple", "", "Item", "", "");
+    List<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
     assertEquals(3, foundEntities.size());
   }
 
@@ -112,11 +110,9 @@ public final class SearchServiceTest {
   public void find_ItemWithGivenDateOnly_countEntities() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Only filter by Date.
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("", "date1", "Item", "", "");
+    List<Entity> foundEntities = searchService.findEntityFromDatastore("", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
-    foundEntities = searchService
-            .findEntityFromDatastore("", "date4", "Item", "", "");
+    foundEntities = searchService.findEntityFromDatastore("", "date4", "Item", "", "");
     assertEquals(1, foundEntities.size());
   }
 
@@ -125,38 +121,34 @@ public final class SearchServiceTest {
   public void find_ItemWithGivenNameAndDate_countEntities() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Filter by Name and Date.
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("apple", "date1", "Item", "", "");
+    List<Entity> foundEntities =
+        searchService.findEntityFromDatastore("apple", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
-    foundEntities = searchService
-            .findEntityFromDatastore("apple", "date2", "Item", "", "");
+    foundEntities = searchService.findEntityFromDatastore("apple", "date2", "Item", "", "");
     assertEquals(1, foundEntities.size());
   }
-  
+
   /**
-   * Checks createReceiptObjects method returns Receipt[] with
-   * right number of receipt entities found from the query.
+   * Checks createReceiptObjects method returns Receipt[] with right number of receipt entities
+   * found from the query.
    */
   @Test
   public void check_returnsReceiptArray_withRightSize() {
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("", "unknown", "Receipt", "", "");
-    assertTrue(searchService.createReceiptObjects(foundEntities)
-           instanceof Receipt[]);            
+    List<Entity> foundEntities =
+        searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
+    assertTrue(searchService.createReceiptObjects(foundEntities) instanceof Receipt[]);
     Receipt[] receipts = searchService.createReceiptObjects(foundEntities);
     assertEquals(2, receipts.length);
   }
 
   /**
-   * Checks createItemObjects method returns Item[] with
-   * right number of item entities found from the query.
+   * Checks createItemObjects method returns Item[] with right number of item entities found from
+   * the query.
    */
   @Test
   public void check_returnsItemArray_withRightSize() {
-    List<Entity> foundEntities = searchService
-            .findEntityFromDatastore("apple", "", "Item", "", "");
-    assertTrue(searchService.createItemObjects(foundEntities)
-            instanceof Item[]);
+    List<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
+    assertTrue(searchService.createItemObjects(foundEntities) instanceof Item[]);
     Item[] items = searchService.createItemObjects(foundEntities);
     assertEquals(3, items.length);
   }
@@ -176,7 +168,8 @@ public final class SearchServiceTest {
   }
 
   // Creates a Receipt Entity and stores it in Datastore.
-  private Entity createReceiptEntity(String userId, String storeName, String date, String name, String fileUrl, float price) {
+  private Entity createReceiptEntity(
+      String userId, String storeName, String date, String name, String fileUrl, float price) {
     Entity receiptEntity = new Entity("Receipt");
     receiptEntity.setProperty("userId", userId);
     receiptEntity.setProperty("storeName", storeName);
@@ -189,7 +182,15 @@ public final class SearchServiceTest {
   }
 
   // Creates an Item entity and stores it in Datastore.
-  private void createItemEntity(Entity receipt, String userId, String name, int quantity, float price, String category, String expireDate, String date) {
+  private void createItemEntity(
+      Entity receipt,
+      String userId,
+      String name,
+      int quantity,
+      float price,
+      String category,
+      String expireDate,
+      String date) {
     Entity itemEntity = new Entity("Item", receipt.getKey());
     itemEntity.setProperty("userId", userId);
     itemEntity.setProperty("name", name);

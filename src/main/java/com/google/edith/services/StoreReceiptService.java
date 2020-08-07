@@ -77,7 +77,6 @@ public final class StoreReceiptService implements StoreReceiptInterface {
     storeReceiptItemsEntity(receipt, receiptEntity);
   }
 
-
   /**
    * Stores parsed item from the form with receiptEntity as a parent in the datastore.
    *

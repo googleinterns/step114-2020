@@ -15,7 +15,6 @@
 package com.google.edith.services;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
@@ -23,25 +22,18 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-/**
- * Service to create query and handle searching on entities.
- */
+/** Service to create query and handle searching on entities. */
 public class SearchService extends HttpServlet {
 
   private final DatastoreService datastore;
@@ -53,15 +45,15 @@ public class SearchService extends HttpServlet {
   }
 
   /**
-   * Creates an array of Receipt objects from entites of
-   * kind Receipt found in the datastore.
+   * Creates an array of Receipt objects from entites of kind Receipt found in the datastore.
+   *
    * @param entities - entities of kind Receipt found in datastore.
-   * @return Receipt[] - array of Receipt objects 
+   * @return Receipt[] - array of Receipt objects
    */
   public Receipt[] createReceiptObjects(List<Entity> entities) {
     List<Receipt> receipts = new ArrayList<>();
 
-    for (Entity entity: entities) {
+    for (Entity entity : entities) {
       Key entityKey = entity.getKey();
       Query itemQuery = new Query("Item", entityKey);
       PreparedQuery results = datastore.prepare(itemQuery);
@@ -80,15 +72,15 @@ public class SearchService extends HttpServlet {
   }
 
   /**
-   * Creates an array of Item objects from entites of
-   * kind Item found in the datastore.
+   * Creates an array of Item objects from entites of kind Item found in the datastore.
+   *
    * @param entities - entities of kind Item found in datastore.
    * @return Item[] - array of Item objects.
    */
   public Item[] createItemObjects(List<Entity> entities) {
     List<Item> itemsList = new ArrayList<>();
 
-    for (Entity entity: entities) {
+    for (Entity entity : entities) {
       String userId = (String) entity.getProperty("userId");
       String itemName = (String) entity.getProperty("name");
       double price = (double) entity.getProperty("price");
@@ -114,8 +106,9 @@ public class SearchService extends HttpServlet {
   }
 
   /**
-   * Creates a list of entites found from given name, date
-   * kind and sorts on given order on given proprty.
+   * Creates a list of entites found from given name, date kind and sorts on given order on given
+   * proprty.
+   *
    * @param name -name property of the entity.
    * @param date - date property of the entity.
    * @param kind - kind of the entity stored in datastore.
@@ -123,16 +116,17 @@ public class SearchService extends HttpServlet {
    * @param sortOnProperty - property on which to sort the order.
    * @return List<Entity> - list of entites found from the query.
    */
-  public List<Entity> findEntityFromDatastore(String name, String date, String kind, String sortOrder, String sortOnProperty) {
+  public List<Entity> findEntityFromDatastore(
+      String name, String date, String kind, String sortOrder, String sortOnProperty) {
     Query query = prepareQuery(name, date, kind, sortOrder, sortOnProperty);
     PreparedQuery results = datastore.prepare(query);
-    List<Entity> entities = results.asList(FetchOptions.Builder
-                .withLimit(Integer.MAX_VALUE));
+    List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
     return entities;
   }
 
   /**
    * Prepares a query for the search on datastore.
+   *
    * @param name -name property of the entity.
    * @param date - date property of the entity.
    * @param kind - kind of the entity stored in datastore.
@@ -140,7 +134,8 @@ public class SearchService extends HttpServlet {
    * @param sortOnProperty - property on which to sort the order.
    * @return Query - query to be made on the datastore
    */
-  private Query prepareQuery(String name, String date, String kind, String sortOrder, String sortOnProperty) {
+  private Query prepareQuery(
+      String name, String date, String kind, String sortOrder, String sortOnProperty) {
     Query query;
     Filter entityFilter = prepareFilter(name, date);
 
@@ -149,16 +144,17 @@ public class SearchService extends HttpServlet {
     } else {
       query = new Query("Item").setFilter(entityFilter);
     }
-    
-    if (sortOrder.equals("Ascending")) query = query
-          .addSort(sortOnProperty, SortDirection.ASCENDING);
-    if (sortOrder.equals("Descending")) query = query
-          .addSort(sortOnProperty, SortDirection.DESCENDING);
+
+    if (sortOrder.equals("Ascending"))
+      query = query.addSort(sortOnProperty, SortDirection.ASCENDING);
+    if (sortOrder.equals("Descending"))
+      query = query.addSort(sortOnProperty, SortDirection.DESCENDING);
     return query;
   }
 
   /**
    * Creates a filter either on name and date.
+   *
    * @param name -name property of the entity.
    * @param date - date property of the entity.
    * @return Filter -filter options to filer on entites.
@@ -167,7 +163,7 @@ public class SearchService extends HttpServlet {
     String loggedInUserId = userService.getCurrentUser().getUserId();
     List<Filter> filters = new ArrayList<>();
     filters.add(new FilterPredicate("userId", FilterOperator.EQUAL, loggedInUserId));
-    
+
     if (!name.isEmpty()) {
       filters.add(new FilterPredicate("name", FilterOperator.EQUAL, name));
     }
