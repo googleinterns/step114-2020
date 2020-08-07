@@ -48,8 +48,7 @@ it('should call appropriate change function on form change', () => {
   component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
-  const promise = new Promise(onMount);
-  promise.then(() => {
+  setTimeout(() => {
     component.find('.name').simulate('change');
     expect(handleNameChange).toBeCalled();
     component.find('.price').simulate('change');
@@ -60,7 +59,7 @@ it('should call appropriate change function on form change', () => {
     expect(handleStoreChange).toBeCalled();
     component.find('.item-expiration').simulate('change');
     expect(handleExpirationChange).toBeCalled();
-  });
+  }, 5000);
 });
 
 it('should change state when on change functions are called', () => {
@@ -84,8 +83,8 @@ it('should change state when on change functions are called', () => {
     price: 5.6,
     quantity: 3,
   };
-  const promise = new Promise(onMount);
-  promise.then(() => {
+
+  setTimeout(() => {
     component.find('.name').simulate('change', textEvent);
     component.find('.price').simulate('change', priceEvent);
     component.find('.quantity').simulate('change', quantityEvent);
@@ -94,7 +93,7 @@ it('should change state when on change functions are called', () => {
     expect(component.state('items')).toBe(targetItem);
     expect(component.state('storeName')).toBe('Whole Foods');
     expect(component.state('deals[0].expiration')).toBe('7.0 Days');
-  });
+  }, 5000);
 });
 
 it('should create a new form field when addItem is called', () => {
@@ -102,14 +101,13 @@ it('should create a new form field when addItem is called', () => {
   expect(component.find('.price').exists()).toBe(false);
   expect(component.find('.quantity').exists()).toBe(false);
 
-  const promise = new Promise(onMount);
-  promise.then(() => {
+  setTimeout(() => {
     component.find('#add').simulate('click');
     expect(addItem).toBeCalled();
     expect(component.find('.name').exists()).toBe(true);
     expect(component.find('.price').exists()).toBe(true);
     expect(component.find('.quantity').exists()).toBe(true);
-  });
+  }, 5000);
 });
 
 it('should hide Add Item and Next when deals are returned', () => {
@@ -127,11 +125,10 @@ it('should hide Add Item and Next when deals are returned', () => {
   component.setState({items: newItem});
   expect(component.state('items')).toBe(newItem);
 
-  const promise = new Promise(onMount);
-  promise.then(() => {
+  setTimeout(() => {
     component.find('#submit').simulate('click');
     expect(component.find('#add').exists()).toBe(false);
     expect(component.find('#submit').exists()).toBe(false);
     expect(component.find('.expiration-submit').exists()).toBe(true);
-  });
+  }, 5000);
 });
