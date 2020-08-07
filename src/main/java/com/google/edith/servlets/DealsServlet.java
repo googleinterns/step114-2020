@@ -18,6 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/receipt-data")
 public class DealsServlet extends HttpServlet {
   private final GroceryDataReader groceryReader = new GroceryDataReader();
+  private final GroceryNameProcessor processor;
+
+  public DealsServlet() throws IOException {
+    processor = new GroceryNameProcessor();
+  }
+
+  DealsServlet(GroceryNameProcessor processor) {
+    this.processor = processor;
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -41,7 +50,6 @@ public class DealsServlet extends HttpServlet {
       String itemName = item.get("name").getAsString();
       String itemPrice = item.get("price").getAsString();
       try {
-        GroceryNameProcessor processor = new GroceryNameProcessor();
         itemName = processor.process(itemName);
       } catch (Exception e) {
         System.out.println(e.getMessage());
