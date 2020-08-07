@@ -71,61 +71,72 @@ public final class SearchServiceTest {
 
   // Filters entities of kind Receipt by userId and Name.
   @Test
-  public void find_ReceiptWithGivenNameOnly_countEntities() {
+  public void findEntityFromDatastore_getsReceiptWithGivenNameOnly() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
+    
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("weekend", "", "Receipt", "", "");
+    
     assertEquals(1, foundEntities.size());
   }
 
   // Filters entities of kind Receipt by userId and Date.
   @Test
-  public void find_ReceiptWithGivenDateOnly_countEntities() {
+  public void findEntityFromDatastore_getsReceiptWithGivenDateOnly() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
+    
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
+    
     assertEquals(2, foundEntities.size());
   }
 
   // Filters entities of kind Receipt by userId, Date and Name.
   @Test
-  public void find_ReceiptWithGivenNameAndDate_countEntities() {
+  public void findEntityFromDatastore_getsReceiptWithGivenNameAndDate() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    // Filter by Name and Date.
+    
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("weekend", "unknown", "Receipt", "", "");
+    
     assertEquals(1, foundEntities.size());
   }
 
   // Filters entities of kind Item by userId and Name.
   @Test
-  public void find_ItemWithGivenNameOnly_countEntities() {
+  public void findEntityFromDatastore_getsItemWithGivenNameOnly() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
-    // Only filter by name.
+    
     ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
+    
     assertEquals(3, foundEntities.size());
   }
 
   // Filters entities of kind Item by userId and Date.
   @Test
-  public void find_ItemWithGivenDateOnly_countEntities() {
+  public void findEntityFromDatastore_getsItemWithGivenDateOnly() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
-    // Only filter by Date.
+    
     ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
+    
     foundEntities = searchService.findEntityFromDatastore("", "date4", "Item", "", "");
+    
     assertEquals(1, foundEntities.size());
   }
 
   // Filters entities of kind Item by userId, Date and Name.
   @Test
-  public void find_ItemWithGivenNameAndDate_countEntities() {
+  public void findEntityFromDatastore_getsItemWithGivenNameAndDate() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
-    // Filter by Name and Date.
+    
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("apple", "date1", "Item", "", "");
+    
     assertEquals(2, foundEntities.size());
+    
     foundEntities = searchService.findEntityFromDatastore("apple", "date2", "Item", "", "");
+    
     assertEquals(1, foundEntities.size());
   }
 
@@ -134,10 +145,11 @@ public final class SearchServiceTest {
    * found from the query.
    */
   @Test
-  public void check_returnsReceiptArray_withRightSize() {
+  public void createReceiptObjects_returnsReceiptListwithRightSize() {
     ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
     ImmutableList<Receipt> receipts = searchService.createReceiptObjects(foundEntities);
+    
     assertEquals(2, receipts.size());
   }
 
@@ -146,7 +158,7 @@ public final class SearchServiceTest {
    * the query.
    */
   @Test
-  public void check_returnsItemArray_withRightSize() {
+  public void createItemObjects_returnsReceiptListWithRightSize() {
     ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
     ImmutableList<Item> items = searchService.createItemObjects(foundEntities);
     assertEquals(3, items.size());

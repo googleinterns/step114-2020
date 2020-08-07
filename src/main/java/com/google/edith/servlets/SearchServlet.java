@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  * form.
  */
 @WebServlet("/search-entity")
-public class SearchServlet extends HttpServlet {
+public final class SearchServlet extends HttpServlet {
   private SearchService searchService;
   private ImmutableList<Receipt> receipts;
   private ImmutableList<Item> items;

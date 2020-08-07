@@ -85,10 +85,9 @@ public final class SearchServletTest {
 
   // When entity kind is Receipt then createReceiptObjects method should be called.
   @Test
-  public void create_ReceiptObjects_whenEntityKindIsReceipt() throws IOException {
+  public void doPost_whenEntityKindIsReceipt_createsReceiptObjects() throws IOException {
     ImmutableList<Entity> entities = ImmutableList.of();
     ImmutableList<Receipt> receipts = ImmutableList.of();
-    // Receipt[] receipts = new Receipt[1];
     when(request.getParameter("name")).thenReturn("weekend");
     when(request.getParameter("kind")).thenReturn("Receipt");
     when(searchService.findEntityFromDatastore("weekend", "", "Receipt", "", ""))
@@ -103,46 +102,54 @@ public final class SearchServletTest {
 
   // When entity kind is Receipt then createReceiptObjects method should be called.
   @Test
-  public void create_ItemObjects_whenEntityKindIsItem() throws IOException {
+  public void doPost_whenEntityKindIsItem_createsItemObjects() throws IOException {
     when(request.getParameter("kind")).thenReturn("Item");
     when(request.getParameter("name")).thenReturn("apple");
     ImmutableList<Entity> entities = ImmutableList.of();
     ImmutableList<Item> items = ImmutableList.of();
     when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
+    
     searchServlet.doPost(request, response);
+    
     verify(searchService, times(1)).createItemObjects(entities);
     verify(searchService, times(0)).createReceiptObjects(entities);
   }
 
   // Redirect to search-results section after form is submitted.
   @Test
-  public void check_redirectAfterFormSubmission_redirects() throws IOException {
+  public void doPost_redirectAfterFormSubmission_redirects() throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
     setUpPostForReceipt();
+    
     verify(response).sendRedirect(captor.capture());
+    
     assertEquals("/#search-results", captor.getValue());
   }
 
   // Check if getWriter method is called for Receipt kind.
   @Test
-  public void check_getWriterIsCalledForReceipt_verifiesMethodCall() throws IOException {
+  public void doGet_whenKindIsReceipt_callsGetWriter() throws IOException {
     setUpPostForReceipt();
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
+    
     searchServlet.doGet(request, response);
+    
     verify(response, times(1)).getWriter();
   }
 
   // Check if receipt response has all fields.
   @Test
-  public void check_responseFields_containsAllReceiptFields() throws IOException {
+  public void doGet_whenKindIsReceipt_jsonContainsAllReceiptFields() throws IOException {
     setUpPostForReceipt();
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
+    
     searchServlet.doGet(request, response);
+    
     String servletResponse = stringWriter.toString();
     assertTrue(servletResponse.contains("userId"));
     assertTrue(servletResponse.contains("storeName"));
@@ -155,7 +162,7 @@ public final class SearchServletTest {
 
   // Check if getWriter method is called for Item kind.
   @Test
-  public void check_getWriterIsCalledForItem_verifiesMethodCall() throws IOException {
+  public void doGet_whenKindIsItem_callsGetWriter() throws IOException {
     setUpPostForItem();
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
@@ -166,15 +173,15 @@ public final class SearchServletTest {
 
   // Check if item response has all fields.
   @Test
-  public void check_responseFields_containsAllItemFields() throws IOException {
+  public void doGet_whenKindIsItem_jsonContainsAllItemFields() throws IOException {
     setUpPostForItem();
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
     when(response.getWriter()).thenReturn(writer);
+    
     searchServlet.doGet(request, response);
-    String servletResponse = stringWriter.toString();
-    System.out.println(servletResponse);
 
+    String servletResponse = stringWriter.toString();
     assertTrue(servletResponse.contains("userId"));
     assertTrue(servletResponse.contains("name"));
     assertTrue(servletResponse.contains("date"));

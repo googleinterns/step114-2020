@@ -60,14 +60,17 @@ public class SearchService extends HttpServlet {
       PreparedQuery results = datastore.prepare(itemQuery);
       List<Entity> itemEntities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
       ImmutableList<Item> items = createItemObjects(ImmutableList.copyOf(itemEntities));
-      String userId = (String) entity.getProperty("userId");
-      String storeName = (String) entity.getProperty("storeName");
-      String date = (String) entity.getProperty("date");
-      String name = (String) entity.getProperty("name");
-      String fileUrl = (String) entity.getProperty("fileUrl");
       // Datastore returns as double even when uploaded as float.
-      float totalPrice = (float) ((double) entity.getProperty("price"));
-      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items.toArray(new Item[items.size()]));
+      Receipt receipt = new Receipt(
+          (String) entity.getProperty("userId"),
+          (String) entity.getProperty("storeName"),
+          (String) entity.getProperty("date"),
+          (String) entity.getProperty("name"),
+          (String) entity.getProperty("fileUrl"),
+          // Datastore returns as double even when uploaded as float
+          (float) ((double) entity.getProperty("price")),
+          items.toArray(new Item[items.size()]));
+      
       receipts.add(receipt);
     }
     return ImmutableList.copyOf(receipts);
