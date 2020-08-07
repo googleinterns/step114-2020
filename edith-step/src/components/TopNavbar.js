@@ -2,6 +2,7 @@ import React from 'react';
 
 import FileUploadModalBox from './FileUploadModalBox';
 import UserInfoModalBox from './UserInfoModalBox';
+import SearchModalBox from './SearchModalBox';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -21,6 +22,7 @@ class TopNavbar extends React.Component {
       user: null,
       uploadModalBoxShow: false,
       userInfoModalBoxShow: false,
+      searchBoxShow: false,
     };
 
     /**
@@ -35,6 +37,13 @@ class TopNavbar extends React.Component {
      */
     this.handleUserInfoModalBoxClose = () => {
       this.setState({userInfoModalBoxShow: false});
+    };
+
+    /**
+     * Callback function to close the user upload modal box.
+     */
+    this.handleSearchModalBoxClose = () => {
+      this.setState({searchBoxShow: false});
     };
   }
 
@@ -90,6 +99,16 @@ class TopNavbar extends React.Component {
                 className='dashboard'>
                 DASHBOARD
               </Nav.Link>
+              <Nav.Link
+                href='#search'
+                onClick={() => this.setState({searchBoxShow: true})}
+                className='search'>
+                SEARCH
+              </Nav.Link>
+              <SearchModalBox
+                show={this.state.searchBoxShow}
+                handleSearchModalBoxClose={this.handleSearchModalBoxClose}
+              />
               <Dropdown className='dropdowns'>
                 <Dropdown.Toggle
                   variant='dark'

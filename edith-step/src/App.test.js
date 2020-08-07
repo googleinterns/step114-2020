@@ -21,6 +21,16 @@ describe('App component', () => {
     expect(component.exists()).toBe(true);
   });
 
+  test('has showSearchResults state false', () => {
+    expect(component.state('showSearchResults')).toBe(false);
+  });
+
+  test('has showSearchResults state true when button is clicked', () => {
+    const showSearchResultButton = component.find('Button');
+    showSearchResultButton.simulate('click');
+    expect(component.state('showSearchResults')).toBe(true);
+  });
+
   // Checks TopNavbar is in App.
   test('contains TopNavbar component', () => {
     const topNavBar = component.find('TopNavbar');

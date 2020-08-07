@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import LineChart, {BarGraph, CategoryDoughnutChart,
   ItemDoughnutChart} from './UserChart';
 import ReceiptHandler from './components/ReceiptHandler';
+import Button from 'react-bootstrap/Button';
+import SearchResult from './components/SearchResult';
 import TopNavbar from './components/TopNavbar';
 import GroceryList from './components/GroceryList';
 import './App.css';
@@ -18,8 +20,8 @@ class App extends Component {
   /** Constructor */
   constructor() {
     super();
-    this.state = {'chartType': LineChart, 'dateFilter': '',
-      'categoryFilter': '', 'showGroceryList': false};
+    this.state = {'showSearchResults': false, 'chartType': LineChart,
+      'dateFilter': '', 'categoryFilter': '', 'showGroceryList': false};
 
     this.handleGroceryListShow = () => {
       this.setState({'showGroceryList': true});
@@ -92,6 +94,18 @@ class App extends Component {
               Welcome To Edith: Expenditure Analyzer.
             </span>
           </div>
+        </div>
+        <div className='search-results' id='search-results'>
+          <Button
+            type='submit'
+            variant='primary'
+            onClick={() => this.setState({showSearchResults: true})}
+          >
+            Show Search Results
+          </Button>
+          {this.state.showSearchResults &&
+            <SearchResult />
+          }
         </div>
         <div>
           <button onClick={this.revertCharts}>Revert Charts</button>
