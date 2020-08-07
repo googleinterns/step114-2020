@@ -65,22 +65,16 @@ public final class StoreReceiptService implements StoreReceiptInterface {
    * @param receipt - object which holds info of parsed file.
    */
   private void storeReceiptEntity(Receipt receipt) {
-    String userId = receipt.getUserId();
-    String storeName = receipt.getStoreName();
-    String date = receipt.getDate();
-    String name = receipt.getName();
-    String fileUrl = receipt.getFileUrl();
-    float totalPrice = receipt.getTotalPrice();
 
-    Optional<Entity> optEntity = getUserInfoEntity(userId);
+    Optional<Entity> optEntity = getUserInfoEntity(receipt.getUserId());
     Entity userInfoEntity = optEntity.get();
     Entity receiptEntity = new Entity("Receipt", userInfoEntity.getKey());
-    receiptEntity.setProperty("userId", userId);
-    receiptEntity.setProperty("storeName", storeName);
-    receiptEntity.setProperty("date", date);
-    receiptEntity.setProperty("name", name);
-    receiptEntity.setProperty("fileUrl", fileUrl);
-    receiptEntity.setProperty("totalPrice", totalPrice);
+    receiptEntity.setProperty("userId", receipt.getUserId());
+    receiptEntity.setProperty("storeName", receipt.getStoreName());
+    receiptEntity.setProperty("date", receipt.getDate());
+    receiptEntity.setProperty("name", receipt.getName());
+    receiptEntity.setProperty("fileUrl", receipt.getFileUrl());
+    receiptEntity.setProperty("totalPrice", receipt.getTotalPrice());
     datastore.put(receiptEntity);
     storeReceiptItemsEntity(receipt, receiptEntity);
   }
@@ -94,19 +88,12 @@ public final class StoreReceiptService implements StoreReceiptInterface {
   private void storeReceiptItemsEntity(Receipt receipt, Entity receiptEntity) {
     List<Item> items = Arrays.asList(receipt.getItems());
     for (Item item : items) {
-      String userId = item.userId();
-      String itemName = item.name();
-      double price = item.price();
-      long quantity = item.quantity();
-      String category = item.category();
-      String expireDate = item.expiration();
-
       Entity itemEntity = new Entity("Item", receiptEntity.getKey());
-      itemEntity.setProperty("userId", userId);
-      itemEntity.setProperty("name", itemName);
-      itemEntity.setProperty("quantity", quantity);
-      itemEntity.setProperty("category", category);
-      itemEntity.setProperty("expireDate", expireDate);
+      itemEntity.setProperty("userId", item.userId());
+      itemEntity.setProperty("name", item.name());
+      itemEntity.setProperty("quantity", item.quantity());
+      itemEntity.setProperty("category", item.category());
+      itemEntity.setProperty("expireDate", item.expiration());
       datastore.put(itemEntity);
     }
   }
