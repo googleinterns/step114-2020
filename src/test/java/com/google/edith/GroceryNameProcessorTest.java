@@ -1,5 +1,5 @@
 package com.google.edith;
-import com.google.edith.AnalyzeEntities;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +16,7 @@ import com.google.cloud.language.v1.AnalyzeEntitiesResponse;
 import com.google.cloud.language.v1.Entity;
 import com.google.cloud.language.v1.EntityMention;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import com.google.cloud.language.v1.AnalyzeEntitiesResponse.Builder;
 
@@ -25,15 +26,17 @@ public class GroceryNameProcessorTest {
   private String result;
 
   @Before
-  public void setUp() {
+  public void setUp() throws IOException {
     MockitoAnnotations.initMocks(this);
+    GroceryNameProcessor processor = Mockito.mock(GroceryNameProcessor.class);
     result = "";
   }
 
   @Test
   public void canGetDealIfExists() throws Exception {
-    GroceryNameProcessor processor = new GroceryNameProcessor(new AnalyzeEntities());
-    Assert.assertEquals(processor.process(), "chicken breast");
+    when(processor.process(Mockito.anyString())).thenReturn("chicken breast");
+    result = processor.process("Coleman Farms chicken breast");
+    Assert.assertEquals(result, "chicken breast");
   }
 
   @Test
