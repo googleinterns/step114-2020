@@ -53,7 +53,6 @@ public final class ReceiptFileHandlerServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
     String json = gson.toJson(parsedReceipt);
-
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
@@ -75,8 +74,6 @@ public final class ReceiptFileHandlerServlet extends HttpServlet {
     parsedReceipt =
         receiptFileHandler.createParsedReceipt(fileBlobKey.getKeyString(), expenditureName);
 
-    Gson gson = new Gson();
-    String json = gson.toJson(parsedReceipt);
     response.sendRedirect("/");
   }
 }

@@ -42,15 +42,31 @@ public final class Receipt {
     this.items = items;
   }
 
-  public String getName() {
-    return this.name;
+  public String getUserId() {
+    return this.userId;
   }
 
-  public Item[] getItems() {
-    return this.items;
+  public String getStoreName() {
+    return this.storeName;
   }
 
   public String getDate() {
     return this.date;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public String getFileUrl() {
+    return this.fileUrl;
+  }
+
+  public float getTotalPrice() {
+    return this.totalPrice;
+  }
+
+  public Item[] getItems() {
+    return this.items;
   }
 }
