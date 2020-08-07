@@ -5,7 +5,6 @@ import '../setupTests.js';
 
 let component;
 let getItemData;
-let response;
 
 beforeEach(() => {
   component = mount(<GroceryList />);
