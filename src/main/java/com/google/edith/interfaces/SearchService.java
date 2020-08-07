@@ -38,7 +38,7 @@ public interface SearchService {
   ImmutableList<Item> createItemObjects(ImmutableList<Entity> entities);
 
   /**
-   * Creates an ImmutableList of entites found from given name, date kind and sorts on given order
+   * Creates an ImmutableList of entites found from given name, date, kind and sorts on given order
    * on given property.
    *
    * @param name -name property of the entity.

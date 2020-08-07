@@ -5,6 +5,7 @@ import ReceiptHandler from './components/ReceiptHandler';
 import Button from 'react-bootstrap/Button';
 import SearchResult from './components/SearchResult';
 import TopNavbar from './components/TopNavbar';
+import GroceryList from './components/GroceryList';
 import './App.css';
 
 /** Corresponds to the different chart types. */
@@ -20,7 +21,11 @@ class App extends Component {
   constructor() {
     super();
     this.state = {'showSearchResults': false, 'chartType': LineChart,
-      'dateFilter': '', 'categoryFilter': ''};
+      'dateFilter': '', 'categoryFilter': '', 'showGroceryList': false};
+
+    this.handleGroceryListShow = () => {
+      this.setState({'showGroceryList': true});
+    };
 
     /**
     * Updates the value of chartType in state
@@ -69,7 +74,6 @@ class App extends Component {
     };
   };
 
-
   /**
    * Renders TopNavbar, ReceiptInput component.
    * @return { React.ReactNode } React virtual DOM.
@@ -117,7 +121,20 @@ class App extends Component {
             dateFilter={this.state.dateFilter}
             categoryFilter={this.state.categoryFilter} />
         </div>
-        <ReceiptHandler />
+        <div className='app-body'>
+          <div id='receipt-input'>
+            <ReceiptHandler />
+          </div>
+          <button
+            onClick={this.handleGroceryListShow}
+            className='show-list'>Generate grocery list.
+          </button>
+          <>
+            {this.state.showGroceryList==true &&
+            <GroceryList />
+            }
+          </>
+        </div>
       </div>
     );
   }

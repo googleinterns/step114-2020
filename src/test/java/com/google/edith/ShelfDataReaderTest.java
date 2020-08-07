@@ -7,6 +7,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 public class ShelfDataReaderTest {
+
   @Test
   public void readFile_inputStringInJsonFile_returnsShelfLifeString() {
     Assert.assertEquals("1.0 2.0 Weeks", ShelfDataReader.readFile("Buttermilk"));
