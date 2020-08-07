@@ -17,6 +17,7 @@ package com.google.edith.servlets;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.services.SearchService;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -34,8 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/search-entity")
 public class SearchServlet extends HttpServlet {
   private SearchService searchService;
-  private Receipt[] receipts;
-  private Item[] items;
+  private ImmutableList<Receipt> receipts;
+  private ImmutableList<Item> items;
   private String kind;
 
   public SearchServlet() {
@@ -52,7 +53,9 @@ public class SearchServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
 
-    String json = kind.equals("Receipt") ? gson.toJson(receipts) : gson.toJson(items);
+    String json = kind.equals("Receipt")
+            ? gson.toJson(receipts)
+            : gson.toJson(items);
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
@@ -65,7 +68,7 @@ public class SearchServlet extends HttpServlet {
     String sortOrder = getParameter(request, "sort-order").orElse("");
     String sortOnProperty = getParameter(request, "sort-on").orElse("").toLowerCase();
 
-    List<Entity> entities =
+    ImmutableList<Entity> entities =
         searchService.findEntityFromDatastore(name, date, kind, sortOrder, sortOnProperty);
 
     for (Entity entity : entities) {

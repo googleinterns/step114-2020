@@ -27,6 +27,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.services.SearchService;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
@@ -72,7 +73,7 @@ public final class SearchServiceTest {
   @Test
   public void find_ReceiptWithGivenNameOnly_countEntities() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    List<Entity> foundEntities =
+    ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("weekend", "", "Receipt", "", "");
     assertEquals(1, foundEntities.size());
   }
@@ -81,7 +82,7 @@ public final class SearchServiceTest {
   @Test
   public void find_ReceiptWithGivenDateOnly_countEntities() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
-    List<Entity> foundEntities =
+    ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
     assertEquals(2, foundEntities.size());
   }
@@ -91,7 +92,7 @@ public final class SearchServiceTest {
   public void find_ReceiptWithGivenNameAndDate_countEntities() {
     assertEquals(4, datastore.prepare(new Query("Receipt")).countEntities());
     // Filter by Name and Date.
-    List<Entity> foundEntities =
+    ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("weekend", "unknown", "Receipt", "", "");
     assertEquals(1, foundEntities.size());
   }
@@ -101,7 +102,7 @@ public final class SearchServiceTest {
   public void find_ItemWithGivenNameOnly_countEntities() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Only filter by name.
-    List<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
+    ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
     assertEquals(3, foundEntities.size());
   }
 
@@ -110,7 +111,7 @@ public final class SearchServiceTest {
   public void find_ItemWithGivenDateOnly_countEntities() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Only filter by Date.
-    List<Entity> foundEntities = searchService.findEntityFromDatastore("", "date1", "Item", "", "");
+    ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
     foundEntities = searchService.findEntityFromDatastore("", "date4", "Item", "", "");
     assertEquals(1, foundEntities.size());
@@ -121,7 +122,7 @@ public final class SearchServiceTest {
   public void find_ItemWithGivenNameAndDate_countEntities() {
     assertEquals(6, datastore.prepare(new Query("Item")).countEntities());
     // Filter by Name and Date.
-    List<Entity> foundEntities =
+    ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("apple", "date1", "Item", "", "");
     assertEquals(2, foundEntities.size());
     foundEntities = searchService.findEntityFromDatastore("apple", "date2", "Item", "", "");
@@ -134,11 +135,10 @@ public final class SearchServiceTest {
    */
   @Test
   public void check_returnsReceiptArray_withRightSize() {
-    List<Entity> foundEntities =
+    ImmutableList<Entity> foundEntities =
         searchService.findEntityFromDatastore("", "unknown", "Receipt", "", "");
-    assertTrue(searchService.createReceiptObjects(foundEntities) instanceof Receipt[]);
-    Receipt[] receipts = searchService.createReceiptObjects(foundEntities);
-    assertEquals(2, receipts.length);
+    ImmutableList<Receipt> receipts = searchService.createReceiptObjects(foundEntities);
+    assertEquals(2, receipts.size());
   }
 
   /**
@@ -147,10 +147,9 @@ public final class SearchServiceTest {
    */
   @Test
   public void check_returnsItemArray_withRightSize() {
-    List<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
-    assertTrue(searchService.createItemObjects(foundEntities) instanceof Item[]);
-    Item[] items = searchService.createItemObjects(foundEntities);
-    assertEquals(3, items.length);
+    ImmutableList<Entity> foundEntities = searchService.findEntityFromDatastore("apple", "", "Item", "", "");
+    ImmutableList<Item> items = searchService.createItemObjects(foundEntities);
+    assertEquals(3, items.size());
   }
 
   // Creates and Stores Receipt and Item entities in Datastore.

@@ -29,6 +29,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.services.SearchService;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
@@ -85,14 +86,17 @@ public final class SearchServletTest {
   // When entity kind is Receipt then createReceiptObjects method should be called.
   @Test
   public void create_ReceiptObjects_whenEntityKindIsReceipt() throws IOException {
-    when(request.getParameter("kind")).thenReturn("Receipt");
+    ImmutableList<Entity> entities = ImmutableList.of();
+    ImmutableList<Receipt> receipts = ImmutableList.of();
+    // Receipt[] receipts = new Receipt[1];
     when(request.getParameter("name")).thenReturn("weekend");
-    List<Entity> entities = Collections.emptyList();
-    Receipt[] receipts = new Receipt[1];
+    when(request.getParameter("kind")).thenReturn("Receipt");
     when(searchService.findEntityFromDatastore("weekend", "", "Receipt", "", ""))
         .thenReturn(entities);
     when(searchService.createReceiptObjects(entities)).thenReturn(receipts);
+    
     searchServlet.doPost(request, response);
+    
     verify(searchService, times(1)).createReceiptObjects(entities);
     verify(searchService, times(0)).createItemObjects(entities);
   }
@@ -102,8 +106,8 @@ public final class SearchServletTest {
   public void create_ItemObjects_whenEntityKindIsItem() throws IOException {
     when(request.getParameter("kind")).thenReturn("Item");
     when(request.getParameter("name")).thenReturn("apple");
-    List<Entity> entities = Collections.emptyList();
-    Item[] items = new Item[1];
+    ImmutableList<Entity> entities = ImmutableList.of();
+    ImmutableList<Item> items = ImmutableList.of();
     when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
     searchServlet.doPost(request, response);
@@ -115,7 +119,7 @@ public final class SearchServletTest {
   @Test
   public void check_redirectAfterFormSubmission_redirects() throws IOException {
     ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-    searchServlet.doPost(request, response);
+    setUpPostForReceipt();
     verify(response).sendRedirect(captor.capture());
     assertEquals("/#search-results", captor.getValue());
   }
@@ -173,17 +177,19 @@ public final class SearchServletTest {
 
     assertTrue(servletResponse.contains("userId"));
     assertTrue(servletResponse.contains("name"));
+    assertTrue(servletResponse.contains("date"));
     assertTrue(servletResponse.contains("price"));
     assertTrue(servletResponse.contains("quantity"));
     assertTrue(servletResponse.contains("category"));
-    assertTrue(servletResponse.contains("expireDate"));
+    assertTrue(servletResponse.contains("expiration"));
   }
 
   // Sets up conditions by populating kind and receipt field of SearchServlet class.
   private void setUpPostForReceipt() throws IOException {
     when(request.getParameter("kind")).thenReturn("Receipt");
     when(request.getParameter("name")).thenReturn("weekend");
-    List<Entity> entities = Collections.emptyList();
+    Entity receiptEntity = new Entity("Receipt");
+    ImmutableList<Entity> entities = ImmutableList.of(receiptEntity);
     Item item =
         Item.builder()
             .setUserId("12345")
@@ -197,7 +203,7 @@ public final class SearchServletTest {
     // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
     Item[] items = {item};
     Receipt receipt1 = new Receipt("12345", "kro", "unknown", "weekend", "url1", 2.5f, items);
-    Receipt[] receipts = {receipt1};
+    ImmutableList<Receipt> receipts = ImmutableList.of(receipt1);
 
     when(searchService.findEntityFromDatastore("weekend", "", "Receipt", "", ""))
         .thenReturn(entities);
@@ -208,20 +214,21 @@ public final class SearchServletTest {
   // Sets up conditions by populating kind and item field of SearchServlet class.
   private void setUpPostForItem() throws IOException {
     when(request.getParameter("kind")).thenReturn("Item");
-    when(request.getParameter("name")).thenReturn("weekend");
-    List<Entity> entities = Collections.emptyList();
+    when(request.getParameter("name")).thenReturn("apple");
+    Entity itemEntity = new Entity("Item");
+    ImmutableList<Entity> entities = ImmutableList.of(itemEntity);
     Item item =
         Item.builder()
             .setUserId("12345")
             .setName("apple")
             .setPrice(1.5)
             .setQuantity(2)
-            .setDate("date")
+            .setDate("date1")
             .setCategory("fruit")
-            .setExpiration("expireDate")
+            .setExpiration("expire1")
             .build();
     // Item item1 = new Item("12345", "apple", 1.5f, 2, "fruit", "date");
-    Item[] items = {item};
+    ImmutableList<Item> items = ImmutableList.of(item);
     when(searchService.findEntityFromDatastore("apple", "", "Item", "", "")).thenReturn(entities);
     when(searchService.createItemObjects(entities)).thenReturn(items);
     searchServlet.doPost(request, response);

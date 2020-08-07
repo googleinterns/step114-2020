@@ -27,6 +27,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
+import com.google.common.collect.ImmutableList;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 import java.util.ArrayList;
@@ -45,12 +46,12 @@ public class SearchService extends HttpServlet {
   }
 
   /**
-   * Creates an array of Receipt objects from entites of kind Receipt found in the datastore.
+   * Creates an immutable list of Receipt objects from entites of kind Receipt found in the datastore.
    *
    * @param entities - entities of kind Receipt found in datastore.
-   * @return Receipt[] - array of Receipt objects
+   * @return ImmutableList<Receipt> - immutable list of Receipt objects
    */
-  public Receipt[] createReceiptObjects(List<Entity> entities) {
+  public ImmutableList<Receipt> createReceiptObjects(ImmutableList<Entity> entities) {
     List<Receipt> receipts = new ArrayList<>();
 
     for (Entity entity : entities) {
@@ -58,70 +59,63 @@ public class SearchService extends HttpServlet {
       Query itemQuery = new Query("Item", entityKey);
       PreparedQuery results = datastore.prepare(itemQuery);
       List<Entity> itemEntities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
-      Item[] items = createItemObjects(itemEntities);
+      ImmutableList<Item> items = createItemObjects(ImmutableList.copyOf(itemEntities));
       String userId = (String) entity.getProperty("userId");
       String storeName = (String) entity.getProperty("storeName");
       String date = (String) entity.getProperty("date");
       String name = (String) entity.getProperty("name");
       String fileUrl = (String) entity.getProperty("fileUrl");
+      // Datastore returns as double even when uploaded as float.
       float totalPrice = (float) ((double) entity.getProperty("price"));
-      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items);
+      Receipt receipt = new Receipt(userId, storeName, date, name, fileUrl, totalPrice, items.toArray(new Item[items.size()]));
       receipts.add(receipt);
     }
-    return receipts.toArray(new Receipt[0]);
+    return ImmutableList.copyOf(receipts);
   }
 
   /**
-   * Creates an array of Item objects from entites of kind Item found in the datastore.
+   * Creates an immutable list of Item objects from entites of kind Item found in the datastore.
    *
    * @param entities - entities of kind Item found in datastore.
-   * @return Item[] - array of Item objects.
+   * @return ImmutableList<Item> - immutable list of Item objects.
    */
-  public Item[] createItemObjects(List<Entity> entities) {
+  public ImmutableList<Item> createItemObjects(ImmutableList<Entity> entities) {
     List<Item> itemsList = new ArrayList<>();
 
     for (Entity entity : entities) {
-      String userId = (String) entity.getProperty("userId");
-      String itemName = (String) entity.getProperty("name");
-      double price = (double) entity.getProperty("price");
-      long quantity = (long) entity.getProperty("quantity");
-      String category = (String) entity.getProperty("category");
-      String expireDate = (String) entity.getProperty("expireDate");
-      String date = (String) entity.getProperty("date");
-
       Item item =
           Item.builder()
-              .setUserId(userId)
-              .setName(itemName)
-              .setPrice(price)
-              .setQuantity(quantity)
-              .setDate(date)
-              .setCategory(category)
-              .setExpiration(expireDate)
+              .setUserId((String) entity.getProperty("userId"))
+              .setName((String) entity.getProperty("name"))
+              .setPrice((double) entity.getProperty("price"))
+              .setQuantity((long) entity.getProperty("quantity"))
+              .setDate((String) entity.getProperty("date"))
+              .setCategory((String) entity.getProperty("category"))
+              .setExpiration((String) entity.getProperty("expireDate"))
               .build();
 
       itemsList.add(item);
     }
-    return itemsList.toArray(new Item[0]);
+    return ImmutableList.copyOf(itemsList);
   }
 
   /**
-   * Creates a list of entites found from given name, date kind and sorts on given order on given
-   * proprty.
+   * Creates an immutable list of entites found from given name, date kind and sorts on given order on given
+   * property.
    *
    * @param name -name property of the entity.
    * @param date - date property of the entity.
    * @param kind - kind of the entity stored in datastore.
    * @param sortOrder - order to sort the entities.
    * @param sortOnProperty - property on which to sort the order.
-   * @return List<Entity> - list of entites found from the query.
+   * @return ImmutableList<Entity> - immutable list of entites found from the query.
    */
-  public List<Entity> findEntityFromDatastore(
+  public ImmutableList<Entity> findEntityFromDatastore(
       String name, String date, String kind, String sortOrder, String sortOnProperty) {
     Query query = prepareQuery(name, date, kind, sortOrder, sortOnProperty);
     PreparedQuery results = datastore.prepare(query);
     List<Entity> entities = results.asList(FetchOptions.Builder.withLimit(Integer.MAX_VALUE));
-    return entities;
+    return ImmutableList.copyOf(entities);
   }
 
   /**
