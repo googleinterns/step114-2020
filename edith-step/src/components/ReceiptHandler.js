@@ -90,7 +90,6 @@ export default class ReceiptHandler extends React.Component {
           fileUrl: this.state.fileUrl,
           totalPrice: price,
           items: this.state.items,
-          deals: this.state.deals,
         },
       });
       await axios({
