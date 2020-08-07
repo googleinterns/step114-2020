@@ -16,21 +16,21 @@ public class GroceryNameProcessor {
 /**
   interface LanguageServiceClientWrapper {
     AnalyzeEntitiesResponse analyzeEntities(AnalyzeEntitiesRequest request);
-  }
+  }*/
 
-  private final LanguageServiceClientWrapper client;
+  private static LanguageServiceClient client;
 
   GroceryNameProcessor() throws IOException {
-    this.client = LanguageServiceClient.create()::analyzeEntities;
+    this.client = LanguageServiceClient.create();
   }
 
-  GroceryNameProcessor(LanguageServiceClientWrapper client) {
+  GroceryNameProcessor(LanguageServiceClient client) {
     this.client = client;
-  }*/
+  }
 
   public static String process(String text) throws Exception {
     List<Entity> commonEntities = new ArrayList<Entity>();
-    try (LanguageServiceClient client = LanguageServiceClient.create()) {
+
       Document doc =
           Document.newBuilder().setContent(text.toLowerCase()).setType(Type.PLAIN_TEXT).build();
       AnalyzeEntitiesRequest request =
@@ -49,7 +49,6 @@ public class GroceryNameProcessor {
           }
         }
       }
-    }
 
     if (commonEntities.size() >= 1) {
       return commonEntities.get(0).getName();
