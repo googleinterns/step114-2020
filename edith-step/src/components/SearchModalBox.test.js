@@ -3,13 +3,12 @@ import {shallow} from 'enzyme';
 
 import SearchModalBox from './SearchModalBox';
 
-import '../setupTests.js'
+import '../setupTests.js';
 
 let component;
 let form;
 
 describe('SearchModalBox must', () => {
-  
   beforeEach(() => {
     component = shallow(<SearchModalBox />);
     form = component.find('Form');
@@ -40,7 +39,7 @@ describe('SearchModalBox must', () => {
     expect(kind.find('option').at(0).text()).toBe('Receipt');
     expect(kind.find('option').at(1).text()).toBe('Item');
   });
-  
+
   it('have name field', () => {
     expect(form.find('.name').exists()).toBe(true);
   });

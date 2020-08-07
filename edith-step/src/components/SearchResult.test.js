@@ -1,4 +1,4 @@
-import {enableFetchMocks} from 'jest-fetch-mock'
+import {enableFetchMocks} from 'jest-fetch-mock';
 enableFetchMocks();
 import React from 'react';
 import {mount} from 'enzyme';
@@ -6,12 +6,16 @@ import SearchResult from './SearchResult';
 import '../setupTests.js';
 
 let component;
-const receipt = [{name: 'name', storeName: 'storeName', fileUrl: 'fileUrl', totalPrice: 'totalPrice', items: 'items'}];;
-const item = [{name: 'name', price: '5.5', quantity: '2', category: 'cate', expireDate: 'expireDate'}];
+const receipt = [
+  {name: 'name', storeName: 'storeName',
+    fileUrl: 'fileUrl', totalPrice: 'totalPrice', items: 'items'}];
+const item = [
+  {name: 'name', price: '5.5', quantity: '2',
+    category: 'cate', expireDate: 'expireDate'}];
 
 describe('SearchResult', () => {
   const getEntity = jest.spyOn(SearchResult.prototype, 'getEntity');
- 
+
   beforeEach(() => {
     fetch.resetMocks();
     fetch.mockResponse(JSON.stringify(receipt));
@@ -33,7 +37,7 @@ describe('SearchResult', () => {
 
 describe('When api call response is of receipt', () => {
   const createReceipts = jest.spyOn(SearchResult.prototype, 'createReceipts');
- 
+
   beforeEach(() => {
     fetch.resetMocks();
     fetch.mockResponse(JSON.stringify(receipt));
@@ -60,7 +64,7 @@ describe('When api call response is of receipt', () => {
 
 describe('When api call response is of item', () => {
   const createItems = jest.spyOn(SearchResult.prototype, 'createItems');
- 
+
   beforeEach(() => {
     fetch.resetMocks();
     fetch.mockResponse(JSON.stringify(item));

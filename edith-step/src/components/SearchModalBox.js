@@ -5,13 +5,24 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
+import PropTypes from 'prop-types';
 
+/**
+ * Modal Box where user can select multiple filters.
+ */
 class SearchModalBox extends React.Component {
-  
+  /**
+   * @constructor
+   * @param {Object}  props for React component.
+   */
   constructor(props) {
     super(props);
   }
-  
+
+  /**
+   * Renders react-bootstrap modal box component.
+   *  @return { React.ReactNode } React virtual DOM.
+   */
   render() {
     return (
       <Modal
@@ -40,7 +51,7 @@ class SearchModalBox extends React.Component {
                 <Form.Control
                   className='kind'
                   required
-                  name='kind' 
+                  name='kind'
                   as='select'
                   defaultValue='Choose...'
                 >
@@ -95,5 +106,10 @@ class SearchModalBox extends React.Component {
     );
   }
 }
+
+SearchModalBox.propTypes = {
+  show: PropTypes.bool,
+  handleSearchModalBoxClose: PropTypes.func,
+};
 
 export default SearchModalBox;

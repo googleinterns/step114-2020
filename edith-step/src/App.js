@@ -19,8 +19,8 @@ class App extends Component {
   /** Constructor */
   constructor() {
     super();
-    this.state = {showSearchResults: false, 'chartType': LineChart, 'dateFilter': '',
-      'categoryFilter': ''};
+    this.state = {'showSearchResults': false, 'chartType': LineChart,
+      'dateFilter': '', 'categoryFilter': ''};
 
     /**
     * Updates the value of chartType in state
@@ -99,7 +99,7 @@ class App extends Component {
           >
             Show Search Results
           </Button>
-          {this.state.showSearchResults && 
+          {this.state.showSearchResults &&
             <SearchResult />
           }
         </div>

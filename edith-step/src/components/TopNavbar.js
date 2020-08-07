@@ -22,9 +22,9 @@ class TopNavbar extends React.Component {
       user: null,
       uploadModalBoxShow: false,
       userInfoModalBoxShow: false,
-      searchBoxShow: false
+      searchBoxShow: false,
     };
-  
+
     /**
      * Callback function to close the file upload modal box.
      */
@@ -43,8 +43,8 @@ class TopNavbar extends React.Component {
      * Callback function to close the user upload modal box.
      */
     this.handleSearchModalBoxClose = () => {
-      this.setState({searchBoxShow: false });
-    }
+      this.setState({searchBoxShow: false});
+    };
   }
 
   /**

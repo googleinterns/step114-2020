@@ -30,9 +30,8 @@ describe('App component', () => {
     console.log(showSearchResultButton.debug());
     showSearchResultButton.simulate('click');
     expect(component.state('showSearchResults')).toBe(true);
-
   });
-  
+
   // Checks TopNavbar is in App.
   test('contains TopNavbar component', () => {
     const topNavBar = component.find('TopNavbar');

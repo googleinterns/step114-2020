@@ -1,7 +1,13 @@
 import React from 'react';
 
 import Card from 'react-bootstrap/Card';
+import PropTypes from 'prop-types';
 
+/**
+ * Component that renders information of receipts found from search result.
+ * @param {Object}  props for React component.
+ * @return {React.ReactNode} React virtual DOM.
+ */
 const Receipt = (props) => {
   return (
     <Card
@@ -25,8 +31,13 @@ const Receipt = (props) => {
       </Card.Body>
     </Card>
   );
-}
+};
 
+/**
+ * Component that renders information of items found from search result.
+ * @param {Object}  props for React component.
+ * @return {React.ReactNode} React virtual DOM.
+ */
 const Item = (props) => {
   return (
     <Card className='text-center'>
@@ -41,33 +52,47 @@ const Item = (props) => {
       </Card.Body>
     </Card>
   );
-}
+};
 
+/**
+ * Gets the search results and displays the result based on the result type.
+ */
 class SearchResult extends React.Component {
+  /**
+   * @constructor
+   * @param {Object}  props for React component.
+   */
   constructor(props) {
     super(props);
     this.state = {
       kind: 'unknown',
       receipts: [],
-      items: []
+      items: [],
     };
   };
 
+  /**
+   * After the component did mount, get entities found from the search result.
+   */
   componentDidMount() {
     this.getEntity();
   }
 
+  /**
+   * Calls search-entity endpoint in backend and collects the search result
+   * and updates the component state accordingly.
+   */
   getEntity() {
     fetch('/search-entity')
         .then((response) => response.json())
         .then((entities) => {
           if (entities === undefined || entities.length == 0) {
-            console.log('there is nothing');
+            console.error('no result found');
           } else {
             // Item entity does not have items field.
             if (typeof entities[0].items === 'undefined') {
               this.setState({kind: 'item'});
-              this.setState({items: entities})
+              this.setState({items: entities});
             } else {
               this.setState({kind: 'receipt'});
               this.setState({receipts: entities});
@@ -75,41 +100,56 @@ class SearchResult extends React.Component {
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
   }
 
+  /**
+   * Creates different item components based on the number of search result.
+   * @param {Array}  itemEntity array of json parsed item.
+   * @return {Array} array of item components.
+   */
   createItems(itemEntity) {
-    let itemElements = [];
+    const itemElements = [];
     itemEntity.forEach((item) => {
       itemElements.push(
-                    <Item
-                      key={`${item.name} ${item.price}`}
-                      name={item.name}
-                      price={item.price}
-                      quantity={item.quantity}
-                      category={item.category}
-                      expireDate={item.expireDate}
-                    />);
+          <Item
+            key={`${item.name} ${item.price}`}
+            name={item.name}
+            price={item.price}
+            quantity={item.quantity}
+            category={item.category}
+            expireDate={item.expireDate}
+          />);
     });
     return itemElements;
   }
 
+  /**
+   * Creates different receipt components based on the number of search result.
+   * @param {Array}  receiptsEntity array of json parsed receipt.
+   * @return {Array} array of receipt components.
+   */
   createReceipts(receiptsEntity) {
-    let receiptElements = [];
+    const receiptElements = [];
     receiptsEntity.forEach((receipt) => {
       receiptElements.push(
-                      <Receipt
-                        key={receipt.fileUrl}
-                        name={receipt.name}
-                        fileUrl={receipt.fileUrl}
-                        storeName={receipt.storeName}
-                        totalPrice={receipt.totalPrice}
-                      />);
+          <Receipt
+            // files stored in the same GCS bucket will have different url.
+            key={receipt.fileUrl}
+            name={receipt.name}
+            fileUrl={receipt.fileUrl}
+            storeName={receipt.storeName}
+            totalPrice={receipt.totalPrice}
+          />);
     });
     return receiptElements;
   }
 
+  /**
+   * Renders list of search result.
+   *  @return { React.ReactNode } React virtual DOM.
+   */
   render() {
     return (
       <>
@@ -123,5 +163,21 @@ class SearchResult extends React.Component {
     );
   }
 }
+
+Receipt.propTypes = {
+  name: PropTypes.string,
+  storeName: PropTypes.string,
+  fileUrl: PropTypes.string,
+  totalPrice: PropTypes.number,
+};
+
+Item.propTypes = {
+  name: PropTypes.string,
+  price: PropTypes.number,
+  quantity: PropTypes.number,
+  fileUrl: PropTypes.string,
+  category: PropTypes.string,
+  expireDate: PropTypes.string,
+};
 
 export default SearchResult;
