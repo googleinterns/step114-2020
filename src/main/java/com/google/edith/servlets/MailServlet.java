@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/notifications")
 public class MailServlet extends HttpServlet {
-
+  // TODO: Use an interface instead of a boolean for testing.
   private final boolean mockSend;
 
   MailServlet() {
