@@ -19,27 +19,26 @@ import com.google.common.collect.ImmutableList;
 import com.google.edith.servlets.Item;
 import com.google.edith.servlets.Receipt;
 
-/** Operations for searching entities in Datastore with given filters. * */
+/** Operations for searching entities in Datastore with given filters. */
 public interface SearchService {
   /**
-   * Creates an immutable list of Receipt objects from entites of kind Receipt found in the
-   * datastore.
+   * Creates an ImmutableList of Receipt objects from receipt entites.
    *
    * @param entities - entities of kind Receipt found in datastore.
-   * @return ImmutableList<Receipt> - immutable list of Receipt objects
+   * @return ImmutableList<Receipt> - ImmutableList of Receipt objects
    */
   ImmutableList<Receipt> createReceiptObjects(ImmutableList<Entity> entities);
 
   /**
-   * Creates an immutable list of Item objects from entites of kind Item found in the datastore.
+   * Creates an ImmutableList of Item objects from item entites.
    *
    * @param entities - entities of kind Item found in datastore.
-   * @return ImmutableList<Item> - immutable list of Item objects.
+   * @return ImmutableList<Item> - ImmutableList of Item objects.
    */
   ImmutableList<Item> createItemObjects(ImmutableList<Entity> entities);
 
   /**
-   * Creates an immutable list of entites found from given name, date kind and sorts on given order
+   * Creates an ImmutableList of entites found from given name, date kind and sorts on given order
    * on given property.
    *
    * @param name -name property of the entity.
@@ -47,7 +46,7 @@ public interface SearchService {
    * @param kind - kind of the entity stored in datastore.
    * @param sortOrder - order to sort the entities.
    * @param sortOnProperty - property on which to sort the order.
-   * @return ImmutableList<Entity> - immutable list of entites found from the query.
+   * @return ImmutableList<Entity> - ImmutableList of entites found from the query.
    */
   ImmutableList<Entity> findEntityFromDatastore(
       String name, String date, String kind, String sortOrder, String sortOnProperty);

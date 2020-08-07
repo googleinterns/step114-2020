@@ -38,9 +38,9 @@ import org.mockito.MockitoAnnotations;
 
 public final class SearchServiceImplTest {
 
-  private SearchServiceImpl searchService;
   private final UserService userService = UserServiceFactory.getUserService();
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private SearchServiceImpl searchService = new SearchServiceImpl(datastore, userService);
 
   private Map<String, Object> map =
       ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", "12345");
@@ -58,7 +58,6 @@ public final class SearchServiceImplTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     testHelper.setUp();
-    searchService = new SearchServiceImpl(datastore, userService);
     createAndStoreEntites();
   }
 

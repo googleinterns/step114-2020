@@ -69,10 +69,6 @@ public final class SearchServlet extends HttpServlet {
     ImmutableList<Entity> entities =
         searchService.findEntityFromDatastore(name, date, kind, sortOrder, sortOnProperty);
 
-    for (Entity entity : entities) {
-      System.out.println(entity);
-    }
-
     if (kind.equals("Receipt")) {
       receipts = searchService.createReceiptObjects(entities);
     } else {
