@@ -47,7 +47,8 @@ class TopNavbar extends React.Component {
      */
     this.handleTakePictureModalBoxClose = () => {
       this.setState({takePictureModalBox: false});
-    
+    };
+
     /**
      * Callback function to close the search upload modal box.
      */
