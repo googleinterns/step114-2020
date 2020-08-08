@@ -15,6 +15,11 @@
   width: 100%;
 }
 
+.imageCanvas,
+.videoPlayer {
+  width: 100%;
+}
+
 .default-border {
   border: none !important;
   color: #fff;
