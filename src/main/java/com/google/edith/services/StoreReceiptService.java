@@ -72,7 +72,7 @@ public final class StoreReceiptService implements StoreReceiptInterface {
     receiptEntity.setProperty("date", receipt.getDate());
     receiptEntity.setProperty("name", receipt.getName());
     receiptEntity.setProperty("fileUrl", receipt.getFileUrl());
-    receiptEntity.setProperty("totalPrice", receipt.getTotalPrice());
+    receiptEntity.setProperty("price", receipt.getTotalPrice());
     datastore.put(receiptEntity);
     storeReceiptItemsEntity(receipt, receiptEntity);
   }
@@ -90,8 +90,10 @@ public final class StoreReceiptService implements StoreReceiptInterface {
       itemEntity.setProperty("userId", item.userId());
       itemEntity.setProperty("name", item.name());
       itemEntity.setProperty("quantity", item.quantity());
+      itemEntity.setProperty("price", item.price());
       itemEntity.setProperty("category", item.category());
       itemEntity.setProperty("expireDate", item.expiration());
+      itemEntity.setProperty("date", item.date());
       datastore.put(itemEntity);
     }
   }

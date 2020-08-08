@@ -14,21 +14,6 @@ export default class ReceiptHandler extends React.Component {
     super(props);
     this.state = {userId: '', storeName: '', date: '',
       name: '', fileUrl: '', totalPrice: 0.0, items: [], deals: []};
-
-    /**
-     * Calculates the current date in yyyy-mm-dd format
-     * @return {string} The current date
-     */
-    this.getDate = () => {
-      const date = new Date(Date.now());
-      let month = date.getMonth() + 1;
-      month < 10 ? month = '0' + month.toString() : month = month.toString();
-      let day = date.getDate();
-      day < 10 ? day = '0' + day.toString() : day = day.toString();
-      const year = date.getFullYear();
-      return [year, month, day].join('-');
-    };
-
     /**
      * Handles changes to the grocery store of the trip.
      * @param {Event} e change event
@@ -122,6 +107,17 @@ export default class ReceiptHandler extends React.Component {
       }).catch((err) => {
         console.log(err);
       });
+      this.setState((state) => ({
+        userId: '',
+        storeName: '',
+        date: '',
+        name: '',
+        fileUrl: '',
+        totalPrice: 0.0,
+        items: [],
+        deals: [],
+        hidden: true,
+      }));
     };
   }
 
@@ -191,12 +187,44 @@ export default class ReceiptHandler extends React.Component {
   }
 
   /**
+   * Adds a form row for the user to input additional grocery items
+   * that weren't included in the initial scan.
+   * @param {Event} e change event
+   */
+  addItem(e) {
+    const newItem = {
+      userId: this.state.userId,
+      name: '',
+      price: 0.0,
+      quantity: 0,
+      category: '',
+      expireDate: '',
+    };
+    this.setState({...this.state.items, newItem});
+  }
+
+  /**
+   * Calculates the current date in yyyy-mm-dd format
+   * @return {string} The current date
+   */
+  getDate() {
+    const date = new Date(Date.now());
+    const month = date.getMonth() + 1;
+    const monthFormatted = month < 10 ? `0${month}` : month.toString();
+    const day = date.getDate();
+    const dayFormatted = day < 10 ? `0${day}` : day.toString();
+    const year = date.getFullYear();
+    return [year, monthFormatted, dayFormatted].join('-');
+  }
+
+  /**
    * Render component.
    * @return {html} grocery data form
    */
   render() {
     return (
-      <div className="receipt-handler">
+      <>
+        {this.state.hidden == false &&
         <div className="container col-lg-8">
           {this.state.items.length > 0 &&
           <form onSubmit={this.handleSubmit}>
@@ -302,7 +330,8 @@ export default class ReceiptHandler extends React.Component {
           </form>
           }
         </div>
-      </div>
+        }
+      </>
     );
   }
 }

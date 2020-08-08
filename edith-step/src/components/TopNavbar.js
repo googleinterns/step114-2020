@@ -1,8 +1,11 @@
 import React from 'react';
+import axios from 'axios';
 
 import FileUploadModalBox from './FileUploadModalBox';
 import UserInfoModalBox from './UserInfoModalBox';
 import DeviceCameraModalBox from './DeviceCameraModalBox';
+import SearchModalBox from './SearchModalBox';
+>>>>>>> master
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -23,6 +26,7 @@ class TopNavbar extends React.Component {
       uploadModalBoxShow: false,
       userInfoModalBoxShow: false,
       takePictureModalBox: false,
+      searchBoxShow: false,
     };
 
     /**
@@ -40,10 +44,16 @@ class TopNavbar extends React.Component {
     };
 
     /**
-     * Callback function to close the user upload modal box.
+     * Callback function to close the picture upload modal box.
      */
     this.handleTakePictureModalBoxClose = () => {
       this.setState({takePictureModalBox: false});
+    
+    /**
+     * Callback function to close the search upload modal box.
+     */
+    this.handleSearchModalBoxClose = () => {
+      this.setState({searchBoxShow: false});
     };
   }
 
@@ -67,8 +77,8 @@ class TopNavbar extends React.Component {
    * Checks the user log-in status and sets
    * user email in sessionstorage.
    */
-  login() {
-    fetch('/login')
+  async login() {
+    await fetch('/login')
         .then((response) => response.json())
         .then((userInfo) => {
           this.setState({user: userInfo});
@@ -76,6 +86,28 @@ class TopNavbar extends React.Component {
         .catch(() => {
           this.setState({user: null});
         });
+    let queryResponse = '';
+    let render = true;
+    await fetch('/grocery-list-query')
+        .then((response) => response.json())
+        .then((json) => {
+          queryResponse = json;
+          if (json.isEmpty()) {
+            render = false;
+          }
+        })
+        .catch(() => {
+          render = false;
+        });
+    if (render) {
+      await axios({
+        method: 'post',
+        url: '/notifications',
+        data: {
+          body: queryResponse,
+        },
+      });
+    }
   }
 
   /**
@@ -99,6 +131,16 @@ class TopNavbar extends React.Component {
                 className='dashboard'>
                 DASHBOARD
               </Nav.Link>
+              <Nav.Link
+                href='#search'
+                onClick={() => this.setState({searchBoxShow: true})}
+                className='search'>
+                SEARCH
+              </Nav.Link>
+              <SearchModalBox
+                show={this.state.searchBoxShow}
+                handleSearchModalBoxClose={this.handleSearchModalBoxClose}
+              />
               <Dropdown className='dropdowns'>
                 <Dropdown.Toggle
                   variant='dark'
