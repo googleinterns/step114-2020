@@ -5,7 +5,6 @@ import FileUploadModalBox from './FileUploadModalBox';
 import UserInfoModalBox from './UserInfoModalBox';
 import DeviceCameraModalBox from './DeviceCameraModalBox';
 import SearchModalBox from './SearchModalBox';
->>>>>>> master
 import Dropdown from 'react-bootstrap/Dropdown';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
